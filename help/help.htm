@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<!--Version 1.2 build 5-->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Calendar plugin help file
+</title>
+<style type="text/css">
+    code {font: bold 12pt consolas, monospace; color: #900; white-space: nowrap;}
+    small code {font: normal 10pt consolas, monospace; color: #800;}
+    body {padding:0 2em; font: 11pt trebuchet ms, sans-serif;}
+    p {margin: 0;}
+    h1, h2, h3, h4 {font-family: georgia, times new roman, serif;color:#07c; margin:1em 0 .2em;}
+    h3 {margin:.5em 0 2em}
+    h2 {font-style:italic;color:#029;}
+    h4 {font-style:italic;color:#069;}
+    em {font-weight:bold;color #900;}
+    li {margin:.2em 0;}
+    li li {margin:0;}
+    ul, ol {margin:.5em 0 .2em 2em;}
+    blockquote {margin:.5em 1.5em;}
+</style>
+</head>
+<body>
+<h1>Calendar Plugin Help File for Version 1.2.6</h1>
+<p>Originally developped by Michael Svarrer, modified by Tory, <a href="http://cmsimple.fr">Bob</a>, <a href="http://svasti.de">Svasti</a>, <a href="http://cmsimple.holgerirmler.de">Holger</a></p>
+
+<h3>For CMSimple_XH (UTF-8) and CMSimple (ANSI)</h3>
+
+<h2>Upgrading from an earlier version</h2>
+<ul>
+    <li>Save your content folder and your css file</li>
+    <li>Install new version and put back your old content file. The css file has been changed a bit, you may want to reinsert some items from your old css.</li>
+    <li>Upgrading from v. 1.2.x you may be able to re-use your old config file.</li>
+    <li>All the old function calls still work.</li>
+</ul>
+
+<h2>Integrating Calendar plugin into your CMSimple-website</h2>
+<ul>
+    <li>Extract the zip-file and put the calendar folder with all subfolders into the CMSimple plugins folder. Some websites require writing rights (646) for config.php, stylesheet.php, content folder with all files, and language file.</li>
+    <li>To display the calendar in the template use <code>&lt;?php echo calendar();?&gt;</code></li>
+    <li>To display the calendar on a specific page use <code>#CMSimple $output.=calendar();#</code> or <code>{{{PLUGIN:calendar();}}}</code></li>
+    <li>To display your events on a specific page use <code>#CMSimple $output.=events();#</code> or <code>{{{PLUGIN:events();}}}</code></li>
+    <li>You have to enter the <em>name of your event page</em> in the language config of the plugin. Look for the field <code>event page</code> (fairly down in the list) and enter the name of the page that shows the event list. If your event page is on the second or third level, you have to give the names of all higher level pages first followed by a colon, e.g. <code>name-of-firstlevel-page:name-of-secondlevel-page:name-of-event-page</code></li>
+    <li>Calendar save its event files in the plugin folder. You can however specify a different folder in config setting <code>filepath data</code>.</li>
+</ul>
+
+<h2>Configuring display of events</h2>
+<ul>
+    <li>In plugin config field <code>show number of future months</code> you can enter how many months the display of events goes into the future. Default is "1" which will show the present month only. Entering "2" will show the present month and the next, etc.</li>
+    <li>In plugin config field <code>show number of previous months</code> you can give the number of months showing past events. Default is no past events.</li>
+    <li>If you don't need all fields you can switch off display of time, location, link in the event list. This also happens in the event input tables.</li>
+    <li>Via css you can control the event display. The provided css file is only an example for the standard XH template. Adjustment of css is recommanded.</li>
+    <li><code>date delimiter</code>: You can choose as sign between day, month and year ".", "-". "/". Changes will take effect only after saving the event file. Before this no events will be listed if you changes the date delimiter. After saving events will be sorted chronologically.</li>
+</ul>
+
+<h2>Configuring input of events</h2>
+<ul>
+    <li>There are 2 ways to enter events: (1) via the plugin backend or (2) you can place the event input form on a page, e.g. in a members area. To put it on a page use <code>#CMSimple $output.=editevents();#</code> or <code>{{{PLUGIN:editevents();}}}</code>.</li>
+    <li>There are 3 different input layouts: narrow, medium, wide. Just try it out. You can choose the width for the plugin backend in <code>event-input backend narrow medium or wide</code>. The layout of the event input form (in members pages) is set via <code>event-input memberpages narrow medium or wide</code>. Both layouts can be different.</li>
+    <li>Using the narrow or medium style you may have to adjust the width of the input fields via css. This can be done for the narrow and medium style independently.</li>
+    <li>As mentioned above, the fields link, location, time can be suppressed.</li>
+</ul>
+
+<h2>Entering new events</h2>
+<ul>
+    <li>A click on the green <img src="../images/add.png" alt="add.png, 733B" title="Add" height="16" width="16"> will result in a new event line. Click on calendar icon <img src="../dp/cal-grey.gif" alt="cal-grey.gif, 170B" title="Cal grey" height="16" width="16"> and choose a date. Enter a name for your event in the event field. Always finish with save. Saving will sort entries chronologically</li>
+    <li>For uncertain events you can enter as day -, --, ?, ??. Month and year have to be entered as usual.</li>
+    <li>Starting time, end of event, and ending time are optional, as well as a link to give further explanation of your event. External links start with <code>ext:</code> and look like: <code>www.cmsimple-xh.com</code> (no "http://"), internal start with <code>int:</code> and look like this: <code>int:firstlevel-page:secondlevel-page:linked-page</code> </li>
+    <li>Even without a link one can enter any text in the field for the link text, e.g. as additional information to the event.</li>
+    <li>The red <img src="../images/delete.png" alt="delete.png, 715B" title="Delete" height="16" width="16"> will delete an event entry.</li>
+    <li>For <em>birthdays</em> enter date of birth in the date field, name of the person in event field and <code>###</code> in the location field. Calendar will calculate the age of the person and display the birthday in the event list and calendar display. Via css you can give birthdays in event list a special color. <br><small>You may wonder why there a 3 fields in language config for the age of a person. This was added by Tory so that birthday display works well for slavic languages. <code>age singular text</code> = year (Text displayed for 1 year olds), <code>age plural1 text</code> = years (Text displayed 2 to 4 year olds), <code>age plural2 text</code> = years (Text displayed for at least 5 year olds).</small></li>
+</ul>
+
+<h2>Display of Next Coming Event</h2>
+<ul>
+    <li>This function uses Microsoft marquee and does not validate. However it works with all modern browsers.</li>
+    <li>You can display the next coming event inside a page by entering <code>#CMSimple $output.=nextevent();#</code> or <code>{{{PLUGIN:nextevent();}}}</code>. You will have to adjust the css of .nextevent_date, marquee, .nextevent_event, .nextevent_location, as the css is now set for use of nextevent in the template.</li>
+    <li>For the display of the next coming event in the template, e.g. under the calendar, use <code>&lt;?php echo nextevent();?&gt;</code>. This will display the next coming event on all pages. If you want it on certain pages only, and under the calendar, put this code in the template: <code>&lt;?php echo calendar(); if ($nextevent) echo nextevent(); ?&gt;</code>. Activate the display of next doming event by adding <code>#CMSimple $nextevent="show";#</code> on a page.</li>
+    <li>If there is no next event, nothing will be shown, unless you have specified a notice in language config setting <code>notice no next event sceduled</code>.</li>
+</ul>
+
+<h2>Configuring display of calendar</h2>
+<ul>
+    <li>If you want Monday as first day of the week, enter <code>true</code> in plugin config field <code>week starts mon</code>. Otherwise Sunday will be first day of the week.</li>
+    <li>Enter in plugin config which days you want to have colored as weekend days.</li>
+    <li>Concerning events lasting several days, if you enter <code>true</code> in config field <code>show days between dates</code> all event days will be colored in the calendar. Otherwise only the first and the last day of the event will be colored.</li>
+</ul>
+
+<p><br><br><small>Written by Svasti 4/2011, edited 8/2011</small></p>
+
+</body>
+</head>

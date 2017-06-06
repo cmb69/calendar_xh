@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<!--Version 1.2.6-->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Calendar Plugin Hilfedatei
+</title>
+<style type="text/css">
+    code {font: bold 12pt consolas, monospace; color: #900; white-space: nowrap;}
+    small code {font: normal 10pt consolas, monospace; color: #800;}
+    body {padding:0 2em; font: 11pt trebuchet ms, sans-serif;}
+    p {margin: 0;}
+    h1, h2, h3, h4 {font-family: georgia, times new roman, serif;color:#07c; margin:1em 0 .2em;}
+    h3 {margin:.5em 0 2em}
+    h2 {font-style:italic;color:#029;}
+    h4 {font-style:italic;color:#069;}
+    em {font-weight:bold;color #900;}
+    li {margin:.2em 0;}
+    li li {margin:0;}
+    ul, ol {margin:.5em 0 .2em 2em;}
+    blockquote {margin:.5em 1.5em;}
+</style>
+</head>
+<body>
+<h1>Calendar Plugin Hilfedatei für Version 1.2.6 </h1>
+<p>Plugin ursprünglich von Michael Svarrer, weiterentwickelt von Tory, <a href="http://cmsimple.fr">Bob</a>, <a href="http://svasti.de">Svasti</a>, <a href="http://cmsimple.holgerirmler.de">Holger</a></p>
+
+<h3>Für CMSimple_XH (UTF-8) und CMSimple (ANSI)</h3>
+
+<h2>Upgrade von früherer Version</h2>
+<ul>
+    <li>Neue Version wie üblich installieren und alte Content-Datei behalten.</li>
+    <li>Alle alten Funktionen und Anweisungen funktionieren weiterhin.</li>
+    <li>Upgrade von v. 1.2.x
+    <ul>
+     <li>Css-Datei wurde im Bereich "Display of backend" leicht verändert.</li>
+     <li>Alte Config-Datei kann übernommen werden.</li>
+    </ul></li>
+    <li>Upgrade von v. 0.5–1.0
+    <ul>
+     <li>Css- und Config-Datei können nicht übernommen werden.</li>
+    </ul></li>
+</ul>
+
+<h2>Einbau des Calendar-Plugins in eine CMSimple-Website</h2>
+<ul>
+    <li>Zip-Datei extrahieren und den calendar-Ordner komplett in den CMSimple plugins-Ordner einfügen. Bei manchen Websites müssen Schreibrechte (646) für config.php, stylesheet.php, content-Ordner mit allen Dateien und die passende Sprachdatei vergeben werden.</li>
+    <li>Kalender ins Template einbauen mit <code>&lt;?php echo calendar();?&gt;</code></li>
+    <li>Der Kalender kann auch innerhalb des Seitentexts angezeigt werden mit <code>#CMSimple $output.=calendar();#</code> oder <code>{{{PLUGIN:calendar();}}}</code></li>
+    <li>Veranstaltungsliste innerhalb einer Seite zeigen mit <code>#CMSimple $output.=events();#</code> oder <code>{{{PLUGIN:events();}}}</code></li>
+    <li>Den <em>Namen der Seite mit der Veranstaltungsliste</em> in den Spracheinstellungen im Feld <code>event page</code> (ziemlich weit unten) eingeben. Falls die Seite auf zweiten oder drittem Niveau liegt, muss man die Seitennamen aller höheren Niveaus auch angeben, jeweils durch Doppelpunkt getrennt, z.B. <code>Seitename-erstes-Niveau:Seitenname-zweites-Niveau:Seitenname-Veranstaltungsliste</code></li>
+    <li>Calendar speichert seine Veranstaltungslisten im Plugin Ordner. Man kann aber einen anderen Ordner unter <code>filepath data</code> in der Konfiguration angeben.</li>
+</ul>
+
+<h2>Veranstaltungsliste konfigurieren</h2>
+<ul>
+    <li>In der Plugin-Konfiguration unter <code>show number of future months</code> die Anzahl der Monate angeben, für die Veranstaltungen angezeigt werden. Keine Angabe bedeutet, nur der jetzige Monat wird gezeigt. "2" zeigt den jetzigen und den nächsten Monat, usw.</li>
+    <li>Im Konfigurationsfeld <code>show number of previous months</code> kann man angeben, ob auch vergangene Monate angezeigt werden sollen. Keine Angebe bedeutet, keine vergangenen Monate werden angezeigt.</li>
+    <li>Fall gewünscht kann man die Anzeige der Felder Uhrzeit (time), Ort (location) oder Link in der Eventliste abschalten. Auch in den Eingabetabellen geschieht das dann.</li>
+    <li>Über css kann die Darstellung der Veranstaltungsliste weitgehend gesteuert werden. Die mitgelieferte css-Datei ist nur ein Beispiel für das Standard XH-Template. Anpassung der css-Datei wird empfohlen.</li>
+    <li><code>date delimiter</code>: Sie können als Zeichen zwischen Tag, Monat und Jahr ".", "-". "/" wählen. Änderungen wirken sich erst nach dem Speichern der Eingabeliste aus. Vorher werden nach Änderungen des Zeichens keine Veranstaltungen angezeigt. Während des Speicherns werden Veranstaltungen chronologisch geordnet.</li>
+</ul>
+
+<h2>Veranstaltungseingabe konfigurieren</h2>
+<ul>
+    <li>Es gibt zwei Möglichkeiten Veranstaltungen einzugeben: (1) über das Plugin-Backend, (2) auf einer normalen Seite (vorzugsweise in einem geschützen Mitglieder-Bereich). Dort erscheint die Eingabemöglichkeit durch <code>#CMSimple $output.=editevents();#</code> oder <code>{{{PLUGIN:editevents();}}}</code>.</li>
+    <li>Es gibt drei verschiedene Eingabe-Layouts: schmal(narrow), mittel(medium) und breit(wide). Einfach mal ausprobieren. Für das Backend stellt man dieses Eingabe-Layout ein im Feld <code>event-input backend narrow medium or wide</code>. Das Eingabe-Layout für normale Seiten wird unabhängig davon eingestellt im Feld <code>event-input memberpages narrow medium or wide</code>.</li>
+    <li>Wenn man das Layout narrow oder medium nutzt, muss man eventuell die Breite der Eingabefelder per css anpassen. Einstellungen für den narrow und medium Stil sind voneinander unabhängig, damit man verschiedene Layouts im Backend und auf den Memberpages nutzen kann.</li>
+    <li>Wie schon angegeben kann man die Felder Uhrzeit(time), Ort(location) sowie Link ausschalten.</li>
+</ul>
+
+<h2>Neue Veranstaltungen eintragen</h2>
+<ul>
+    <li>Klick auf das grüne <img src="../images/add.png" alt="add.png, 733B" title="Add" height="16" width="16"> erzeugt eine neue Eingabezeile. Auf das Kalendersymbol <img src="../dp/cal-grey.gif" alt="cal-grey.gif, 170B" title="Cal grey" border="0" height="16" width="16"> klicken und Datum auswählen. Im "Veranstaltung"-Feld einen Namen für die Veranstaltung angeben. Anschließend immer auf "Sichern" klicken. Das Sichern sortiert die Einträge außerdem chronologisch</li>
+    <li>Für geplante Events kann man als Tag auch -, --, ?, ?? eingeben. Monat und Jahr müssen eingegeben werden.</li>
+    <li>Fakultativ kann man Uhrzeit, Enddatum der Veranstaltung und Enduhrzeit angeben sowie einen Link für weitere Hinweise zur Veranstaltung. Externe Links beginnen mit <code>ext:</code> nach dem Muster <code>ext:www.cmsimple-xh.de</code> (das "http://" entfällt). interne beginnen mit <code>int:</code> nach dem Muster <code>int:Seite-auf-erstem-Niveau:Seite-auf-zweitem-Niveau:Seite-mit-Veranstaltungserklärung</code></li>
+    <li>Im Feld für den Link-Text kann man auch ohne Angabe eines Links beliebigen Text angeben, z.B. zur näheren Erklärung des Events.</li>
+    <li>Das rote <img src="../images/delete.png" alt="delete.png, 715B" title="Delete" height="16" width="16"> löscht eine Eingabezeile.</li>
+    <li>Für die Anzeige von <em>Geburtstagen</em> Geburtstag mit Geburtsjahr im Datumsfeld eingeben, den Namen der Person ins Veranstaltungsfeld schreiben und <code>###</code> ins Ort-Feld. Das Plugin berechnet dann automatisch das Alter der Person und zeigt die Geburtstage in Veranstaltungsliste und Kalender an. Über css kann man Geburtstagen in der Veranstaltungsliste eine besondere Farbe geben. <br><small>Sie wundern sich vielleicht, warum es drei Felder in der Spracheinstellungen für das Alter der Person gibt. Das wurde von Tory eingebaut, damit die Geburtstagsanzeige auch für slawische Sprachen funktioniert. <code>age singular text</code> = Jahr (Text für ersten Geburtstag), <code>age plural1 text</code> = Jahre (Text für 2. bis 4. Geburtstag), <code>age plural2 text</code> = Jahre (Text für mindestens 5. Geburtstag).</small></li>
+</ul>
+
+<h2>Anzeige der nächsten kommenden Veranstaltung</h2>
+<ul>
+    <li>Diese Anzeige nutzt Microsofts Marquee Funktion und validiert leider nicht, sie funktioniert aber in allen gängigen Browsern.</li>
+    <li>Die nächste kommende Veranstaltung kann man auf einer Seite anzeigen mit <code>#CMSimple $output.=nextevent();#</code> oder <code>{{{PLUGIN:nextevent();}}}</code>. Dazu wird man das css anpassen müssen von .nextevent_date, marquee, .nextevent_event, .nextevent_location, da die mitgelieferte css-Datei für die Nutzung dieser Anzeige im Template gedacht ist.</li>
+    <li>Die Anzeige der nächsten Veranstaltung baut man ins Template ein mit <code>&lt;?php echo nextevent();?&gt;</code>. Dadurch wird die Anzeige auf allen Seiten gezeigt. Wenn dies nur auf bestimmten Seiten geschehen soll, z.B. immer unter dem Kalender, folgenden Code nutzen: <code>&lt;?php echo calendar(); if ($nextevent) echo nextevent(); ?&gt;</code>. Die Anzeige wird aktiviert indem man auf den entsprechenden Seiten eingibt <code>#CMSimple $nextevent="show";#</code>.</li>
+    <li>Wenn es keine kommende Veranstaltung gibt, wird nichts gezeigt, außer man hat eine entsprechende Mitteilung in die Sprachdatei unter <code>notice no next event sceduled</code> geschrieben.</li></ul>
+
+<h2>Kalenderanzeige konfigurieren</h2>
+<ul>
+    <li>In der Konfiguration wird bei <code>week starts mon</code> mit <code>true</code> eingestellt, dass die Woche montags anfängt. Andernfalls beginnt sie sonntags.</li>
+    <li>Bei <code>week-end day 1</code> und <code>2</code> angeben, welche Tage als Wochenende eingefärbt werden sollen.</li>
+    <li>Bei <code>show days between dates</code> ergibt <code>true</code>, dass bei mehrtägigen Veranstaltungen alle Veranstaltungstage im Kalender eingefärbt werden. Andernfalls werden nur der erste und der letzte Tag eingefärbt.</li>
+</ul>
+
+<p><br><br><small>Verfasst von Svasti 4/2011, erweitert 8/2011</small></p>
+</body>
+</head>
