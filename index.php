@@ -849,101 +849,6 @@ function dpSeperator($mode='') {
 // *            Backend, editing the event file                   *
 // ****************************************************************
 
-//subfunction of the backend
-function LoadEventFile()
-{
-    global $plugin_cf,$plugin_tx,$datapath,$sl,$plugin;
-    $plugin=basename(dirname(__FILE__),"/");
-
-    $event_array = array();
-    if ($plugin_cf['calendar']['same-event-calendar_for_all_languages']=="true") {
-        $eventfile = $datapath."eventcalendar.txt";
-    }else {
-        $eventfile = $datapath."eventcalendar_".$sl.".txt";
-    }
-
-    if(is_file($eventfile)){
-      $fp = fopen($eventfile, "r");
-
-      while (!feof($fp)) {
-        $line = fgets($fp, 4096);
-        list($eventdates,$event,$location,$link,$event_time_start) = explode( ";", rtrim($line));
-        list($event_date_start,$event_end_date,$event_end_time) = explode(",",$eventdates);
-        list($event_link_adr,$event_link_txt) = explode(",",$link);
-        if($event_date_start   != "" &&
-           $event              != "" /*&&
-           $location           != ""*/) {
-           $entry = array(
-              'datestart'    => $event_date_start,
-              'dateend'      => $event_end_date,
-              'starttime'    => $event_time_start,
-              'endtime'      => $event_end_time,
-              'event'        => $event,
-              'linkadr'      => $event_link_adr,
-              'linktxt'      => $event_link_txt,
-              'location'     => $location);
-           $event_array[] = $entry;
-          }
-      }
-    }
-    fclose($fp);
-    //usort($event_array,'dateSort');
-    return $event_array;
-}
-
-//subfunction of the backend
-function SaveEventFile($array)
-{
-    global $plugin_cf,$plugin_tx,$datapath,$sl,$plugin;
-    $plugin=basename(dirname(__FILE__),"/");
-    if ($plugin_cf['calendar']['same-event-calendar_for_all_languages']=="true") {
-        $eventfile = $datapath."eventcalendar.txt";
-    }else {
-        $eventfile = $datapath."eventcalendar_".$sl.".txt";
-    }
-    // remove old backup
-    if(is_file($eventfile . ".bak"))
-      unlink($eventfile . ".bak");
-    // create new backup
-    $permissions = false;
-    $owner = false;
-    $group = false;
-    if(is_file($eventfile)) {
-      $owner = fileowner($eventfile);
-      $group = filegroup($eventfile);
-      $permissions = fileperms($eventfile);
-      rename($eventfile, $eventfile . ".bak");
-    }
-
-    $fp = fopen($eventfile, "w");
-    if($fp === false)
-      return false;
-    foreach($array as $entry) {
-      if ($entry['dateend'] != "") $eventdates = $entry['datestart'] . "," . $entry['dateend'] . "," . $entry['endtime'];
-        else $eventdates = $entry['datestart'];
-      $event_time_start = $entry['starttime'];
-      $event = $entry['event'];
-      $location = $entry['location'];
-      if ($entry['linkadr'] !="" || $entry['linktxt'] !="") $link = $entry['linkadr'] . "," . $entry['linktxt'];
-         else $link = "";
-      $line = "$eventdates;$event;$location;$link;$event_time_start\n";
-      if(!fwrite($fp, $line)) {
-        fclose($fp);
-        return false;
-      }
-    }
-    fclose($fp);
-    // change owner, group and permissions of new file to same as backup file
-    if($owner !== false)
-      $chown = chown($eventfile, $owner);
-    if($group !== false)
-      $chgrp = chgrp($eventfile, $group);
-    if($permissions !== false)
-      $chmod = chmod($eventfile, $permissions);
-
-    return true;
-}
-
 //==========================================================
 //makes the form for editing events wide, medium or narrow
 //==========================================================
@@ -1424,7 +1329,7 @@ function EditEvents($editeventswidth)
     global $plugin_cf,$plugin_tx,$pth,$sl,$plugin,$tx;
     if (!$editeventswidth) {$editeventswidth = $plugin_cf['calendar']['event-input_memberpages_narrow_medium_or_wide'];}
     $imageFolder = $pth['folder']['plugins'] . $plugin . "/images";
-    $events = LoadEventFile();
+    $events = (new Calendar\EventDataService)->readEvents();
 
     if(isset($_POST['action']))
       $action = $_POST['action'];
@@ -1498,7 +1403,7 @@ function EditEvents($editeventswidth)
           if(!$deleted && !$added) {
               // sorting new event inputs, idea of manu, forum-message
               usort($newevent,'dateSort');
-              if(!SaveEventFile($newevent)) $o .= "<p><strong>".$plugin_tx['calendar']['eventfile_not_saved']."</strong></p>\n";
+              if(!(new Calendar\EventDataService)->writeEvents($newevent)) $o .= "<p><strong>".$plugin_tx['calendar']['eventfile_not_saved']."</strong></p>\n";
               else  $o .= "<p><strong>".$plugin_tx['calendar']['eventfile_saved']."</strong></p>\n";
           }
 
