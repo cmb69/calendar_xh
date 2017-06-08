@@ -5,12 +5,6 @@ CMSimple - Calendar Plugin - 1.2.10 by svasti 03/2013, version 1.2 modified by H
 
 if ((!function_exists('sv')) || (strlen($sl) !== 2) || preg_match('/admin.php/i', sv('PHP_SELF')))die('Access denied');
 
-ini_set('display_errors', 0);
-error_reporting(0);
-if(function_exists('xh_debugmode')){
-	xh_debugmode();
-}
-
 initvar('calendar');
 if($calendar){
 
