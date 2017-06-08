@@ -69,21 +69,3 @@ CMSimple root
      + languages
         - *.php          (chmod 646)
 + templates
-
-
-CHANGELOG
-v 1.2.6    Maintenance release by svasti with bug fixes plus some minor changes
-           build 5, possibility of text in link-text field without giving a link
-           build 4, added sorting of events in input table on saving,
-                    suggested by manu in the CMSimple forum.  	  	
-           build 3, added css classes for width of input fields,
-                    deleated width fields in config. This was necessary
-                    to give same appearance of input table in IE as in Firefox.
-           build 2, code cleanup in index.php
-           Danish language files by maeg
-
-v 1.2      (released 04/2011) Holger
-v 1.1      (03/2011) svasti
-v 0.6-1.0  Tory
-unnamed    Bob
-v 0.1-0.5  Michael Svarrer
