@@ -184,7 +184,7 @@ class EditEventsController extends Controller
         //narrow width input table
         //========================
         if ($editeventswidth == 'narrow') {
-            if ($this->conf['show_event_time'] == 'true') {
+            if ($this->conf['show_event_time']) {
                 $o .= "<tr class=\"firstline_calendarinput\">\n"
                     . "<td class=\"calendar_input_datefield\">"
                     . $this->lang['event_start'] . tag('br')
@@ -207,7 +207,7 @@ class EditEventsController extends Controller
             }
             $i = 0;
             foreach ($events as $entry) {
-                if ($this->conf['show_event_time'] == 'true') {
+                if ($this->conf['show_event_time']) {
                     $o .= "<tr>\n"
                         . "<td class=\"calendar_input_datefield\">"
                         . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
@@ -254,7 +254,7 @@ class EditEventsController extends Controller
                     . $imageFolder . '/delete.png" style="width: 16px; height: 16px" name="delete['
                     . $i.']" value="delete" alt="Delete Entry"') . "\n"
                     . "</td>\n</tr>\n";
-                if ($this->conf['show_event_location'] == 'true') {
+                if ($this->conf['show_event_location']) {
                     $o .= "<tr>\n"
                         . "<td class=\"calendarinput_line2\" colspan=\"4\">"
                         . $this->lang['event_location'] ."</td>\n"
@@ -264,7 +264,7 @@ class EditEventsController extends Controller
                     $o .= tag('input type="hidden" value="' . $entry['location'] . '" name="location[' . $i .']"');
                 }
 
-                if ($this->conf['show_event_link'] == 'true') {
+                if ($this->conf['show_event_link']) {
                     $o .= "</tr>\n<tr>\n"
                         . "<td class=\"calendarinput_line2\" colspan=\"4\">"
                         . $this->lang['event_link'] . "</td>\n"
@@ -290,7 +290,7 @@ class EditEventsController extends Controller
             // wide width input table
             //========================
         } elseif ($editeventswidth == 'wide') {
-            if ($this->conf['show_event_time'] == 'true') {
+            if ($this->conf['show_event_time']) {
                 $o .= "<tr class=\"firstline_calendarinput\">\n"
                     . "<td>" . $this->lang['event_start'] . tag('br')
                     . $this->lang['event_date'] . "</td>\n"
@@ -308,13 +308,13 @@ class EditEventsController extends Controller
                     . "<td>" . $this->lang['event_event'] . "</td>\n";
             }
 
-            if ($this->conf['show_event_location'] == 'true') {
+            if ($this->conf['show_event_location']) {
                 $o .= "<td>" . $this->lang['event_location'] ."</td>\n";
             } else {
                 $o .= "<td style=\"width: 0\"></td>";
             }
 
-            if ($this->conf['show_event_link'] == 'true') {
+            if ($this->conf['show_event_link']) {
                 $o .= "<td>" . $this->lang['event_link'] . "</td>\n"
                     . "<td>" . $this->lang['event_link_txt'] . "</td>\n";
             } else {
@@ -330,7 +330,7 @@ class EditEventsController extends Controller
                     . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
                     . $entry['datestart'] . '" name="datestart[' . $i . ']" id="datestart' . $i . '"') . "</td>\n";
 
-                if ($this->conf['show_event_time'] == 'true') {
+                if ($this->conf['show_event_time']) {
                     $o .= "<td class=\"calendar_input_time\">"
                         . tag('input type="normal" class="calendar_input_time" maxlength="5"  value="'
                         . $entry['starttime'] . '" name="starttime[' . $i . ']"') . "</td>\n";
@@ -343,7 +343,7 @@ class EditEventsController extends Controller
                     . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
                     . $entry['dateend'] . '" name="dateend[' . $i . ']" id="dateend' . $i .'"') . "</td>\n";
 
-                if ($this->conf['show_event_time'] == 'true') {
+                if ($this->conf['show_event_time']) {
                     $o .= "<td class=\"calendar_input_time\">"
                         . tag('input type="normal" class="calendar_input_time" maxlength="5"  value="'
                         . $entry['endtime'] . '" name="endtime[' . $i . ']"') . "</td>\n";
@@ -357,7 +357,7 @@ class EditEventsController extends Controller
                 $o .= "<td>" . tag('input class="calendar_input_event" type="normal" value="'
                     . $entry['event'] . '" name="event[' . $i . ']"') . "</td>\n";
 
-                if ($this->conf['show_event_location'] == 'true') {
+                if ($this->conf['show_event_location']) {
                     $o .= "<td>" . tag('input class="calendar_input_event" type="normal" value="'
                         . $entry['location'] . '" name="location[' . $i . ']"') . "</td>\n";
                 } else {
@@ -365,7 +365,7 @@ class EditEventsController extends Controller
                         . $entry['location'] . '" name="location[' . $i . ']"') . "</td>";
                 }
 
-                if ($this->conf['show_event_link'] == 'true') {
+                if ($this->conf['show_event_link']) {
                     $o .= "<td>" . tag('input class="calendar_input_event" type="normal" value="'
                         . $entry['linkadr'] . '" name="linkadr[' . $i . ']"') . "</td>\n";
                     $o .= "<td>" . tag('input class="calendar_input_event" type="normal" value="'
@@ -389,7 +389,7 @@ class EditEventsController extends Controller
             //==========================
             // medium width input table
             //==========================
-            if ($this->conf['show_event_time'] == 'true') {
+            if ($this->conf['show_event_time']) {
                 $o .= "<tr class=\"firstline_calendarinput\">\n"
                     . "<td>" . $this->lang['event_start']
                     . tag('br') . $this->lang['event_date'] . "</td>\n"
@@ -398,7 +398,7 @@ class EditEventsController extends Controller
                     . $this->lang['event_date'] . "</td>\n"
                     . "<td>" . $this->lang['event_time'] . "</td>\n";
 
-                if ($this->conf['show_event_location'] == 'true') {
+                if ($this->conf['show_event_location']) {
                     $o .= "<td>" . $this->lang['event_event'] . "</td>\n"
                         . "<td>" . $this->lang['event_location'] . "</td>\n";
                 } else {
@@ -419,7 +419,7 @@ class EditEventsController extends Controller
 
                 $o .= "<td style=\"width: 0\"></td>";
 
-                if ($this->conf['show_event_location'] == 'true') {
+                if ($this->conf['show_event_location']) {
                     $o .= "<td>" . $this->lang['event_event'] .   "</td>\n"
                         . "<td>" . $this->lang['event_location']. "</td>\n";
                 } else {
@@ -429,7 +429,7 @@ class EditEventsController extends Controller
             }
             $i = 0;
             foreach ($events as $entry) {
-                if ($this->conf['show_event_time'] == 'true') {
+                if ($this->conf['show_event_time']) {
                     $o .= "<tr>\n"
                         . "<td class=\"calendar_input_datefield\">"
                         . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
@@ -461,7 +461,7 @@ class EditEventsController extends Controller
 
                 $o .=  $this->renderDatePickerScript($i);
 
-                if ($this->conf['show_event_location'] == 'true') {
+                if ($this->conf['show_event_location']) {
                     $o .= "<td>" . tag('input type="normal" class="calendar_input_event event_highlighting" value="'
                         . $entry['event'] . '" name="event[' . $i . ']"') . "</td>\n"
                         . "<td>" . tag('input type="normal"  class="calendar_input_event" value="'
@@ -480,7 +480,7 @@ class EditEventsController extends Controller
                     . ']" value="delete" alt="Delete Entry"') . "\n"
                     . "</td>\n</tr>\n" ;
 
-                if ($this->conf['show_event_link'] == 'true') {
+                if ($this->conf['show_event_link']) {
                     $o .= "<tr>\n"
                         . "<td class=\"calendarinput_line2\" colspan=\"4\">" . $this->lang['event_link'] . " / "
                         . $this->lang['event_link_txt'] . "</td>\n"

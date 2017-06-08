@@ -37,21 +37,13 @@
     $plugin_tx['calendar']['eventfile_saved']="Ændringer i aktivitets data er gemt . . .";
     $plugin_tx['calendar']['eventfile_not_saved']="FEJL: kan ikke gemme aktivetets datane.";
 
-    $plugin_tx['calendar']['cf_week_starts_mon']="Skriv \"true\" her, hvis ud vil have Mandag som den første dag i kalender ugen. Eller vil kalenderen starte med Søndag som første kalender uge dag.";
-    $plugin_tx['calendar']['cf_prev_next_button']="Med her \"true\" der vil være tilbage og fremad links i kalenderen omkring måneden navn.";
-    $plugin_tx['calendar']['cf_show_days_between_dates']="Skriv \"true\" her for at farve alle dage, eller flere dages begivenheder i kalenderen.";
     $plugin_tx['calendar']['cf_date_delimiter']="Glyphs bruges til at adskille dag, måned og år. Du kan vælge mellem \".\", \"-\", \"/\".";
-    $plugin_tx['calendar']['cf_show_event_time']="Skriv \"true\" for at vise start og slut tid på aktivetets-listen.";
-    $plugin_tx['calendar']['cf_show_event_location']="Skriv \"true\" for at vise placeringen på aktivitets-listen.";
-    $plugin_tx['calendar']['cf_show_event_link']="Put \"true\" for at vise link på aktivitets-listen.";
     $plugin_tx['calendar']['cf_week-end_day_1']="Skriv her hvilken dag der skal have weekend farver. \"0\" vil vise den første dag \"6\" vil vise den sidste dag om ugen.";
     $plugin_tx['calendar']['cf_week-end_day_2']="Samme som weekend dag 1.";
     $plugin_tx['calendar']['cf_show_number_of_future_months']="Antallet af fremtidige måneder, der skal vises i aktivitets-listen . Standard er indeværende måned, \"2\" vil også vise næste måned.";
     $plugin_tx['calendar']['cf_show_number_of_previous_months']="For at vise også tidligere aktiviteter, på listen, indtast antallet af foregående måned, der skal vises";
-    $plugin_tx['calendar']['cf_show_period_of_events']="Skriv \"true\" here to display above the event list the period of events shown.";
     $plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Bredde af input tabellen i backend, \"narrow\" arrangerer felter vertikalt, \"bredde\" horizontalt.";
     $plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Bredde af aktivitets input tabellen (som regel beskyttet medlem sider).";
-    $plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="\"true\" vil bruge én og samme aktiviters fil til alle sprog i multi sprog sites. Som standard hvert sprog har sin egen arrangementskalender.";
     $plugin_tx['calendar']['cf_filepath_data']="The path to the calendar event files. Without entry it will be set to \"./plugins/calendar/content/\".";
 
 ?>

@@ -70,8 +70,6 @@ class CalendarController extends Controller
             fclose($handle);
         }
 
-        $startmon = strtolower($this->conf['week_starts_mon']);
-
         if ($this->month == '') {
             $this->month = isset($_GET['month']) ? htmlspecialchars($_GET['month']) : date('m', time());
         }
@@ -126,7 +124,7 @@ class CalendarController extends Controller
                 }
                 if ($event_end_date) {
                     $txt = "{$event} {$this->lang['event_date_till_date']} {$event_end_date} {$event_end_time}";
-                    if (stristr('true', $this->conf['show_days_between_dates'])) {
+                    if ($this->conf['show_days_between_dates']) {
                         $count = 86400;
                     } else {
                         $count = $event_end - $event_start;
@@ -180,7 +178,7 @@ class CalendarController extends Controller
         $t .= "<table class=\"calendar_main\">\n<tr>\n";
         $t .= "<td colspan=\"7\">\n";
 
-        if (stristr('true', $this->conf['prev_next_button'])) {
+        if ($this->conf['prev_next_button']) {
             if ($this->month <= 1) {
                 $month_prev = 12;
                 $year_prev = $this->year - 1;
@@ -209,7 +207,7 @@ class CalendarController extends Controller
         $t .= "</tr>\n<tr>\n";
 
         for ($i = 0; $i <= 6; $i++) {
-            if ($startmon == 'true') {
+            if ($this->conf['week_starts_mon']) {
                 $j = $i + 1;
             } else {
                 $j = $i;
@@ -223,7 +221,7 @@ class CalendarController extends Controller
         $t .= "</tr>\n";
         //done printing the top row of days
     
-        if ($startmon == 'true') {
+        if ($this->conf['week_starts_mon']) {
             $span1 = $dayone - 1;
         } else {
             $span1 = $dayone;
@@ -232,7 +230,7 @@ class CalendarController extends Controller
             $span1 = 6;
         }
 
-        if ($startmon == 'true') {
+        if ($this->conf['week_starts_mon']) {
             $span2 = 7 - $daylast;
         } else {
             $span2 = 6 - $daylast;
@@ -243,7 +241,7 @@ class CalendarController extends Controller
         for ($i = 1; $i <= $days; $i++) {
             $dayofweek = date('w', mktime(1, 1, 1, $this->month, $i, $this->year));
 
-            if ($startmon == 'true') {
+            if ($this->conf['week_starts_mon']) {
                 $dayofweek = $dayofweek - 1;
             }
             if ($dayofweek == -1) {

@@ -42,7 +42,7 @@ class EventDataService
         } else {
             $datapath = $plugin_cf['calendar']['filepath_data'];
         }
-        if ($plugin_cf['calendar']['same-event-calendar_for_all_languages'] == "true") {
+        if ($plugin_cf['calendar']['same-event-calendar_for_all_languages']) {
             $this->eventfile = "{$datapath}eventcalendar.txt";
         } else {
             $this->eventfile = "{$datapath}eventcalendar_{$sl}.txt";

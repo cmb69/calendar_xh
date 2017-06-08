@@ -37,21 +37,13 @@
 	$plugin_tx['calendar']['eventfile_saved']="Zmeny v udalosti boli uložené . . .";
 	$plugin_tx['calendar']['eventfile_not_saved']="CHYBA: udalosť sa nepodarilo uložiť.";
 
-    $plugin_tx['calendar']['cf_week_starts_mon']="Zadajte \"true\", pokiaľ je pondelok začiatok týždňa. V opačnom prípade bude týždeň začínať nedeľou.";
-	$plugin_tx['calendar']['cf_prev_next_button']="V prípade \"true\" budú pri aktuálnom mesiaci v kalendári zobrazené ikony na prepnutie dopredu a dozadu.";
-	$plugin_tx['calendar']['cf_show_days_between_dates']="Zadajte \"true\", pokiaľ majú byť zvýraznené všetky dni udalostí, ktoré trvajú viac ako jeden deň.";
 	$plugin_tx['calendar']['cf_date_delimiter']="Znaky na oddelenie dňa, mesiaca a roku. Je možné zvoliť z \".\", \"-\", \"/\".";
-	$plugin_tx['calendar']['cf_show_event_time']="Zadajte \"true\", pokiaľ sa má zobrazovať čas začiatku a konca udalosti.";
-	$plugin_tx['calendar']['cf_show_event_location']="Zadajte \"true\", pokiaľ sa má zobrazovať miesto konania udalosti.";
-	$plugin_tx['calendar']['cf_show_event_link']="Zadajte \"true\", pokiaľ sa májú zobrazovať odkazy.";
 	$plugin_tx['calendar']['cf_week-end_day_1']="Zadajte číslo dňa v týždni, ktorý má byť vyznačenou farbou určenou pre víkend. \"0\" predstavuje prvý deň \"6\" predstavuje posledný deň v týždni.";
 	$plugin_tx['calendar']['cf_week-end_day_2']="Detto ako week-end_day_1.";
 	$plugin_tx['calendar']['cf_show_number_of_future_months']="Počet mesiacov v budúcnosti, za ktoré sú zobrazované udalosti v zozname. Predvolené nastavenie je aktuálny mesiac, \"2\" predstavuje aktuálny a nasledujúci mesiac.";
 	$plugin_tx['calendar']['cf_show_number_of_previous_months']="Pre zobrazenie udalostí v minulosti zadajte počet mesiacov do minulosti.";
-	$plugin_tx['calendar']['cf_show_period_of_events']="Zadajte \"true\", pokiaľ sa v hlavičke zoznamu udalostí má zobrazovať aj interval, z ktorého sú udalosti v zozname zobrazené.";
 	$plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Šírka tabuľky na pozadí, \"narrow\" usporiadava polia vertikálne, \"wide\" horizontálne.";
 	$plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Šírka tabuĺky na zadávanie udalostí na stránke (zvyčajne chránenej prístupovým heslom).";
-	$plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="Pri nastavení \"true\" bude použitý jediný súbor pre zápis udalostí vo všetkých jazykoch na viacjazyčných stránkach. Predvolené nastavenie je, že každý jazyk má svoj vlastný súbor s udalosťami.";
 	$plugin_tx['calendar']['cf_filepath_data']="Cesta k súborom kalendára. Pokiaľ je pole prázdne, cesta je nastavená na \"./plugins/calendar/content/\".";
 
 ?>

@@ -37,21 +37,21 @@
 	$plugin_tx['calendar']['eventfile_saved']="Geänderte Veranstaltungsdaten gespeichert . . .";
 	$plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen konnten NICHT gespeichert werden.";
 
-	$plugin_tx['calendar']['cf_week_starts_mon']="Mit \"true\" beginn die Kalenderwoche am Montag. Andernfalls beginnt sie am Sonntag.";
-	$plugin_tx['calendar']['cf_prev_next_button']="Mit \"true\" erscheinen beim Kalender Navigationsmöglichkeiten für einen Monat vor/zurück.";
-	$plugin_tx['calendar']['cf_show_days_between_dates']="Mit \"true\" werden im Kalender bei mehrtägigen Veranstaltungen alle Tage eingefärbt.";
+	$plugin_tx['calendar']['cf_week_starts_mon']="Ob die Kalenderwoche am Montag beginnt. Andernfalls beginnt sie am Sonntag.";
+	$plugin_tx['calendar']['cf_prev_next_button']="Ob beim Kalender Navigationsmöglichkeiten für einen Monat vor/zurück angezeigt werden sollen.";
+	$plugin_tx['calendar']['cf_show_days_between_dates']="Ob im Kalender bei mehrtägigen Veranstaltungen alle Tage eingefärbt werden.";
 	$plugin_tx['calendar']['cf_date_delimiter']="Zeichen zwischen den Datumsziffern, also zwischen Tag und Monat und Monat und Jahr. Möglich sind \".\", \"-\", \"/\".";
-	$plugin_tx['calendar']['cf_show_event_time']="Mit \"true\" wird die Spalte Uhrzeit genutzt.";
-	$plugin_tx['calendar']['cf_show_event_location']="Mit \"true\" wird die Spalte Ort genutzt.";
-	$plugin_tx['calendar']['cf_show_event_link']="Mit \"true\" wird die Spalte Link genutzt";
+	$plugin_tx['calendar']['cf_show_event_time']="Ob die Spalte Uhrzeit genutzt werden soll.";
+	$plugin_tx['calendar']['cf_show_event_location']="Ob die Spalte Ort genutzt werden soll.";
+	$plugin_tx['calendar']['cf_show_event_link']="Ob die Spalte Link genutzt werden soll.";
 	$plugin_tx['calendar']['cf_week-end_day_1']="Hier den Tag in der Kalenderansicht eintragen, der als Wochenendtag eingefärbt werden soll. \"0\" ist dabei der erste Tag und \"6\" der letzte.";
 	$plugin_tx['calendar']['cf_week-end_day_2']="Wie bei weekend day 1 wird hier der zweite Wochenendtag angegeben.";
 	$plugin_tx['calendar']['cf_show_number_of_future_months']="Anzahl der Monate, für die die Veranstaltungsvorschau gezeigt werden soll. Voreingestellt ist 1 für eien Monat.";
 	$plugin_tx['calendar']['cf_show_number_of_previous_months']="Wenn man auch Veranstaltungen aus der Vergangenheit im Veranstaltungskalender zeigen möchte, kann man hier eine Zahl eintragen";
-	$plugin_tx['calendar']['cf_show_period_of_events']="Mit \"true\" wird am Anfang der Veranstaltungsübersicht der gezeigte Zeitraum angegeben.";
+	$plugin_tx['calendar']['cf_show_period_of_events']="Ob am Anfang der Veranstaltungsübersicht der gezeigte Zeitraum angegeben werden soll.";
 	$plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Einstellung der resultierende Beite der Eintragstabelle, je nachdem ob die Eingabefelder untereinander (narrow), teilweise untereinander (medium) oder nebeneinander (wide) stehen.";
 	$plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Falls man auf einer normalen CMSimple-Seite online-Besuchern  Eintragsmöglichkeiten gibt, kann man hier angeben, ob die Eingabefelder untereinander (narrow), teilweise untereinander (medium) oder nebeneinander (wide) stehen.";
-	$plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="Mit \"true\" wird bei mehrsprachigen Websites nur eine Kalenderdatei angelegt, die für alle Sprachversionen genutzt wird.";
+	$plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="Ob bei mehrsprachigen Websites nur eine Kalenderdatei angelegt wird, die für alle Sprachversionen genutzt wird.";
 	$plugin_tx['calendar']['cf_filepath_data']="Der Weg zum Verzeichnis, in dem Calendar seine Eventdateien speichert. Ohne Angabe gilt \"./plugins/calendar/content/\".";
 
 ?>

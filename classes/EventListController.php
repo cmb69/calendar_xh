@@ -155,7 +155,7 @@ class EventListController extends Controller
         $textmonth = date('F', mktime(1, 1, 1, $this->month, 1, $this->year));
         $monthnames = explode(',', $this->lang['monthnames_array']);
 
-        if (stristr($this->conf['show_period_of_events'], 'true')) {
+        if ($this->conf['show_period_of_events']) {
             $t .= "<p class=\"period_of_events\">"
                .  $this->lang['text_announcing_overall_period']
                .  " <span>"
@@ -199,14 +199,14 @@ class EventListController extends Controller
                 $t .= "</tr>\n";
                 $t .= "<tr class=\"event_heading_row\">\n";
                 $t .= "<td class=\"event_heading event_date\">".$this->lang['event_date']."</td>\n";
-                if (stristr('true', $this->conf['show_event_time'])) {
+                if ($this->conf['show_event_time']) {
                     $t .= "<td class=\"event_heading event_time\">".$this->lang['event_time']."</td>\n";
                 }
                 $t .= "<td class=\"event_heading event_event\">".$this->lang['event_event']."</td>\n";
-                if (stristr('true', $this->conf['show_event_location'])) {
+                if ($this->conf['show_event_location']) {
                     $t .= "<td class=\"event_heading event_location\">".$this->lang['event_location']."</td>\n";
                 }
-                if (stristr('true', $this->conf['show_event_link'])) {
+                if ($this->conf['show_event_link']) {
                     $t .= "<td class=\"event_heading event_link\">".$this->lang['event_link_etc']."</td>\n";
                 }
                 $t .= "</tr>\n";
@@ -237,15 +237,15 @@ class EventListController extends Controller
 
                             $t .= "<tr class=\"event_heading_row\">\n";
                             $t .= "<td class=\"event_heading event_date\">" . $this->lang['event_date'] . "</td>\n";
-                            if (stristr('true', $this->conf['show_event_time'])) {
+                            if ($this->conf['show_event_time']) {
                                 $t .= "<td class=\"event_heading event_time\">" . $this->lang['event_time'] . "</td>\n";
                             }
                             $t .= "<td class=\"event_heading event_event\">" . $this->lang['event_event'] . "</td>\n";
-                            if (stristr('true', $this->conf['show_event_location'])) {
+                            if ($this->conf['show_event_location']) {
                                 $t .= "<td class=\"event_heading event_location\">"
                                     . $this->lang['event_location'] . "</td>\n";
                             }
-                            if (stristr('true', $this->conf['show_event_link'])) {
+                            if ($this->conf['show_event_link']) {
                                 $t .= "<td class=\"event_heading event_link\">" . $this->lang['event_link_etc']
                                     . "</td>\n";
                             }
@@ -256,7 +256,7 @@ class EventListController extends Controller
                         $t .= "<tr class=\"birthday_data_row\">\n";
                         $t .= "<td class=\"event_data event_date\">$event_date_array[$keys]" . $this->dpSeperator()
                             . "{$this->month}" . $this->dpSeperator() . "{$this->year}</td>\n";
-                        if (stristr('true', $this->conf['show_event_time'])) {
+                        if ($this->conf['show_event_time']) {
                             $t .= "<td class=\"event_data event_time\"></td>\n";
                         }
 
@@ -271,11 +271,11 @@ class EventListController extends Controller
                                 . "{$event_array[$keys]} {$age} {$this->lang['age_singular_text']}</td>\n";
                         }
 
-                        if (stristr('true', $this->conf['show_event_location'])) {
+                        if ($this->conf['show_event_location']) {
                             $t .= "<td class=\"event_data event_location\">"
                                 . "{$this->lang['birthday_text']}</td>\n";
                         }
-                        if (stristr('true', $this->conf['show_event_link'])) {
+                        if ($this->conf['show_event_link']) {
                             if (stristr($event_link_array[$keys], 'ext:')) {
                                 $external_site = substr($event_link_array[$keys], 4);
                                 list($external_site, $external_text) = explode(',', $external_site);
@@ -344,7 +344,7 @@ class EventListController extends Controller
                     $t .= "</td>\n";
 
                     //time field
-                    if (stristr('true', $this->conf['show_event_time'])) {
+                    if ($this->conf['show_event_time']) {
                         $t .="<td class=\"event_data event_time\">" . $event_time_array[$keys];
                         if ($event_end_time_array[$keys]) {
                             if (!$event_end_date_array[$keys]) {
@@ -359,12 +359,12 @@ class EventListController extends Controller
                     $t .= "<td class=\"event_data event_event\">" . $event_array[$keys] . "</td>\n";
 
                     //location field
-                    if (stristr('true', $this->conf['show_event_location'])) {
+                    if ($this->conf['show_event_location']) {
                         $t .= "<td class=\"event_data event_location\">{$event_location_array[$keys]}</td>\n";
                     }
 
                     //link field
-                    if (stristr('true', $this->conf['show_event_link'])) {
+                    if ($this->conf['show_event_link']) {
                         if (stristr($event_link_array[$keys], 'ext:')) {
                             $external_site = substr($event_link_array[$keys], 4);
                             list($external_site,$external_text) = explode(',', $external_site);
