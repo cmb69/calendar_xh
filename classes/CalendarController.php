@@ -26,18 +26,8 @@
 
 namespace Calendar;
 
-class CalendarController 
+class CalendarController extends Controller
 {
-    /**
-     * @var array
-     */
-    private $conf;
-
-    /**
-     * @var array
-     */
-    private $lang;
-
     /**
      * @var string
      */
@@ -60,10 +50,7 @@ class CalendarController
      */
     public function __construct($year = '', $month = '', $eventpage = '')
     {
-        global $plugin_cf, $plugin_tx;
-
-        $this->conf = $plugin_cf['calendar'];
-        $this->lang = $plugin_tx['calendar'];
+        parent::__construct();
         $this->year = $year;
         $this->month = $month;
         $this->eventpage = $eventpage;
