@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Calendar" default="help">
+
+    <fileset id="php-sources" dir=".">
+        <include name="index.php"/>
+        <include name="classes/*.php"/>
+    </fileset>
+
+    <fileset id="unit-tests" dir="tests/unit">
+        <include name="*Test.php"/>
+    </fileset>
+
+    <fileset id="attack-tests" dir="tests/attack">
+        <include name="*Test.php"/>
+    </fileset>
+
+    <target name="help" description="lists available targets">
+        <exec command="phing -l" outputProperty="help"/>
+        <echo>${help}</echo>
+    </target>
+
+    <target name="sniff" description="checks adherence to coding standards">
+        <phpcodesniffer standard="PSR2" format="full">
+            <fileset refid="php-sources"/>
+            <fileset refid="unit-tests"/>
+            <fileset refid="attack-tests"/>
+        </phpcodesniffer>
+    </target>
+
+    <target name="mess" description="detects code flaws">
+        <phpmd rulesets="codesize,unusedcode">
+            <fileset refid="php-sources"/>
+            <fileset refid="unit-tests"/>
+            <fileset refid="attack-tests"/>
+         </phpmd>
+    </target>
+
+    <target name="compat"
+            description="checks compatibility with PHP_CompatInfo">
+        <exec command="phpcompatinfo analyser:run --alias current" logoutput="true"/>
+    </target>
+
+    <target name="unit-tests" description="runs all unit tests">
+        <phpunit bootstrap="tests/unit/bootstrap.php" haltonerror="true" haltonfailure="true">
+            <formatter type="plain" usefile="false"/>
+            <batchtest>
+                <fileset refid="unit-tests"/>
+            </batchtest>
+        </phpunit>
+    </target>
+
+    <target name="attack-tests" description="runs all attack tests">
+        <fail unless="env.CMSIMPLEDIR" message="CMSIMPLEDIR undefined!"/>
+        <phpunit haltonerror="true" haltonfailure="true">
+            <formatter type="plain" usefile="false"/>
+            <batchtest>
+                <fileset refid="attack-tests"/>
+            </batchtest>
+        </phpunit>
+    </target>
+
+    <target name="all-tests" depends="unit-tests,attack-tests"
+            description="runs all tests"/>
+
+    <target name="coverage" description="generates coverage report">
+        <exec command="phpunit --configuration coverage.xml" logoutput="true"/>
+    </target>
+
+    <target name="build" description="builds distributable ZIP archive">
+        <fail unless="version" message="version is not defined!"/>
+        <exec command="git archive -o export.tar HEAD" checkreturn="true"/>
+        <untar file="export.tar" todir="export"/>
+        <delete file="export.tar"/>
+        <move todir="dist">
+            <fileset dir="export">
+                <include name="classes/Plugin.php"/>
+                <include name="version.nfo"/>
+            </fileset>
+            <filterchain>
+                <replacetokens>
+                    <token key="CALENDAR_VERSION" value="${version}"/>
+                </replacetokens>
+            </filterchain>
+        </move>
+        <jsMin targetDir="dist" suffix="" failOnError="false">
+            <fileset dir="export">
+                <include name="*.js"/>
+            </fileset>
+        </jsMin>
+        <move todir="dist">
+            <fileset dir="export">
+                <include name="views/*.php"/>
+            </fileset>
+            <filterchain>
+                <replaceregexp>
+                    <regexp pattern="\?=" replace="?php echo "/>
+                </replaceregexp>
+            </filterchain>
+        </move>
+        <move todir="dist">
+            <fileset dir="export">
+                <exclude name="build.xml"/>
+                <exclude name="composer.*"/>
+                <exclude name="coverage.xml"/>
+                <exclude name="pax_global_header"/>
+                <exclude name="phpcompatinfo.*"/>
+                <exclude name="README.md"/>
+                <exclude name="tests/**"/>
+            </fileset>
+        </move>
+        <delete dir="export"/>
+        <copy file="dist/config/config.php" tofile="dist/config/defaultconfig.php"/>
+        <copy file="dist/languages/en.php" tofile="dist/languages/default.php"/>
+        <zip destfile="Calendar_XH-${version}.zip" basedir="dist" prefix="calendar/"/>
+        <delete dir="dist"/>
+    </target>
+
+    <target name="build-patch" description="builds a distributable update package">
+        <fail unless="patchee" message="patchee is not defined!"/>
+        <fail unless="version" message="version is not defined!"/>
+        <unzip file="Calendar_XH-${version}.zip" todir="current"/>
+        <unzip file="${patchee}" todir="patchee"/>
+        <copy todir="dist">
+            <fileset dir="current">
+                <different targetdir="patchee" ignoreFileTimes="true"/>
+            </fileset>
+        </copy>
+        <delete>
+            <fileset dir="dist/calendar">
+                <include name="config/config.php"/>
+                <include name="languages/??.php"/>
+                <include name="css/stylesheet.css"/>
+            </fileset>
+        </delete>
+        <zip destfile="Calendar_XH-${version}-PATCH.zip" basedir="dist"
+             includeemptydirs="false"/>
+        <delete dir="patchee" quiet="true"/>
+        <delete dir="current" quiet="true"/>
+        <delete dir="dist" quiet="true"/>
+    </target>
+
+</project>
