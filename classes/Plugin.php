@@ -1,7 +1,12 @@
 <?php
 
 /**
- * Copyright 2017 Christoph M. Becker
+ * Copyright 2005-2006 Michael Svarrer
+ * Copyright 2007-2008 Tory
+ * Copyright 2008      Patrick Varlet
+ * Copyright 2011      Holger Irmler
+ * Copyright 2011-2013 Frank Ziesing
+ * Copyright 2017      Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
