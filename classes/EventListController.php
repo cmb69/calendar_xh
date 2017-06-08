@@ -49,12 +49,6 @@ class EventListController extends Controller
     {
         global $plugin;
 
-        // 4 variables for bugtraking only
-        $month_start = $this->month;
-        $year_start = $this->year;
-        $end_month_start = $this->endMonth;
-        $past_month_start = $this->pastMonth;
-
         $month_input = isset($_GET['month']) ? htmlspecialchars($_GET['month']) : '';
         $month_input .= isset($_POST['month']) ? htmlspecialchars($_POST['month']) : '';
 
@@ -132,7 +126,7 @@ class EventListController extends Controller
             while (!feof($fp)) {
                 $line = fgets($fp, 4096);
                 //var_dump($line);
-                list($eventdates, $event, $location, $link, $event_time, $description) = explode(';', $line);
+                list($eventdates, $event, $location, $link, $event_time) = explode(';', $line);
                 list($event_date_start, $event_end_date, $event_end_time) = explode(',', $eventdates);
                 list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
                 list($event_end_date, $event_end_month, $event_end_year)
@@ -220,7 +214,7 @@ class EventListController extends Controller
 
             asort($event_datetime_array);
 
-            foreach ($event_datetime_array as $keys => $temp) {
+            foreach (array_keys($event_datetime_array) as $keys) {
                 //=============================================
                 //here the case of birthday annoncements starts
                 //=============================================

@@ -41,7 +41,7 @@ class Plugin
 
     private function handleAdministration()
     {
-        global $o, $sl, $pth, $plugin_cf, $plugin_tx, $admin, $action, $plugin;
+        global $o, $plugin_cf, $plugin_tx, $admin, $action, $plugin;
 
         $eventfile = (new EventDataService)->getFilename();
         if (!is_file($eventfile)) {

@@ -143,13 +143,13 @@ class EventDataService
         fclose($fp);
         // change owner, group and permissions of new file to same as backup file
         if ($owner !== false) {
-            $chown = chown($eventfile, $owner);
+            chown($eventfile, $owner);
         }
         if ($group !== false) {
-            $chgrp = chgrp($eventfile, $group);
+            chgrp($eventfile, $group);
         }
         if ($permissions !== false) {
-            $chmod = chmod($eventfile, $permissions);
+            chmod($eventfile, $permissions);
         }
         return true;
     }

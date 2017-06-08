@@ -88,7 +88,6 @@ class CalendarController extends Controller
         $event_time_array           = array();
 
         $t                = '';
-        $event_dates      = '';
         $eventdates       = '';
         $event_date       = '';
         $event_date_start = '';
@@ -251,7 +250,7 @@ class CalendarController extends Controller
                 $dayofweek = 6;
             }
 
-            foreach ($event_year_array as $keys => $temp) {
+            foreach (array_keys($event_year_array) as $keys) {
                 if ($event_year_array[$keys] == $this->year
                     && $event_month_array[$keys] == $this->month
                     && $event_date_array[$keys] == $i

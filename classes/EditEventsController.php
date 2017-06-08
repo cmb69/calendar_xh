@@ -38,12 +38,9 @@ class EditEventsController extends Controller
 
     public function defaultAction()
     {
-        global $pth, $sl, $plugin;
-
         if (!$this->editeventswidth) {
             $this->editeventswidth = $this->conf['event-input_memberpages_narrow_medium_or_wide'];
         }
-        $imageFolder = "{$pth['folder']['plugins']}{$plugin}/images";
         $events = (new EventDataService)->readEvents();
 
         if (isset($_POST['action'])) {
@@ -79,7 +76,7 @@ class EditEventsController extends Controller
             $added = false;
 
             $newevent = array();
-            foreach ($event as $j => $i) {
+            foreach (array_keys($event) as $j) {
                 if (!isset($delete[$j]) || $delete[$j] == '') {
                     //Checking the date format. Some impossible dates can be given, but don't hurt.
                     $pattern = '/[\d\d\|\?{1-2}|\-{1-2}]\\' . $this->dpSeperator() . '\d\d\\'
@@ -151,7 +148,7 @@ class EditEventsController extends Controller
     //==========================================================
     private function eventForm($events, $editeventswidth)
     {
-        global $hjs, $pth, $sl, $plugin, $tx;
+        global $hjs, $pth, $sl, $plugin, $tx, $sn;
 
         $hjs .= '<script type="text/javascript" src="'
              .  $pth['folder']['plugins'] . $plugin . '/dp/datepicker.js">{ "lang":"'.$sl.'" }</script>'."\n";
@@ -168,7 +165,7 @@ class EditEventsController extends Controller
                 $columns = 8;
                 break;
             default:
-                $colums = 6;
+                $columns = 6;
         }
         $tableclass = "calendar_input_{$editeventswidth}";
 
@@ -176,7 +173,7 @@ class EditEventsController extends Controller
         $o .= "<input type=\"hidden\" value=\"saveevents\" name=\"action\">\n";
         $o .= "<table class=\"calendar_input $tableclass\">\n";
         $o .= "<tr>\n";
-        $o .= "<td colspan=\"$columns\"><input class=\"submit\" type=\"submit\" value=\""
+        $o .= "<td colspan=\"{$columns}\"><input class=\"submit\" type=\"submit\" value=\""
             . ucfirst($tx['action']['save']) . "\" name=\"send\"></td>\n";
         $o .= "<td style=\"text-align: right; width: 16px;\"><input type=\"image\" src=\""
             . $imageFolder . "/add.png\" style=\"width: 16px; height: 16px;\" name=\"add[0]\""
@@ -530,6 +527,9 @@ class EditEventsController extends Controller
 EOS;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
     private function dateSort($a, $b)
     {
         $pattern = '!(.*)\\' . $this->dpSeperator() . '(.*)\\' . $this->dpSeperator() . '(.*)!';
