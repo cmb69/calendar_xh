@@ -47,8 +47,22 @@ function nextevent()
 
 function editevents($editeventswidth)
 {
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+    } elseif (isset($_GET['action'])) {
+        $action = $_GET['action'];
+    } else {
+        $action = 'editevents';
+    }
+    switch ($action) {
+        case 'saveevents':
+            $action = 'saveAction';
+            break;
+        default:
+            $action = 'defaultAction';
+    }
     ob_start();
-    (new Calendar\EditEventsController($editeventswidth))->defaultAction();
+    (new Calendar\EditEventsController($editeventswidth))->{$action}();
     return ob_get_clean();
 }
 

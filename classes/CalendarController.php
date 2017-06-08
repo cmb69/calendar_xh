@@ -58,7 +58,7 @@ class CalendarController extends Controller
 
     public function defaultAction()
     {
-        global $plugin, $sn, $su;
+        global $plugin;
 
         $plugin = basename(dirname(__DIR__), '/');
         if ($this->eventpage == '') {
@@ -179,22 +179,8 @@ class CalendarController extends Controller
         $t .= "<td colspan=\"7\">\n";
 
         if ($this->conf['prev_next_button']) {
-            if ($this->month <= 1) {
-                $month_prev = 12;
-                $year_prev = $this->year - 1;
-            } else {
-                $month_prev = $this->month - 1;
-                $year_prev = $this->year;
-            }
-            if ($this->month >= 12) {
-                $month_next = 1;
-                $year_next = $this->year + 1;
-            } else {
-                $month_next = $this->month + 1;
-                $year_next = $this->year;
-            }
-            $prevUrl = "$sn?$su&amp;month=$month_prev&amp;year=$year_prev";
-            $nextUrl = "$sn?$su&amp;month=$month_next&amp;year=$year_next";
+            $prevUrl = XH_hsc($this->getPrevUrl());
+            $nextUrl = XH_hsc($this->getNextUrl());
             $t .= "<div class=\"calendar_monthyear\">\n<a href=\"$prevUrl\" rel=\"nofollow\" title=\""
                 . $this->lang['prev_button_text']
                 . "\">&lt;&lt;</a>&nbsp;$textmonth {$this->year}&nbsp;<a href=\"$nextUrl\" rel=\"nofollow\" title=\""
@@ -221,23 +207,8 @@ class CalendarController extends Controller
         $t .= "</tr>\n";
         //done printing the top row of days
     
-        if ($this->conf['week_starts_mon']) {
-            $span1 = $dayone - 1;
-        } else {
-            $span1 = $dayone;
-        }
-        if ($span1 == -1) {
-            $span1 = 6;
-        }
-
-        if ($this->conf['week_starts_mon']) {
-            $span2 = 7 - $daylast;
-        } else {
-            $span2 = 6 - $daylast;
-        }
-        if ($span2 == 7) {
-            $span2 = 0;
-        }
+        $span1 = $this->getSpan1($dayone);
+        $span2 = $this->getSpan2($daylast);
         for ($i = 1; $i <= $days; $i++) {
             $dayofweek = date('w', mktime(1, 1, 1, $this->month, $i, $this->year));
 
@@ -343,5 +314,71 @@ class CalendarController extends Controller
         $t .= "</table>\n";
 
         echo $t;
+    }
+
+    /**
+     * @return string
+     */
+    private function getPrevUrl()
+    {
+        global $sn, $su;
+
+        if ($this->month <= 1) {
+            $month_prev = 12;
+            $year_prev = $this->year - 1;
+        } else {
+            $month_prev = $this->month - 1;
+            $year_prev = $this->year;
+        }
+        return "$sn?$su&month=$month_prev&year=$year_prev";
+    }
+
+    /**
+     * @return string
+     */
+    private function getNextUrl()
+    {
+        global $sn, $su;
+
+        if ($this->month >= 12) {
+            $month_next = 1;
+            $year_next = $this->year + 1;
+        } else {
+            $month_next = $this->month + 1;
+            $year_next = $this->year;
+        }
+        return "$sn?$su&month=$month_next&year=$year_next";
+    }
+
+    /**
+     * @return int
+     */
+    private function getSpan1($dayone)
+    {
+        if ($this->conf['week_starts_mon']) {
+            $span1 = $dayone - 1;
+        } else {
+            $span1 = $dayone;
+        }
+        if ($span1 == -1) {
+            $span1 = 6;
+        }
+        return $span1;
+    }
+
+    /**
+     * @return int
+     */
+    private function getSpan2($daylast)
+    {
+        if ($this->conf['week_starts_mon']) {
+            $span2 = 7 - $daylast;
+        } else {
+            $span2 = 6 - $daylast;
+        }
+        if ($span2 == 7) {
+            $span2 = 0;
+        }
+        return $span2;
     }
 }

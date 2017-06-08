@@ -121,21 +121,7 @@ class EventDataService
             return false;
         }
         foreach ($events as $entry) {
-            if ($entry['dateend'] != '') {
-                $eventdates = "{$entry['datestart']},{$entry['dateend']},{$entry['endtime']}";
-            } else {
-                $eventdates = $entry['datestart'];
-            }
-            $event_time_start = $entry['starttime'];
-            $event = $entry['event'];
-            $location = $entry['location'];
-            if ($entry['linkadr'] != '' || $entry['linktxt'] != '') {
-                $link = "{$entry['linkadr']},{$entry['linktxt']}";
-            } else {
-                $link = '';
-            }
-            $line = "$eventdates;$event;$location;$link;$event_time_start\n";
-            if (!fwrite($fp, $line)) {
+            if (!fwrite($fp, $this->assembleEventLine($entry))) {
                 fclose($fp);
                 return false;
             }
@@ -152,5 +138,26 @@ class EventDataService
             chmod($eventfile, $permissions);
         }
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    private function assembleEventLine(array $entry)
+    {
+        if ($entry['dateend'] != '') {
+            $eventdates = "{$entry['datestart']},{$entry['dateend']},{$entry['endtime']}";
+        } else {
+            $eventdates = $entry['datestart'];
+        }
+        $event_time_start = $entry['starttime'];
+        $event = $entry['event'];
+        $location = $entry['location'];
+        if ($entry['linkadr'] != '' || $entry['linktxt'] != '') {
+            $link = "{$entry['linkadr']},{$entry['linktxt']}";
+        } else {
+            $link = '';
+        }
+        return "$eventdates;$event;$location;$link;$event_time_start\n";
     }
 }
