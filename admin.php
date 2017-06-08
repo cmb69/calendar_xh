@@ -5,12 +5,7 @@ CMSimple - Calendar Plugin - 1.2.10 by svasti 03/2013, version 1.2 modified by H
 
 if ((!function_exists('sv')) || (strlen($sl) !== 2) || preg_match('/admin.php/i', sv('PHP_SELF')))die('Access denied');
 
-initvar('calendar');
 if($calendar){
-
-    $plugin=basename(dirname(__FILE__),"/");
-    $admin = isset($_GET['admin']) ? $_GET['admin'] : '';
-    $admin .= isset($_POST['admin']) ? $_POST['admin'] : '';
 
     $eventfile = $pth['folder']['plugins'].$plugin."/content/eventcalendar_".$sl.".txt";
     if(!is_file($eventfile)){$handle = fopen($eventfile, "w");
