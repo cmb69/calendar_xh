@@ -205,14 +205,14 @@ function EditEvents($editeventswidth)
     return ob_get_clean();
 }
 
-     // function by manu
-    function dateSort($a, $b){
-       $pattern = '!(.*)\\'.dpSeperator().'(.*)\\'.dpSeperator().'(.*)!';
-       $replace = '\3\2\1';
-       $a_i = preg_replace($pattern,$replace,$a['datestart']).$a['starttime'];
-       $b_i = preg_replace($pattern,$replace,$b['datestart']).$b['starttime'];
-       if ($a_i == $b_i) return 0;
-       return ($a_i < $b_i) ? -1 : 1;
-    }
+// function by manu
+function dateSort($a, $b){
+    $pattern = '!(.*)\\'.dpSeperator().'(.*)\\'.dpSeperator().'(.*)!';
+    $replace = '\3\2\1';
+    $a_i = preg_replace($pattern,$replace,$a['datestart']).$a['starttime'];
+    $b_i = preg_replace($pattern,$replace,$b['datestart']).$b['starttime'];
+    if ($a_i == $b_i) return 0;
+    return ($a_i < $b_i) ? -1 : 1;
+}
 
-?>
+(new Calendar\Plugin)->run();
