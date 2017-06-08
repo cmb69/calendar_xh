@@ -23,6 +23,8 @@ namespace Calendar;
 
 class Plugin
 {
+    const VERSION = '@CALENDAR_VERSION@';
+
     public function run()
     {
         if (XH_ADM) {
@@ -51,7 +53,7 @@ class Plugin
 
         $o .= print_plugin_admin('on');
 
-        $credits = "<h2>Calendar plugin version 1.2.10 </h2>\n"
+        $credits = "<h2>Calendar plugin version " . self::VERSION . "</h2>\n"
             . '<p>1.2.10: Maintenance release 03/2013 fixing magic quotes problems, suggested by <a href="http://3-magi.net" target="_blank">cmb</a>' . tag('br')
             . '1.2.9: Maintenance release 05/2012, on suggestion of <a href="http://3-magi.net" target="_blank">cmb</a>' . tag('br')
             . '1.2.8: Security release 03/2012, on suggestion of  <a href="http://3-magi.net" target="_blank">cmb</a>' . tag('br')
