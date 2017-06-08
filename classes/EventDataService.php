@@ -37,7 +37,7 @@ class EventDataService
     {
         global $pth, $plugin, $sl, $plugin_cf;
 
-        if (!$plugin_cf['calendar']['filepath_data']){
+        if (!$plugin_cf['calendar']['filepath_data']) {
             $datapath = "{$pth['folder']['plugins']}{$plugin}/content/";
         } else {
             $datapath = $plugin_cf['calendar']['filepath_data'];
@@ -72,7 +72,7 @@ class EventDataService
                 list($eventdates, $event, $location, $link, $starttime) = explode(';', rtrim($line));
                 list($datestart, $dateend, $endtime) = explode(',', $eventdates);
                 list($linkadr, $linktxt) = explode(',', $link);
-                if ($datestart != '' && $event != '' ) {
+                if ($datestart != '' && $event != '') {
                     $result[] = compact(
                         'datestart',
                         'dateend',
@@ -102,8 +102,9 @@ class EventDataService
         $eventfile = $this->eventfile;
 
         // remove old backup
-        if (is_file("{$eventfile}.bak"))
+        if (is_file("{$eventfile}.bak")) {
             unlink("{$eventfile}.bak");
+        }
         // create new backup
         $permissions = false;
         $owner = false;

@@ -108,11 +108,12 @@ class CalendarController extends Controller
             $fp = fopen($eventfile, 'r');
             while (!feof($fp)) {
                 $line = fgets($fp, 4096);
-                if (stristr($line,';')) {
+                if (stristr($line, ';')) {
                     list($eventdates,$event,$location,,$event_time) = explode(';', $line);
                     if (stristr($eventdates, ',')) {
                         list($event_date_start, $event_end_date, $event_end_time) = explode(',', $eventdates);
-                        list($event_date1, $event_month1, $event_year1) = explode($this->dpSeperator(), $event_end_date);
+                        list($event_date1, $event_month1, $event_year1)
+                            = explode($this->dpSeperator(), $event_end_date);
                         list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
                         $event_end = mktime(null, null, null, $event_month1, $event_date1, $event_year1);
                         $event_start = mktime(null, null, null, $event_month, $event_date, $event_year);
@@ -120,7 +121,8 @@ class CalendarController extends Controller
                          $event_date_start = $eventdates;
                          $event_end_date = '';
                          $event_end_time = '';
-                         list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
+                         list($event_date, $event_month, $event_year)
+                            = explode($this->dpSeperator(), $event_date_start);
                     }
                 }
                 if ($event_end_date) {
@@ -131,15 +133,15 @@ class CalendarController extends Controller
                         $count = $event_end - $event_start;
                     }
                     for ($i=$event_start; $i <= $event_end; $i+=$count) {
-                        array_push($event_year_array, date('Y',$i));
-                        array_push($event_month_array, date('m',$i));
-                        array_push($event_yearmonth_array, date('Y.m',$i));
-                        array_push($event_date_array, date('d',$i));
+                        array_push($event_year_array, date('Y', $i));
+                        array_push($event_month_array, date('m', $i));
+                        array_push($event_yearmonth_array, date('Y.m', $i));
+                        array_push($event_date_array, date('d', $i));
                         array_push($event_location_array, $location);
                         if ($i == $event_start) {
                             array_push($event_time_array, $event_time);
                             array_push($event_array, " {$txt}");
-                        }else{
+                        } else {
                             array_push($event_time_array, '');
                             array_push($event_array, $txt);
                         }
@@ -170,7 +172,7 @@ class CalendarController extends Controller
 
         $this->year  = (isset($this->year)) ? $this->year : date('Y', time());
         $today = (isset($today)) ? $today : date('j', time());
-        $today = ($this->month == date('n', time()) && $this->year == date('Y',time())) ? $today : 32;
+        $today = ($this->month == date('n', time()) && $this->year == date('Y', time())) ? $today : 32;
         $days = date('t', mktime(1, 1, 1, $this->month, 1, $this->year));
         $dayone = date('w', mktime(1, 1, 1, $this->month, 1, $this->year));
         $daylast = date('w', mktime(1, 1, 1, $this->month, $days, $this->year));
@@ -194,9 +196,11 @@ class CalendarController extends Controller
                 $month_next = $this->month + 1;
                 $year_next = $this->year;
             }
-            $t .= "<div class=\"calendar_monthyear\">\n<a href=\"$sn?$su&amp;month=$month_prev&amp;year=$year_prev\" rel=\"nofollow\" title=\""
+            $prevUrl = "$sn?$su&amp;month=$month_prev&amp;year=$year_prev";
+            $nextUrl = "$sn?$su&amp;month=$month_next&amp;year=$year_next";
+            $t .= "<div class=\"calendar_monthyear\">\n<a href=\"$prevUrl\" rel=\"nofollow\" title=\""
                 . $this->lang['prev_button_text']
-                . "\">&lt;&lt;</a>&nbsp;$textmonth {$this->year}&nbsp;<a href=\"$sn?$su&amp;month=$month_next&amp;year=$year_next\" rel=\"nofollow\" title=\""
+                . "\">&lt;&lt;</a>&nbsp;$textmonth {$this->year}&nbsp;<a href=\"$nextUrl\" rel=\"nofollow\" title=\""
                 . $this->lang['next_button_text'] . "\">&gt;&gt;</a></div>\n";
         } else {
             $t .= "<div class=\"calendar_monthyear\">$textmonth {$this->year}</div>\n";
@@ -255,7 +259,8 @@ class CalendarController extends Controller
                     $event_day = $i;
                     $external_site ='';
                     if ($event_title) {
-                        $event_title .= ' &nbsp;|&nbsp; ' . trim($event_time_array[$keys]) . strip_tags($event_array[$keys]);
+                        $event_title .= ' &nbsp;|&nbsp; ' . trim($event_time_array[$keys])
+                            . strip_tags($event_array[$keys]);
                     } else {
                         $event_title = trim($event_time_array[$keys]) . strip_tags($event_array[$keys]);
                     }
@@ -279,7 +284,7 @@ class CalendarController extends Controller
 
                     if ($event_title) {
                         $event_title .= "\r\n{$event_array[$keys]} {$age}";
-                    } else {                    
+                    } else {
                         $event_title = "{$event_array[$keys]} {$age}";
                     }
                 }
@@ -300,9 +305,12 @@ class CalendarController extends Controller
             switch ($i) {
                 case $event_today:
                     if ($external_site) {
-                        $t .= "<td class=\"calendar_today\"><a href=\"http://{$external_site}\" target=\"_blank\" title=\"$event_title\">$tableday</a></td>\n";
+                        $t .= "<td class=\"calendar_today\"><a href=\"http://{$external_site}\""
+                            . " target=\"_blank\" title=\"$event_title\">$tableday</a></td>\n";
                     } else {
-                        $t .= "<td class=\"calendar_today\"><a href=\"?{$this->eventpage}&amp;month={$this->month}&amp;year={$this->year}\" title=\"$event_title\">$tableday</a></td>\n";
+                        $url = "?{$this->eventpage}&amp;month={$this->month}&amp;year={$this->year}";
+                        $t .= "<td class=\"calendar_today\"><a href=\"$url\" title=\"$event_title\">"
+                            . "$tableday</a></td>\n";
                         $event_title = '';
                     }
                     break;
@@ -311,9 +319,12 @@ class CalendarController extends Controller
                     break;
                 case $event_day:
                     if ($external_site) {
-                        $t .= "<td class=\"calendar_eventday\"><a href=\"http://{$external_site}\" target=\"_blank\" title=\"$event_title\">$tableday</a></td>\n";
+                        $t .= "<td class=\"calendar_eventday\"><a href=\"http://{$external_site}\""
+                            . " target=\"_blank\" title=\"$event_title\">$tableday</a></td>\n";
                     } else {
-                        $t .= "<td class=\"calendar_eventday\"><a href=\"?{$this->eventpage}&amp;month={$this->month}&amp;year={$this->year}\" title=\"$event_title\">$tableday</a></td>\n";
+                        $url = "?{$this->eventpage}&amp;month={$this->month}&amp;year={$this->year}";
+                        $t .= "<td class=\"calendar_eventday\"><a href=\"$url\" title=\"$event_title\">"
+                            . "$tableday</a></td>\n";
                         $event_title = '';
                     }
                     break;

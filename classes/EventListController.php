@@ -135,22 +135,23 @@ class EventListController extends Controller
                 list($eventdates, $event, $location, $link, $event_time, $description) = explode(';', $line);
                 list($event_date_start, $event_end_date, $event_end_time) = explode(',', $eventdates);
                 list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
-                list($event_end_date, $event_end_month, $event_end_year) = explode($this->dpSeperator(), $event_end_date);
+                list($event_end_date, $event_end_month, $event_end_year)
+                    = explode($this->dpSeperator(), $event_end_date);
                 $datetime = "{$event_date_start} {$event_time}";
 
-                 array_push($event_year_array,      $event_year);
-                 array_push($event_month_array,     $event_month);
+                 array_push($event_year_array, $event_year);
+                 array_push($event_month_array, $event_month);
                  array_push($event_end_month_array, $event_end_month);
-                 array_push($event_end_year_array,  $event_end_year);
+                 array_push($event_end_year_array, $event_end_year);
                  array_push($event_yearmonth_array, ($event_month.".".$event_year));
-                 array_push($event_date_array,      $event_date);
-                 array_push($event_end_date_array,  $event_end_date);
-                 array_push($event_array,           $event);
-                 array_push($event_location_array,  $location);
-                 array_push($event_link_array,      $link);
-                 array_push($event_time_array,      $event_time);
-                 array_push($event_end_time_array,  $event_end_time);
-                 array_push($event_datetime_array,  $datetime);
+                 array_push($event_date_array, $event_date);
+                 array_push($event_end_date_array, $event_end_date);
+                 array_push($event_array, $event);
+                 array_push($event_location_array, $location);
+                 array_push($event_link_array, $link);
+                 array_push($event_time_array, $event_time);
+                 array_push($event_end_time_array, $event_end_time);
+                 array_push($event_datetime_array, $datetime);
             }
             fclose($fp);
         }
@@ -170,12 +171,6 @@ class EventListController extends Controller
                .  " <span>" . $monthnames[$display_end_month - 1]
                .  " " . $display_end_year . "</span></p>\n";
         }
-
-        /*for bugtracking
-        $t .="<p><b>Variables:</b> month: ".$month_start.", year: ".$year_start.", end_month: ".$end_month_start.", past_month: ".$past_month_start.
-        ", Config show number of previous months: ".$plugin_cf['calendar']['show_number_of_previous_months'].
-        ", Config show number of future month: ".$plugin_cf['calendar']['show_number_of_future_months'].
-        ", display_end_month: ".$display_end_month.", display_end_year: ".$display_end_year.".</p>";*/
 
         $t .= "<table border=\"0\" width=\"100%\">\n";
 
@@ -205,7 +200,8 @@ class EventListController extends Controller
             }
             if ($table) {
                 $t .= "<tr>\n";
-                $t .= "<td class=\"event_monthyear\" colspan=\"$tablecols\">$textmonth {$this->year}".tag('br')."</td>\n";
+                $t .= "<td class=\"event_monthyear\" colspan=\"$tablecols\">$textmonth {$this->year}"
+                    . tag('br') . "</td>\n";
                 $t .= "</tr>\n";
                 $t .= "<tr class=\"event_heading_row\">\n";
                 $t .= "<td class=\"event_heading event_date\">".$this->lang['event_date']."</td>\n";
@@ -225,7 +221,6 @@ class EventListController extends Controller
             asort($event_datetime_array);
 
             foreach ($event_datetime_array as $keys => $temp) {
-    
                 //=============================================
                 //here the case of birthday annoncements starts
                 //=============================================
@@ -242,7 +237,8 @@ class EventListController extends Controller
                         if (!$table) {
                             $table = true;
                             $t .= "<tr>\n";
-                            $t .= "<td class=\"event_monthyear\" colspan=\"$tablecols\">$textmonth {$this->year}" . tag('br') . "</td>\n";
+                            $t .= "<td class=\"event_monthyear\" colspan=\"$tablecols\">$textmonth {$this->year}"
+                                . tag('br') . "</td>\n";
                             $t .= "</tr>\n";
 
                             $t .= "<tr class=\"event_heading_row\">\n";
@@ -252,27 +248,33 @@ class EventListController extends Controller
                             }
                             $t .= "<td class=\"event_heading event_event\">" . $this->lang['event_event'] . "</td>\n";
                             if (stristr('true', $this->conf['show_event_location'])) {
-                                $t .= "<td class=\"event_heading event_location\">" . $this->lang['event_location'] . "</td>\n";
+                                $t .= "<td class=\"event_heading event_location\">"
+                                    . $this->lang['event_location'] . "</td>\n";
                             }
                             if (stristr('true', $this->conf['show_event_link'])) {
-                                $t .= "<td class=\"event_heading event_link\">" . $this->lang['event_link_etc'] . "</td>\n";
+                                $t .= "<td class=\"event_heading event_link\">" . $this->lang['event_link_etc']
+                                    . "</td>\n";
                             }
                             $t .= "</tr>\n";
                             //end of headline for birthdays
                         }
 
                         $t .= "<tr class=\"birthday_data_row\">\n";
-                        $t .= "<td class=\"event_data event_date\">$event_date_array[$keys]" . $this->dpSeperator() . "{$this->month}" . $this->dpSeperator() . "{$this->year}</td>\n";
+                        $t .= "<td class=\"event_data event_date\">$event_date_array[$keys]" . $this->dpSeperator()
+                            . "{$this->month}" . $this->dpSeperator() . "{$this->year}</td>\n";
                         if (stristr('true', $this->conf['show_event_time'])) {
                             $t .= "<td class=\"event_data event_time\"></td>\n";
                         }
 
                         if ($age >= 5) {
-                            $t .= "<td class=\"event_data event_event\">{$event_array[$keys]} {$age} {$this->lang['age_plural2_text']}</td>\n";
+                            $t .= "<td class=\"event_data event_event\">"
+                                . "{$event_array[$keys]} {$age} {$this->lang['age_plural2_text']}</td>\n";
                         } elseif ($age >= 2 && $age < 5) {
-                            $t .= "<td class=\"event_data event_event\">{$event_array[$keys]} {$age} {$this->lang['age_plural1_text']}</td>\n";
+                            $t .= "<td class=\"event_data event_event\">"
+                                . "{$event_array[$keys]} {$age} {$this->lang['age_plural1_text']}</td>\n";
                         } else {
-                            $t .= "<td class=\"event_data event_event\">{$event_array[$keys]} {$age} {$this->lang['age_singular_text']}</td>\n";
+                            $t .= "<td class=\"event_data event_event\">"
+                                . "{$event_array[$keys]} {$age} {$this->lang['age_singular_text']}</td>\n";
                         }
 
                         if (stristr('true', $this->conf['show_event_location'])) {
@@ -314,85 +316,95 @@ class EventListController extends Controller
                 //==================
                 // now normal events
                 //==================
-                if($event_year_array[$keys] == $this->year and $event_month_array[$keys] == $this->month)
-                {
-                     if ($this->month<10){if (strlen($this->month)==1){$this->month='0'.$this->month;}}
-                     $t .= "<tr class='event_data_row'>\n";
-                     //now
-    
-                     //date field
-                     $t .= "<td class='event_data event_date'>$event_date_array[$keys]";
-                     // if beginning and end dates are there, these are put one under the other
-                     if ($event_end_date_array[$keys]) {
-                        if (   $this->month!= $event_end_month_array[$keys]
-                            || $this->year != $event_end_year_array[$keys]) $t .= $this->dpSeperator().$this->month ;
-                        if (   $this->year != $event_end_year_array[$keys]) $t .= $this->dpSeperator().$this->year ;
-                        if (   $this->year == $event_end_year_array[$keys] && $this->dpSeperator() == '.') $t.= ".";
-                        $t .= "&nbsp;".$this->lang['event_date_till_date'] . tag('br');
-                        $t .= $event_end_date_array[$keys].$this->dpSeperator().$event_end_month_array[$keys].$this->dpSeperator().$event_end_year_array[$keys];
-    
-                     } else $t .= $this->dpSeperator()."{$this->month}".$this->dpSeperator().$this->year;
-    
-                     $t .= "</td>\n";
-    
-                     //time field
-                     if (stristr('true', $this->conf['show_event_time'])){
-                        $t .="<td class='event_data event_time'>".$event_time_array[$keys];
+                if ($event_year_array[$keys] == $this->year && $event_month_array[$keys] == $this->month) {
+                    if ($this->month < 10) {
+                        if (strlen($this->month) == 1) {
+                            $this->month = '0' . $this->month;
+                        }
+                    }
+                    $t .= "<tr class=\"event_data_row\">\n";
+                    //now
+
+                    //date field
+                    $t .= "<td class=\"event_data event_date\">$event_date_array[$keys]";
+                    // if beginning and end dates are there, these are put one under the other
+                    if ($event_end_date_array[$keys]) {
+                        if ($this->month!= $event_end_month_array[$keys]
+                            || $this->year != $event_end_year_array[$keys]
+                        ) {
+                            $t .= $this->dpSeperator() . $this->month;
+                        }
+                        if ($this->year != $event_end_year_array[$keys]) {
+                            $t .= $this->dpSeperator() . $this->year;
+                        }
+                        if ($this->year == $event_end_year_array[$keys] && $this->dpSeperator() == '.') {
+                            $t.= '.';
+                        }
+                        $t .= "&nbsp;" . $this->lang['event_date_till_date'] . tag('br');
+                        $t .= $event_end_date_array[$keys] . $this->dpSeperator() . $event_end_month_array[$keys]
+                            . $this->dpSeperator() . $event_end_year_array[$keys];
+                    } else {
+                        $t .= $this->dpSeperator() . "{$this->month}" . $this->dpSeperator() . $this->year;
+                    }
+
+                    $t .= "</td>\n";
+
+                    //time field
+                    if (stristr('true', $this->conf['show_event_time'])) {
+                        $t .="<td class=\"event_data event_time\">" . $event_time_array[$keys];
                         if ($event_end_time_array[$keys]) {
                             if (!$event_end_date_array[$keys]) {
-                             $t .= " ".$this->lang['event_time_till_time'];
+                                $t .= ' ' . $this->lang['event_time_till_time'];
                             }
-                            $t .= tag('br').$event_end_time_array[$keys];
+                            $t .= tag('br') . $event_end_time_array[$keys];
                         }
                         $t .="</td>\n";
-                     }
-    
-                     //event field
-                     $t .="<td class='event_data event_event'>".$event_array[$keys]."</td>\n";
-    
-                     //location field
-                     if (stristr('true', $this->conf['show_event_location'])){$t .="<td class='event_data event_location'>".$event_location_array[$keys]."</td>\n";}
-    
-                     //link field
-                     if (stristr('true', $this->conf['show_event_link']))
-                     {
-                         if(stristr($event_link_array[$keys], 'ext:'))
-                         {
-                             $external_site = substr($event_link_array[$keys],4);
-                             list($external_site,$external_text) = explode(",",$external_site);
-                             if(!$external_text)$external_text=$external_site;
-                             $t .="<td class='event_data event_link'><a href='http://".$external_site."' target='_blank' title='".strip_tags($event_array[$keys])."'>$external_text</a></td>\n";
-                         }
-                         elseif(stristr($event_link_array[$keys], 'int:'))
-                         {
-                             $internal_page = substr($event_link_array[$keys],4);
-                             list($internal_page,$internal_text) = explode(",",$internal_page);
-                             if(!$internal_text)$internal_text=$internal_page;
-                             $t .="<td class='event_data event_link'><a href='?".$internal_page."' title='".strip_tags($event_array[$keys])."'>$internal_text</a></td>\n";
-                         }
-                         else
-                         {
-                            $t .="<td class='event_data event_link'>";
-                            if (substr($event_link_array[$keys],0,1)==',')
-                            {
-                                $t .= substr(strip_tags($event_link_array[$keys]),1)."</td>\n";
+                    }
+
+                    //event field
+                    $t .= "<td class=\"event_data event_event\">" . $event_array[$keys] . "</td>\n";
+
+                    //location field
+                    if (stristr('true', $this->conf['show_event_location'])) {
+                        $t .= "<td class=\"event_data event_location\">{$event_location_array[$keys]}</td>\n";
+                    }
+
+                    //link field
+                    if (stristr('true', $this->conf['show_event_link'])) {
+                        if (stristr($event_link_array[$keys], 'ext:')) {
+                            $external_site = substr($event_link_array[$keys], 4);
+                            list($external_site,$external_text) = explode(',', $external_site);
+                            if (!$external_text) {
+                                $external_text = $external_site;
                             }
-                            else
-                            {
-                                $t .= strip_tags($event_link_array[$keys])."</td>\n";
+                            $t .= "<td class=\"event_data event_link\"><a href=\"http://{$external_site}\""
+                                . " target=\"_blank\" title=\"" . strip_tags($event_array[$keys])
+                                . "\">$external_text</a></td>\n";
+                        } elseif (stristr($event_link_array[$keys], 'int:')) {
+                            $internal_page = substr($event_link_array[$keys], 4);
+                            list($internal_page,$internal_text) = explode(',', $internal_page);
+                            if (!$internal_text) {
+                                $internal_text = $internal_page;
                             }
-                         }
-                     }
-                     $t .="</tr>\n";
+                            $t .= "<td class=\"event_data event_link\"><a href=\"?{$internal_page}\" title=\""
+                                . strip_tags($event_array[$keys]) . "\">$internal_text</a></td>\n";
+                        } else {
+                            $t .= "<td class=\"event_data event_link\">";
+                            if (substr($event_link_array[$keys], 0, 1) == ',') {
+                                $t .= substr(strip_tags($event_link_array[$keys]), 1) . "</td>\n";
+                            } else {
+                                $t .= strip_tags($event_link_array[$keys]) . "</td>\n";
+                            }
+                        }
+                    }
+                    $t .= "</tr>\n";
                 }
             }
             $x++;
-            if($this->month==12)
-            {
-                $this->year++;$this->month=1;
-            }
-            else
-            {
+            if ($this->month == 12) {
+                $this->year++;
+                $this->month = 1;
+            } else {
                 $this->month++;
             }
         }

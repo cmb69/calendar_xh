@@ -48,7 +48,7 @@ class EditEventsController extends Controller
 
         if (isset($_POST['action'])) {
             $action = $_POST['action'];
-        } elseif(isset($_GET['action'])) {
+        } elseif (isset($_GET['action'])) {
             $action = $_GET['action'];
         } else {
             $action = 'editevents';
@@ -68,7 +68,10 @@ class EditEventsController extends Controller
             $linkadr     = isset($_POST['linkadr'])      ? $_POST['linkadr']      : '';
             $linktxt     = isset($_POST['linktxt'])      ? $_POST['linktxt']      : '';
 
-            foreach (array('datestart', 'starttime', 'dateend', 'endtime','event', 'location', 'linkadr', 'linktxt') as $var) {
+            $varnames = array(
+                'datestart', 'starttime', 'dateend', 'endtime','event', 'location', 'linkadr', 'linktxt'
+            );
+            foreach ($varnames as $var) {
                 $$var = array_map('stsl', $$var);
             }
 
@@ -79,11 +82,12 @@ class EditEventsController extends Controller
             foreach ($event as $j => $i) {
                 if (!isset($delete[$j]) || $delete[$j] == '') {
                     //Checking the date format. Some impossible dates can be given, but don't hurt.
-                    $pattern = '/[\d\d\|\?{1-2}|\-{1-2}]\\' . $this->dpSeperator() . '\d\d\\' . $this->dpSeperator() . '\d{4}$/';
-                    if (!preg_match($pattern,$datestart[$j])) {
+                    $pattern = '/[\d\d\|\?{1-2}|\-{1-2}]\\' . $this->dpSeperator() . '\d\d\\'
+                        . $this->dpSeperator() . '\d{4}$/';
+                    if (!preg_match($pattern, $datestart[$j])) {
                         $datestart[$j] = '';
                     }
-                    if (!preg_match($pattern,$dateend[$j])) {
+                    if (!preg_match($pattern, $dateend[$j])) {
                         $dateend[$j] = '';
                     }
 
@@ -107,7 +111,7 @@ class EditEventsController extends Controller
                     $deleted = true;
                 }
             }
-            if($add <> '') {
+            if ($add <> '') {
                 $entry = array(
                     'datestart'   => date('d') . $this->dpSeperator() . date('m') . $this->dpSeperator() . date('Y'),
                     'starttime'   => '',
@@ -175,7 +179,8 @@ class EditEventsController extends Controller
         $o .= "<td colspan=\"$columns\"><input class=\"submit\" type=\"submit\" value=\""
             . ucfirst($tx['action']['save']) . "\" name=\"send\"></td>\n";
         $o .= "<td style=\"text-align: right; width: 16px;\"><input type=\"image\" src=\""
-            . $imageFolder . "/add.png\" style=\"width: 16px; height: 16px;\" name=\"add[0]\" value=\"add\" alt=\"Add entry\">\n</td>\n";
+            . $imageFolder . "/add.png\" style=\"width: 16px; height: 16px;\" name=\"add[0]\""
+            . " value=\"add\" alt=\"Add entry\">\n</td>\n";
         $o .= "</tr>\n";
 
         //========================
@@ -228,7 +233,8 @@ class EditEventsController extends Controller
                         . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
                         . $entry['datestart'] . '" name="datestart[' . $i . ']" id="datestart' . $i . '"') . "</td>\n";
 
-                    $o .= tag('input type="hidden" value="'. $entry['starttime'] . '" name="starttime[' . $i . ']"') . "\n";
+                    $o .= tag('input type="hidden" value="'. $entry['starttime'] . '" name="starttime[' . $i . ']"')
+                        . "\n";
 
                     $o .= "<td style=\"width: 0\"></td>";
 
@@ -368,16 +374,21 @@ class EditEventsController extends Controller
                     $o .= "<td>" . tag('input class="calendar_input_event" type="normal" value="'
                         . $entry['linktxt'] . '" name="linktxt[' . $i . ']"') . "</td>\n";
                 } else {
-                    $o .= "<td style=\"width: 0\">". tag('input type="hidden" value="'. $entry['linkadr'] . '" name="linkadr[' . $i . ']"') . "</td>"
-                        . "<td style=\"width: 0\">". tag('input type="hidden" value="'. $entry['linktxt'] . '" name="linktxt[' . $i . ']"') . "</td>";
+                    $o .= "<td style=\"width: 0\">"
+                        . tag('input type="hidden" value="'. $entry['linkadr'] . '" name="linkadr[' . $i . ']"')
+                        . "</td>"
+                        . "<td style=\"width: 0\">"
+                        . tag('input type="hidden" value="'. $entry['linktxt'] . '" name="linktxt[' . $i . ']"')
+                        . "</td>";
                 }
                 $o .= "<td>"
                     . tag('input type="image" src="'
-                    . $imageFolder .'/delete.png" style="width: 16px; height: 16px" name="delete[' . $i . ']" value="delete" alt="Delete Entry"') . "\n"
+                    . $imageFolder .'/delete.png" style="width: 16px; height: 16px" name="delete[' . $i
+                    . ']" value="delete" alt="Delete Entry"') . "\n"
                     . "</td>\n</tr>\n";
                 $i++;
             }
-         } else {
+        } else {
             //==========================
             // medium width input table
             //==========================
@@ -441,12 +452,14 @@ class EditEventsController extends Controller
                         . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
                         . $entry['datestart'] . '" name="datestart[' . $i . ']" id="datestart' . $i . '"') . "</td>\n"
                         . "<td style=\"width: 0;\">"
-                        . tag('input type="hidden" value="' . $entry['starttime'] . '" name="starttime[' . $i . ']"') . "</td>\n"
+                        . tag('input type="hidden" value="' . $entry['starttime'] . '" name="starttime[' . $i . ']"')
+                        . "</td>\n"
                         . "<td class=\"calendar_input_datefield\">"
                         . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
                         . $entry['dateend'] . '" name="dateend[' . $i . ']" id="dateend' . $i . '"') . "</td>\n"
                         . "<td style=\"width: 0;\">"
-                        . tag('input type="hidden" value="' . $entry['endtime'] . '" name="endtime[' . $i . ']"') . "</td>\n";
+                        . tag('input type="hidden" value="' . $entry['endtime'] . '" name="endtime[' . $i . ']"')
+                        . "</td>\n";
                 }
 
                 $o .=  $this->renderDatePickerScript($i);
@@ -457,14 +470,17 @@ class EditEventsController extends Controller
                         . "<td>" . tag('input type="normal"  class="calendar_input_event" value="'
                         . $entry['location'] . '" name="location[' . $i . ']"') . "</td>\n";
                 } else {
-                    $o .= "<td colspan=\"2\">" . tag('input type="normal" class="calendar_input_event event_highlighting" value="'
+                    $o .= "<td colspan=\"2\">"
+                        . tag('input type="normal" class="calendar_input_event event_highlighting" value="'
                         . $entry['event'] . '" name="event[' . $i . ']"') . "\n"
-                        . tag('input type="hidden" value="' . $entry['location'] . '" name="location[' . $i . ']"') . "</td>\n";
+                        . tag('input type="hidden" value="' . $entry['location'] . '" name="location[' . $i . ']"')
+                        . "</td>\n";
                 }
 
                 $o .= "<td style=\"text-align: right;\">"
                     . tag('input type="image" src="' . $imageFolder
-                    . '/delete.png" style="width: 16px; height: 16px" name="delete[' . $i . ']" value="delete" alt="Delete Entry"') . "\n"
+                    . '/delete.png" style="width: 16px; height: 16px" name="delete[' . $i
+                    . ']" value="delete" alt="Delete Entry"') . "\n"
                     . "</td>\n</tr>\n" ;
 
                 if ($this->conf['show_event_link'] == 'true') {
@@ -484,8 +500,10 @@ class EditEventsController extends Controller
             }
         }
         $o .= "<tr>\n";
-        $o .= "<td colspan=\"$columns\"><input class=\"submit\" type=\"submit\" value=\"" . ucfirst($tx['action']['save'])."\" name=\"send\"></td>\n";
-        $o .= "<td><input type=\"image\" src=\"$imageFolder/add.png\" style=\"width: 16px; height: 16px;\" name=\"add[0]\" value=\"add\" alt=\"Add entry\">\n</td>\n";
+        $o .= "<td colspan=\"$columns\"><input class=\"submit\" type=\"submit\" value=\""
+            . ucfirst($tx['action']['save'])."\" name=\"send\"></td>\n";
+        $o .= "<td><input type=\"image\" src=\"$imageFolder/add.png\" style=\"width: 16px; height: 16px;\""
+            . " name=\"add[0]\" value=\"add\" alt=\"Add entry\">\n</td>\n";
         $o .= "</tr>\n";
         $o .= "</table>\n";
         $o .= "</form>";

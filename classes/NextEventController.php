@@ -53,14 +53,16 @@ class NextEventController extends Controller
                 list($event_date_start, $event_end_date, $event_end_time) = explode(',', $eventdates);
 
                 if ($event_end_date) {
-                    $txt = $this->lang['event_date_till_date'] . " " . tag('br') . $event_end_date . " " . $event_end_time;
+                    $txt = $this->lang['event_date_till_date'] . " " . tag('br')
+                        . $event_end_date . " " . $event_end_time;
                     list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
                     array_push($event_date_array, strtotime("$event_month/$event_date/$event_year $eventtime"));
                     array_push($event_array, $event);
                     array_push($event_stsl_array, $txt);
                     array_push($event_location_array, $location);
 
-                    $txt = $this->lang['event_event'] . " " . $this->lang['event_start'] . ":" . tag('br') . $event_date_start . " " . $eventtime;
+                    $txt = $this->lang['event_event'] . " " . $this->lang['event_start'] . ":" . tag('br')
+                        . $event_date_start . " " . $eventtime;
                     list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_end_date);
                     array_push($event_date_array, strtotime("$event_month/$event_date/$event_year $event_end_time"));
                     array_push($event_array, $event);
@@ -90,12 +92,14 @@ class NextEventController extends Controller
         }
         if ($remember_event > $today) {
             $i = array_search($remember_event, $event_date_array);
-            $t.= "<div class=\"nextevent_date\">" . strftime($this->lang['event_date_representation_in_next_event_marquee'], $event_date_array[$i]);
+            $t.= "<div class=\"nextevent_date\">"
+                . strftime($this->lang['event_date_representation_in_next_event_marquee'], $event_date_array[$i]);
             if (strftime('%H:%M', $event_date_array[$i]) != "00:00") {
                 $t.= ' — ' . strftime('%H:%M', $event_date_array[$i]);
             }
             $t.= "</div>\n";
-            $t.= "<marquee direction=\"up\" scrolldelay=\"100\" scrollamount=\"1\"><div class=\"nextevent_event\">{$event_array[$i]}</div>\n";
+            $t.= "<marquee direction=\"up\" scrolldelay=\"100\" scrollamount=\"1\">"
+                . "<div class=\"nextevent_event\">{$event_array[$i]}</div>\n";
             $t.= "<div class=\"nextevent_date\">{$event_stsl_array[$i]}</div>\n";
             $t.= "<div class=\"nextevent_location\">{$event_location_array[$i]}</div>\n</marquee>\n";
         } elseif ($this->lang['notice_no_next_event_sceduled']) {
