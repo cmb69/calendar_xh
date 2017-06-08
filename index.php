@@ -151,44 +151,6 @@ function nextevent()
 }
 
 
-// ***
-// Helper-function to parse the date-seperator, set in plugin-config,
-// to build the config-string for the Date-Picker and to
-// check for allowed seperators
-// Allowed seperators:
-// full-stop ".", forward slash "/" and minus/dash "-"
-// ***
-
-function dpSeperator($mode='') {
-
-    global $plugin_cf;
-
-    $sep = $plugin_cf['calendar']['date_delimiter'];
-    $dp_sep = ''; //the string to configure the DatePicker
-
-    if ($sep != '/' && $sep != '-') {
-        $sep = '.'; //set default
-    }
-
-    switch ($sep) {
-    case '.':
-        $dp_sep = 'dt';
-        break;
-    case '/':
-        $dp_sep = 'sl';
-        break;
-    case '-':
-        $dp_sep = 'ds';
-        break;
-    }
-
-    if ($mode == 'dp') {
-        return $dp_sep;
-    }
-    else {
-        return $sep;
-    }
-}
 
 
 // ****************************************************************
@@ -203,16 +165,6 @@ function EditEvents($editeventswidth)
     ob_start();
     (new Calendar\EditEventsController($editeventswidth))->defaultAction();
     return ob_get_clean();
-}
-
-// function by manu
-function dateSort($a, $b){
-    $pattern = '!(.*)\\'.dpSeperator().'(.*)\\'.dpSeperator().'(.*)!';
-    $replace = '\3\2\1';
-    $a_i = preg_replace($pattern,$replace,$a['datestart']).$a['starttime'];
-    $b_i = preg_replace($pattern,$replace,$b['datestart']).$b['starttime'];
-    if ($a_i == $b_i) return 0;
-    return ($a_i < $b_i) ? -1 : 1;
 }
 
 (new Calendar\Plugin)->run();

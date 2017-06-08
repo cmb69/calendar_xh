@@ -138,8 +138,8 @@ class EventListController extends Controller
                 //var_dump($line);
                 list($eventdates, $event, $location, $link, $event_time, $description) = explode(';', $line);
                 list($event_date_start, $event_end_date, $event_end_time) = explode(',', $eventdates);
-                list($event_date, $event_month, $event_year) = explode(dpSeperator(), $event_date_start);
-                list($event_end_date, $event_end_month, $event_end_year) = explode(dpSeperator(), $event_end_date);
+                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
+                list($event_end_date, $event_end_month, $event_end_year) = explode($this->dpSeperator(), $event_end_date);
                 $datetime = "{$event_date_start} {$event_time}";
 
                  array_push($event_year_array,      $event_year);
@@ -266,7 +266,7 @@ class EventListController extends Controller
                         }
 
                         $t .= "<tr class=\"birthday_data_row\">\n";
-                        $t .= "<td class=\"event_data event_date\">$event_date_array[$keys]" . dpSeperator() . "{$this->month}" . dpSeperator() . "{$this->year}</td>\n";
+                        $t .= "<td class=\"event_data event_date\">$event_date_array[$keys]" . $this->dpSeperator() . "{$this->month}" . $this->dpSeperator() . "{$this->year}</td>\n";
                         if (stristr('true', $this->conf['show_event_time'])) {
                             $t .= "<td class=\"event_data event_time\"></td>\n";
                         }
@@ -329,13 +329,13 @@ class EventListController extends Controller
                      // if beginning and end dates are there, these are put one under the other
                      if ($event_end_date_array[$keys]) {
                         if (   $this->month!= $event_end_month_array[$keys]
-                            || $this->year != $event_end_year_array[$keys]) $t .= dpSeperator().$this->month ;
-                        if (   $this->year != $event_end_year_array[$keys]) $t .= dpSeperator().$this->year ;
-                        if (   $this->year == $event_end_year_array[$keys] && dpSeperator() == '.') $t.= ".";
+                            || $this->year != $event_end_year_array[$keys]) $t .= $this->dpSeperator().$this->month ;
+                        if (   $this->year != $event_end_year_array[$keys]) $t .= $this->dpSeperator().$this->year ;
+                        if (   $this->year == $event_end_year_array[$keys] && $this->dpSeperator() == '.') $t.= ".";
                         $t .= "&nbsp;".$this->lang['event_date_till_date'] . tag('br');
-                        $t .= $event_end_date_array[$keys].dpSeperator().$event_end_month_array[$keys].dpSeperator().$event_end_year_array[$keys];
+                        $t .= $event_end_date_array[$keys].$this->dpSeperator().$event_end_month_array[$keys].$this->dpSeperator().$event_end_year_array[$keys];
     
-                     } else $t .= dpSeperator()."{$this->month}".dpSeperator().$this->year;
+                     } else $t .= $this->dpSeperator()."{$this->month}".$this->dpSeperator().$this->year;
     
                      $t .= "</td>\n";
     

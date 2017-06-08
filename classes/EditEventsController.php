@@ -79,7 +79,7 @@ class EditEventsController extends Controller
             foreach ($event as $j => $i) {
                 if (!isset($delete[$j]) || $delete[$j] == '') {
                     //Checking the date format. Some impossible dates can be given, but don't hurt.
-                    $pattern = '/[\d\d\|\?{1-2}|\-{1-2}]\\' . dpSeperator() . '\d\d\\' . dpSeperator() . '\d{4}$/';
+                    $pattern = '/[\d\d\|\?{1-2}|\-{1-2}]\\' . $this->dpSeperator() . '\d\d\\' . $this->dpSeperator() . '\d{4}$/';
                     if (!preg_match($pattern,$datestart[$j])) {
                         $datestart[$j] = '';
                     }
@@ -109,7 +109,7 @@ class EditEventsController extends Controller
             }
             if($add <> '') {
                 $entry = array(
-                    'datestart'   => date('d') . dpSeperator() . date('m') . dpSeperator() . date('Y'),
+                    'datestart'   => date('d') . $this->dpSeperator() . date('m') . $this->dpSeperator() . date('Y'),
                     'starttime'   => '',
                     'dateend'     => '',
                     'endtime'     => '',
@@ -124,7 +124,7 @@ class EditEventsController extends Controller
 
             if (!$deleted && !$added) {
                 // sorting new event inputs, idea of manu, forum-message
-                usort($newevent, 'dateSort');
+                usort($newevent, array($this, 'dateSort'));
                 if (!(new EventDataService)->writeEvents($newevent)) {
                     $o .= "<p><strong>{$this->lang['eventfile_not_saved']}</strong></p>\n";
                 } else {
@@ -494,7 +494,7 @@ class EditEventsController extends Controller
 
     private function renderDatePickerScript($num)
     {
-        $separator = dpSeperator('dp');
+        $separator = $this->dpSeperator('dp');
         return <<<EOS
 <script type="text/javascript">
 (function () {
@@ -510,5 +510,17 @@ class EditEventsController extends Controller
 }());
 </script>
 EOS;
+    }
+
+    private function dateSort($a, $b)
+    {
+        $pattern = '!(.*)\\' . $this->dpSeperator() . '(.*)\\' . $this->dpSeperator() . '(.*)!';
+        $replace = '\3\2\1';
+        $a_i = preg_replace($pattern, $replace, $a['datestart']) . $a['starttime'];
+        $b_i = preg_replace($pattern, $replace, $b['datestart']) . $b['starttime'];
+        if ($a_i == $b_i) {
+            return 0;
+        }
+        return ($a_i < $b_i) ? -1 : 1;
     }
 }

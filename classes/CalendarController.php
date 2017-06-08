@@ -116,15 +116,15 @@ class CalendarController extends Controller
                     list($eventdates,$event,$location,,$event_time) = explode(';', $line);
                     if (stristr($eventdates, ',')) {
                         list($event_date_start, $event_end_date, $event_end_time) = explode(',', $eventdates);
-                        list($event_date1, $event_month1, $event_year1) = explode(dpSeperator(), $event_end_date);
-                        list($event_date, $event_month, $event_year) = explode(dpSeperator(), $event_date_start);
+                        list($event_date1, $event_month1, $event_year1) = explode($this->dpSeperator(), $event_end_date);
+                        list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
                         $event_end = mktime(null, null, null, $event_month1, $event_date1, $event_year1);
                         $event_start = mktime(null, null, null, $event_month, $event_date, $event_year);
                     } else {
                          $event_date_start = $eventdates;
                          $event_end_date = '';
                          $event_end_time = '';
-                         list($event_date, $event_month, $event_year) = explode(dpSeperator(), $event_date_start);
+                         list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
                     }
                 }
                 if ($event_end_date) {

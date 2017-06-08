@@ -58,20 +58,20 @@ class NextEventController extends Controller
 
                 if ($event_end_date) {
                     $txt = $this->lang['event_date_till_date'] . " " . tag('br') . $event_end_date . " " . $event_end_time;
-                    list($event_date, $event_month, $event_year) = explode(dpSeperator(), $event_date_start);
+                    list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
                     array_push($event_date_array, strtotime("$event_month/$event_date/$event_year $eventtime"));
                     array_push($event_array, $event);
                     array_push($event_stsl_array, $txt);
                     array_push($event_location_array, $location);
 
                     $txt = $this->lang['event_event'] . " " . $this->lang['event_start'] . ":" . tag('br') . $event_date_start . " " . $eventtime;
-                    list($event_date, $event_month, $event_year) = explode(dpSeperator(), $event_end_date);
+                    list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_end_date);
                     array_push($event_date_array, strtotime("$event_month/$event_date/$event_year $event_end_time"));
                     array_push($event_array, $event);
                     array_push($event_stsl_array, $txt);
                     array_push($event_location_array, $location);
                 } else {
-                    list($event_date, $event_month, $event_year) = explode(dpSeperator(), $event_date_start);
+                    list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
                     array_push($event_date_array, strtotime("$event_month/$event_date/$event_year $eventtime"));
                     array_push($event_array, $event);
                     array_push($event_stsl_array, $txt);
