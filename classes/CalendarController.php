@@ -105,9 +105,9 @@ class CalendarController extends Controller
             $fp = fopen($eventfile, 'r');
             while (!feof($fp)) {
                 $line = fgets($fp, 4096);
-                if (stristr($line, ';')) {
+                if (strpos($line, ';') !== false) {
                     list($eventdates,$event,$location,,$event_time) = explode(';', $line);
-                    if (stristr($eventdates, ',')) {
+                    if (strpos($eventdates, ',') !== false) {
                         list($event_date_start, $event_end_date, $event_end_time) = explode(',', $eventdates);
                         list($event_date1, $event_month1, $event_year1)
                             = explode($this->dpSeperator(), $event_end_date);

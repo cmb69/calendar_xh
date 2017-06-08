@@ -276,7 +276,7 @@ class EventListController extends Controller
                                 . "{$this->lang['birthday_text']}</td>\n";
                         }
                         if ($this->conf['show_event_link']) {
-                            if (stristr($event_link_array[$keys], 'ext:')) {
+                            if (strpos($event_link_array[$keys], 'ext:') === 0) {
                                 $external_site = substr($event_link_array[$keys], 4);
                                 list($external_site, $external_text) = explode(',', $external_site);
                                 if (!$external_text) {
@@ -285,7 +285,7 @@ class EventListController extends Controller
                                 $t .= "<td class=\"event_data event_link\"><a href=\"http://"
                                     . "{$external_site}\" target=\"_blank\" title=\""
                                     . strip_tags($event_array[$keys]) . "\">$external_text</a></td>\n";
-                            } elseif (stristr($event_link_array[$keys], 'int:')) {
+                            } elseif (strpos($event_link_array[$keys], 'int:') === 0) {
                                 $internal_page = substr($event_link_array[$keys], 4);
                                 list($internal_page, $internal_text) = explode(',', $internal_page);
                                 if (!$internal_text) {
@@ -365,7 +365,7 @@ class EventListController extends Controller
 
                     //link field
                     if ($this->conf['show_event_link']) {
-                        if (stristr($event_link_array[$keys], 'ext:')) {
+                        if (strpos($event_link_array[$keys], 'ext:') === 0) {
                             $external_site = substr($event_link_array[$keys], 4);
                             list($external_site,$external_text) = explode(',', $external_site);
                             if (!$external_text) {
@@ -374,7 +374,7 @@ class EventListController extends Controller
                             $t .= "<td class=\"event_data event_link\"><a href=\"http://{$external_site}\""
                                 . " target=\"_blank\" title=\"" . strip_tags($event_array[$keys])
                                 . "\">$external_text</a></td>\n";
-                        } elseif (stristr($event_link_array[$keys], 'int:')) {
+                        } elseif (strpos($event_link_array[$keys], 'int:') === 0) {
                             $internal_page = substr($event_link_array[$keys], 4);
                             list($internal_page,$internal_text) = explode(',', $internal_page);
                             if (!$internal_text) {
