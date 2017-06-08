@@ -43,7 +43,7 @@ class Plugin
     {
         global $o, $sl, $pth, $plugin_cf, $plugin_tx, $admin, $action, $plugin;
 
-        $eventfile = "{$pth['folder']['plugins']}{$plugin}/content/eventcalendar_{$sl}.txt";
+        $eventfile = (new EventDataService)->getFilename();
         if (!is_file($eventfile)) {
             $handle = fopen($eventfile, "w");
             fclose($handle);

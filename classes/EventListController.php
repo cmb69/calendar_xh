@@ -47,7 +47,7 @@ class EventListController extends Controller
 
     public function defaultAction()
     {
-        global $datapath, $sl, $plugin;
+        global $plugin;
 
         // 4 variables for bugtraking only
         $month_start = $this->month;
@@ -125,11 +125,7 @@ class EventListController extends Controller
         $event_end_time_array   = array();
         $event_datetime_array   = array();
 
-        if ($this->conf['same-event-calendar_for_all_languages'] == "true") {
-            $eventfile = "{$datapath}eventcalendar.txt";
-        } else {
-            $eventfile = "{$datapath}eventcalendar_{$sl}.txt";
-        }
+        $eventfile = (new EventDataService)->getFilename();
 
         if (is_file($eventfile)) {
             $fp = fopen($eventfile, 'r');

@@ -147,7 +147,7 @@ class EditEventsController extends Controller
     //==========================================================
     private function eventForm($events, $editeventswidth)
     {
-        global $hjs, $pth, $datapath, $sl, $plugin, $tx;
+        global $hjs, $pth, $sl, $plugin, $tx;
 
         $hjs .= '<script type="text/javascript" src="'
              .  $pth['folder']['plugins'] . $plugin . '/dp/datepicker.js">{ "lang":"'.$sl.'" }</script>'."\n";

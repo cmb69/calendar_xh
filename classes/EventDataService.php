@@ -35,13 +35,26 @@ class EventDataService
 
     public function __construct()
     {
-        global $sl, $plugin_cf, $datapath;
+        global $pth, $plugin, $sl, $plugin_cf;
 
+        if (!$plugin_cf['calendar']['filepath_data']){
+            $datapath = "{$pth['folder']['plugins']}{$plugin}/content/";
+        } else {
+            $datapath = $plugin_cf['calendar']['filepath_data'];
+        }
         if ($plugin_cf['calendar']['same-event-calendar_for_all_languages'] == "true") {
             $this->eventfile = "{$datapath}eventcalendar.txt";
         } else {
             $this->eventfile = "{$datapath}eventcalendar_{$sl}.txt";
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->eventfile;
     }
 
     /**

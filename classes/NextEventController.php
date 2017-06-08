@@ -30,7 +30,7 @@ class NextEventController extends Controller
 {
     public function defaultAction()
     {
-        global $datapath, $sl, $plugin;
+        global $plugin;
 
         $plugin = basename(dirname(__DIR__), '/');
 
@@ -42,11 +42,7 @@ class NextEventController extends Controller
         $t = '';
         $remember_event = '';
 
-        if ($this->conf['same-event-calendar_for_all_languages'] == 'true') {
-            $eventfile = "{$datapath}eventcalendar.txt";
-        } else {
-            $eventfile = "{$datapath}eventcalendar_{$sl}.txt";
-        }
+        $eventfile = (new EventDataService)->getFilename();
 
         if (is_file($eventfile)) {
             $fp = fopen($eventfile, "r");

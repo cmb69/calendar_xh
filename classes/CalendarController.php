@@ -58,17 +58,13 @@ class CalendarController extends Controller
 
     public function defaultAction()
     {
-        global $datapath, $sl, $plugin, $sn, $su;
+        global $plugin, $sn, $su;
 
         $plugin = basename(dirname(__DIR__), '/');
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
         }
-        if ($this->conf['same-event-calendar_for_all_languages'] == 'true') {
-            $eventfile = "{$datapath}eventcalendar.txt";
-        } else {
-            $eventfile = "{$datapath}eventcalendar_{$sl}.txt";
-        }
+        $eventfile = (new EventDataService)->getFilename();
         if (!is_file($eventfile)) {
             $handle = fopen($eventfile, 'w');
             fclose($handle);

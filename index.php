@@ -5,11 +5,6 @@ CMSimple - Calendar Plugin (based on v. 0.5 from 2006 by Michael Svarrer)
 
 if ((!function_exists('sv')) || (strlen($sl) !== 2) || preg_match('/calendar'.DIRECTORY_SEPARATOR.'index.php/i', sv('PHP_SELF')))die('Access denied');
 
-if (!$plugin_cf['calendar']['filepath_data']){
-    $datapath = $pth['folder']['plugins'].$plugin."/content/";
-} else {
-    $datapath = $plugin_cf['calendar']['filepath_data'];
-}
 
 /*function to display a calendar in the template or on a page*/
 function calendar($year = '', $month = '', $eventpage = '')
