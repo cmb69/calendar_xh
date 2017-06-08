@@ -148,7 +148,7 @@ class EditEventsController extends Controller
     //==========================================================
     private function eventForm($events, $editeventswidth)
     {
-        global $hjs, $pth, $sl, $plugin, $tx, $sn;
+        global $hjs, $pth, $sl, $plugin, $tx;
 
         $hjs .= '<script type="text/javascript" src="'
              .  $pth['folder']['plugins'] . $plugin . '/dp/datepicker.js">{ "lang":"'.$sl.'" }</script>'."\n";
@@ -169,7 +169,7 @@ class EditEventsController extends Controller
         }
         $tableclass = "calendar_input_{$editeventswidth}";
 
-        $o = "<form method=\"POST\" action=\"$sn\">\n";
+        $o = "<form method=\"POST\" action=\"\">\n";
         $o .= "<input type=\"hidden\" value=\"saveevents\" name=\"action\">\n";
         $o .= "<table class=\"calendar_input $tableclass\">\n";
         $o .= "<tr>\n";
