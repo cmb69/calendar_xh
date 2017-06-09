@@ -77,13 +77,10 @@ class EditEventsController extends Controller
         $newevent = array();
         foreach (array_keys($event) as $j) {
             if (!isset($delete[$j]) || $delete[$j] == '') {
-                //Checking the date format. Some impossible dates can be given, but don't hurt.
-                $pattern = '/[\d\d\|\?{1-2}|\-{1-2}]\\' . $this->dpSeperator() . '\d\d\\'
-                    . $this->dpSeperator() . '\d{4}$/';
-                if (!preg_match($pattern, $datestart[$j])) {
+                if (!$this->isValidDate($datestart[$j])) {
                     $datestart[$j] = '';
                 }
-                if (!preg_match($pattern, $dateend[$j])) {
+                if (!$this->isValidDate($dateend[$j])) {
                     $dateend[$j] = '';
                 }
 
@@ -108,17 +105,7 @@ class EditEventsController extends Controller
             }
         }
         if ($add <> '') {
-            $entry = array(
-                'datestart'   => date('d') . $this->dpSeperator() . date('m') . $this->dpSeperator() . date('Y'),
-                'starttime'   => '',
-                'dateend'     => '',
-                'endtime'     => '',
-                'event'       => $this->lang['event_event'],
-                'location'    => '',
-                'linkadr'     => '',
-                'linktxt'     => ''
-            );
-            $newevent[] = $entry;
+            $newevent[] = $this->createDefaultEvent();
             $added = true;
         }
 
@@ -204,6 +191,16 @@ EOS;
     }
 
     /**
+     * Checking the date format. Some impossible dates can be given, but don't hurt.
+     */
+    private function isValidDate($date)
+    {
+        $pattern = '/[\d\d\|\?{1-2}|\-{1-2}]\\' . $this->dpSeperator() . '\d\d\\'
+            . $this->dpSeperator() . '\d{4}$/';
+        return preg_match($pattern, $date);
+    }
+
+    /**
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function dateSort($a, $b)
@@ -216,5 +213,19 @@ EOS;
             return 0;
         }
         return ($a_i < $b_i) ? -1 : 1;
+    }
+
+    private function createDefaultEvent()
+    {
+        return array(
+            'datestart'   => date('d') . $this->dpSeperator() . date('m') . $this->dpSeperator() . date('Y'),
+            'starttime'   => '',
+            'dateend'     => '',
+            'endtime'     => '',
+            'event'       => $this->lang['event_event'],
+            'location'    => '',
+            'linkadr'     => '',
+            'linktxt'     => ''
+        );
     }
 }
