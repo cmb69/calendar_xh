@@ -42,7 +42,7 @@ class EditEventsController extends Controller
         } else {
             $this->editeventswidth = $this->conf['event-input_memberpages_narrow_medium_or_wide'];
         }
-        $this->imageFolder = "{$pth['folder']['plugins']}calendar/images";
+        $this->imageFolder = "{$pth['folder']['plugins']}calendar/images/";
     }
 
     public function defaultAction()
@@ -155,356 +155,32 @@ class EditEventsController extends Controller
                 break;
             default:
                 $columns = 6;
+                $editeventswidth = 'medium';
         }
-        $tableclass = "calendar_input_{$editeventswidth}";
 
-        $o = "<form method=\"POST\" action=\"\">\n";
-        $o .= "<input type=\"hidden\" value=\"saveevents\" name=\"action\">\n";
-        $o .= "<table class=\"calendar_input $tableclass\">\n";
-        $o .= "<tr>\n";
-        $o .= "<td colspan=\"{$columns}\"><input class=\"submit\" type=\"submit\" value=\""
-            . ucfirst($tx['action']['save']) . "\" name=\"send\"></td>\n";
-        $o .= "<td style=\"text-align: right; width: 16px;\"><input type=\"image\" src=\""
-            . $this->imageFolder . "/add.png\" style=\"width: 16px; height: 16px;\" name=\"add[0]\""
-            . " value=\"add\" alt=\"Add entry\">\n</td>\n";
-        $o .= "</tr>\n";
-
-        if ($editeventswidth == 'narrow') {
-            $o .= $this->renderNarrowTable($events);
-        } elseif ($editeventswidth == 'wide') {
-            $o .= $this->renderWideTable($events);
-        } else {
-            $o .= $this->renderMediumTable($events);
-        }
-        $o .= "<tr>\n";
-        $o .= "<td colspan=\"$columns\"><input class=\"submit\" type=\"submit\" value=\""
-            . ucfirst($tx['action']['save'])."\" name=\"send\"></td>\n";
-        $o .= "<td><input type=\"image\" src=\"{$this->imageFolder}/add.png\" style=\"width: 16px; height: 16px;\""
-            . " name=\"add[0]\" value=\"add\" alt=\"Add entry\">\n</td>\n";
-        $o .= "</tr>\n";
-        $o .= "</table>\n";
-        $o .= "</form>";
-        return $o;
+        $view = new View('event-form');
+        $view->tableclass = "calendar_input_{$editeventswidth}";
+        $view->columns = $columns;
+        $view->saveLabel = ucfirst($tx['action']['save']);
+        $view->addIcon = "{$this->imageFolder}add.png";
+        $view->table = new HtmlString($this->renderTable($editeventswidth, $events));
+        return (string) $view;
     }
 
-    private function renderNarrowTable(array $events)
+    private function renderTable($width, array $events)
     {
-        $o = '';
-        if ($this->conf['show_event_time']) {
-            $o .= "<tr class=\"firstline_calendarinput\">\n"
-                . "<td class=\"calendar_input_datefield\">"
-                . $this->lang['event_start'] . tag('br')
-                . $this->lang['event_date'] . "</td>\n"
-                . "<td>" . $this->lang['event_time']    . "</td>\n"
-                . "<td class=\"calendar_input_datefield\">"
-                . $this->lang['event_end'] . tag('br')
-                . $this->lang['event_date'] . "</td>\n"
-                . "<td>" . $this->lang['event_time'] . "</td>\n"
-                . "<td>" . $this->lang['event_event'] . "</td>\n"
-                . "<td> </td>\n"
-                . "</tr>\n";
-        } else {
-            $o .= "<tr class=\"firstline_calendarinput\">\n"
-                . "<td colspan=\"2\">" . $this->lang['event_start'] . " " . $this->lang['event_date'] . "</td>\n"
-                . "<td colspan=\"2\">" . $this->lang['event_end'] . " " . $this->lang['event_date'] . "</td>\n"
-                . "<td>" . $this->lang['event_event'] . "</td>\n"
-                . "<td></td>\n"
-                . "</tr>\n";
+        $view = new View("{$width}-table");
+        $view->showEventTime = $this->conf['show_event_time'];
+        $view->showEventLocation = $this->conf['show_event_location'];
+        $view->showEventLink = $this->conf['show_event_link'];
+        $view->events = $events;
+        $view->deleteIcon = "{$this->imageFolder}delete.png";
+        $datePickerScripts = [];
+        foreach (array_keys($events) as $i) {
+            $datePickerScripts[] = new HtmlString($this->renderDatePickerScript($i));
         }
-        $i = 0;
-        foreach ($events as $entry) {
-            if ($this->conf['show_event_time']) {
-                $o .= "<tr>\n"
-                    . "<td class=\"calendar_input_datefield\">"
-                    . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                    . $entry['datestart'] . '" name="datestart[' . $i . ']" id="datestart' . $i . '"') . "</td>\n";
-
-                $o .= "<td class=\"calendar_input_time\">"
-                    . tag('input type="normal" class="calendar_input_time" maxlength="5"  value="'
-                    . $entry['starttime'] . '" name="starttime[' . $i . ']"') . "</td>\n" ;
-
-                $o .= "<td class=\"calendar_input_datefield\">"
-                    . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                    . $entry['dateend'] . '" name="dateend[' . $i . ']" id="dateend' . $i . '"') . "</td>\n" ;
-                                                       //3
-                $o .= "<td class=\"calendar_input_time\">"
-                   .  tag('input type="normal" class="calendar_input_time" maxlength="5"  value="'
-                   .  $entry['endtime'] . '" name="endtime[' . $i . ']"') . "</td>\n" ;
-            } else {
-                $o .= "<tr>\n"
-                    . "<td class=\"calendar_input_datefield\">"
-                    . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                    . $entry['datestart'] . '" name="datestart[' . $i . ']" id="datestart' . $i . '"') . "</td>\n";
-
-                $o .= tag('input type="hidden" value="'. $entry['starttime'] . '" name="starttime[' . $i . ']"')
-                    . "\n";
-
-                $o .= "<td style=\"width: 0\"></td>";
-
-                $o .= "<td class=\"calendar_input_datefield\">"
-                    . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                    . $entry['dateend'] . '" name="dateend[' . $i . ']" id="dateend' . $i . '"') . "</td>\n";
-
-                $o .= tag('input type="hidden" value="' . $entry['endtime'] . '" name="endtime[' . $i . ']"') ."\n";
-
-                $o .= "<td style=\"width: 0\"></td>";
-            }
-
-            $o .= "<td>" . tag('input class="calendar_input_event event_highlighting" type="normal"  value="'
-                . $entry['event'] . '" name="event[' . $i . ']"') . "</td>\n";
-
-            $o .= $this->renderDatePickerScript($i);
-
-            $o .= "<td>"
-                . tag('input type="image" src="'
-                . $this->imageFolder . '/delete.png" style="width: 16px; height: 16px" name="delete['
-                . $i.']" value="delete" alt="Delete Entry"') . "\n"
-                . "</td>\n</tr>\n";
-            if ($this->conf['show_event_location']) {
-                $o .= "<tr>\n"
-                    . "<td class=\"calendarinput_line2\" colspan=\"4\">"
-                    . $this->lang['event_location'] ."</td>\n"
-                    . "<td>" . tag('input type="normal" class="calendar_input_event" value="'
-                    . $entry['location'] . '" name="location[' . $i . ']"') . "</td>\n<td></td>\n</tr>\n";
-            } else {
-                $o .= tag('input type="hidden" value="' . $entry['location'] . '" name="location[' . $i .']"');
-            }
-
-            if ($this->conf['show_event_link']) {
-                $o .= "</tr>\n<tr>\n"
-                    . "<td class=\"calendarinput_line2\" colspan=\"4\">"
-                    . $this->lang['event_link'] . "</td>\n"
-                    . "<td>"
-                    . tag('input type="normal" class="calendar_input_event" colspan="2" value="'
-                    . $entry['linkadr'] . '" name="linkadr[' . $i . ']"') . "</td>\n<td>&nbsp;</td>\n</tr>\n";
-
-                $o .= "<td class=\"calendarinput_line2\" colspan=\"4\">"
-                   .  $this->lang['event_link_txt'] . "</td>\n"
-                   .  "<td>"
-                   .  tag('input type="normal" class="calendar_input_event" colspan="2" value="'
-                   .  $entry['linktxt'] . '" name="linktxt[' . $i . ']"') . "</td>\n<td></td>\n</tr>\n"
-                   .  "<tr><td colspan=\"6\">&nbsp;</td></tr>\n";
-            } else {
-                $o .= tag('input type="hidden" value="'
-                    . $entry['linkadr']  .'" name="linkadr[' . $i . ']"')
-                    . tag('input type="hidden" value="' . $entry['linktxt'] . '" name="linktxt[' . $i . ']"');
-            }
-            $i++;
-        }
-        return $o;
-    }
-
-    private function renderMediumTable(array $events)
-    {
-        $o = '';
-        if ($this->conf['show_event_time']) {
-            $o .= "<tr class=\"firstline_calendarinput\">\n"
-                . "<td>" . $this->lang['event_start']
-                . tag('br') . $this->lang['event_date'] . "</td>\n"
-                . "<td>" . $this->lang['event_time'] . "</td>\n"
-                . "<td>" . $this->lang['event_end'] . tag('br')
-                . $this->lang['event_date'] . "</td>\n"
-                . "<td>" . $this->lang['event_time'] . "</td>\n";
-
-            if ($this->conf['show_event_location']) {
-                $o .= "<td>" . $this->lang['event_event'] . "</td>\n"
-                    . "<td>" . $this->lang['event_location'] . "</td>\n";
-            } else {
-                $o .= "<td colspan=\"2\">"
-                    . $this->lang['event_event']
-                    . "</td>\n";
-            }
-            $o .= "<td> </td>\n</tr>\n";
-        } else {
-            $o .= "<tr class=\"firstline_calendarinput\">\n"
-                . "<td>" . $this->lang['event_start']
-                . " " . $this->lang['event_date'] . "</td>\n";
-
-            $o .= "<td style=\"width: 0\"></td>";
-
-            $o .= "<td>" . $this->lang['event_end']
-                . " " . $this->lang['event_date'] . "</td>\n";
-
-            $o .= "<td style=\"width: 0\"></td>";
-
-            if ($this->conf['show_event_location']) {
-                $o .= "<td>" . $this->lang['event_event'] .   "</td>\n"
-                    . "<td>" . $this->lang['event_location']. "</td>\n";
-            } else {
-                $o .= "<td colspan=\"2\">" . $this->lang['event_event'] . "</td>\n";
-            }
-            $o .= "<td> </td>\n</tr>\n";
-        }
-        $i = 0;
-        foreach ($events as $entry) {
-            if ($this->conf['show_event_time']) {
-                $o .= "<tr>\n"
-                    . "<td class=\"calendar_input_datefield\">"
-                    . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                    . $entry['datestart'] . '" name="datestart[' . $i . ']" id="datestart' . $i . '"') . "</td>\n"
-                    . "<td class=\"calendar_input_time\">"
-                    . tag('input type="normal" class="calendar_input_time" maxlength="5" value="'
-                    . $entry['starttime'] . '" name="starttime[' . $i . ']"') . "</td>\n"
-                    . "<td class=\"calendar_input_datefield\">"
-                    . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                    . $entry['dateend'] . '" name="dateend[' . $i . ']" id="dateend' . $i . '"') ."</td>\n"
-                    . "<td class=\"calendar_input_time\">"
-                    . tag('input type="normal" class="calendar_input_time" maxlength="5" value="'
-                    . $entry['endtime'] . '" name="endtime[' . $i . ']"') . "</td>\n";
-            } else {
-                $o .= "<tr>\n"
-                    . "<td class=\"calendar_input_datefield\">"
-                    . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                    . $entry['datestart'] . '" name="datestart[' . $i . ']" id="datestart' . $i . '"') . "</td>\n"
-                    . "<td style=\"width: 0;\">"
-                    . tag('input type="hidden" value="' . $entry['starttime'] . '" name="starttime[' . $i . ']"')
-                    . "</td>\n"
-                    . "<td class=\"calendar_input_datefield\">"
-                    . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                    . $entry['dateend'] . '" name="dateend[' . $i . ']" id="dateend' . $i . '"') . "</td>\n"
-                    . "<td style=\"width: 0;\">"
-                    . tag('input type="hidden" value="' . $entry['endtime'] . '" name="endtime[' . $i . ']"')
-                    . "</td>\n";
-            }
-
-            $o .=  $this->renderDatePickerScript($i);
-
-            if ($this->conf['show_event_location']) {
-                $o .= "<td>" . tag('input type="normal" class="calendar_input_event event_highlighting" value="'
-                    . $entry['event'] . '" name="event[' . $i . ']"') . "</td>\n"
-                    . "<td>" . tag('input type="normal"  class="calendar_input_event" value="'
-                    . $entry['location'] . '" name="location[' . $i . ']"') . "</td>\n";
-            } else {
-                $o .= "<td colspan=\"2\">"
-                    . tag('input type="normal" class="calendar_input_event event_highlighting" value="'
-                    . $entry['event'] . '" name="event[' . $i . ']"') . "\n"
-                    . tag('input type="hidden" value="' . $entry['location'] . '" name="location[' . $i . ']"')
-                    . "</td>\n";
-            }
-
-            $o .= "<td style=\"text-align: right;\">"
-                . tag('input type="image" src="' . $this->imageFolder
-                . '/delete.png" style="width: 16px; height: 16px" name="delete[' . $i
-                . ']" value="delete" alt="Delete Entry"') . "\n"
-                . "</td>\n</tr>\n" ;
-
-            if ($this->conf['show_event_link']) {
-                $o .= "<tr>\n"
-                    . "<td class=\"calendarinput_line2\" colspan=\"4\">" . $this->lang['event_link'] . " / "
-                    . $this->lang['event_link_txt'] . "</td>\n"
-                    . "<td>" . tag('input type="normal" class="calendar_input_event" value="' . $entry['linkadr']
-                    . '" name="linkadr[' . $i . ']"') . "</td>\n"
-                    . "<td>" . tag('input type="normal" class="calendar_input_event" value="'
-                    . $entry['linktxt'] . '" name="linktxt[' . $i . ']"') . "</td>\n"
-                    . "<td>&nbsp;</td>\n</tr>\n";
-            } else {
-                $o .= "<input type='hidden' value='" . $entry['linkadr'] . "' name='linkadr[$i]'>"
-                    . "<input type='hidden' value='" . $entry['linktxt'] . "' name='linktxt[$i]'>";
-            }
-            $i++;
-        }
-        return $o;
-    }
-
-    private function renderWideTable(array $events)
-    {
-        $o = '';
-        if ($this->conf['show_event_time']) {
-            $o .= "<tr class=\"firstline_calendarinput\">\n"
-                . "<td>" . $this->lang['event_start'] . tag('br')
-                . $this->lang['event_date'] . "</td>\n"
-                . "<td>" . $this->lang['event_time'] . "</td>\n"
-                . "<td>" . $this->lang['event_end'] . tag('br')
-                . $this->lang['event_date'] . "</td>\n"
-                . "<td>" . $this->lang['event_time'] . "</td>\n"
-                . "<td>" . $this->lang['event_event'] . "</td>\n";
-        } else {
-            $o .= "<tr class=\"firstline_calendarinput\">\n"
-                . "<td colspan=\"2\">" . $this->lang['event_start'] . " "
-                . $this->lang['event_date'] . "</td>\n"
-                . "<td colspan='2'>" . $this->lang['event_end'] . " "
-                . $this->lang['event_date'] . "</td>\n"
-                . "<td>" . $this->lang['event_event'] . "</td>\n";
-        }
-
-        if ($this->conf['show_event_location']) {
-            $o .= "<td>" . $this->lang['event_location'] ."</td>\n";
-        } else {
-            $o .= "<td style=\"width: 0\"></td>";
-        }
-
-        if ($this->conf['show_event_link']) {
-            $o .= "<td>" . $this->lang['event_link'] . "</td>\n"
-                . "<td>" . $this->lang['event_link_txt'] . "</td>\n";
-        } else {
-            $o .= "<td style=\"width: 0\"></td><td style=\"width: 0\"></td>";
-        }
-
-        $o .= "<td></td>\n</tr>\n";
-
-        $i = 0;
-        foreach ($events as $entry) {
-            $o .= "<tr>\n"
-                . "<td class=\"calendar_input_datefield\">"
-                . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                . $entry['datestart'] . '" name="datestart[' . $i . ']" id="datestart' . $i . '"') . "</td>\n";
-
-            if ($this->conf['show_event_time']) {
-                $o .= "<td class=\"calendar_input_time\">"
-                    . tag('input type="normal" class="calendar_input_time" maxlength="5"  value="'
-                    . $entry['starttime'] . '" name="starttime[' . $i . ']"') . "</td>\n";
-            } else {
-                $o .= "<td style=\"width: 0\">" . tag('input type="hidden" value="'
-                    . $entry['starttime'] . '" name="starttime[' . $i . ']"') . "</td>\n";
-            }
-
-            $o .= "<td class=\"calendar_input_datefield\">"
-                . tag('input type="normal" class="calendar_input_date" maxlength="10" value="'
-                . $entry['dateend'] . '" name="dateend[' . $i . ']" id="dateend' . $i .'"') . "</td>\n";
-
-            if ($this->conf['show_event_time']) {
-                $o .= "<td class=\"calendar_input_time\">"
-                    . tag('input type="normal" class="calendar_input_time" maxlength="5"  value="'
-                    . $entry['endtime'] . '" name="endtime[' . $i . ']"') . "</td>\n";
-            } else {
-                $o .= "<td style=\"width: 0\">" . tag('input type="hidden" value="'
-                    . $entry['endtime'] . '" name="endtime[' . $i . ']"') . "</td>\n";
-            }
-
-            $o .= $this->renderDatePickerScript($i);
-
-            $o .= "<td>" . tag('input class="calendar_input_event" type="normal" value="'
-                . $entry['event'] . '" name="event[' . $i . ']"') . "</td>\n";
-
-            if ($this->conf['show_event_location']) {
-                $o .= "<td>" . tag('input class="calendar_input_event" type="normal" value="'
-                    . $entry['location'] . '" name="location[' . $i . ']"') . "</td>\n";
-            } else {
-                $o .= "<td style='width:0'>" . tag('input type="hidden" value="'
-                    . $entry['location'] . '" name="location[' . $i . ']"') . "</td>";
-            }
-
-            if ($this->conf['show_event_link']) {
-                $o .= "<td>" . tag('input class="calendar_input_event" type="normal" value="'
-                    . $entry['linkadr'] . '" name="linkadr[' . $i . ']"') . "</td>\n";
-                $o .= "<td>" . tag('input class="calendar_input_event" type="normal" value="'
-                    . $entry['linktxt'] . '" name="linktxt[' . $i . ']"') . "</td>\n";
-            } else {
-                $o .= "<td style=\"width: 0\">"
-                    . tag('input type="hidden" value="'. $entry['linkadr'] . '" name="linkadr[' . $i . ']"')
-                    . "</td>"
-                    . "<td style=\"width: 0\">"
-                    . tag('input type="hidden" value="'. $entry['linktxt'] . '" name="linktxt[' . $i . ']"')
-                    . "</td>";
-            }
-            $o .= "<td>"
-                . tag('input type="image" src="'
-                . $this->imageFolder .'/delete.png" style="width: 16px; height: 16px" name="delete[' . $i
-                . ']" value="delete" alt="Delete Entry"') . "\n"
-                . "</td>\n</tr>\n";
-            $i++;
-        }
-        return $o;
+        $view->datePickerScripts = $datePickerScripts;
+        return (string) $view;
     }
 
     private function renderDatePickerScript($num)
