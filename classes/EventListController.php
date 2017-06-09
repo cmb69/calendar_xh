@@ -66,10 +66,10 @@ class EventListController extends Controller
         $this->year .= isset($_POST['year']) ?  htmlspecialchars($_POST['year']) : '';
 
         if ($this->month == '') {
-            $this->month = date('m', time());
+            $this->month = date('m');
         }
         if ($this->year == '') {
-            $this->year = date('Y', time());
+            $this->year = date('Y');
         }
 
         if (!$this->pastMonth) {
@@ -184,8 +184,8 @@ class EventListController extends Controller
 
         while ($x <= $this->endMonth) {
             $textmonth = $monthnames[$this->month - 1];
-            $today = (isset($today)) ? $today : date('j', time());
-            $today = ($this->month == date('m', time()) && $this->year == date('Y', time())) ? $today : 32;
+            $today = (isset($today)) ? $today : date('j');
+            $today = ($this->month == date('m') && $this->year == date('Y')) ? $today : 32;
 
             $table = false;
             /*headline with month, year and subheadline is being generated*/

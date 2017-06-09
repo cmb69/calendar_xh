@@ -71,10 +71,10 @@ class CalendarController extends Controller
         }
 
         if ($this->month == '') {
-            $this->month = isset($_GET['month']) ? htmlspecialchars($_GET['month']) : date('m', time());
+            $this->month = isset($_GET['month']) ? htmlspecialchars($_GET['month']) : date('m');
         }
         if ($this->year == '') {
-            $this->year = isset($_GET['year']) ? htmlspecialchars($_GET['year']) : date('Y', time());
+            $this->year = isset($_GET['year']) ? htmlspecialchars($_GET['year']) : date('Y');
         }
 
         $event_year_array           = array();
@@ -160,16 +160,16 @@ class CalendarController extends Controller
             fclose($fp);
         }
 
-        $this->month = (isset($this->month)) ? $this->month : date('n', time());
+        $this->month = (isset($this->month)) ? $this->month : date('n');
         $textmonth = date('F', mktime(1, 1, 1, $this->month, 1, $this->year));
     
         $monthnames = explode(',', $this->lang['monthnames_array']);
 
         $textmonth = $monthnames[$this->month - 1];
 
-        $this->year  = (isset($this->year)) ? $this->year : date('Y', time());
-        $today = (isset($today)) ? $today : date('j', time());
-        $today = ($this->month == date('n', time()) && $this->year == date('Y', time())) ? $today : 32;
+        $this->year  = (isset($this->year)) ? $this->year : date('Y');
+        $today = (isset($today)) ? $today : date('j');
+        $today = ($this->month == date('n') && $this->year == date('Y')) ? $today : 32;
         $days = date('t', mktime(1, 1, 1, $this->month, 1, $this->year));
         $dayone = date('w', mktime(1, 1, 1, $this->month, 1, $this->year));
         $daylast = date('w', mktime(1, 1, 1, $this->month, $days, $this->year));
