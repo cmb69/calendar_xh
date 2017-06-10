@@ -55,58 +55,29 @@ class EditEventsController extends Controller
 
     public function saveAction()
     {
-        $delete      = isset($_POST['delete'])       ? $_POST['delete']       : '';
-        $add         = isset($_POST['add'])          ? $_POST['add']          : '';
-        $datestart   = isset($_POST['datestart'])    ? $_POST['datestart']    : '';
-        $starttime   = isset($_POST['starttime'])    ? $_POST['starttime']    : '';
-        $dateend     = isset($_POST['dateend'])      ? $_POST['dateend']      : '';
-        $endtime     = isset($_POST['endtime'])      ? $_POST['endtime']      : '';
-        $event       = isset($_POST['event'])        ? $_POST['event']        : '';
-        $location    = isset($_POST['location'])     ? $_POST['location']     : '';
-        $linkadr     = isset($_POST['linkadr'])      ? $_POST['linkadr']      : '';
-        $linktxt     = isset($_POST['linktxt'])      ? $_POST['linktxt']      : '';
-
-        $varnames = array(
-            'datestart', 'starttime', 'dateend', 'endtime','event', 'location', 'linkadr', 'linktxt'
-        );
-        foreach ($varnames as $var) {
-            $$var = array_map('stsl', $$var);
-        }
-
         $deleted = false;
         $added = false;
 
-        $newevent = array();
-        foreach (array_keys($event) as $j) {
-            if (!isset($delete[$j]) || $delete[$j] == '') {
-                if (!$this->isValidDate($datestart[$j])) {
-                    $datestart[$j] = '';
-                }
-                if (!$this->isValidDate($dateend[$j])) {
-                    $dateend[$j] = '';
-                }
-
-                //Birthday should never have an enddate
-                if ($location[$j] == '###') {
-                    $dateend[$j] = '';
-                }
-
-                $entry = (object) array(
-                    'datestart'  => str_replace(';', ' ', $datestart[$j]),
-                    'starttime'  => str_replace(';', ' ', $starttime[$j]),
-                    'dateend'    => str_replace(';', ' ', $dateend[$j]),
-                    'endtime'    => str_replace(';', ' ', $endtime[$j]),
-                    'event'      => str_replace(';', ' ', $event[$j]),
-                    'location'   => str_replace(';', ' ', $location[$j]),
-                    'linkadr'    => str_replace(';', ' ', $linkadr[$j]),
-                    'linktxt'    => str_replace(';', ' ', $linktxt[$j])
-                );
+        $datestart = [];
+        $varnames = array(
+            'datestart', 'starttime', 'dateend', 'endtime', 'event', 'location', 'linkadr', 'linktxt'
+        );
+        foreach ($varnames as $var) {
+            $$var = isset($_POST[$var]) ? $_POST[$var] : [];
+        }
+        $post = call_user_func_array('compact', $varnames);
+        $newevent = [];
+        foreach (array_keys($datestart) as $i) {
+            if (!isset($_POST['delete'][$i])) {
+                $entry = (object) array_combine($varnames, array_column($post, $i));
+                $this->fixPostedEvent($entry);
                 $newevent[] = $entry;
             } else {
                 $deleted = true;
             }
         }
-        if ($add <> '') {
+
+        if (isset($_POST['add'])) {
             $newevent[] = $this->createDefaultEvent();
             $added = true;
         }
@@ -124,6 +95,24 @@ class EditEventsController extends Controller
 
         $o .= $this->eventForm($newevent, $this->editeventswidth);
         echo $o;
+    }
+
+    private function fixPostedEvent(stdClass $event)
+    {
+        if (!$this->isValidDate($event->datestart)) {
+            $event->datestart = '';
+        }
+        if (!$this->isValidDate($event->dateend)) {
+            $event->dateend = '';
+        }
+
+        //Birthday should never have an enddate
+        if ($event->location == '###') {
+            $event->dateend = '';
+        }
+        foreach ($event as &$prop) {
+            $prop = str_replace(';', ' ', $prop);
+        }
     }
 
     /**
