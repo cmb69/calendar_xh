@@ -30,10 +30,6 @@ class NextEventController extends Controller
 {
     public function defaultAction()
     {
-        global $plugin;
-
-        $plugin = basename(dirname(__DIR__), '/');
-
         $event_date_array = array();
         $event_array = array();
         $event_location_array = array();

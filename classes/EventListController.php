@@ -47,8 +47,6 @@ class EventListController extends Controller
 
     public function defaultAction()
     {
-        global $plugin;
-
         $month_input = isset($_GET['month']) ? htmlspecialchars($_GET['month']) : '';
         $month_input .= isset($_POST['month']) ? htmlspecialchars($_POST['month']) : '';
 
@@ -102,8 +100,6 @@ class EventListController extends Controller
         }
 
         $this->endMonth = $this->endMonth + $this->pastMonth + 1;
-
-        $plugin = basename(dirname(__DIR__), '/');
 
         $event_year_array       = array();
         $event_month_array      = array();

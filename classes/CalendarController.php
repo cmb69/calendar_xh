@@ -58,9 +58,6 @@ class CalendarController extends Controller
 
     public function defaultAction()
     {
-        global $plugin;
-
-        $plugin = basename(dirname(__DIR__), '/');
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
         }

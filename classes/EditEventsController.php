@@ -126,12 +126,12 @@ class EditEventsController extends Controller
 
     private function eventForm($events, $editeventswidth)
     {
-        global $hjs, $pth, $sl, $plugin, $tx;
+        global $hjs, $pth, $sl, $tx;
 
         $hjs .= '<script type="text/javascript" src="'
-             .  $pth['folder']['plugins'] . $plugin . '/dp/datepicker.js">{ "lang":"'.$sl.'" }</script>'."\n";
+             .  $pth['folder']['plugins'] . 'calendar/dp/datepicker.js">{ "lang":"'.$sl.'" }</script>'."\n";
         $hjs .= tag('link rel="stylesheet" type="text/css" href="'
-             .  $pth['folder']['plugins'] . $plugin . '/dp/datepicker.css"')."\n";
+             .  $pth['folder']['plugins'] . 'calendar/dp/datepicker.css"')."\n";
 
         switch ($editeventswidth) {
             case 'narrow':

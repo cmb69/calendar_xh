@@ -35,10 +35,10 @@ class EventDataService
 
     public function __construct()
     {
-        global $pth, $plugin, $sl, $plugin_cf;
+        global $pth, $sl, $plugin_cf;
 
         if (!$plugin_cf['calendar']['filepath_data']) {
-            $datapath = "{$pth['folder']['plugins']}{$plugin}/content/";
+            $datapath = "{$pth['folder']['plugins']}calendar/content/";
         } else {
             $datapath = $plugin_cf['calendar']['filepath_data'];
         }
@@ -62,10 +62,6 @@ class EventDataService
      */
     public function readEvents()
     {
-        global $plugin;
-
-        $plugin = basename(dirname(__DIR__), '/');
-    
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
             while (($line = fgets($stream)) !== false) {
@@ -96,9 +92,6 @@ class EventDataService
      */
     public function writeEvents(array $events)
     {
-        global $plugin;
-
-        $plugin = basename(dirname(__DIR__), '/');
         $eventfile = $this->eventfile;
 
         // remove old backup
