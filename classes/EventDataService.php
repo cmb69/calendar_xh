@@ -26,6 +26,8 @@
 
 namespace Calendar;
 
+use stdClass;
+
 class EventDataService
 {
     /**
@@ -58,7 +60,7 @@ class EventDataService
     }
 
     /**
-     * @return array[]
+     * @return stdClass[]
      */
     public function readEvents()
     {
@@ -69,7 +71,7 @@ class EventDataService
                 list($datestart, $dateend, $endtime) = explode(',', $eventdates);
                 list($linkadr, $linktxt) = explode(',', $link);
                 if ($datestart != '' && $event != '') {
-                    $result[] = compact(
+                    $result[] = (object) compact(
                         'datestart',
                         'dateend',
                         'starttime',
@@ -87,7 +89,7 @@ class EventDataService
     }
 
     /**
-     * @param array[] $events
+     * @param stdClass[] $events
      * @return bool
      */
     public function writeEvents(array $events)
@@ -136,18 +138,18 @@ class EventDataService
     /**
      * @return string
      */
-    private function assembleEventLine(array $entry)
+    private function assembleEventLine(stdClass $entry)
     {
-        if ($entry['dateend'] != '') {
-            $eventdates = "{$entry['datestart']},{$entry['dateend']},{$entry['endtime']}";
+        if ($entry->dateend != '') {
+            $eventdates = "{$entry->datestart},{$entry->dateend},{$entry->endtime}";
         } else {
-            $eventdates = $entry['datestart'];
+            $eventdates = $entry->datestart;
         }
-        $event_time_start = $entry['starttime'];
-        $event = $entry['event'];
-        $location = $entry['location'];
-        if ($entry['linkadr'] != '' || $entry['linktxt'] != '') {
-            $link = "{$entry['linkadr']},{$entry['linktxt']}";
+        $event_time_start = $entry->starttime;
+        $event = $entry->event;
+        $location = $entry->location;
+        if ($entry->linkadr != '' || $entry->linktxt != '') {
+            $link = "{$entry->linkadr},{$entry->linktxt}";
         } else {
             $link = '';
         }

@@ -26,6 +26,8 @@
 
 namespace Calendar;
 
+use stdClass;
+
 class EditEventsController extends Controller
 {
     private $editeventswidth;
@@ -89,7 +91,7 @@ class EditEventsController extends Controller
                     $dateend[$j] = '';
                 }
 
-                $entry = array(
+                $entry = (object) array(
                     'datestart'  => str_replace(';', ' ', $datestart[$j]),
                     'starttime'  => str_replace(';', ' ', $starttime[$j]),
                     'dateend'    => str_replace(';', ' ', $dateend[$j]),
@@ -124,6 +126,10 @@ class EditEventsController extends Controller
         echo $o;
     }
 
+    /**
+     * @param stdClass[] $events
+     * @param string $editeventswidth
+     */
     private function eventForm($events, $editeventswidth)
     {
         global $hjs, $pth, $sl, $tx;
@@ -154,6 +160,10 @@ class EditEventsController extends Controller
         return (string) $view;
     }
 
+    /**
+     * @param string $width
+     * @param stdClass[] $events
+     */
     private function renderTable($width, array $events)
     {
         $view = new View("{$width}-table");
@@ -203,21 +213,24 @@ EOS;
     /**
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function dateSort($a, $b)
+    private function dateSort(stdClass $a, stdClass $b)
     {
         $pattern = '!(.*)\\' . $this->dpSeperator() . '(.*)\\' . $this->dpSeperator() . '(.*)!';
         $replace = '\3\2\1';
-        $a_i = preg_replace($pattern, $replace, $a['datestart']) . $a['starttime'];
-        $b_i = preg_replace($pattern, $replace, $b['datestart']) . $b['starttime'];
+        $a_i = preg_replace($pattern, $replace, $a->datestart) . $a->starttime;
+        $b_i = preg_replace($pattern, $replace, $b->datestart) . $b->starttime;
         if ($a_i == $b_i) {
             return 0;
         }
         return ($a_i < $b_i) ? -1 : 1;
     }
 
+    /**
+     * @return stdClass
+     */
     private function createDefaultEvent()
     {
-        return array(
+        return (object) array(
             'datestart'   => date('d') . $this->dpSeperator() . date('m') . $this->dpSeperator() . date('Y'),
             'starttime'   => '',
             'dateend'     => '',
