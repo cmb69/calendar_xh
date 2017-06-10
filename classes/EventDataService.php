@@ -68,8 +68,19 @@ class EventDataService
         if ($stream = fopen($this->eventfile, 'r')) {
             while (($line = fgets($stream)) !== false) {
                 list($eventdates, $event, $location, $link, $starttime) = explode(';', rtrim($line));
-                list($datestart, $dateend, $endtime) = explode(',', $eventdates);
-                list($linkadr, $linktxt) = explode(',', $link);
+                if (strpos($eventdates, ',') !== false) {
+                    list($datestart, $dateend, $endtime) = explode(',', $eventdates);
+                } else {
+                    $datestart = $eventdates;
+                    $dateend = null;
+                    $endtime = null;
+                }
+                if (strpos($link, ',') !== false) {
+                    list($linkadr, $linktxt) = explode(',', $link);
+                } else {
+                    $linkadr = $link;
+                    $linktxt = null;
+                }
                 if ($datestart != '' && $event != '') {
                     $result[] = (object) compact(
                         'datestart',
