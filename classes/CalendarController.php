@@ -26,6 +26,8 @@
 
 namespace Calendar;
 
+use stdClass;
+
 class CalendarController extends Controller
 {
     /**
@@ -74,87 +76,61 @@ class CalendarController extends Controller
             $this->year = isset($_GET['year']) ? htmlspecialchars($_GET['year']) : date('Y');
         }
 
-        $event_year_array           = array();
-        $event_month_array          = array();
-        $event_yearmonth_array      = array();
-        $event_date_array           = array();
-        $event_array                = array();
-        $event_location_array       = array();
-        $event_time_array           = array();
-
         $t                = '';
-        $eventdates       = '';
-        $event_date       = '';
-        $event_date_start = '';
-        $event_end_date   = '';
-        $event_year       = '';
-        $event_month      = '';
-        $event_yearmonth  = '';
-        $event            = '';
         $event_day        = '';
-        $location         = '';
         $event_today      = '';
         $event_title      = '';
-        $event_time       = '';
-        $event_end_time   = '';
 
-        if (is_file($eventfile)) {
-            $fp = fopen($eventfile, 'r');
-            while (!feof($fp)) {
-                $line = fgets($fp, 4096);
-                if (strpos($line, ';') !== false) {
-                    list($eventdates,$event,$location,,$event_time) = explode(';', $line);
-                    if (strpos($eventdates, ',') !== false) {
-                        list($event_date_start, $event_end_date, $event_end_time) = explode(',', $eventdates);
-                        list($event_date1, $event_month1, $event_year1)
-                            = explode($this->dpSeperator(), $event_end_date);
-                        list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event_date_start);
-                        $event_end = mktime(null, null, null, $event_month1, $event_date1, $event_year1);
-                        $event_start = mktime(null, null, null, $event_month, $event_date, $event_year);
-                    } else {
-                         $event_date_start = $eventdates;
-                         $event_end_date = '';
-                         $event_end_time = '';
-                         list($event_date, $event_month, $event_year)
-                            = explode($this->dpSeperator(), $event_date_start);
-                    }
-                }
-                if ($event_end_date) {
-                    $txt = "{$event} {$this->lang['event_date_till_date']} {$event_end_date} {$event_end_time}";
-                    if ($this->conf['show_days_between_dates']) {
-                        $count = 86400;
-                    } else {
-                        $count = $event_end - $event_start;
-                    }
-                    for ($i=$event_start; $i <= $event_end; $i+=$count) {
-                        array_push($event_year_array, date('Y', $i));
-                        array_push($event_month_array, date('m', $i));
-                        array_push($event_yearmonth_array, date('Y.m', $i));
-                        array_push($event_date_array, date('d', $i));
-                        array_push($event_location_array, $location);
-                        if ($i == $event_start) {
-                            array_push($event_time_array, $event_time);
-                            array_push($event_array, " {$txt}");
-                        } else {
-                            array_push($event_time_array, '');
-                            array_push($event_array, $txt);
-                        }
-                    }
-                } else {
-                    array_push($event_year_array, $event_year);
-                    array_push($event_month_array, $event_month);
-                    array_push($event_yearmonth_array, $event_yearmonth);
-                    array_push($event_date_array, $event_date);
-                    if ($event_time != '') {
-                        array_push($event_array, " {$event}");
-                    } else {
-                        array_push($event_array, $event);
-                    }
-                    array_push($event_location_array, $location);
-                    array_push($event_time_array, $event_time);
-                }
+        $events = (new EventDataService)->readEvents();
+        foreach ($events as $entry) {
+            if (isset($entry->dateend)) {
+                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $entry->datestart);
+                $entry->starttimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
+                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $entry->dateend);
+                $entry->endtimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
+            } else {
+                list($entry->day, $entry->month, $entry->year) = explode($this->dpSeperator(), $entry->datestart);
             }
-            fclose($fp);
+        }
+
+        $theevents = [];
+        foreach ($events as $entry) {
+            if (isset($entry->dateend)) {
+                $txt = "{$entry->event} {$this->lang['event_date_till_date']} {$entry->dateend} {$entry->endtime}";
+                if ($this->conf['show_days_between_dates']) {
+                    $count = 86400;
+                } else {
+                    $count = $entry->endtimestamp - $entry->starttimestamp;
+                }
+                for ($i = $entry->starttimestamp; $i <= $entry->endtimestamp; $i += $count) {
+                    $newentry = new stdClass;
+                    $newentry->year = date('Y', $i);
+                    $newentry->month = date('m', $i);
+                    $newentry->day = date('d', $i);
+                    $newentry->location = $entry->location;
+                    if ($i == $entry->starttimestamp) {
+                        $newentry->time = $entry->starttime;
+                        $newentry->text = " {$txt}";
+                    } else {
+                        $newentry->time = '';
+                        $newentry->text = $txt;
+                    }
+                    $theevents[] = $newentry;
+                }
+            } else {
+                $newentry = new stdClass;
+                $newentry->year = $entry->year;
+                $newentry->month = $entry->month;
+                $newentry->day = $entry->day;
+                if ($entry->starttime != '') {
+                    $newentry->text = " {$entry->event}";
+                } else {
+                    $newentry->text = $entry->event;
+                }
+                $newentry->location = $entry->location;
+                $newentry->time = $entry->starttime;
+                $theevents[] = $newentry;
+            }
         }
 
         $this->month = (isset($this->month)) ? $this->month : date('n');
@@ -216,27 +192,27 @@ class CalendarController extends Controller
                 $dayofweek = 6;
             }
 
-            foreach (array_keys($event_year_array) as $keys) {
-                if ($event_year_array[$keys] == $this->year
-                    && $event_month_array[$keys] == $this->month
-                    && $event_date_array[$keys] == $i
+            foreach ($theevents as $event) {
+                if ($event->year == $this->year
+                    && $event->month == $this->month
+                    && $event->day == $i
                 ) {
                     $event_day = $i;
                     $external_site ='';
                     if ($event_title) {
-                        $event_title .= ' &nbsp;|&nbsp; ' . trim($event_time_array[$keys])
-                            . strip_tags($event_array[$keys]);
+                        $event_title .= ' &nbsp;|&nbsp; ' . trim($event->time)
+                            . strip_tags($event->text);
                     } else {
-                        $event_title = trim($event_time_array[$keys]) . strip_tags($event_array[$keys]);
+                        $event_title = trim($event->time) . strip_tags($event->text);
                     }
                 }
 
-                if (trim($event_location_array[$keys]) == '###'
-                    && $event_month_array[$keys] == $this->month
-                    && $event_date_array[$keys] == $i
+                if (trim($event->location) == '###'
+                    && $event->month == $this->month
+                    && $event->day == $i
                 ) {
                     $event_day = $i;
-                    $age = $this->year - $event_year_array[$keys];
+                    $age = $this->year - $event->year;
                     if ($age >= 5) {
                         $age .= " {$this->lang['age_plural2_text']}";
                     } elseif ($age >= 2 && $age < 5) {
@@ -248,9 +224,9 @@ class CalendarController extends Controller
                     $external_site = '';
 
                     if ($event_title) {
-                        $event_title .= "\r\n{$event_array[$keys]} {$age}";
+                        $event_title .= "\r\n{$event->text} {$age}";
                     } else {
-                        $event_title = "{$event_array[$keys]} {$age}";
+                        $event_title = "{$event->text} {$age}";
                     }
                 }
             }
