@@ -189,23 +189,7 @@ class EventListController extends Controller
                 $table = true;
             }
             if ($table) {
-                $t .= "<tr>\n";
-                $t .= "<td class=\"event_monthyear\" colspan=\"$tablecols\">$textmonth {$this->year}"
-                    . tag('br') . "</td>\n";
-                $t .= "</tr>\n";
-                $t .= "<tr class=\"event_heading_row\">\n";
-                $t .= "<td class=\"event_heading event_date\">".$this->lang['event_date']."</td>\n";
-                if ($this->conf['show_event_time']) {
-                    $t .= "<td class=\"event_heading event_time\">".$this->lang['event_time']."</td>\n";
-                }
-                $t .= "<td class=\"event_heading event_event\">".$this->lang['event_event']."</td>\n";
-                if ($this->conf['show_event_location']) {
-                    $t .= "<td class=\"event_heading event_location\">".$this->lang['event_location']."</td>\n";
-                }
-                if ($this->conf['show_event_link']) {
-                    $t .= "<td class=\"event_heading event_link\">".$this->lang['event_link_etc']."</td>\n";
-                }
-                $t .= "</tr>\n";
+                $t .= new HtmlString($this->createHeadlineView($tablecols, $textmonth));
             }
 
             asort($event_datetime_array);
@@ -226,27 +210,7 @@ class EventListController extends Controller
                         //headline with month has to be generated in case there is no ordinary event
                         if (!$table) {
                             $table = true;
-                            $t .= "<tr>\n";
-                            $t .= "<td class=\"event_monthyear\" colspan=\"$tablecols\">$textmonth {$this->year}"
-                                . tag('br') . "</td>\n";
-                            $t .= "</tr>\n";
-
-                            $t .= "<tr class=\"event_heading_row\">\n";
-                            $t .= "<td class=\"event_heading event_date\">" . $this->lang['event_date'] . "</td>\n";
-                            if ($this->conf['show_event_time']) {
-                                $t .= "<td class=\"event_heading event_time\">" . $this->lang['event_time'] . "</td>\n";
-                            }
-                            $t .= "<td class=\"event_heading event_event\">" . $this->lang['event_event'] . "</td>\n";
-                            if ($this->conf['show_event_location']) {
-                                $t .= "<td class=\"event_heading event_location\">"
-                                    . $this->lang['event_location'] . "</td>\n";
-                            }
-                            if ($this->conf['show_event_link']) {
-                                $t .= "<td class=\"event_heading event_link\">" . $this->lang['event_link_etc']
-                                    . "</td>\n";
-                            }
-                            $t .= "</tr>\n";
-                            //end of headline for birthdays
+                            $t .= $this->createHeadlineView($tablecols, $textmonth);
                         }
 
                         $t .= "<tr class=\"birthday_data_row\">\n";
@@ -400,5 +364,17 @@ class EventListController extends Controller
         }
         $t .="</table>\n";
         echo $t;
+    }
+
+    private function createHeadlineView($tablecols, $textmonth)
+    {
+        $view = new View("event-list-headline");
+        $view->tablecols = $tablecols;
+        $view->textmonth = $textmonth;
+        $view->year = $this->year;
+        $view->showTime = $this->conf['show_event_time'];
+        $view->showLocation = $this->conf['show_event_location'];
+        $view->showLink = $this->conf['show_event_link'];
+        return $view;
     }
 }
