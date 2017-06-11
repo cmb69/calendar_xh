@@ -78,7 +78,7 @@ class CalendarController extends Controller
 
         $event_day        = '';
         $event_today      = '';
-        $event_title      = '';
+        $event_titles = [];
 
 
         $events = $this->fetchEvents();
@@ -104,23 +104,14 @@ class CalendarController extends Controller
             foreach ($events as $event) {
                 if ($this->isEventOn($event, $i)) {
                     $event_day = $i;
-                    if ($event_title) {
-                        $event_title .= ' | ' . trim($event->time)
-                            . strip_tags($event->text);
-                    } else {
-                        $event_title = trim($event->time) . strip_tags($event->text);
-                    }
+                    $event_titles[] = trim($event->time) . strip_tags($event->text);
                 }
 
                 if ($this->isBirthdayOn($event, $i)) {
                     $event_day = $i;
                     $age = $this->year - $event->year;
                     $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
-                    if ($event_title) {
-                        $event_title .= "\r\n{$event->text} {$age}";
-                    } else {
-                        $event_title = "{$event->text} {$age}";
-                    }
+                    $event_titles[] = "{$event->text} {$age}";
                 }
             }
 
@@ -140,8 +131,8 @@ class CalendarController extends Controller
                 case $event_today:
                     $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
                     $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday,
-                        'href' => $url, 'title' => $event_title];
-                    $event_title = '';
+                        'href' => $url, 'title' => implode(' | ', $event_titles)];
+                    $event_titles = [];
                     break;
                 case $today:
                     $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday];
@@ -149,8 +140,8 @@ class CalendarController extends Controller
                 case $event_day:
                     $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
                     $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $tableday,
-                        'href' => $url, 'title' => $event_title];
-                    $event_title = '';
+                        'href' => $url, 'title' => implode(' | ', $event_titles)];
+                    $event_titles = [];
                     break;
                 default:
                     if ($dayofweek == $this->conf['week-end_day_1'] || $dayofweek == $this->conf['week-end_day_2']) {
