@@ -148,9 +148,6 @@ class CalendarController extends Controller
         $daylast = date('w', mktime(1, 1, 1, $this->month, $days, $this->year));
         $dayarray = explode(',', $this->lang['daynames_array']);
 
-        $t .= "<table class=\"calendar_main\">\n<tr>\n";
-        $t .= "<td colspan=\"7\">\n";
-
         if ($this->conf['prev_next_button']) {
             $prevUrl = XH_hsc($this->getPrevUrl());
             $nextUrl = XH_hsc($this->getNextUrl());
@@ -162,8 +159,7 @@ class CalendarController extends Controller
             $t .= "<div class=\"calendar_monthyear\">$textmonth {$this->year}</div>\n";
         }
 
-        $t .= "</td>\n";
-        $t .= "</tr>\n<tr>\n";
+        $t .= "<table class=\"calendar_main\">\n<tr>\n";
 
         for ($i = 0; $i <= 6; $i++) {
             if ($this->conf['week_starts_mon']) {
