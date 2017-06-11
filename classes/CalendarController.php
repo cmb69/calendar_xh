@@ -63,11 +63,6 @@ class CalendarController extends Controller
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
         }
-        $eventfile = (new EventDataService)->getFilename();
-        if (!is_file($eventfile)) {
-            $handle = fopen($eventfile, 'w');
-            fclose($handle);
-        }
 
         if ($this->month == '') {
             $this->month = isset($_GET['month']) ? $_GET['month'] : date('m');
