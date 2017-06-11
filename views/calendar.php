@@ -13,7 +13,7 @@
 <?php   foreach ($row as $cell):?>
         <td class="<?=$this->escape($cell->classname)?>">
 <?php       if (isset($cell->href)):?>
-            <a href="<?=$this->escape($cell->href)?>" title="<?=$this->escape($cell->title)?>" target="<?=$this->escape($cell->target)?>">
+            <a href="<?=$this->escape($cell->href)?>" title="<?=$this->escape($cell->title)?>">
 <?php       endif?>
                 <?=$this->escape($cell->content)?>
 <?php       if (isset($cell->href)):?>

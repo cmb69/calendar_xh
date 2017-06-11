@@ -104,7 +104,6 @@ class CalendarController extends Controller
             foreach ($events as $event) {
                 if ($this->isEventOn($event, $i)) {
                     $event_day = $i;
-                    $external_site ='';
                     if ($event_title) {
                         $event_title .= ' | ' . trim($event->time)
                             . strip_tags($event->text);
@@ -117,9 +116,6 @@ class CalendarController extends Controller
                     $event_day = $i;
                     $age = $this->year - $event->year;
                     $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
-
-                    $external_site = '';
-
                     if ($event_title) {
                         $event_title .= "\r\n{$event->text} {$age}";
                     } else {
@@ -142,29 +138,19 @@ class CalendarController extends Controller
 
             switch ($i) {
                 case $event_today:
-                    if ($external_site) {
-                        $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday,
-                            'href' => "http://{$external_site}", 'title' => $event_title, 'target' => '_blank'];
-                    } else {
-                        $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
-                        $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday,
-                            'href' => $url, 'title' => $event_title, 'target' => '_self'];
-                        $event_title = '';
-                    }
+                    $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
+                    $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday,
+                        'href' => $url, 'title' => $event_title];
+                    $event_title = '';
                     break;
                 case $today:
                     $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday];
                     break;
                 case $event_day:
-                    if ($external_site) {
-                        $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $tableday,
-                            'href' => "http://{$external_site}", 'title' => $event_title, 'target' => '_blank'];
-                    } else {
-                        $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
-                        $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $tableday,
-                            'href' => $url, 'title' => $event_title, 'target' => '_self'];
-                        $event_title = '';
-                    }
+                    $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
+                    $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $tableday,
+                        'href' => $url, 'title' => $event_title];
+                    $event_title = '';
                     break;
                 default:
                     if ($dayofweek == $this->conf['week-end_day_1'] || $dayofweek == $this->conf['week-end_day_2']) {
