@@ -22,6 +22,9 @@
     $plugin_tx['calendar']['age_singular_text']="an";
     $plugin_tx['calendar']['age_plural1_text']="ans";
     $plugin_tx['calendar']['age_plural2_text']="ans";
+    $plugin_tx['calendar']['age_1']="%d an";
+    $plugin_tx['calendar']['age_2_4']="%d ans";
+    $plugin_tx['calendar']['age_5']="%d ans";
     $plugin_tx['calendar']['prev_button_text']="Mois préc.";
     $plugin_tx['calendar']['next_button_text']="Mois suiv.";
     $plugin_tx['calendar']['notice_no_next_event_sceduled']="";

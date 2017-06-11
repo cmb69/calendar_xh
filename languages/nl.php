@@ -22,6 +22,9 @@
     $plugin_tx['calendar']['age_singular_text']="Jaar";
     $plugin_tx['calendar']['age_plural1_text']="Jaaren";
     $plugin_tx['calendar']['age_plural2_text']="Jaaren";
+    $plugin_tx['calendar']['age_1']="%d Jaar";
+    $plugin_tx['calendar']['age_2_4']="%d Jaaren";
+    $plugin_tx['calendar']['age_5']="%d Jaaren";
     $plugin_tx['calendar']['prev_button_text']="vorafgaande maand";
     $plugin_tx['calendar']['next_button_text']="volgende maand";
     $plugin_tx['calendar']['notice_no_next_event_sceduled']="";

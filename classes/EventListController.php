@@ -219,7 +219,7 @@ class EventListController extends Controller
                         $table = true;
                         $t .= $this->createHeadlineView($tablecols, $textmonth);
                     }
-                    $t .= $this->renderBirthdayRow($event, $age);
+                    $t .= $this->createBirthdayRowView($event, $age);
                 }
             }
 
@@ -232,81 +232,50 @@ class EventListController extends Controller
                         $this->month = '0' . $this->month;
                     }
                 }
-                $t .= $this->renderEventRow($event);
+                $t .= $this->createEventRowView($event);
             }
         }
         return $t;
     }
 
-    private function renderBirthdayRow(stdClass $event, $age)
+    /**
+     * @return View
+     */
+    private function createBirthdayRowView(stdClass $event, $age)
     {
-        $t = '';
-        $t .= "<tr class=\"birthday_data_row\">\n";
-        $t .= "<td class=\"event_data event_date\">{$event->startday}" . $this->dpSeperator()
-            . "{$this->month}" . $this->dpSeperator() . "{$this->year}</td>\n";
-        if ($this->conf['show_event_time']) {
-            $t .= "<td class=\"event_data event_time\"></td>\n";
-        }
-
-        if ($age >= 5) {
-            $t .= "<td class=\"event_data event_event\">"
-                . "{$event->event} {$age} {$this->lang['age_plural2_text']}</td>\n";
-        } elseif ($age >= 2 && $age < 5) {
-            $t .= "<td class=\"event_data event_event\">"
-                . "{$event->event} {$age} {$this->lang['age_plural1_text']}</td>\n";
-        } else {
-            $t .= "<td class=\"event_data event_event\">"
-                . "{$event->event} {$age} {$this->lang['age_singular_text']}</td>\n";
-        }
-
-        if ($this->conf['show_event_location']) {
-            $t .= "<td class=\"event_data event_location\">"
-                . "{$this->lang['birthday_text']}</td>\n";
-        }
-        if ($this->conf['show_event_link']) {
-            $t .= $this->renderLink($event);
-        }
-        $t .= "</tr>\n";
-        return $t;
+        $view = new View('birthday-row');
+        $view->event = $event;
+        $view->age = $age;
+        $view->date = $event->startday . $this->dpSeperator()
+            . $this->month . $this->dpSeperator() . $this->year;
+        $view->showTime = $this->conf['show_event_time'];
+        $view->showLocation = $this->conf['show_event_location'];
+        $view->showLink = $this->conf['show_event_link'];
+        $view->link = new HtmlString($this->renderLink($event));
+        return $view;
     }
 
-    private function renderEventRow(stdClass $event)
+    /**
+     * @return View
+     */
+    private function createEventRowView(stdClass $event)
     {
-        $t = '';
-        $t .= "<tr class=\"event_data_row\">\n";
-        //now
-
-        //date field
-        $t .= "<td class=\"event_data event_date\">";
-        $t .= $this->renderDate($event);
-        $t .= "</td>\n";
-
-        //time field
-        if ($this->conf['show_event_time']) {
-            $t .="<td class=\"event_data event_time\">" . $event->starttime;
-            if ($event->endtime) {
-                if (!$event->endday) {
-                    $t .= ' ' . $this->lang['event_time_till_time'];
-                }
-                $t .= tag('br') . $event->endtime;
+        $view = new View('event-row');
+        $view->event = $event;
+        $view->date = new HtmlString($this->renderDate($event));
+        $view->showTime = $this->conf['show_event_time'];
+        $view->showLocation = $this->conf['show_event_location'];
+        $view->showLink = $this->conf['show_event_link'];
+        $view->link = new HtmlString($this->renderLink($event));
+        $time = $event->starttime;
+        if ($event->endtime) {
+            if (!$event->endday) {
+                $time .= ' ' . $this->lang['event_time_till_time'];
             }
-            $t .="</td>\n";
+            $time .= tag('br') . $event->endtime;
         }
-
-        //event field
-        $t .= "<td class=\"event_data event_event\">" . $event->event . "</td>\n";
-
-        //location field
-        if ($this->conf['show_event_location']) {
-            $t .= "<td class=\"event_data event_location\">{$event->location}</td>\n";
-        }
-
-        //link field
-        if ($this->conf['show_event_link']) {
-            $t .= $this->renderLink($event);
-        }
-        $t .= "</tr>\n";
-        return $t;
+        $view->time = new HtmlString($time);
+        return $view;
     }
 
     private function renderDate($event)
