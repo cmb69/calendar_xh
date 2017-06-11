@@ -148,19 +148,8 @@ class CalendarController extends Controller
         $daylast = date('w', mktime(1, 1, 1, $this->month, $days, $this->year));
         $dayarray = explode(',', $this->lang['daynames_array']);
 
-        if ($this->conf['prev_next_button']) {
-            $prevUrl = XH_hsc($this->getPrevUrl());
-            $nextUrl = XH_hsc($this->getNextUrl());
-            $t .= "<div class=\"calendar_monthyear\">\n<a href=\"$prevUrl\" rel=\"nofollow\" title=\""
-                . $this->lang['prev_button_text']
-                . "\">&lt;&lt;</a>&nbsp;$textmonth {$this->year}&nbsp;<a href=\"$nextUrl\" rel=\"nofollow\" title=\""
-                . $this->lang['next_button_text'] . "\">&gt;&gt;</a></div>\n";
-        } else {
-            $t .= "<div class=\"calendar_monthyear\">$textmonth {$this->year}</div>\n";
-        }
-
-        $t .= "<table class=\"calendar_main\">\n<tr>\n";
-
+        $rows = [];
+        $row = [];
         for ($i = 0; $i <= 6; $i++) {
             if ($this->conf['week_starts_mon']) {
                 $j = $i + 1;
@@ -170,12 +159,11 @@ class CalendarController extends Controller
             if ($j == 7) {
                 $j = 0;
             }
-
-            $t .= "<td class=\"calendar_daynames\">$dayarray[$j]</td>\n";
+            $row[] = (object) ['classname' => 'calendar_daynames', 'content' => $dayarray[$j]];
         }
-        $t .= "</tr>\n";
+        $rows[] = $row;
         //done printing the top row of days
-    
+
         $span1 = $this->getSpan1($dayone);
         $span2 = $this->getSpan2($daylast);
         for ($i = 1; $i <= $days; $i++) {
@@ -196,7 +184,7 @@ class CalendarController extends Controller
                     $event_day = $i;
                     $external_site ='';
                     if ($event_title) {
-                        $event_title .= ' &nbsp;|&nbsp; ' . trim($event->time)
+                        $event_title .= ' | ' . trim($event->time)
                             . strip_tags($event->text);
                     } else {
                         $event_title = trim($event->time) . strip_tags($event->text);
@@ -229,9 +217,9 @@ class CalendarController extends Controller
 
             $tableday = $i;
             if ($i == 1 || $dayofweek == 0) {
-                $t .= "<tr>\n";
-                if ($span1 > 0 && $i == 1) {
-                    $t .= "<td class=\"calendar_noday\" colspan=\"$span1\">&nbsp;</td>\n";
+                $row = [];
+                while ($span1-- && $i == 1) {
+                    $row[] = (object) ['classname' => 'calendar_noday', 'content' => ''];
                 }
             }
 
@@ -242,47 +230,52 @@ class CalendarController extends Controller
             switch ($i) {
                 case $event_today:
                     if ($external_site) {
-                        $t .= "<td class=\"calendar_today\"><a href=\"http://{$external_site}\""
-                            . " target=\"_blank\" title=\"$event_title\">$tableday</a></td>\n";
+                        $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday,
+                            'href' => "http://{$external_site}", 'title' => $event_title, 'target' => '_blank'];
                     } else {
-                        $url = "?{$this->eventpage}&amp;month={$this->month}&amp;year={$this->year}";
-                        $t .= "<td class=\"calendar_today\"><a href=\"$url\" title=\"$event_title\">"
-                            . "$tableday</a></td>\n";
+                        $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
+                        $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday,
+                            'href' => $url, 'title' => $event_title, 'target' => '_self'];
                         $event_title = '';
                     }
                     break;
                 case $today:
-                    $t .= "<td class=\"calendar_today\">$tableday</td>\n";
+                    $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday];
                     break;
                 case $event_day:
                     if ($external_site) {
-                        $t .= "<td class=\"calendar_eventday\"><a href=\"http://{$external_site}\""
-                            . " target=\"_blank\" title=\"$event_title\">$tableday</a></td>\n";
+                        $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $tableday,
+                            'href' => "http://{$external_site}", 'title' => $event_title, 'target' => '_blank'];
                     } else {
-                        $url = "?{$this->eventpage}&amp;month={$this->month}&amp;year={$this->year}";
-                        $t .= "<td class=\"calendar_eventday\"><a href=\"$url\" title=\"$event_title\">"
-                            . "$tableday</a></td>\n";
+                        $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
+                        $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $tableday,
+                            'href' => $url, 'title' => $event_title, 'target' => '_self'];
                         $event_title = '';
                     }
                     break;
                 default:
                     if ($dayofweek == $this->conf['week-end_day_1'] || $dayofweek == $this->conf['week-end_day_2']) {
-                        $t .= "<td class=\"calendar_we\">$tableday</td>\n";
+                        $row[] = (object) ['classname' => 'calendar_we', 'content' => $tableday];
                     } else {
-                        $t .= "<td class=\"calendar_day\">$tableday</td>\n";
+                        $row[] = (object) ['classname' => 'calendar_day', 'content' => $tableday];
                     }
             }
 
-            if ($i == $days && $span2 > 0) {
-                $t .= "<td class=\"calendar_noday\" colspan=\"$span2\">&nbsp;</td>\n";
+            while ($i == $days && $span2--) {
+                $row[] = (object) ['classname' => 'calendar_noday', 'content' => ''];
             }
             if ($dayofweek == 6 || $i == $days) {
-                $t .= "</tr>\n";
+                $rows[] = $row;
             }
         }
-        $t .= "</table>\n";
 
-        echo $t;
+        $view = new View('calendar');
+        $view->title = "$textmonth {$this->year}";
+        $view->hasPrevNextButtons = $this->conf['prev_next_button'];
+        $view->prevUrl = $this->getPrevUrl();
+        $view->nextUrl = $this->getNextUrl();
+        $view->rows = $rows;
+        $view->render();
     }
 
     /**
