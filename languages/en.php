@@ -19,9 +19,6 @@
 	$plugin_tx['calendar']['event_end']="Ending";
 
 	$plugin_tx['calendar']['birthday_text']="Birthday";
-	$plugin_tx['calendar']['age_singular_text']="year";
-	$plugin_tx['calendar']['age_plural1_text']="years";
-	$plugin_tx['calendar']['age_plural2_text']="years";
 	$plugin_tx['calendar']['age_1']="%d year";
 	$plugin_tx['calendar']['age_2_4']="%d years";
 	$plugin_tx['calendar']['age_5']="%d years";

@@ -2,7 +2,7 @@
 <?php if ($this->hasPrevNextButtons):?>
     <a href="<?=$this->prevUrl()?>" rel="nofollow" title="<?=$this->text('prev_button_text')?>">&lt;&lt;</a>
 <?php endif?>
-    <?=$this->title()?>
+    <?=$this->caption()?>
 <?php if ($this->hasPrevNextButtons):?>
     <a href="<?=$this->nextUrl()?>" rel="nofollow" title="<?=$this->text('next_button_text')?>">&gt;&gt;</a>
 <?php endif?>

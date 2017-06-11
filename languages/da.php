@@ -19,9 +19,6 @@
     $plugin_tx['calendar']['event_end']="Slutter";
 
     $plugin_tx['calendar']['birthday_text']="Fødselsdag";
-    $plugin_tx['calendar']['age_singular_text']="år";
-    $plugin_tx['calendar']['age_plural1_text']="år";
-    $plugin_tx['calendar']['age_plural2_text']="år";
     $plugin_tx['calendar']['age_1']="%d år";
     $plugin_tx['calendar']['age_2_4']="%d år";
     $plugin_tx['calendar']['age_5']="%d år";

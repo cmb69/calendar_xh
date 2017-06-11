@@ -19,9 +19,6 @@
     $plugin_tx['calendar']['event_end']="Koniec";
 
     $plugin_tx['calendar']['birthday_text']="Narodeniny";
-    $plugin_tx['calendar']['age_singular_text']="rok";
-    $plugin_tx['calendar']['age_plural1_text']="roky";
-    $plugin_tx['calendar']['age_plural2_text']="rokov";
     $plugin_tx['calendar']['age_1']="%d rok";
     $plugin_tx['calendar']['age_2_4']="%d roky";
     $plugin_tx['calendar']['age_5']="%d rokov";

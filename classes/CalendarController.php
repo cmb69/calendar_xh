@@ -70,75 +70,20 @@ class CalendarController extends Controller
         }
 
         if ($this->month == '') {
-            $this->month = isset($_GET['month']) ? htmlspecialchars($_GET['month']) : date('m');
+            $this->month = isset($_GET['month']) ? $_GET['month'] : date('m');
         }
         if ($this->year == '') {
-            $this->year = isset($_GET['year']) ? htmlspecialchars($_GET['year']) : date('Y');
+            $this->year = isset($_GET['year']) ? $_GET['year'] : date('Y');
         }
 
-        $t                = '';
         $event_day        = '';
         $event_today      = '';
         $event_title      = '';
 
-        $events = (new EventDataService)->readEvents();
-        foreach ($events as $entry) {
-            if (isset($entry->dateend)) {
-                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $entry->datestart);
-                $entry->starttimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
-                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $entry->dateend);
-                $entry->endtimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
-            } else {
-                list($entry->day, $entry->month, $entry->year) = explode($this->dpSeperator(), $entry->datestart);
-            }
-        }
 
-        $theevents = [];
-        foreach ($events as $entry) {
-            if (isset($entry->dateend)) {
-                $txt = "{$entry->event} {$this->lang['event_date_till_date']} {$entry->dateend} {$entry->endtime}";
-                if ($this->conf['show_days_between_dates']) {
-                    $count = 86400;
-                } else {
-                    $count = $entry->endtimestamp - $entry->starttimestamp;
-                }
-                for ($i = $entry->starttimestamp; $i <= $entry->endtimestamp; $i += $count) {
-                    $newentry = new stdClass;
-                    $newentry->year = date('Y', $i);
-                    $newentry->month = date('m', $i);
-                    $newentry->day = date('d', $i);
-                    $newentry->location = $entry->location;
-                    if ($i == $entry->starttimestamp) {
-                        $newentry->time = $entry->starttime;
-                        $newentry->text = " {$txt}";
-                    } else {
-                        $newentry->time = '';
-                        $newentry->text = $txt;
-                    }
-                    $theevents[] = $newentry;
-                }
-            } else {
-                $newentry = new stdClass;
-                $newentry->year = $entry->year;
-                $newentry->month = $entry->month;
-                $newentry->day = $entry->day;
-                if ($entry->starttime != '') {
-                    $newentry->text = " {$entry->event}";
-                } else {
-                    $newentry->text = $entry->event;
-                }
-                $newentry->location = $entry->location;
-                $newentry->time = $entry->starttime;
-                $theevents[] = $newentry;
-            }
-        }
+        $events = $this->fetchEvents();
 
         $this->month = (isset($this->month)) ? $this->month : date('n');
-        $textmonth = date('F', mktime(1, 1, 1, $this->month, 1, $this->year));
-    
-        $monthnames = explode(',', $this->lang['monthnames_array']);
-
-        $textmonth = $monthnames[$this->month - 1];
 
         $this->year  = (isset($this->year)) ? $this->year : date('Y');
         $today = (isset($today)) ? $today : date('j');
@@ -146,41 +91,18 @@ class CalendarController extends Controller
         $days = date('t', mktime(1, 1, 1, $this->month, 1, $this->year));
         $dayone = date('w', mktime(1, 1, 1, $this->month, 1, $this->year));
         $daylast = date('w', mktime(1, 1, 1, $this->month, $days, $this->year));
-        $dayarray = explode(',', $this->lang['daynames_array']);
 
         $rows = [];
-        $row = [];
-        for ($i = 0; $i <= 6; $i++) {
-            if ($this->conf['week_starts_mon']) {
-                $j = $i + 1;
-            } else {
-                $j = $i;
-            }
-            if ($j == 7) {
-                $j = 0;
-            }
-            $row[] = (object) ['classname' => 'calendar_daynames', 'content' => $dayarray[$j]];
-        }
-        $rows[] = $row;
+        $rows[] = $this->getDaynamesRow();
         //done printing the top row of days
 
         $span1 = $this->getSpan1($dayone);
         $span2 = $this->getSpan2($daylast);
         for ($i = 1; $i <= $days; $i++) {
-            $dayofweek = date('w', mktime(1, 1, 1, $this->month, $i, $this->year));
+            $dayofweek = $this->getDayOfWeek($i);
 
-            if ($this->conf['week_starts_mon']) {
-                $dayofweek = $dayofweek - 1;
-            }
-            if ($dayofweek == -1) {
-                $dayofweek = 6;
-            }
-
-            foreach ($theevents as $event) {
-                if ($event->year == $this->year
-                    && $event->month == $this->month
-                    && $event->day == $i
-                ) {
+            foreach ($events as $event) {
+                if ($this->isEventOn($event, $i)) {
                     $event_day = $i;
                     $external_site ='';
                     if ($event_title) {
@@ -191,19 +113,10 @@ class CalendarController extends Controller
                     }
                 }
 
-                if (trim($event->location) == '###'
-                    && $event->month == $this->month
-                    && $event->day == $i
-                ) {
+                if ($this->isBirthdayOn($event, $i)) {
                     $event_day = $i;
                     $age = $this->year - $event->year;
-                    if ($age >= 5) {
-                        $age .= " {$this->lang['age_plural2_text']}";
-                    } elseif ($age >= 2 && $age < 5) {
-                        $age .= " {$this->lang['age_plural1_text']}";
-                    } else {
-                         $age .= " {$this->lang['age_singular_text']}";
-                    }
+                    $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
 
                     $external_site = '';
 
@@ -270,12 +183,116 @@ class CalendarController extends Controller
         }
 
         $view = new View('calendar');
-        $view->title = "$textmonth {$this->year}";
+        $view->caption = $this->getCaption();
         $view->hasPrevNextButtons = $this->conf['prev_next_button'];
         $view->prevUrl = $this->getPrevUrl();
         $view->nextUrl = $this->getNextUrl();
         $view->rows = $rows;
         $view->render();
+    }
+
+    private function fetchEvents()
+    {
+        $events = (new EventDataService)->readEvents();
+        foreach ($events as $entry) {
+            if (isset($entry->dateend)) {
+                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $entry->datestart);
+                $entry->starttimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
+                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $entry->dateend);
+                $entry->endtimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
+            } else {
+                list($entry->day, $entry->month, $entry->year) = explode($this->dpSeperator(), $entry->datestart);
+            }
+        }
+
+        $theevents = [];
+        foreach ($events as $entry) {
+            if (isset($entry->dateend)) {
+                $txt = "{$entry->event} {$this->lang['event_date_till_date']} {$entry->dateend} {$entry->endtime}";
+                if ($this->conf['show_days_between_dates']) {
+                    $count = 86400;
+                } else {
+                    $count = $entry->endtimestamp - $entry->starttimestamp;
+                }
+                for ($i = $entry->starttimestamp; $i <= $entry->endtimestamp; $i += $count) {
+                    $newentry = new stdClass;
+                    $newentry->year = date('Y', $i);
+                    $newentry->month = date('m', $i);
+                    $newentry->day = date('d', $i);
+                    $newentry->location = $entry->location;
+                    if ($i == $entry->starttimestamp) {
+                        $newentry->time = $entry->starttime;
+                        $newentry->text = " {$txt}";
+                    } else {
+                        $newentry->time = '';
+                        $newentry->text = $txt;
+                    }
+                    $theevents[] = $newentry;
+                }
+            } else {
+                $newentry = new stdClass;
+                $newentry->year = $entry->year;
+                $newentry->month = $entry->month;
+                $newentry->day = $entry->day;
+                if ($entry->starttime != '') {
+                    $newentry->text = " {$entry->event}";
+                } else {
+                    $newentry->text = $entry->event;
+                }
+                $newentry->location = $entry->location;
+                $newentry->time = $entry->starttime;
+                $theevents[] = $newentry;
+            }
+        }
+        return $theevents;
+    }
+
+    private function getCaption()
+    {
+        $textmonth = date('F', mktime(1, 1, 1, $this->month, 1, $this->year));
+        $monthnames = explode(',', $this->lang['monthnames_array']);
+        $textmonth = $monthnames[$this->month - 1];
+        return "$textmonth {$this->year}";
+    }
+
+    private function getDayOfWeek($i)
+    {
+        $dayofweek = date('w', mktime(1, 1, 1, $this->month, $i, $this->year));
+        if ($this->conf['week_starts_mon']) {
+            $dayofweek = $dayofweek - 1;
+        }
+        if ($dayofweek == -1) {
+            $dayofweek = 6;
+        }
+        return $dayofweek;
+    }
+
+    private function isEventOn(stdClass $event, $day)
+    {
+        return $event->year == $this->year && $event->month == $this->month && $event->day == $day;
+    }
+
+    private function isBirthdayOn(stdClass $event, $day)
+    {
+        return trim($event->location) == '###' && $event->month == $this->month && $event->day == $day;
+    }
+
+    private function getDaynamesRow()
+    {
+        $dayarray = explode(',', $this->lang['daynames_array']);
+        $row = [];
+        for ($i = 0; $i <= 6; $i++) {
+            if ($this->conf['week_starts_mon']) {
+                $j = $i + 1;
+            } else {
+                $j = $i;
+            }
+            if ($j == 7) {
+                $j = 0;
+            }
+            $row[] = (object) ['classname' => 'calendar_daynames', 'content' => $dayarray[$j]];
+        }
+        return $row;
     }
 
     /**
