@@ -78,11 +78,7 @@ class CalendarController extends Controller
 
         $events = $this->fetchEvents();
 
-        $this->month = (isset($this->month)) ? $this->month : date('n');
-
-        $this->year  = (isset($this->year)) ? $this->year : date('Y');
-        $today = (isset($today)) ? $today : date('j');
-        $today = ($this->month == date('n') && $this->year == date('Y')) ? $today : 32;
+        $today = ($this->month == date('n') && $this->year == date('Y')) ? date('j') : 32;
         $days = date('t', mktime(1, 1, 1, $this->month, 1, $this->year));
         $dayone = date('w', mktime(1, 1, 1, $this->month, 1, $this->year));
         $daylast = date('w', mktime(1, 1, 1, $this->month, $days, $this->year));
