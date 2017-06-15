@@ -66,7 +66,7 @@ class Plugin
                 $o .= $view;
                 break;
             case 'plugin_main':
-                $o .= $plugin_tx['calendar']['admin_text_start'];
+                $o .= sprintf('<h1>Calendar – %s</h1>', XH_hsc($plugin_tx['calendar']['menu_main']));
                 $o .= EditEvents($plugin_cf['calendar']['event-input_backend_narrow_medium_or_wide']);
                 break;
             default:

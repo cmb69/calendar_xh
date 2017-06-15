@@ -32,7 +32,6 @@
 	$plugin_tx['calendar']['event_link_txt']="Text odkazu";
 
 	$plugin_tx['calendar']['text_announcing_overall_period']="Udalosti za obdobie";
-	$plugin_tx['calendar']['admin_text_start']="<h1>Tu zadajte udalosti</h1><p><small><code>\"ext:\"</code> pred externými, <code>\"int:\"</code> pred internými odkazmi, time/end optional</small></p>";
 	$plugin_tx['calendar']['event_date_representation_in_next_event_marquee']="%d.%m.%Y";
 	$plugin_tx['calendar']['eventfile_saved']="Zmeny v udalosti boli uložené . . .";
 	$plugin_tx['calendar']['eventfile_not_saved']="CHYBA: udalosť sa nepodarilo uložiť.";

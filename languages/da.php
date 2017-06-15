@@ -32,7 +32,6 @@
     $plugin_tx['calendar']['event_link_txt']="Link tekst";
 
     $plugin_tx['calendar']['text_announcing_overall_period']="Aktiviteter i perioden fra";
-    $plugin_tx['calendar']['admin_text_start']="<h1>Skriv aktivitet her</h1><p><small><code>\"ext:\"</code> før extern, <code>\"int:\"</code> før internal links, time/end optional</small></p>";
     $plugin_tx['calendar']['event_date_representation_in_next_event_marquee']="%d.%m.%Y";
     $plugin_tx['calendar']['eventfile_saved']="Ændringer i aktivitets data er gemt . . .";
     $plugin_tx['calendar']['eventfile_not_saved']="FEJL: kan ikke gemme aktivetets datane.";

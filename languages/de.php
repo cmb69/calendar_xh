@@ -32,7 +32,6 @@
 	$plugin_tx['calendar']['event_link_txt']="Link-Text oder anderer Text";
 
 	$plugin_tx['calendar']['text_announcing_overall_period']="Termine für den Zeitraum";
-	$plugin_tx['calendar']['admin_text_start']="<h1>Events bearbeiten</h1><p><small>Vor externe Links <code>\"ext:\"</code> setzen, vor interne <code>\"int:\"</code>, Zeit/Ende fakultativ</small></p>";
 	$plugin_tx['calendar']['event_date_representation_in_next_event_marquee']="%d.%m.%Y";
 	$plugin_tx['calendar']['eventfile_saved']="Geänderte Veranstaltungsdaten gespeichert . . .";
 	$plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen konnten NICHT gespeichert werden.";
