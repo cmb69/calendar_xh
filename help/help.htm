@@ -1,93 +1,235 @@
-<!DOCTYPE HTML>
-<!--Version 1.2 build 5-->
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Calendar plugin help file
-</title>
-<style type="text/css">
-    code {font: bold 12pt consolas, monospace; color: #900; white-space: nowrap;}
-    small code {font: normal 10pt consolas, monospace; color: #800;}
-    body {padding:0 2em; font: 11pt trebuchet ms, sans-serif;}
-    p {margin: 0;}
-    h1, h2, h3, h4 {font-family: georgia, times new roman, serif;color:#07c; margin:1em 0 .2em;}
-    h3 {margin:.5em 0 2em}
-    h2 {font-style:italic;color:#029;}
-    h4 {font-style:italic;color:#069;}
-    em {font-weight:bold;color #900;}
-    li {margin:.2em 0;}
-    li li {margin:0;}
-    ul, ol {margin:.5em 0 .2em 2em;}
-    blockquote {margin:.5em 1.5em;}
-</style>
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+<title>Calendar_XH – User Manual</title>
+<link rel="stylesheet" type="text/css" href="./stylesheet.css">
 </head>
+
 <body>
-<h1>Calendar Plugin Help File for Version 1.2.6</h1>
-<p>Originally developped by Michael Svarrer, modified by Tory, <a href="http://cmsimple.fr">Bob</a>, <a href="http://svasti.de">Svasti</a>, <a href="http://cmsimple.holgerirmler.de">Holger</a></p>
 
-<h3>For CMSimple_XH (UTF-8) and CMSimple (ANSI)</h3>
+<article>
+<h1>Calendar_XH – User Manual</h1>
+<img src="../calendar.png" class="logo" alt="Calendar">
+<p>
+    Calendar_XH facilitates the administration and display of event calendars
+    and lists on CMSimple_XH websites.
+</p>
+<p>
+    This version is a fork of Calendar 1.2.10. Note that svasti has developed
+    Calendar 1.2 further and <a
+    href="https://github.com/cmsimple-xh/calendar">that version</a> offers
+    plenty more features at the cost of greatly increased complexity.
+</p>
 
-<h2>Upgrading from an earlier version</h2>
+<nav id="nav">
+<h2>Table of Contents</h2>
 <ul>
-    <li>Save your content folder and your css file</li>
-    <li>Install new version and put back your old content file. The css file has been changed a bit, you may want to reinsert some items from your old css.</li>
-    <li>Upgrading from v. 1.2.x you may be able to re-use your old config file.</li>
-    <li>All the old function calls still work.</li>
+<li><a href="#notice">Important Notice</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#settings">Settings</a></li>
+<li>
+    <a href="#usage">Usage</a>
+    <ul>
+        <li><a href="#usage-editor">Event Editor</a></li>
+        <li><a href="#usage-calendars">Calendars</a></li>
+        <li><a href="#usage-eventlist">Event List</a></li>
+        <li><a href="#usage-nextevent">Next Event</a></li>
+    </ul>
+</li>
+<!--<li><a href="#limitations">Limitations</a></li>-->
+<li><a href="#license">License</a></li>
+<li><a href="#credits">Credits</a></li>
 </ul>
+</nav>
 
-<h2>Integrating Calendar plugin into your CMSimple-website</h2>
-<ul>
-    <li>Extract the zip-file and put the calendar folder with all subfolders into the CMSimple plugins folder. Some websites require writing rights (646) for config.php, stylesheet.php, content folder with all files, and language file.</li>
-    <li>To display the calendar in the template use <code>&lt;?php echo calendar();?&gt;</code></li>
-    <li>To display the calendar on a specific page use <code>#CMSimple $output.=calendar();#</code> or <code>{{{PLUGIN:calendar();}}}</code></li>
-    <li>To display your events on a specific page use <code>#CMSimple $output.=events();#</code> or <code>{{{PLUGIN:events();}}}</code></li>
-    <li>You have to enter the <em>name of your event page</em> in the language config of the plugin. Look for the field <code>event page</code> (fairly down in the list) and enter the name of the page that shows the event list. If your event page is on the second or third level, you have to give the names of all higher level pages first followed by a colon, e.g. <code>name-of-firstlevel-page:name-of-secondlevel-page:name-of-event-page</code></li>
-    <li>Calendar save its event files in the plugin folder. You can however specify a different folder in config setting <code>filepath data</code>.</li>
-</ul>
+<section id="notice">
+<h2>Important Notice</h2>
+<p class="important">
+    Calendar_XH couldn't be tested so far in various environments. It is a so called
+    beta version. Use with caution!
+</p>
+</section>
 
-<h2>Configuring display of events</h2>
-<ul>
-    <li>In plugin config field <code>show number of future months</code> you can enter how many months the display of events goes into the future. Default is "1" which will show the present month only. Entering "2" will show the present month and the next, etc.</li>
-    <li>In plugin config field <code>show number of previous months</code> you can give the number of months showing past events. Default is no past events.</li>
-    <li>If you don't need all fields you can switch off display of time, location, link in the event list. This also happens in the event input tables.</li>
-    <li>Via css you can control the event display. The provided css file is only an example for the standard XH template. Adjustment of css is recommanded.</li>
-    <li><code>date delimiter</code>: You can choose as sign between day, month and year ".", "-". "/". Changes will take effect only after saving the event file. Before this no events will be listed if you changes the date delimiter. After saving events will be sorted chronologically.</li>
-</ul>
+<section id="requirements">
+<h2>Requirements</h2>
+<p>
+    Calendar_XH is a plugin for CMSimple_XH ≥ 1.6.3. It requires PHP ≥ 5.4.0.
+</p>
+</section>
 
-<h2>Configuring input of events</h2>
-<ul>
-    <li>There are 2 ways to enter events: (1) via the plugin backend or (2) you can place the event input form on a page, e.g. in a members area. To put it on a page use <code>#CMSimple $output.=editevents();#</code> or <code>{{{PLUGIN:editevents();}}}</code>.</li>
-    <li>There are 3 different input layouts: narrow, medium, wide. Just try it out. You can choose the width for the plugin backend in <code>event-input backend narrow medium or wide</code>. The layout of the event input form (in members pages) is set via <code>event-input memberpages narrow medium or wide</code>. Both layouts can be different.</li>
-    <li>Using the narrow or medium style you may have to adjust the width of the input fields via css. This can be done for the narrow and medium style independently.</li>
-    <li>As mentioned above, the fields link, location, time can be suppressed.</li>
-</ul>
+<section id="installation">
+<h2>Installation</h2>
+<p>
+    The installation is done as with many other CMSimple_XH plugins.
+    See the <a href="http://www.cmsimple-xh.org/wiki/doku.php/installation">
+    CMSimple_XH wiki</a> for further details.
+</p>
+<ol>
+<li class="important">
+    Backup the data on your server.
+</li>
+<li>
+    Unzip the distribution on your computer.
+</li>
+<li>
+    Upload the whole directory <code>calendar/</code> to your server into
+    CMSimple_XH's <code>plugins/</code> directory.
+</li>
+<li>
+    Set write permissions for the subdirectories <code>config/</code>,
+    <code>css/</code> and <code>languages/</code>.
+</li>
+<!--
+<li class="important">
+    Switch to <em>Plugins</em>→<em>Fa</em> in the back-end to check if
+    all requirements are fulfilled.
+</li>
+-->
+</ol>
+</section>
 
-<h2>Entering new events</h2>
-<ul>
-    <li>A click on the green <img src="../images/add.png" alt="add.png, 733B" title="Add" height="16" width="16"> will result in a new event line. Click on calendar icon <img src="../dp/cal-grey.gif" alt="cal-grey.gif, 170B" title="Cal grey" height="16" width="16"> and choose a date. Enter a name for your event in the event field. Always finish with save. Saving will sort entries chronologically</li>
-    <li>For uncertain events you can enter as day -, --, ?, ??. Month and year have to be entered as usual.</li>
-    <li>Starting time, end of event, and ending time are optional, as well as a link to give further explanation of your event. External links start with <code>ext:</code> and look like: <code>www.cmsimple-xh.com</code> (no "http://"), internal start with <code>int:</code> and look like this: <code>int:firstlevel-page:secondlevel-page:linked-page</code> </li>
-    <li>Even without a link one can enter any text in the field for the link text, e.g. as additional information to the event.</li>
-    <li>The red <img src="../images/delete.png" alt="delete.png, 715B" title="Delete" height="16" width="16"> will delete an event entry.</li>
-    <li>For <em>birthdays</em> enter date of birth in the date field, name of the person in event field and <code>###</code> in the location field. Calendar will calculate the age of the person and display the birthday in the event list and calendar display. Via css you can give birthdays in event list a special color. <br><small>You may wonder why there a 3 fields in language config for the age of a person. This was added by Tory so that birthday display works well for slavic languages. <code>age singular text</code> = year (Text displayed for 1 year olds), <code>age plural1 text</code> = years (Text displayed 2 to 4 year olds), <code>age plural2 text</code> = years (Text displayed for at least 5 year olds).</small></li>
-</ul>
+<section id="settings">
+<h2>Settings</h2>
+<p>
+    The plugin's configuration is done as with many other CMSimple_XH plugins in
+    the website's back-end. Select <i>Plugins</i> → <i>Calendar</i>.
+</p>
+<p>
+    You can change the default settings of Calendar_XH under <i>Config</i>.
+    Hints for the options will be displayed when hovering over the help icon
+    with your mouse.
+</p>
+<p>
+    Localization is done under <i>Language</i>. You can translate the character
+    strings to your own language if there is no appropriate language file available,
+    or customize them according to your needs.
+</p>
+<p>
+    The look of Calendar_XH can be customized under <i>Stylesheet</i>.
+</p>
+</section>
 
-<h2>Display of Next Coming Event</h2>
-<ul>
-    <li>This function uses Microsoft marquee and does not validate. However it works with all modern browsers.</li>
-    <li>You can display the next coming event inside a page by entering <code>#CMSimple $output.=nextevent();#</code> or <code>{{{PLUGIN:nextevent();}}}</code>. You will have to adjust the css of .nextevent_date, marquee, .nextevent_event, .nextevent_location, as the css is now set for use of nextevent in the template.</li>
-    <li>For the display of the next coming event in the template, e.g. under the calendar, use <code>&lt;?php echo nextevent();?&gt;</code>. This will display the next coming event on all pages. If you want it on certain pages only, and under the calendar, put this code in the template: <code>&lt;?php echo calendar(); if ($nextevent) echo nextevent(); ?&gt;</code>. Activate the display of next doming event by adding <code>#CMSimple $nextevent="show";#</code> on a page.</li>
-    <li>If there is no next event, nothing will be shown, unless you have specified a notice in language config setting <code>notice no next event sceduled</code>.</li>
-</ul>
+<section id="usage">
+<h2>Usage</h2>
 
-<h2>Configuring display of calendar</h2>
-<ul>
-    <li>If you want Monday as first day of the week, enter <code>true</code> in plugin config field <code>week starts mon</code>. Otherwise Sunday will be first day of the week.</li>
-    <li>Enter in plugin config which days you want to have colored as weekend days.</li>
-    <li>Concerning events lasting several days, if you enter <code>true</code> in config field <code>show days between dates</code> all event days will be colored in the calendar. Otherwise only the first and the last day of the event will be colored.</li>
-</ul>
+<section id="usage-editor">
+<h3>Event Editor</h3>
+<p>
+    The administration of the events is done in the back-end (<i>Plugins</i> →
+    <i>Calendar</i> → <i>Edit Events</i>). Note that adding and deleting events
+    happens only temporarily; you have to save the events to make that change
+    permanent.
+</p>
+<p>
+    Alternatively, you can embed the event editor on a normal CMSimple_XH page,
+    so the events can be edited by non-admins also. Use the following plugin
+    call:
+</p>
+<pre>{{{editevents()}}}</pre>
+<p class="important">
+    Embedding the event editor on a page should only be done if access to this
+    page requires authorization via <a
+    href="http://3-magi.net/?CMSimple_XH/Register_XH">Register_XH</a> or <a
+    href="https://github.com/cmsimple-xh/memberpages">Memberpages</a>.
+</p>
+</section>
 
-<p><br><br><small>Written by Svasti 4/2011, edited 8/2011</small></p>
+<section id="usage-calendars">
+<h3>Calendars</h3>
+<p>
+    You can show the event calendar either from the template:
+</p>
+<pre>&lt;?=calendar()?&gt;</pre>
+<p>
+    or only on a page:
+</p>
+<pre>{{{calendar()}}}</pre>
+<p>
+    All defined events of the current month are highlighted in the calendar, and
+    linked to the <i>event page</i> that is defined in the language settings of
+    Calendar_XH.
+</p>
+</section>
+
+<section id="usage-eventlist">
+<h3>Event List</h3>
+<p>
+    The event list is supposed to be embedded on the <i>event page</i> that is
+    defined in the language settings of Calendar_XH with the following plugin
+    call:
+</p>
+<pre>{{{events()}}}</pre>
+</section>
+
+<section id="usage-nextevent">
+<h3>Next Event</h3>
+<p>
+    Optionally, you can show the next scheduled event in a <i>marquee</i>,
+    either from the template:
+</p>
+<pre>&lt;?=nextevent()?&gt;</pre>
+<p>
+    or on a page:
+</p>
+<pre>{{{nextevent()}}}</pre>
+</section>
+
+</section>
+
+<!--
+<section id="limitations">
+<h2>Limitations</h2>
+</section>
+-->
+
+<section id="license">
+<h2>License</h2>
+<p>
+    Calendar_XH is licensed under
+    <a href="http://www.gnu.org/licenses/gpl.html">GPLv3</a>.
+</p>
+<p>
+    Copyright © 2005-2006 Michael Svarrer<br>
+    Copyright © 2007-2008 Tory<br>
+    Copyright © 2008      Patrick Varlet<br>
+    Copyright © 2011      Holger Irmler<br>
+    Copyright © 2011-2013 Frank Ziesing<br>
+    Copyright © 2017      Christoph M. Becker
+</p>
+</section>
+
+<section id="credits">
+<h2>Credits</h2>
+<p>
+    The Calendar plugin for CMSimple has originally be developed by Michael
+    Svarrer, and then been improved by Tory, Patrick Varlet, Holger Irmler and
+    Frank Ziesing. Many thanks to all these developers!
+</p>
+<p>
+    The plugin logo has been designed by <a
+    href="http://www.mentalrey.it/">Alessandro Rei</a>. Many thanks for
+    publishing this icon under GPL.
+</p>
+<!--
+<p>
+    Many thanks to the community at the <a
+    href="http://www.cmsimpleforum.com">CMSimple_XH forum</a> for tips,
+    suggestions and testing.
+</p>
+-->
+<p>
+    And last but not least many thanks to <a href="http://harteg.dk/">Peter
+    Harteg</a>, the father of CMSimple, and all developers of <a
+    href="http://www.cmsimple-xh.org">CMSimple_XH</a> without whom this amazing
+    CMS wouldn't exist.
+</p>
+</section>
+
+</article>
 
 </body>
-</head>
+
+</html>
