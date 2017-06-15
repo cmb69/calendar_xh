@@ -48,7 +48,7 @@ class Plugin
 
     private function handleAdministration()
     {
-        global $o, $plugin_cf, $plugin_tx, $admin, $action, $plugin;
+        global $o, $pth, $plugin_cf, $plugin_tx, $admin, $action, $plugin;
 
         $eventfile = (new EventDataService)->getFilename();
         if (!is_file($eventfile)) {
@@ -58,19 +58,12 @@ class Plugin
 
         $o .= print_plugin_admin('on');
 
-        $credits = "<h2>Calendar plugin version " . self::VERSION . "</h2>\n"
-            . '<p>1.2.10: Maintenance release 03/2013 fixing magic quotes problems, suggested by <a href="http://3-magi.net" target="_blank">cmb</a>' . tag('br')
-            . '1.2.9: Maintenance release 05/2012, on suggestion of <a href="http://3-magi.net" target="_blank">cmb</a>' . tag('br')
-            . '1.2.8: Security release 03/2012, on suggestion of  <a href="http://3-magi.net" target="_blank">cmb</a>' . tag('br')
-            . '1.2.1 - 1.2.7 (10/2011): Maintenance releases  by <a href="http://svasti.de" target="_blank">svasti</a>' . tag('br')
-            . '1.2 with functionality and security added by <a href="http://cmsimple.holgerirmler.de" target="_blank">Holger</a>' . tag('br')
-            . '1.1 (03/2011) with major changes by <a href="http://svasti.de" target="_blank">svasti</a>' . tag('br')
-            . '0.6 - 1.0 by Tory  (and in between mod 02/2008 by Bob (cmsimple.fr))' . tag('br')
-            . '0.1 - 0.5 (2005-2006) by Michael Svarrer</p>';
-
         switch ($admin) {
             case '':
-                $o .= $credits;
+                $view = new View('info');
+                $view->logo = "{$pth['folder']['plugins']}calendar/calendar.png";
+                $view->version = self::VERSION;
+                $o .= $view;
                 break;
             case 'plugin_main':
                 $o .= $plugin_tx['calendar']['admin_text_start'];

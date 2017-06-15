@@ -236,3 +236,14 @@ marquee  {
     letter-spacing: 1px;
     padding:1px 0;
 }
+
+/**
+ * Back-End
+ */
+.calendar_logo {
+	float: left;
+	margin: 0 1.5em 0.5em 0;
+}
+.calendar_license {
+	text-align: justify;
+}

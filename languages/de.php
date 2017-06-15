@@ -37,6 +37,8 @@
 	$plugin_tx['calendar']['eventfile_saved']="Geänderte Veranstaltungsdaten gespeichert . . .";
 	$plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen konnten NICHT gespeichert werden.";
 
+	$plugin_tx['calendar']['alt_logo']="Kalender";
+
 	$plugin_tx['calendar']['cf_week_starts_mon']="Ob die Kalenderwoche am Montag beginnt. Andernfalls beginnt sie am Sonntag.";
 	$plugin_tx['calendar']['cf_prev_next_button']="Ob beim Kalender Navigationsmöglichkeiten für einen Monat vor/zurück angezeigt werden sollen.";
 	$plugin_tx['calendar']['cf_show_days_between_dates']="Ob im Kalender bei mehrtägigen Veranstaltungen alle Tage eingefärbt werden.";
