@@ -45,10 +45,19 @@ class EventDataService
             $datapath = $plugin_cf['calendar']['filepath_data'];
         }
         if ($plugin_cf['calendar']['same-event-calendar_for_all_languages']) {
-            $this->eventfile = "{$datapath}eventcalendar.txt";
+            $eventfile = "{$datapath}eventcalendar";
         } else {
-            $this->eventfile = "{$datapath}eventcalendar_{$sl}.txt";
+            $eventfile = "{$datapath}eventcalendar_{$sl}";
         }
+        if (!file_exists("{$eventfile}.csv")) {
+            if (file_exists("{$eventfile}.txt")) {
+                $this->eventfile = "{$eventfile}.txt";
+                $events = $this->readOldEvents();
+                $this->eventfile = "{$eventfile}.csv";
+                $this->writeEvents($events);
+            }
+        }
+        $this->eventfile = "{$eventfile}.csv";
     }
 
     /**
@@ -63,6 +72,43 @@ class EventDataService
      * @return stdClass[]
      */
     public function readEvents()
+    {
+        $result = array();
+        if ($stream = fopen($this->eventfile, 'r')) {
+            while (($line = fgets($stream)) !== false) {
+                list($datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt)
+                    = explode(';', rtrim($line));
+                if (!$dateend) {
+                    $dateend = null;
+                }
+                if (!$endtime) {
+                    $endtime = null;
+                }
+                if (!$linktxt) {
+                    $linktxt = null;
+                }
+                if ($datestart != '' && $event != '') {
+                    $result[] = (object) compact(
+                        'datestart',
+                        'dateend',
+                        'starttime',
+                        'endtime',
+                        'event',
+                        'linkadr',
+                        'linktxt',
+                        'location'
+                    );
+                }
+            }
+            fclose($stream);
+        }
+        return $result;
+    }
+
+    /**
+     * @return stdClass[]
+     */
+    public function readOldEvents()
     {
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
@@ -135,19 +181,7 @@ class EventDataService
      */
     private function assembleEventLine(stdClass $entry)
     {
-        if ($entry->dateend != '') {
-            $eventdates = "{$entry->datestart},{$entry->dateend},{$entry->endtime}";
-        } else {
-            $eventdates = $entry->datestart;
-        }
-        $event_time_start = $entry->starttime;
-        $event = $entry->event;
-        $location = $entry->location;
-        if ($entry->linkadr != '' || $entry->linktxt != '') {
-            $link = "{$entry->linkadr},{$entry->linktxt}";
-        } else {
-            $link = '';
-        }
-        return "$eventdates;$event;$location;$link;$event_time_start\n";
+        return "{$entry->datestart};{$entry->starttime};{$entry->dateend};{$entry->endtime};"
+            . "{$entry->event};{$entry->location};{$entry->linkadr};{$entry->linktxt}\n";
     }
 }
