@@ -1,10 +1,6 @@
 <?php
 
     $plugin_tx['calendar']['menu_main']="Aktiviteter";
-    $plugin_tx['calendar']['menu_css']="Stylesheet";
-    $plugin_tx['calendar']['menu_config']="Konfiguration";
-    $plugin_tx['calendar']['menu_language']="Sprog";
-    $plugin_tx['calendar']['menu_help']="Hjælp";
 
     $plugin_tx['calendar']['monthnames_array']="Januar,Februar,Marts,April,Maj,Juni,Juli,August,September,Oktober,November,December";
     $plugin_tx['calendar']['daynames_array']="Søn,Man,Tir,Ons,Tor,Fre,Lør";

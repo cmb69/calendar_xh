@@ -1,10 +1,6 @@
 <?php
 
     $plugin_tx['calendar']['menu_main']="Podujatia";
-    $plugin_tx['calendar']['menu_css']="Štýl";
-    $plugin_tx['calendar']['menu_config']="Konfigurácia";
-    $plugin_tx['calendar']['menu_language']="Jazyk";
-    $plugin_tx['calendar']['menu_help']="Pomoc";
 
     $plugin_tx['calendar']['monthnames_array']="Január,Február,Marec,Apríl,Máj,Jún,Júl,August,September,Október,November,December";
     $plugin_tx['calendar']['daynames_array']="Ne,Po,Ut,St,Št,Pi,So";

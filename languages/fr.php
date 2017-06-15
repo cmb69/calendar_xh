@@ -1,10 +1,6 @@
 <?php
 
     $plugin_tx['calendar']['menu_main']="Edition";
-    $plugin_tx['calendar']['menu_css']="Style";
-    $plugin_tx['calendar']['menu_config']="Configuration";
-    $plugin_tx['calendar']['menu_language']="Langage";
-    $plugin_tx['calendar']['menu_help']="Aide";
 
     $plugin_tx['calendar']['monthnames_array']="Janvier,Février,Mars,Avril,Mai,Juin,Juillet,Août,Septembre,Octobre,Novembre,Décembre";
     $plugin_tx['calendar']['daynames_array']="Di,Lu,Ma,Me,Je,Ve,Sa";
