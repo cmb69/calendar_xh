@@ -112,13 +112,7 @@ class EventDataService
             unlink("{$eventfile}.bak");
         }
         // create new backup
-        $permissions = false;
-        $owner = false;
-        $group = false;
         if (is_file($eventfile)) {
-            $owner = fileowner($eventfile);
-            $group = filegroup($eventfile);
-            $permissions = fileperms($eventfile);
             rename($eventfile, "{$eventfile}.bak");
         }
     
@@ -133,16 +127,6 @@ class EventDataService
             }
         }
         fclose($fp);
-        // change owner, group and permissions of new file to same as backup file
-        if ($owner !== false) {
-            chown($eventfile, $owner);
-        }
-        if ($group !== false) {
-            chgrp($eventfile, $group);
-        }
-        if ($permissions !== false) {
-            chmod($eventfile, $permissions);
-        }
         return true;
     }
 
