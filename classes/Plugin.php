@@ -33,17 +33,10 @@ class Plugin
     public function run()
     {
         if (XH_ADM) {
-            if ($this->isAdministrationRequested()) {
+            if (XH_wantsPluginAdministration('calendar')) {
                 $this->handleAdministration();
             }
         }
-    }
-
-    private function isAdministrationRequested()
-    {
-        global $calendar;
-
-        return isset($calendar) && $calendar === 'true';
     }
 
     private function handleAdministration()
