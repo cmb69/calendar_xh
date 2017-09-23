@@ -48,37 +48,17 @@ abstract class Controller
 
     /**
      * Helper-function to parse the date-seperator, set in plugin-config,
-     * to build the config-string for the Date-Picker and to
-     * check for allowed seperators
+     * and to check for allowed seperators
      *
      * Allowed seperators:
      * full-stop ".", forward slash "/" and minus/dash "-"
      */
-    protected function dpSeperator($mode = '')
+    protected function dpSeperator()
     {
         $sep = $this->conf['date_delimiter'];
-        $dp_sep = ''; //the string to configure the DatePicker
-    
         if ($sep != '/' && $sep != '-') {
             $sep = '.'; //set default
         }
-
-        switch ($sep) {
-            case '.':
-                $dp_sep = 'dt';
-                break;
-            case '/':
-                $dp_sep = 'sl';
-                break;
-            case '-':
-                $dp_sep = 'ds';
-                break;
-        }
-
-        if ($mode == 'dp') {
-            return $dp_sep;
-        } else {
-            return $sep;
-        }
+        return $sep;
     }
 }

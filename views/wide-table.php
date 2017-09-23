@@ -28,7 +28,7 @@
 <?php foreach ($this->events as $i => $event):?>
 <tr>
     <td class="calendar_input_datefield">
-        <input type="normal" class="calendar_input_date" maxlength="10" name="datestart[<?=$this->escape($i)?>]" value="<?=$this->escape($event->datestart)?>" id="datestart<?=$this->escape($i)?>">
+        <input type="date" class="calendar_input_date" maxlength="10" name="datestart[<?=$this->escape($i)?>]" value="<?=$this->escape($event->datestart)?>" id="datestart<?=$this->escape($i)?>">
     </td>
 <?php   if ($this->showEventTime):?>
     <td class="calendar_input_time">
@@ -40,7 +40,7 @@
     </td>
 <?php   endif?>
     <td class="calendar_input_datefield">
-        <input type="normal" class="calendar_input_date" maxlength="10" name="dateend[<?=$this->escape($i)?>]" value="<?=$this->escape($event->dateend)?>" id="dateend<?=$this->escape($i)?>">
+        <input type="date" class="calendar_input_date" maxlength="10" name="dateend[<?=$this->escape($i)?>]" value="<?=$this->escape($event->dateend)?>" id="dateend<?=$this->escape($i)?>">
     </td>
 <?php   if ($this->showEventTime):?>
     <td class="calendar_input_time">
@@ -51,7 +51,6 @@
         <input type="hidden" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->endtime)?>">
     </td>
 <?php   endif?>
-    <?=$this->datePickerScripts[$i]?>
     <td>
         <input class="calendar_input_event" type="normal" name="event[<?=$this->escape($i)?>]" value="<?=$this->escape($event->event)?>">
     </td>

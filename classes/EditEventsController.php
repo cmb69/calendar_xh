@@ -96,10 +96,16 @@ class EditEventsController extends Controller
 
     private function fixPostedEvent(stdClass $event)
     {
-        if (!$this->isValidDate($event->datestart)) {
+        if ($this->isValidDate($event->datestart)) {
+            list($year, $month, $day) = explode('-', $event->datestart);
+            $event->datestart = $day . $this->dpSeperator() . $month . $this->dpSeperator() . $year;
+        } else {
             $event->datestart = '';
         }
-        if (!$this->isValidDate($event->dateend)) {
+        if ($this->isValidDate($event->dateend)) {
+            list($year, $month, $day) = explode('-', $event->dateend);
+            $event->dateend = $day . $this->dpSeperator() . $month . $this->dpSeperator() . $year;
+        } else {
             $event->dateend = '';
         }
 
@@ -118,12 +124,7 @@ class EditEventsController extends Controller
      */
     private function eventForm($events, $editeventswidth)
     {
-        global $hjs, $pth, $sl, $tx;
-
-        $hjs .= '<script type="text/javascript" src="'
-             .  $pth['folder']['plugins'] . 'calendar/dp/datepicker.js">{ "lang":"'.$sl.'" }</script>'."\n";
-        $hjs .= tag('link rel="stylesheet" type="text/css" href="'
-             .  $pth['folder']['plugins'] . 'calendar/dp/datepicker.css"')."\n";
+        global $tx;
 
         switch ($editeventswidth) {
             case 'narrow':
@@ -155,33 +156,18 @@ class EditEventsController extends Controller
         $view->showEventTime = $this->conf['show_event_time'];
         $view->showEventLocation = $this->conf['show_event_location'];
         $view->showEventLink = $this->conf['show_event_link'];
-        $view->events = $events;
-        $datePickerScripts = [];
-        foreach (array_keys($events) as $i) {
-            $datePickerScripts[] = new HtmlString($this->renderDatePickerScript($i));
+        foreach ($events as $event) {
+            if ($event->datestart) {
+                list($day, $month, $year) = explode($this->dpSeperator(), $event->datestart);
+                $event->datestart = "$year-$month-$day";
+            }
+            if ($event->dateend) {
+                list($day, $month, $year) = explode($this->dpSeperator(), $event->dateend);
+                $event->dateend = "$year-$month-$day";
+            }
         }
-        $view->datePickerScripts = $datePickerScripts;
+        $view->events = $events;
         return (string) $view;
-    }
-
-    private function renderDatePickerScript($num)
-    {
-        $separator = $this->dpSeperator('dp');
-        return <<<EOS
-<script type="text/javascript">
-(function () {
-    var opts = {
-        formElements: {"datestart{$num}": "d-{$separator}-m-{$separator}-Y"},
-        showWeeks: true,
-        // Show a status bar and use the format "l-cc-sp-d-sp-F-sp-Y" (e.g. Friday, 25 September 2009)
-        statusFormat: "l-cc-sp-d-sp-F-sp-Y"
-    };
-    datePickerController.createDatePicker(opts);
-    opts.formElements =  {"dateend{$num}": "d-{$separator}-m-{$separator}-Y"}; 
-    datePickerController.createDatePicker(opts);
-}());
-</script>
-EOS;
     }
 
     /**
@@ -189,9 +175,7 @@ EOS;
      */
     private function isValidDate($date)
     {
-        $pattern = '/[\d\d\|\?{1-2}|\-{1-2}]\\' . $this->dpSeperator() . '\d\d\\'
-            . $this->dpSeperator() . '\d{4}$/';
-        return preg_match($pattern, $date);
+        return preg_match('/^\d{4}-\d\d-(?:\d\d|\?{1-2}|\-{1-2})$/', $date);
     }
 
     /**
