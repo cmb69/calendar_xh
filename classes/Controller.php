@@ -48,12 +48,12 @@ abstract class Controller
 
     /**
      * Helper-function to parse the date-seperator, set in plugin-config,
-     * and to check for allowed seperators
+     * and to check for allowed separators
      *
      * Allowed seperators:
      * full-stop ".", forward slash "/" and minus/dash "-"
      */
-    protected function dpSeperator()
+    protected function dpSeparator()
     {
         $sep = $this->conf['date_delimiter'];
         if ($sep != '/' && $sep != '-') {

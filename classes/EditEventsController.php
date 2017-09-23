@@ -98,13 +98,13 @@ class EditEventsController extends Controller
     {
         if ($this->isValidDate($event->datestart)) {
             list($year, $month, $day) = explode('-', $event->datestart);
-            $event->datestart = $day . $this->dpSeperator() . $month . $this->dpSeperator() . $year;
+            $event->datestart = $day . $this->dpSeparator() . $month . $this->dpSeparator() . $year;
         } else {
             $event->datestart = '';
         }
         if ($this->isValidDate($event->dateend)) {
             list($year, $month, $day) = explode('-', $event->dateend);
-            $event->dateend = $day . $this->dpSeperator() . $month . $this->dpSeperator() . $year;
+            $event->dateend = $day . $this->dpSeparator() . $month . $this->dpSeparator() . $year;
         } else {
             $event->dateend = '';
         }
@@ -158,11 +158,11 @@ class EditEventsController extends Controller
         $view->showEventLink = $this->conf['show_event_link'];
         foreach ($events as $event) {
             if ($event->datestart) {
-                list($day, $month, $year) = explode($this->dpSeperator(), $event->datestart);
+                list($day, $month, $year) = explode($this->dpSeparator(), $event->datestart);
                 $event->datestart = "$year-$month-$day";
             }
             if ($event->dateend) {
-                list($day, $month, $year) = explode($this->dpSeperator(), $event->dateend);
+                list($day, $month, $year) = explode($this->dpSeparator(), $event->dateend);
                 $event->dateend = "$year-$month-$day";
             }
         }
@@ -183,7 +183,7 @@ class EditEventsController extends Controller
      */
     private function dateSort(stdClass $a, stdClass $b)
     {
-        $pattern = '!(.*)\\' . $this->dpSeperator() . '(.*)\\' . $this->dpSeperator() . '(.*)!';
+        $pattern = '!(.*)\\' . $this->dpSeparator() . '(.*)\\' . $this->dpSeparator() . '(.*)!';
         $replace = '\3\2\1';
         $a_i = preg_replace($pattern, $replace, $a->datestart) . $a->starttime;
         $b_i = preg_replace($pattern, $replace, $b->datestart) . $b->starttime;
@@ -199,7 +199,7 @@ class EditEventsController extends Controller
     private function createDefaultEvent()
     {
         return (object) array(
-            'datestart'   => date('d') . $this->dpSeperator() . date('m') . $this->dpSeperator() . date('Y'),
+            'datestart'   => date('d') . $this->dpSeparator() . date('m') . $this->dpSeparator() . date('Y'),
             'starttime'   => '',
             'dateend'     => '',
             'endtime'     => '',

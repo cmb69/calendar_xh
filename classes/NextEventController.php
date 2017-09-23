@@ -40,16 +40,16 @@ class NextEventController extends Controller
                 $endevent = clone $event;
                 $event->text = $this->lang['event_date_till_date'] . " " . tag('br')
                     . $event->dateend . " " . $event->endtime;
-                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event->datestart);
+                list($event_date, $event_month, $event_year) = explode($this->dpSeparator(), $event->datestart);
                 $event->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");
                 $endevent->text = $this->lang['event_event'] . " " . $this->lang['event_start'] . ":" . tag('br')
                         . $event->datestart . " " . $event->starttime;
-                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event->dateend);
+                list($event_date, $event_month, $event_year) = explode($this->dpSeparator(), $event->dateend);
                 $endevent->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");
                 $endevents[] = $endevent;
             } else {
                 $event->text = '';
-                list($event_date, $event_month, $event_year) = explode($this->dpSeperator(), $event->datestart);
+                list($event_date, $event_month, $event_year) = explode($this->dpSeparator(), $event->datestart);
                 $event->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");
             }
         }
