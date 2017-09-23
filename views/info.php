@@ -28,3 +28,9 @@
     Calendar_XH. If not, see <a href="http://www.gnu.org/licenses/"
     target="_blank">http://www.gnu.org/licenses/</a>.
 </p>
+<div class="calendar_syscheck">
+    <h2><?php echo $this->text('syscheck_title')?></h2>
+<?php foreach ($this->checks as $check):?>
+    <p class="xh_<?php echo $this->escape($check->state)?>"><?php echo $this->text('syscheck_message', $check->label, $check->stateLabel)?></p>
+<?php endforeach?>
+</div>

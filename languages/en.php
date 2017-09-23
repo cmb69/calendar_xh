@@ -37,7 +37,18 @@
 
 	$plugin_tx['calendar']['alt_logo']="Calendar";
 
-    $plugin_tx['calendar']['cf_week_starts_mon']="Wether Monday is the first day of the calendar week. Otherwise the week starts on Sunday.";
+	$plugin_tx['calendar']['syscheck_extension']="the PHP extension '%s' is loaded";
+	$plugin_tx['calendar']['syscheck_fail']="failure";
+	$plugin_tx['calendar']['syscheck_message']="Checking that %1\$s … %2\$s";
+	$plugin_tx['calendar']['syscheck_phpversion']="PHP version ≥ %s";
+	$plugin_tx['calendar']['syscheck_plugin']="the CMSimple_XH plugin '%s' is installed";
+	$plugin_tx['calendar']['syscheck_success']="okay";
+	$plugin_tx['calendar']['syscheck_title']="System check";
+	$plugin_tx['calendar']['syscheck_warning']="warning";
+	$plugin_tx['calendar']['syscheck_writable']="'%s' is writable";
+	$plugin_tx['calendar']['syscheck_xhversion']="CMSimple_XH version ≥ %s";
+
+	$plugin_tx['calendar']['cf_week_starts_mon']="Wether Monday is the first day of the calendar week. Otherwise the week starts on Sunday.";
 	$plugin_tx['calendar']['cf_prev_next_button']="Whether there will be back and forward links in the calendar around the month name.";
 	$plugin_tx['calendar']['cf_show_days_between_dates']="Whether to color all the days of multi day events in the calendar display.";
 	$plugin_tx['calendar']['cf_date_delimiter']="Glyphs used to separate day, month and year. You can choose between \".\", \"-\", \"/\".";

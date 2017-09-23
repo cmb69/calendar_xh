@@ -57,6 +57,7 @@ class Plugin
                 $view = new View('info');
                 $view->logo = "{$pth['folder']['plugins']}calendar/calendar.png";
                 $view->version = self::VERSION;
+                $view->checks = (new SystemCheckService)->getChecks();
                 $o .= $view;
                 break;
             case 'plugin_main':

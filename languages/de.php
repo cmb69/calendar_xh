@@ -37,6 +37,17 @@
 
 	$plugin_tx['calendar']['alt_logo']="Kalender";
 
+	$plugin_tx['calendar']['syscheck_extension']="die PHP-Erweiterung '%s' geladen ist";
+	$plugin_tx['calendar']['syscheck_fail']="Fehler";
+	$plugin_tx['calendar']['syscheck_message']="Prüfe, dass %1\$s … %2\$s";
+	$plugin_tx['calendar']['syscheck_phpversion']="die PHP-Version ≥ %s";
+	$plugin_tx['calendar']['syscheck_plugin']="das CMSIMPLE_XH Plugin '%s' installiert ist";
+	$plugin_tx['calendar']['syscheck_success']="OK";
+	$plugin_tx['calendar']['syscheck_title']="System-Prüfung";
+	$plugin_tx['calendar']['syscheck_warning']="Warnung";
+	$plugin_tx['calendar']['syscheck_writable']="'%s' schreibbar ist";
+	$plugin_tx['calendar']['syscheck_xhversion']="die CMSimple_XH-Version ≥ %s";
+
 	$plugin_tx['calendar']['cf_week_starts_mon']="Ob die Kalenderwoche am Montag beginnt. Andernfalls beginnt sie am Sonntag.";
 	$plugin_tx['calendar']['cf_prev_next_button']="Ob beim Kalender Navigationsmöglichkeiten für einen Monat vor/zurück angezeigt werden sollen.";
 	$plugin_tx['calendar']['cf_show_days_between_dates']="Ob im Kalender bei mehrtägigen Veranstaltungen alle Tage eingefärbt werden.";
