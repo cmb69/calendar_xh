@@ -175,7 +175,6 @@ class EventListController extends Controller
                 $event->endday = $event->endmonth = $event->endyear = null;
             }
             $event->datetime = "{$event->datestart} {$event->starttime}";
-            $event->link = "{$event->linkadr},{$event->linktxt}";
             $event_yearmonth_array[] = "{$event->startmonth}.{$event->startyear}";
         }
         return [$events, $event_yearmonth_array];
@@ -305,18 +304,18 @@ class EventListController extends Controller
 
     private function renderLink(stdClass $event)
     {
-        if (strpos($event->link, 'ext:') === 0) {
-            $external_site = substr($event->link, 4);
-            list($external_site, $external_text) = explode(',', $external_site);
+        if (strpos($event->linkadr, 'ext:') === 0) {
+            $external_site = substr($event->linkadr, 4);
+            $external_text = $event->linktxt;
             if (!$external_text) {
                 $external_text = $external_site;
             }
             return "<td class=\"event_data event_link\"><a href=\"http://"
                 . "{$external_site}\" target=\"_blank\" title=\""
                 . strip_tags($event->event) . "\">$external_text</a></td>\n";
-        } elseif (strpos($event->link, 'int:') === 0) {
-            $internal_page = substr($event->link, 4);
-            list($internal_page, $internal_text) = explode(',', $internal_page);
+        } elseif (strpos($event->linkadr, 'int:') === 0) {
+            $internal_page = substr($event->linkadr, 4);
+            $internal_text = $event->linktxt;
             if (!$internal_text) {
                 $internal_text = $internal_page;
             }
@@ -325,10 +324,10 @@ class EventListController extends Controller
                 . strip_tags($event->event) . "\">$internal_text</a></td>\n";
         } else {
             $t = "<td class=\"event_data event_link\">";
-            if (substr($event->link, 0, 1) == ',') {
-                $t .= substr(strip_tags($event->link), 1) . "</td>\n";
+            if (!$event->linkadr) {
+                $t .= $event->linktxt . "</td>\n";
             } else {
-                $t .= strip_tags($event->link) . "</td>\n";
+                $t .= strip_tags("{$event->linkadr},{$event->linktxt}") . "</td>\n";
             }
             return $t;
         }
