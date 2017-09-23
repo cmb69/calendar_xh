@@ -31,7 +31,7 @@ function calendar($year = '', $month = '', $eventpage = '')
     return ob_get_clean();
 }
 
-function events($month, $year, $end_month, $past_month)
+function events($month = null, $year = null, $end_month = null, $past_month = null)
 {
     ob_start();
     (new Calendar\EventListController($month, $year, $end_month, $past_month))->defaultAction();
