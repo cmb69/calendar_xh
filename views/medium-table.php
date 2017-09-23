@@ -72,7 +72,7 @@
     </td>
 <?php   endif?>
     <td style="text-align: right">
-        <input type="image" src="<?=$this->deleteIcon()?>" style="width: 16px; height: 16px" name="delete[<?=$this->escape($i)?>]" value="delete" alt="Delete Entry">
+        <button name="delete[<?=$this->escape($i)?>]" value="delete" title="<?=$this->text('label_delete_event')?>"><span class="fa fa-trash"></span></button>
     </td>
 </tr>
 <?php   if ($this->showEventLink):?>

@@ -32,6 +32,9 @@
 	$plugin_tx['calendar']['eventfile_saved']="Geänderte Veranstaltungsdaten gespeichert . . .";
 	$plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen konnten NICHT gespeichert werden.";
 
+	$plugin_tx['calendar']['label_add_event']="Veranstaltung hinzufügen";
+	$plugin_tx['calendar']['label_delete_event']="Veranstaltung löschen";
+
 	$plugin_tx['calendar']['alt_logo']="Kalender";
 
 	$plugin_tx['calendar']['cf_week_starts_mon']="Ob die Kalenderwoche am Montag beginnt. Andernfalls beginnt sie am Sonntag.";

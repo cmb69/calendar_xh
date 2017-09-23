@@ -32,6 +32,9 @@
 	$plugin_tx['calendar']['eventfile_saved']="Changes in event data saved . . .";
 	$plugin_tx['calendar']['eventfile_not_saved']="ERROR: could not save event data.";
 
+	$plugin_tx['calendar']['label_add_event']="Add event";
+	$plugin_tx['calendar']['label_delete_event']="Delete event";
+
 	$plugin_tx['calendar']['alt_logo']="Calendar";
 
     $plugin_tx['calendar']['cf_week_starts_mon']="Wether Monday is the first day of the calendar week. Otherwise the week starts on Sunday.";

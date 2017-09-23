@@ -27,24 +27,21 @@
 namespace Calendar;
 
 use stdClass;
+use Fa\RequireCommand as FaRequireCommand;
 
 class EditEventsController extends Controller
 {
     private $editeventswidth;
 
-    private $imageFolder;
-
     public function __construct($editeventswidth)
     {
-        global $pth;
-
         parent::__construct();
         if ($editeventswidth) {
             $this->editeventswidth = $editeventswidth;
         } else {
             $this->editeventswidth = $this->conf['event-input_memberpages_narrow_medium_or_wide'];
         }
-        $this->imageFolder = "{$pth['folder']['plugins']}calendar/images/";
+        (new FaRequireCommand)->execute();
     }
 
     public function defaultAction()
@@ -144,7 +141,6 @@ class EditEventsController extends Controller
         $view->tableclass = "calendar_input_{$editeventswidth}";
         $view->columns = $columns;
         $view->saveLabel = ucfirst($tx['action']['save']);
-        $view->addIcon = "{$this->imageFolder}add.png";
         $view->table = new HtmlString($this->renderTable($editeventswidth, $events));
         return (string) $view;
     }
@@ -160,7 +156,6 @@ class EditEventsController extends Controller
         $view->showEventLocation = $this->conf['show_event_location'];
         $view->showEventLink = $this->conf['show_event_link'];
         $view->events = $events;
-        $view->deleteIcon = "{$this->imageFolder}delete.png";
         $datePickerScripts = [];
         foreach (array_keys($events) as $i) {
             $datePickerScripts[] = new HtmlString($this->renderDatePickerScript($i));

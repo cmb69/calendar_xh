@@ -6,7 +6,7 @@
                 <input class="submit" type="submit" name="send" value="<?=$this->saveLabel()?>">
             </td>
             <td style="text-align: right; width: 16px;">
-                <input type="image" src="<?=$this->addIcon()?>" style="width: 16px; height: 16px;" name="add[0]" value="add" alt="Add entry">
+                <button name="add[0]" value="add" title="<?=$this->text('label_add_event')?>"><span class="fa fa-plus"></span></button>
             </td>
         </tr>
         <?=$this->table()?>
@@ -15,7 +15,7 @@
                 <input class="submit" type="submit" name="send" value="<?=$this->saveLabel()?>">
             </td>
             <td>
-                <input type="image" src="<?=$this->addIcon()?>" style="width: 16px; height: 16px;" name="add[0]" value="add" alt="Add entry">
+            <button name="add[0]" value="add" title="<?=$this->text('label_add_event')?>"><span class="fa fa-plus"></span></button>
             </td>
         </tr>
     </table>
