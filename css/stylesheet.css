@@ -204,16 +204,6 @@ marquee  {
     padding-right:3px;
 }
 
-/* === Width of input fields === */
-.calendar_input_datefield  {
-    width:82px;
-}
-.calendar_input_date  {
-    width:56px;
-}
-.calendar_input_time  {
-    width:30px;
-}
 .calendar_input_event  {
 /*controls also location etc*/
     width:100%;
