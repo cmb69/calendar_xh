@@ -62,10 +62,11 @@ class EditEventsController extends Controller
         $varnames = array(
             'datestart', 'starttime', 'dateend', 'endtime', 'event', 'location', 'linkadr', 'linktxt'
         );
+        $post = [];
         foreach ($varnames as $var) {
             $$var = isset($_POST[$var]) ? $_POST[$var] : [];
+            $post[$var] = $$var;
         }
-        $post = call_user_func_array('compact', $varnames);
         $newevent = [];
         foreach (array_keys($datestart) as $i) {
             if (!isset($_POST['delete'][$i])) {
