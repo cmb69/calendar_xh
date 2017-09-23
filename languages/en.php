@@ -63,6 +63,5 @@
 	$plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Width of the input table in the backend, \"narrow\" arranges fields vertically, \"wide\" horizontally.";
 	$plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Width of event input table in (usually protected member) pages.";
 	$plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="Whether the same event file will be used for all languages in multi language sites. By default every language has its own event calendar.";
-	$plugin_tx['calendar']['cf_filepath_data']="The path to the calendar event files. Without entry it will be set to \"./plugins/calendar/content/\".";
 
 ?>

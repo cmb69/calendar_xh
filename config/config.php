@@ -15,4 +15,3 @@ $plugin_cf['calendar']['event-input_backend_narrow_medium_or_wide']="narrow";
 $plugin_cf['calendar']['event-input_memberpages_narrow_medium_or_wide']="narrow";
 $plugin_cf['calendar']['same-event-calendar_for_all_languages']="";
 $plugin_cf['calendar']['date_delimiter']=".";
-$plugin_cf['calendar']['filepath_data']="";

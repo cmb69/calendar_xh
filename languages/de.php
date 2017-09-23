@@ -63,6 +63,5 @@
 	$plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Einstellung der resultierende Beite der Eintragstabelle, je nachdem ob die Eingabefelder untereinander (narrow), teilweise untereinander (medium) oder nebeneinander (wide) stehen.";
 	$plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Falls man auf einer normalen CMSimple-Seite online-Besuchern  Eintragsmöglichkeiten gibt, kann man hier angeben, ob die Eingabefelder untereinander (narrow), teilweise untereinander (medium) oder nebeneinander (wide) stehen.";
 	$plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="Ob bei mehrsprachigen Websites nur eine Kalenderdatei angelegt wird, die für alle Sprachversionen genutzt wird.";
-	$plugin_tx['calendar']['cf_filepath_data']="Der Weg zum Verzeichnis, in dem Calendar seine Eventdateien speichert. Ohne Angabe gilt \"./plugins/calendar/content/\".";
 
 ?>

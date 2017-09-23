@@ -37,24 +37,21 @@ class EventDataService
 
     public function __construct()
     {
-        global $pth, $sl, $plugin_cf;
+        global $pth, $sl, $cf, $plugin_cf;
 
-        if (!$plugin_cf['calendar']['filepath_data']) {
-            $datapath = "{$pth['folder']['plugins']}calendar/content/";
-        } else {
-            $datapath = $plugin_cf['calendar']['filepath_data'];
+        $datapath = $pth['folder']['content'];
+        if ($plugin_cf['calendar']['same-event-calendar_for_all_languages'] && $sl != $cf['language']['default']) {
+            $datapath = dirname($datapath) . '/';
         }
-        if ($plugin_cf['calendar']['same-event-calendar_for_all_languages']) {
-            $eventfile = "{$datapath}eventcalendar";
-        } else {
-            $eventfile = "{$datapath}eventcalendar_{$sl}";
-        }
+        $eventfile = "{$datapath}calendar";
         if (!file_exists("{$eventfile}.csv")) {
             if (file_exists("{$eventfile}.txt")) {
                 $this->eventfile = "{$eventfile}.txt";
                 $events = $this->readOldEvents();
                 $this->eventfile = "{$eventfile}.csv";
                 $this->writeEvents($events);
+            } else {
+                touch("{$eventfile}.csv");
             }
         }
         $this->eventfile = "{$eventfile}.csv";
