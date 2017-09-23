@@ -58,7 +58,6 @@ class EditEventsController extends Controller
         $deleted = false;
         $added = false;
 
-        $datestart = [];
         $varnames = array(
             'datestart', 'starttime', 'dateend', 'endtime', 'event', 'location', 'linkadr', 'linktxt'
         );
