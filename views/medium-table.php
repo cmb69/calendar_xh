@@ -34,13 +34,13 @@
         <input type="date" class="calendar_input_date" maxlength="10" name="datestart[<?=$this->escape($i)?>]" value="<?=$this->escape($event->datestart)?>" id="datestart<?=$this->escape($i)?>">
     </td>
     <td class="calendar_input_time">
-        <input type="normal" class="calendar_input_time" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->starttime)?>">
+        <input type="time" class="calendar_input_time" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->starttime)?>">
     </td>
     <td class="calendar_input_datefield">
         <input type="date" class="calendar_input_date" maxlength="10" name="dateend[<?=$this->escape($i)?>]" value="<?=$this->escape($event->dateend)?>" id="dateend<?=$this->escape($i)?>">
     </td>
     <td class="calendar_input_time">
-        <input type="normal" class="calendar_input_time" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->endtime)?>">
+        <input type="time" class="calendar_input_time" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->endtime)?>">
     </td>
 <?php   else:?>
 <tr>
@@ -59,14 +59,14 @@
 <?php   endif?>
 <?php   if ($this->showEventLocation):?>
     <td>
-        <input type="normal" class="calendar_input_event event_highlighting" name="event[<?=$this->escape($i)?>]" value="<?=$this->escape($event->event)?>">
+        <input type="text" class="calendar_input_event event_highlighting" name="event[<?=$this->escape($i)?>]" value="<?=$this->escape($event->event)?>">
     </td>
     <td>
-        <input type="normal" class="calendar_input_event" name="location[<?=$this->escape($i)?>]" value="<?=$this->escape($event->location)?>">
+        <input type="text" class="calendar_input_event" name="location[<?=$this->escape($i)?>]" value="<?=$this->escape($event->location)?>">
     </td>
 <?php   else:?>
     <td colspan="2">
-        <input type="normal" class="calendar_input_event event_highlighting" name="event[<?=$this->escape($i)?>]" value="<?=$this->escape($event->event)?>">
+        <input type="text" class="calendar_input_event event_highlighting" name="event[<?=$this->escape($i)?>]" value="<?=$this->escape($event->event)?>">
         <input type="hidden" name="location[<?=$this->escape($i)?>]" value="<?=$this->escape($event->location)?>">
     </td>
 <?php   endif?>
@@ -78,10 +78,10 @@
 <tr>
     <td class="calendarinput_line2" colspan="4"><?=$this->text('event_link')?> / <?=$this->text('event_link_txt')?></td>
     <td>
-        <input type="normal" class="calendar_input_event" name="linkadr[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linkadr)?>">
+        <input type="text" class="calendar_input_event" name="linkadr[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linkadr)?>">
     </td>
     <td>
-        <input type="normal" class="calendar_input_event" name="linktxt[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linktxt)?>">
+        <input type="text" class="calendar_input_event" name="linktxt[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linktxt)?>">
     </td>
     <td>&nbsp;</td>
 </tr>

@@ -22,13 +22,13 @@
         <input type="date" class="calendar_input_date" maxlength="10" name="datestart[<?=$this->escape($i)?>]" value="<?=$this->escape($event->datestart)?>" id="datestart<?=$this->escape($i)?>">
     </td>
     <td class="calendar_input_time">
-        <input type="normal" class="calendar_input_time" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->starttime)?>">
+        <input type="time" class="calendar_input_time" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->starttime)?>">
     </td>
     <td class="calendar_input_datefield">
         <input type="date" class="calendar_input_date" maxlength="10" name="dateend[<?=$this->escape($i)?>]" value="<?=$this->escape($event->dateend)?>" id="dateend<?=$this->escape($i)?>">
     </td>
     <td class="calendar_input_time">
-        <input type="normal" class="calendar_input_time" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->endtime)?>">
+        <input type="time" class="calendar_input_time" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->endtime)?>">
     </td>
 <?php   else:?>
 <tr>
@@ -44,7 +44,7 @@
     <td style="width: 0"></td>
 <?php   endif?>
     <td>
-        <input class="calendar_input_event event_highlighting" type="normal" name="event[<?=$this->escape($i)?>]" value="<?=$this->escape($event->event)?>">
+        <input class="calendar_input_event event_highlighting" type="text" name="event[<?=$this->escape($i)?>]" value="<?=$this->escape($event->event)?>">
     </td>
     <td>
     <button name="delete[<?=$this->escape($i)?>]" value="delete" title="<?=$this->text('label_delete_event')?>"><span class="fa fa-trash"></span></button>
@@ -54,7 +54,7 @@
 <tr>
     <td class="calendarinput_line2" colspan="4"><?=$this->text('event_location')?></td>
     <td>
-        <input type="normal" class="calendar_input_event" name="location[<?=$this->escape($i)?>]" value="<?=$this->escape($event->location)?>">
+        <input type="text" class="calendar_input_event" name="location[<?=$this->escape($i)?>]" value="<?=$this->escape($event->location)?>">
     </td>
     <td></td>
 </tr>
@@ -66,13 +66,13 @@
 <tr>
     <td class="calendarinput_line2" colspan="4"><?=$this->text('event_link')?></td>
     <td>
-        <input type="normal" class="calendar_input_event" colspan="2" name="linkadr[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linkadr)?>">
+        <input type="text" class="calendar_input_event" colspan="2" name="linkadr[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linkadr)?>">
     </td>
     <td>&nbsp;</td>
 </tr>
     <td class="calendarinput_line2" colspan="4"><?=$this->text('event_link_txt')?></td>
     <td>
-        <input type="normal" class="calendar_input_event" colspan="2" name="linktxt[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linktxt)?>">
+        <input type="text" class="calendar_input_event" colspan="2" name="linktxt[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linktxt)?>">
     </td>
     <td></td>
 </tr>
