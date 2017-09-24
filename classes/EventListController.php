@@ -132,6 +132,7 @@ class EventListController extends Controller
         if (!$this->pastMonth) {
             $this->pastMonth = $this->conf['show_number_of_previous_months'];
         }
+        $this->pastMonth = (int) $this->pastMonth;
 
         $this->month = $this->month - $this->pastMonth;
         if ($this->month < 1) {
