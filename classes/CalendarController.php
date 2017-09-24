@@ -62,7 +62,7 @@ class CalendarController extends Controller
     {
         global $pth, $bjs;
 
-        $bjs .= '<script src="' . $pth['folder']['plugins'] . 'calendar/calendar.js"></script>';
+        $bjs .= '<script src="' . $pth['folder']['plugins'] . 'calendar/calendar.min.js"></script>';
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
         }
