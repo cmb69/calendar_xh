@@ -227,6 +227,10 @@ marquee  {
     padding:1px 0;
 }
 
+.calendar_loading {
+    visibility: hidden;
+}
+
 /**
  * Back-End
  */

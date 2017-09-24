@@ -60,6 +60,9 @@ class CalendarController extends Controller
 
     public function defaultAction()
     {
+        global $pth, $bjs;
+
+        $bjs .= '<script src="' . $pth['folder']['plugins'] . 'calendar/calendar.js"></script>';
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
         }
@@ -156,7 +159,18 @@ class CalendarController extends Controller
         $view->prevUrl = $this->getPrevUrl();
         $view->nextUrl = $this->getNextUrl();
         $view->rows = $rows;
-        $view->render();
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+            header('X-Location: ' . CMSIMPLE_URL . "?{$_SERVER['QUERY_STRING']}");
+            $view->render();
+            exit;
+        } else {
+            echo '<div class="calendar_calendar">';
+            $view->render();
+            echo '</div>';
+        }
     }
 
     private function fetchEvents()
