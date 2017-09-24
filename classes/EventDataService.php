@@ -124,6 +124,13 @@ class EventDataService
                     $linkadr = $link;
                     $linktxt = null;
                 }
+                if (strpos($linkadr, 'ext:') === 0) {
+                    $linkadr = 'http://' . substr($linkadr, 4);
+                } elseif (strpos($linkadr, 'int:') === 0) {
+                    $linkadr = '?' . substr($linkadr, 4);
+                } elseif ($linkadr) {
+                    $linktxt = "{$linkadr};{$linktxt}";
+                }
                 if ($datestart != '' && $event != '') {
                     $result[] = (object) compact(
                         'datestart',
