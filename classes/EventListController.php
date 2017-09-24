@@ -304,32 +304,16 @@ class EventListController extends Controller
 
     private function renderLink(stdClass $event)
     {
-        if (strpos($event->linkadr, 'ext:') === 0) {
-            $external_site = substr($event->linkadr, 4);
-            $external_text = $event->linktxt;
-            if (!$external_text) {
-                $external_text = $external_site;
-            }
-            return "<td class=\"event_data event_link\"><a href=\"http://"
-                . "{$external_site}\" target=\"_blank\" title=\""
-                . strip_tags($event->event) . "\">$external_text</a></td>\n";
-        } elseif (strpos($event->linkadr, 'int:') === 0) {
-            $internal_page = substr($event->linkadr, 4);
-            $internal_text = $event->linktxt;
-            if (!$internal_text) {
-                $internal_text = $internal_page;
-            }
-            return "<td class=\"event_data event_link\"><a href=\"?"
-                . "{$internal_page}\" title=\""
-                . strip_tags($event->event) . "\">$internal_text</a></td>\n";
+        if ($event->linkadr) {
+            $url = $event->linkadr;
+            $target = (strpos($url, '://') === false) ? '_self' : '_blank';
+            $title = strip_tags($event->event);
+            $text = $event->linktxt ?: $event->linkadr;
+            return "<td class=\"event_data event_link\">"
+                . "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
+                . "{$text}</a></td>\n";
         } else {
-            $t = "<td class=\"event_data event_link\">";
-            if (!$event->linkadr) {
-                $t .= $event->linktxt . "</td>\n";
-            } else {
-                $t .= strip_tags("{$event->linkadr},{$event->linktxt}") . "</td>\n";
-            }
-            return $t;
+            return "<td class=\"event_data event_link\">{$event->linktxt}</td>\n";
         }
     }
 
