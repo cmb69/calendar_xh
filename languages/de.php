@@ -62,7 +62,7 @@
 	$plugin_tx['calendar']['cf_show_number_of_future_months']="Anzahl der Monate, für die die Veranstaltungsvorschau gezeigt werden soll. Voreingestellt ist 1 für eien Monat.";
 	$plugin_tx['calendar']['cf_show_number_of_previous_months']="Wenn man auch Veranstaltungen aus der Vergangenheit im Veranstaltungskalender zeigen möchte, kann man hier eine Zahl eintragen";
 	$plugin_tx['calendar']['cf_show_period_of_events']="Ob am Anfang der Veranstaltungsübersicht der gezeigte Zeitraum angegeben werden soll.";
-	$plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Einstellung der resultierende Beite der Eintragstabelle, je nachdem ob die Eingabefelder untereinander (narrow), teilweise untereinander (medium) oder nebeneinander (wide) stehen.";
+	$plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Einstellung der resultierende Breite der Eintragstabelle, je nachdem ob die Eingabefelder untereinander (narrow), teilweise untereinander (medium) oder nebeneinander (wide) stehen.";
 	$plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Falls man auf einer normalen CMSimple-Seite online-Besuchern  Eintragsmöglichkeiten gibt, kann man hier angeben, ob die Eingabefelder untereinander (narrow), teilweise untereinander (medium) oder nebeneinander (wide) stehen.";
 	$plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="Ob bei mehrsprachigen Websites nur eine Kalenderdatei angelegt wird, die für alle Sprachversionen genutzt wird.";
 
