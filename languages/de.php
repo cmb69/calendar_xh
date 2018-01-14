@@ -34,6 +34,8 @@
 
 	$plugin_tx['calendar']['label_add_event']="Veranstaltung hinzufügen";
 	$plugin_tx['calendar']['label_delete_event']="Veranstaltung löschen";
+	$plugin_tx['calendar']['label_import']="Import";
+	$plugin_tx['calendar']['label_import_button']="Importiere %s";
 
 	$plugin_tx['calendar']['alt_logo']="Kalender";
 

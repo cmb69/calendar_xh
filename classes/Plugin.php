@@ -32,8 +32,11 @@ class Plugin
 
     public function run()
     {
+        global $sn, $plugin_tx;
+
         if (XH_ADM) {
             XH_registerStandardPluginMenuItems(true);
+            XH_registerPluginMenuItem('calendar', $plugin_tx['calendar']['label_import'], $sn . '?&calendar&admin=import&normal');
             if (XH_wantsPluginAdministration('calendar')) {
                 $this->handleAdministration();
             }
@@ -59,6 +62,18 @@ class Plugin
             case 'plugin_main':
                 $o .= sprintf('<h1>Calendar – %s</h1>', XH_hsc($plugin_tx['calendar']['menu_main']));
                 $o .= EditEvents($plugin_cf['calendar']['event-input_backend_narrow_medium_or_wide']);
+                break;
+            case 'import':
+                $controller = new IcalImportController;
+                ob_start();
+                switch ($action) {
+                    case 'import':
+                        $controller->importAction();
+                        break;
+                    default:
+                        $controller->defaultAction();
+                }
+                $o .= ob_get_clean();
                 break;
             default:
                 $o .= plugin_admin_common($action, $admin, $plugin);

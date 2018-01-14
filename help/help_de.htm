@@ -37,6 +37,7 @@
         <li><a href="#usage-calendars">Kalender</a></li>
         <li><a href="#usage-eventlist">Veranstaltungsliste</a></li>
         <li><a href="#usage-nextevent">Nächste Veranstaltung</a></li>
+        <li><a href="#usage-import">Import</a></li>
     </ul>
 </li>
 <li><a href="#limitations">Beschränkungen</a></li>
@@ -184,6 +185,19 @@
     oder auf einer Seite:
 </p>
 <pre>{{{nextevent()}}}</pre>
+</section>
+
+<section id="usage-import">
+<h3>Import</h3>
+<p>
+    Um vorhandene <code>.ics</code> Dateien (iCalendar-Format) zu importieren,
+    müssen diese zunächst im <code>content/</code> Ordner (neben der
+    <code>calendar.csv</code> Datei) abgelegt werden. Unter <i>Plugins</i> →
+    <i>Calendar</i> → <i>Import</i> kann dann der eigentliche Import der
+    Datei(en) durchgeführt werden. Es ist zu beachten, dass die importierten
+    Events als neue Events hinzugefügt werden; mehrfacher Import der gleichen
+    <code>.ics</code> Datei fügt alle Events mehrfach hinzu.
+</p>
 </section>
 
 </section>
