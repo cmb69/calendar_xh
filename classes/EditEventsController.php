@@ -33,10 +33,13 @@ class EditEventsController extends Controller
 {
     private $editeventswidth;
 
-    public function __construct($editeventswidth)
+    /**
+     * @param ?string $editeventswidth
+     */
+    public function __construct($editeventswidth = null)
     {
         parent::__construct();
-        if ($editeventswidth) {
+        if (isset($editeventswidth)) {
             $this->editeventswidth = $editeventswidth;
         } else {
             $this->editeventswidth = $this->conf['event-input_memberpages_narrow_medium_or_wide'];

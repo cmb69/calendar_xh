@@ -45,7 +45,10 @@ function nextevent()
     return ob_get_clean();
 }
 
-function editevents($editeventswidth)
+/**
+ * @param ?string $editeventswidth
+ */
+function editevents($editeventswidth = null)
 {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
