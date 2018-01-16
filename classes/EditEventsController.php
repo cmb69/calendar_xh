@@ -116,9 +116,6 @@ class EditEventsController extends Controller
         if ($event->location == '###') {
             $event->dateend = '';
         }
-        foreach ($event as &$prop) {
-            $prop = str_replace(';', ' ', $prop);
-        }
     }
 
     /**

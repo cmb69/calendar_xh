@@ -72,9 +72,9 @@ class EventDataService
     {
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
-            while (($line = fgets($stream)) !== false) {
+            while (($record = fgetcsv($stream, 0, ';', '"', "\0")) !== false) {
                 list($datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt)
-                    = explode(';', rtrim($line));
+                    = $record;
                 if (!$dateend) {
                     $dateend = null;
                 }
@@ -171,7 +171,7 @@ class EventDataService
             return false;
         }
         foreach ($events as $entry) {
-            if (!fwrite($fp, $this->assembleEventLine($entry))) {
+            if (!$this->writeEventLine($fp, $entry)) {
                 fclose($fp);
                 return false;
             }
@@ -181,11 +181,21 @@ class EventDataService
     }
 
     /**
-     * @return string
+     * @param resource $fp
+     * @return bool
      */
-    private function assembleEventLine(stdClass $entry)
+    private function writeEventLine($fp, stdClass $entry)
     {
-        return "{$entry->datestart};{$entry->starttime};{$entry->dateend};{$entry->endtime};"
-            . "{$entry->event};{$entry->location};{$entry->linkadr};{$entry->linktxt}\n";
+        $record = [
+            $entry->datestart,
+            $entry->starttime,
+            $entry->dateend,
+            $entry->endtime,
+            $entry->event,
+            $entry->location,
+            $entry->linkadr,
+            $entry->linktxt
+        ];
+        return fputcsv($fp, $record, ';', '"', "\0") !== false;
     }
 }
