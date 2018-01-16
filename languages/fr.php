@@ -21,5 +21,3 @@
     $plugin_tx['calendar']['prev_button_text']="Mois préc.";
     $plugin_tx['calendar']['next_button_text']="Mois suiv.";
     $plugin_tx['calendar']['notice_no_next_event_sceduled']="";
-
-?>

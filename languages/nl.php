@@ -26,5 +26,3 @@
 	$plugin_tx['calendar']['event_time_till_time']="-";
 
 	$plugin_tx['calendar']['text_announcing_overall_period']="Evenementen in de periode van";
-
-?>

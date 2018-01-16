@@ -39,5 +39,3 @@
     $plugin_tx['calendar']['cf_show_number_of_previous_months']="For at vise også tidligere aktiviteter, på listen, indtast antallet af foregående måned, der skal vises";
     $plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Bredde af input tabellen i backend, \"narrow\" arrangerer felter vertikalt, \"bredde\" horizontalt.";
     $plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Bredde af aktivitets input tabellen (som regel beskyttet medlem sider).";
-
-?>
