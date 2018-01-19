@@ -30,7 +30,6 @@ class NextEventController extends Controller
 {
     public function defaultAction()
     {
-        $t = '';
         $nextevent = null;
 
         $endevents = [];
@@ -66,21 +65,15 @@ class NextEventController extends Controller
                 break;
             }
         }
+        $view = new View('nextevent');
         if (isset($nextevent)) {
-            $t.= "<div class=\"nextevent_date\">"
-                . date($this->lang['event_date_representation_in_next_event_marquee'], $nextevent->timestamp);
+            $view->event = $nextevent;
+            $date = date($this->lang['event_date_representation_in_next_event_marquee'], $nextevent->timestamp);
             if (date('H:i', $nextevent->timestamp) != "00:00") {
-                $t.= ' — ' . date('H:i', $nextevent->timestamp);
+                $date.= ' — ' . date('H:i', $nextevent->timestamp);
             }
-            $t.= "</div>\n";
-            $t.= "<marquee direction=\"up\" scrolldelay=\"100\" scrollamount=\"1\">"
-                . "<div class=\"nextevent_event\">{$nextevent->event}</div>\n";
-            $t.= "<div class=\"nextevent_date\">{$nextevent->text}</div>\n";
-            $t.= "<div class=\"nextevent_location\">{$nextevent->location}</div>\n</marquee>\n";
-        } else {
-            $t.= "<div class=\"nextevent_date\">" . tag('br') . $this->lang['notice_no_next_event'] . "</div>";
+            $view->date = $date;
         }
-
-        echo $t;
+        $view->render();
     }
 }
