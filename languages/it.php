@@ -18,7 +18,6 @@
 	$plugin_tx['calendar']['age_5']="%d anni";
 	$plugin_tx['calendar']['prev_button_text']="il mese scorso";
 	$plugin_tx['calendar']['next_button_text']="il mese prossimo";
-    $plugin_tx['calendar']['notice_no_next_event_sceduled']="";
 
 	$plugin_tx['calendar']['event_date_till_date']="a";
 	$plugin_tx['calendar']['event_time_till_time']="-";

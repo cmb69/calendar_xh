@@ -21,7 +21,7 @@
 	$plugin_tx['calendar']['age_5']="%d years";
 	$plugin_tx['calendar']['prev_button_text']="Prev month";
 	$plugin_tx['calendar']['next_button_text']="Next month";
-    $plugin_tx['calendar']['notice_no_next_event_sceduled']="";
+    $plugin_tx['calendar']['notice_no_next_event']="No further event scheduled.";
 
     //new in version 1.1 & 1.2
 	$plugin_tx['calendar']['event_date_till_date']="till";

@@ -77,9 +77,8 @@ class NextEventController extends Controller
                 . "<div class=\"nextevent_event\">{$nextevent->event}</div>\n";
             $t.= "<div class=\"nextevent_date\">{$nextevent->text}</div>\n";
             $t.= "<div class=\"nextevent_location\">{$nextevent->location}</div>\n</marquee>\n";
-        } elseif ($this->lang['notice_no_next_event_sceduled']) {
-            // if no next event - as suggested by oldnema
-            $t.= "<div class=\"nextevent_date\">" . tag('br') . $this->lang['notice_no_next_event_sceduled'] . "</div>";
+        } else {
+            $t.= "<div class=\"nextevent_date\">" . tag('br') . $this->lang['notice_no_next_event'] . "</div>";
         }
 
         echo $t;

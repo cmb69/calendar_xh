@@ -18,7 +18,6 @@
     $plugin_tx['calendar']['age_5']="%d Jaaren";
     $plugin_tx['calendar']['prev_button_text']="vorafgaande maand";
     $plugin_tx['calendar']['next_button_text']="volgende maand";
-    $plugin_tx['calendar']['notice_no_next_event_sceduled']="";
 
 	$plugin_tx['calendar']['event_date_till_date']="tot";
 	$plugin_tx['calendar']['event_time_till_time']="-";
