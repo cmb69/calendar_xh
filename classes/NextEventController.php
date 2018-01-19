@@ -68,9 +68,9 @@ class NextEventController extends Controller
         }
         if (isset($nextevent)) {
             $t.= "<div class=\"nextevent_date\">"
-                . strftime($this->lang['event_date_representation_in_next_event_marquee'], $nextevent->timestamp);
-            if (strftime('%H:%M', $nextevent->timestamp) != "00:00") {
-                $t.= ' — ' . strftime('%H:%M', $nextevent->timestamp);
+                . date($this->lang['event_date_representation_in_next_event_marquee'], $nextevent->timestamp);
+            if (date('H:i', $nextevent->timestamp) != "00:00") {
+                $t.= ' — ' . date('H:i', $nextevent->timestamp);
             }
             $t.= "</div>\n";
             $t.= "<marquee direction=\"up\" scrolldelay=\"100\" scrollamount=\"1\">"
