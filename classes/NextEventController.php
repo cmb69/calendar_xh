@@ -42,7 +42,7 @@ class NextEventController extends Controller
                     . $event->dateend . " " . $event->endtime;
                 list($event_date, $event_month, $event_year) = explode($this->dpSeparator(), $event->datestart);
                 $event->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");
-                $endevent->text = $this->lang['event_event'] . " " . $this->lang['event_start'] . ":" . tag('br')
+                $endevent->text = $this->lang['event_started'] . tag('br')
                         . $event->datestart . " " . $event->starttime;
                 list($event_date, $event_month, $event_year) = explode($this->dpSeparator(), $event->dateend);
                 $endevent->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");

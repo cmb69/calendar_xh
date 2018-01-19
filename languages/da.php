@@ -11,8 +11,6 @@
     $plugin_tx['calendar']['event_location']="Sted";
     $plugin_tx['calendar']['event_link']="Link";
     $plugin_tx['calendar']['event_link_etc']="Link etc.";
-    $plugin_tx['calendar']['event_start']="Starter";
-    $plugin_tx['calendar']['event_end']="Slutter";
 
     $plugin_tx['calendar']['birthday_text']="Fødselsdag";
     $plugin_tx['calendar']['age_1']="%d år";

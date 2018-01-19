@@ -11,8 +11,9 @@
 	$plugin_tx['calendar']['event_location']="Ort";
 	$plugin_tx['calendar']['event_link']="Link";
 	$plugin_tx['calendar']['event_link_etc']="Link etc.";
-	$plugin_tx['calendar']['event_start']="Beginn";
-	$plugin_tx['calendar']['event_end']="Ende";
+	$plugin_tx['calendar']['event_started']="Veranstaltung begann:";
+	$plugin_tx['calendar']['event_date_start']="Anfangsdatum";
+	$plugin_tx['calendar']['event_date_end']="Enddatum";
 
 	$plugin_tx['calendar']['birthday_text']="Geburtstag";
 	$plugin_tx['calendar']['age_1']="%d Jahr alt";

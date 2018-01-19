@@ -1,8 +1,8 @@
 <?php if ($this->showEventTime):?>
 <tr class="firstline_calendarinput">
-    <td><?=$this->text('event_start')?><br><?=$this->text('event_date')?></td>
+    <td><?=$this->text('event_date_start')?></td>
     <td><?=$this->text('event_time')?></td>
-    <td><?=$this->text('event_end')?><br><?=$this->text('event_date')?></td>
+    <td><?=$this->text('event_date_end')?></td>
     <td><?=$this->text('event_time')?></td>
 <?php   if ($this->showEventLocation):?>
     <td><?=$this->text('event_event')?></td>
@@ -14,9 +14,9 @@
 </tr>
 <?php else:?>
 <tr class="firstline_calendarinput">
-    <td><?=$this->text('event_start')?> <?=$this->text('event_date')?></td>
+    <td><?=$this->text('event_date_start')?></td>
     <td style="width: 0"></td>
-    <td><?=$this->text('event_end')?> <?=$this->text('event_date')?></td>
+    <td><?=$this->text('event_date_end')?></td>
     <td style="width: 0"></td>
 <?php   if ($this->showEventLocation):?>
     <td><?=$this->text('event_event')?></td>

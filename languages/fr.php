@@ -11,8 +11,6 @@
     $plugin_tx['calendar']['event_location']="Lieu";
     $plugin_tx['calendar']['event_link']="Lien";
 	$plugin_tx['calendar']['event_link_etc']="Lien etc.";
-    $plugin_tx['calendar']['event_start']="Début";
-    $plugin_tx['calendar']['event_end']="Fin";
 
     $plugin_tx['calendar']['birthday_text']="Anniversaire";
     $plugin_tx['calendar']['age_1']="%d an";

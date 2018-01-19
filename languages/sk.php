@@ -11,8 +11,6 @@
     $plugin_tx['calendar']['event_location']="Miesto/Poznámka";
     $plugin_tx['calendar']['event_link']="Odkaz/Poznámka";
     $plugin_tx['calendar']['event_link_etc']="Odkaz/Poznámka";
-    $plugin_tx['calendar']['event_start']="Začiatok";
-    $plugin_tx['calendar']['event_end']="Koniec";
 
     $plugin_tx['calendar']['birthday_text']="Narodeniny";
     $plugin_tx['calendar']['age_1']="%d rok";
