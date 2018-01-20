@@ -1,44 +1,43 @@
-
 .calendar_main {
-	text-align: center;
-	border-collapse: collapse;
+    text-align: center;
+    border-collapse: collapse;
     width:100%;
 }
 /*Calendar headline*/
 .calendar_monthyear {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-weight: bold;
-	font-size: 8pt;
-	text-align: center;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 8pt;
+    text-align: center;
 }
 .calendar_monthyear a {
-	text-decoration: none;
-	color: red;
+    text-decoration: none;
+    color: red;
 }
 .calendar_monthyear a:hover {
-	background-color: red;
+    background-color: red;
     color: white;
 }
 
 /*Calendar subheading line with daynames*/
 .calendar_daynames {
-	color: #888;
-	font-weight: bold;
+    color: #888;
+    font-weight: bold;
 }
 
 /*Calendar days display*/
-.calendar_main td  { /*for all days*/
-	line-height: 17px;
-	font-size: 7pt;
+.calendar_main td { /*for all days*/
+    line-height: 17px;
+    font-size: 7pt;
     width:14%;
 }
 .calendar_day { /*normal day*/
-	color: #055;
+    color: #055;
 }
 
 .calendar_we { /*weekend days*/
-	color: #06f;
-	font-weight: bold;
+    color: #06f;
+    font-weight: bold;
 }
 
 .calendar_noday { /*beginning and end fields without digits*/
@@ -47,15 +46,15 @@
 .calendar_today {
     background: #eee;
 }
-.calendar_eventday a,  .calendar_today a {
-	text-decoration: none;
-	font-weight: bold;
-	display: block;
-	color: red;
+.calendar_eventday a, .calendar_today a {
+    text-decoration: none;
+    font-weight: bold;
+    display: block;
+    color: red;
 }
 
 .calendar_eventday a:hover, .calendar_today a:hover {
-	background-color: red;
+    background-color: red;
     color: white;
 }
 
@@ -63,55 +62,55 @@
 /* Display of introductory
    text-line in events list */
 .period_of_events {
-	font-size: 110%;
-	font-variant: small-caps;
-	margin-bottom: .5em;
+    font-size: 110%;
+    font-variant: small-caps;
+    margin-bottom: .5em;
 }
 .period_of_events span {
-	font-size: 91%;
-	font-weight: bold;
-	font-variant: normal;
+    font-size: 91%;
+    font-weight: bold;
+    font-variant: normal;
 }
 
 /*Start event list*/
 .event_monthyear { /*Heading with month and year*/
-	font-weight: bold;
-	font-size: 10pt;
-	padding-top: 13px;
+    font-weight: bold;
+    font-size: 10pt;
+    padding-top: 13px;
 }
 
 .event_data_row td { /*definition here take precedence over definitions in fields*/
     color:black;
-	font-size: 11px;
+    font-size: 11px;
 }
 
 .birthday_data_row td {
-	font-size: 11px;
-	background: #fdd;
+    font-size: 11px;
+    background: #fdd;
 }
 .event_data { /*this is for all data fields*/
     padding: 1px 1px 3px 2px;
     line-height: 1.25;
 }
-.event_date   {/*this is the date field*/
+.event_date {/*this is the date field*/
     width:14%;
-	background: #dfd;
+    background: #dfd;
 }
-.event_time   {/*this is the time field*/
+.event_time {/*this is the time field*/
     width:11%;
-	background: #dfd;
+    background: #dfd;
 }
-.event_event   {/*this is the time field*/
+.event_event {/*this is the time field*/
     width:28%;
     background:#eef;
 }
-.event_location   {/*this is the location field*/
+.event_location {/*this is the location field*/
     width:29%;
-	background: #dfd;
+    background: #dfd;
 }
-.event_link   {/*this is the link field*/
+.event_link {/*this is the link field*/
     width:25%;
-	background: #dfd;
+    background: #dfd;
 }
 
 /*sub heading (=event_heading_row) should be put after event data
@@ -121,12 +120,12 @@ should not take the background-color of the events,
 but it should take the same width.) */
 
 .event_heading_row td { /*sub heading*/
-	background-color: #eee;
+    background-color: #eee;
     line-height:1.25;
-	color: #444;
-	font-weight: bold;
-	font-style: italic;
-	font-size: 11px;
+    color: #444;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 11px;
 }
 .event_heading {
     height:12px;
@@ -138,15 +137,15 @@ but it should take the same width.) */
 
 .nextevent_date {
     background:#eee;
-	color: #888;
-	font-size: 8px;
-	font-weight: bold;
-	font-style: italic;
-	margin-top: 10px;
+    color: #888;
+    font-size: 8px;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 10px;
     width: 100%;
     text-align: center;
 }
-marquee  {
+marquee {
     background:#eee;
     width: 100%;
     margin:0 0 10px;
@@ -154,14 +153,14 @@ marquee  {
     height:50px;
 }
 .nextevent_event {
-	color: #aaa;
-	font-size: 16px;
-	font-weight: bold;
+    color: #aaa;
+    font-size: 16px;
+    font-weight: bold;
     letter-spacing: .1em;
 }
 .nextevent_location {
-	color: #999;
-	font-size: 13px;
+    color: #999;
+    font-size: 13px;
 }
 /* backend edit events */
 .calendar_input {
@@ -194,7 +193,7 @@ marquee  {
 .calendar_input_event {
 /*controls also location etc*/
 }
-.event_highlighting  {
+.event_highlighting {
     color:red;
 }
 .calendar_loading {
@@ -205,9 +204,9 @@ marquee  {
  * Back-End
  */
 .calendar_logo {
-	float: left;
-	margin: 0 1.5em 0.5em 0;
+    float: left;
+    margin: 0 1.5em 0.5em 0;
 }
 .calendar_license {
-	text-align: justify;
+    text-align: justify;
 }
