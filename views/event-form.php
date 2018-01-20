@@ -2,7 +2,7 @@
     <input type="hidden" name="action" value="saveevents">
     <div class="calendar_input">
         <div>
-            <button name="send" value="<?=$this->saveLabel()?>" title="<?=$this->saveLabel()?>"><?=$this->saveLabel()?></button>
+            <button name="send"><?=$this->text('label_save')?></button>
             <button name="add[0]" value="add" title="<?=$this->text('label_add_event')?>"><span class="fa fa-plus fa-fw"></span></button>
         </div>
 <?php foreach ($this->events as $i => $event):?>
@@ -63,7 +63,7 @@
         </div>
 <?php endforeach?>
         <div>
-            <button name="send" value="<?=$this->saveLabel()?>" title="<?=$this->saveLabel()?>"><?=$this->saveLabel()?></button>
+            <button name="send"><?=$this->text('label_save')?></button>
             <button name="add[0]" value="add" title="<?=$this->text('label_add_event')?>"><span class="fa fa-plus fa-fw"></span></button>
         </div>
     </div>

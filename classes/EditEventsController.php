@@ -113,10 +113,7 @@ class EditEventsController extends Controller
      */
     private function eventForm($events)
     {
-        global $tx;
-
         $view = new View('event-form');
-        $view->saveLabel = ucfirst($tx['action']['save']);
         $view->showEventTime = (bool) $this->conf['show_event_time'];
         $view->showEventLocation = (bool) $this->conf['show_event_location'];
         $view->showEventLink = (bool) $this->conf['show_event_link'];
