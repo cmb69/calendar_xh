@@ -9,7 +9,5 @@ $plugin_mcf['calendar']['show_event_time']="bool";
 $plugin_mcf['calendar']['show_event_location']="bool";
 $plugin_mcf['calendar']['show_event_link']="bool";
 $plugin_mcf['calendar']['show_period_of_events']="bool";
-$plugin_mcf['calendar']['event-input_backend_narrow_medium_or_wide']="enum:narrow,medium,wide";
-$plugin_mcf['calendar']['event-input_memberpages_narrow_medium_or_wide']="enum:narrow,medium,wide";
 $plugin_mcf['calendar']['same-event-calendar_for_all_languages']="bool";
 $plugin_mcf['calendar']['date_delimiter']="enum:.,-,/";

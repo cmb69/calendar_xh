@@ -34,5 +34,3 @@
 	$plugin_tx['calendar']['cf_week-end_day_2']="Detto ako week-end_day_1.";
 	$plugin_tx['calendar']['cf_show_number_of_future_months']="Počet mesiacov v budúcnosti, za ktoré sú zobrazované udalosti v zozname. Predvolené nastavenie je aktuálny mesiac, \"2\" predstavuje aktuálny a nasledujúci mesiac.";
 	$plugin_tx['calendar']['cf_show_number_of_previous_months']="Pre zobrazenie udalostí v minulosti zadajte počet mesiacov do minulosti.";
-	$plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Šírka tabuľky na pozadí, \"narrow\" usporiadava polia vertikálne, \"wide\" horizontálne.";
-	$plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Šírka tabuĺky na zadávanie udalostí na stránke (zvyčajne chránenej prístupovým heslom).";

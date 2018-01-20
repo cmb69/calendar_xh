@@ -34,5 +34,3 @@
     $plugin_tx['calendar']['cf_week-end_day_2']="Samme som weekend dag 1.";
     $plugin_tx['calendar']['cf_show_number_of_future_months']="Antallet af fremtidige måneder, der skal vises i aktivitets-listen . Standard er indeværende måned, \"2\" vil også vise næste måned.";
     $plugin_tx['calendar']['cf_show_number_of_previous_months']="For at vise også tidligere aktiviteter, på listen, indtast antallet af foregående måned, der skal vises";
-    $plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Bredde af input tabellen i backend, \"narrow\" arrangerer felter vertikalt, \"bredde\" horizontalt.";
-    $plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Bredde af aktivitets input tabellen (som regel beskyttet medlem sider).";

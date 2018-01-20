@@ -63,6 +63,4 @@
 	$plugin_tx['calendar']['cf_show_number_of_future_months']="Number of future months which are to be shown in the event display. Default is present month, \"2\" results in present and next month.";
 	$plugin_tx['calendar']['cf_show_number_of_previous_months']="To show also past events in the event list, enter the number of previous month to be shown";
 	$plugin_tx['calendar']['cf_show_period_of_events']="Whether to display the period of events above the event list.";
-	$plugin_tx['calendar']['cf_event-input_backend_narrow_medium_or_wide']="Width of the input table in the backend, \"narrow\" arranges fields vertically, \"wide\" horizontally.";
-	$plugin_tx['calendar']['cf_event-input_memberpages_narrow_medium_or_wide']="Width of event input table in (usually protected member) pages.";
 	$plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="Whether the same event file will be used for all languages in multi language sites. By default every language has its own event calendar.";

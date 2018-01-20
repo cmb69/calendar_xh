@@ -46,9 +46,9 @@ function nextevent()
 }
 
 /**
- * @param ?string $editeventswidth
+ * @return string
  */
-function editevents($editeventswidth = null)
+function editevents()
 {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
@@ -65,7 +65,7 @@ function editevents($editeventswidth = null)
             $action = 'defaultAction';
     }
     ob_start();
-    (new Calendar\EditEventsController($editeventswidth))->{$action}();
+    (new Calendar\EditEventsController())->{$action}();
     return ob_get_clean();
 }
 

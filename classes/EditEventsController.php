@@ -31,26 +31,16 @@ use Fa\RequireCommand as FaRequireCommand;
 
 class EditEventsController extends Controller
 {
-    private $editeventswidth;
-
-    /**
-     * @param ?string $editeventswidth
-     */
-    public function __construct($editeventswidth = null)
+    public function __construct()
     {
         parent::__construct();
-        if (isset($editeventswidth)) {
-            $this->editeventswidth = $editeventswidth;
-        } else {
-            $this->editeventswidth = $this->conf['event-input_memberpages_narrow_medium_or_wide'];
-        }
         (new FaRequireCommand)->execute();
     }
 
     public function defaultAction()
     {
         $events = (new EventDataService)->readEvents();
-        echo $this->eventForm($events, $this->editeventswidth);
+        echo $this->eventForm($events);
     }
 
     public function saveAction()
@@ -93,7 +83,7 @@ class EditEventsController extends Controller
             }
         }
 
-        $o .= $this->eventForm($newevent, $this->editeventswidth);
+        $o .= $this->eventForm($newevent);
         echo $o;
     }
 
@@ -120,42 +110,16 @@ class EditEventsController extends Controller
 
     /**
      * @param stdClass[] $events
-     * @param string $editeventswidth
      */
-    private function eventForm($events, $editeventswidth)
+    private function eventForm($events)
     {
         global $tx;
 
-        switch ($editeventswidth) {
-            case 'narrow':
-                $columns = 5;
-                break;
-            case 'wide':
-                $columns = 8;
-                break;
-            default:
-                $columns = 6;
-                $editeventswidth = 'medium';
-        }
-
         $view = new View('event-form');
-        $view->tableclass = "calendar_input_{$editeventswidth}";
-        $view->columns = $columns;
         $view->saveLabel = ucfirst($tx['action']['save']);
-        $view->table = new HtmlString($this->renderTable($editeventswidth, $events));
-        return (string) $view;
-    }
-
-    /**
-     * @param string $width
-     * @param stdClass[] $events
-     */
-    private function renderTable($width, array $events)
-    {
-        $view = new View("{$width}-table");
-        $view->showEventTime = $this->conf['show_event_time'];
-        $view->showEventLocation = $this->conf['show_event_location'];
-        $view->showEventLink = $this->conf['show_event_link'];
+        $view->showEventTime = (bool) $this->conf['show_event_time'];
+        $view->showEventLocation = (bool) $this->conf['show_event_location'];
+        $view->showEventLink = (bool) $this->conf['show_event_link'];
         foreach ($events as $event) {
             if ($event->datestart) {
                 list($day, $month, $year) = explode($this->dpSeparator(), $event->datestart);
