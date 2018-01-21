@@ -7,57 +7,56 @@
         </div>
 <?php foreach ($this->events as $i => $event):?>
         <div>
-            <div class="calendar_input_datefield">
-                <?=$this->text('event_date_start')?><br>
+            <label>
+                <?=$this->text('event_date_start')?>
                 <input type="date" class="calendar_input_date" maxlength="10" name="datestart[<?=$this->escape($i)?>]" value="<?=$this->escape($event->datestart)?>" id="datestart<?=$this->escape($i)?>">
-            </div>
+            </label>
 <?php   if ($this->showEventTime):?>
-            <div class="calendar_input_time">
-                <?=$this->text('event_time')?><br>
+            <label>
+                <?=$this->text('event_time')?>
                 <input type="time" class="calendar_input_time" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->starttime)?>">
-            </div>
+            </label>
 <?php   else:?>
             <input type="hidden" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->starttime)?>">
 <?php   endif?>
-            <div class="calendar_input_datefield">
-                <?=$this->text('event_date_end')?><br>
+            <label>
+                <?=$this->text('event_date_end')?>
                 <input type="date" class="calendar_input_date" maxlength="10" name="dateend[<?=$this->escape($i)?>]" value="<?=$this->escape($event->dateend)?>" id="dateend<?=$this->escape($i)?>">
-            </div>
+            </label>
 <?php   if ($this->showEventTime):?>
-            <div class="calendar_input_time">
-                <?=$this->text('event_time')?><br>
+            <label>
+                <?=$this->text('event_time')?>
                 <input type="time" class="calendar_input_time" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->endtime)?>">
-            </div>
+            </label>
 <?php   else:?>
             <input type="hidden" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->endtime)?>">
 <?php   endif?>
-            <div>
-                <?=$this->text('event_event')?><br>
+            <label>
+                <?=$this->text('event_event')?>
                 <input class="calendar_input_event event_highlighting" type="text" name="event[<?=$this->escape($i)?>]" value="<?=$this->escape($event->event)?>">
-            </div>
+            </label>
 <?php   if ($this->showEventLocation):?>
-            <div>
-                <?=$this->text('event_location')?><br>
+            <label>
+                <?=$this->text('event_location')?>
                 <input type="text" class="calendar_input_event" name="location[<?=$this->escape($i)?>]" value="<?=$this->escape($event->location)?>">
-            </div>
+            </label>
 <?php   else:?>
             <input type="hidden" name="location[<?=$this->escape($i)?>]" value="<?=$this->escape($event->location)?>">
 <?php   endif?>
 <?php   if ($this->showEventLink):?>
-            <div>
-                <?=$this->text('event_link')?><br>
+            <label>
+                <?=$this->text('event_link')?>
                 <input type="text" class="calendar_input_event" name="linkadr[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linkadr)?>">
-            </div>
-            <div>
-                <?=$this->text('event_link_txt')?><br>
+            </label>
+            <label>
+                <?=$this->text('event_link_txt')?>
                 <input type="text" class="calendar_input_event" name="linktxt[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linktxt)?>">
-            </div>
+            </label>
 <?php   else:?>
             <input type="hidden" name="linkadr[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linkadr)?>">
             <input type="hidden" name="linktxt[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linktxt)?>">
 <?php   endif?>
             <div>
-                &nbsp;<br>
                 <button name="delete[<?=$this->escape($i)?>]" value="delete" title="<?=$this->text('label_delete_event')?>"><span class="fa fa-trash fa-fw"></span></button>
             </div>
         </div>

@@ -172,11 +172,15 @@ marquee {
 .calendar_input > div {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     padding: .5em;
     background: #efefef;
     font-size: .9em;
     margin: 0 0 .5em 0;
     border: 1px solid #999;
+}
+.calendar_input > div > div {
+    align-self: flex-end;
 }
 .calendar_input > div:first-child, .calendar_input > div:last-child {
     background: transparent;
@@ -189,6 +193,7 @@ marquee {
     margin: 0 .25em .25em 0;
     padding: .25em;
     border: 1px solid #999;
+    display: block;
 }
 .calendar_input_event {
 /*controls also location etc*/
