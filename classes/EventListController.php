@@ -65,7 +65,6 @@ class EventListController extends Controller
 
         $x = 1;
 
-        $textmonth = date('F', mktime(1, 1, 1, $this->month, 1, $this->year));
         $monthnames = explode(',', $this->lang['monthnames_array']);
 
         $t = '';
