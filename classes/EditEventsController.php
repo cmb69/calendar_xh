@@ -39,7 +39,7 @@ class EditEventsController extends Controller
 
     public function defaultAction()
     {
-        $events = (new EventDataService)->readEvents();
+        $events = (new EventDataService($this->dpSeparator()))->readEvents();
         echo $this->eventForm($events);
     }
 
@@ -75,7 +75,7 @@ class EditEventsController extends Controller
         if (!$deleted && !$added) {
             // sorting new event inputs, idea of manu, forum-message
             usort($events, array($this, 'dateSort'));
-            if ((new EventDataService)->writeEvents($events)) {
+            if ((new EventDataService($this->dpSeparator()))->writeEvents($events)) {
                 echo XH_message('success', $this->lang['eventfile_saved']);
             } else {
                 echo XH_message('fail', $this->lang['eventfile_not_saved']);
@@ -87,16 +87,10 @@ class EditEventsController extends Controller
 
     private function fixPostedEvent(stdClass $event)
     {
-        if ($this->isValidDate($event->datestart)) {
-            list($year, $month, $day) = explode('-', $event->datestart);
-            $event->datestart = $day . $this->dpSeparator() . $month . $this->dpSeparator() . $year;
-        } else {
+        if (!$this->isValidDate($event->datestart)) {
             $event->datestart = '';
         }
-        if ($this->isValidDate($event->dateend)) {
-            list($year, $month, $day) = explode('-', $event->dateend);
-            $event->dateend = $day . $this->dpSeparator() . $month . $this->dpSeparator() . $year;
-        } else {
+        if (!$this->isValidDate($event->dateend)) {
             $event->dateend = '';
         }
 
@@ -115,16 +109,6 @@ class EditEventsController extends Controller
         $view->showEventTime = (bool) $this->conf['show_event_time'];
         $view->showEventLocation = (bool) $this->conf['show_event_location'];
         $view->showEventLink = (bool) $this->conf['show_event_link'];
-        foreach ($events as $event) {
-            if ($event->datestart) {
-                list($day, $month, $year) = explode($this->dpSeparator(), $event->datestart);
-                $event->datestart = "$year-$month-$day";
-            }
-            if ($event->dateend) {
-                list($day, $month, $year) = explode($this->dpSeparator(), $event->dateend);
-                $event->dateend = "$year-$month-$day";
-            }
-        }
         $view->events = $events;
         return (string) $view;
     }
@@ -142,10 +126,8 @@ class EditEventsController extends Controller
      */
     private function dateSort(stdClass $a, stdClass $b)
     {
-        $pattern = '!(.*)\\' . $this->dpSeparator() . '(.*)\\' . $this->dpSeparator() . '(.*)!';
-        $replace = '\3\2\1';
-        $a_i = preg_replace($pattern, $replace, $a->datestart) . $a->starttime;
-        $b_i = preg_replace($pattern, $replace, $b->datestart) . $b->starttime;
+        $a_i = "{$a->datestart}T{$a->starttime}";
+        $b_i = "{$b->datestart}T{$b->starttime}";
         if ($a_i == $b_i) {
             return 0;
         }
@@ -158,7 +140,7 @@ class EditEventsController extends Controller
     private function createDefaultEvent()
     {
         return (object) array(
-            'datestart'   => date('d') . $this->dpSeparator() . date('m') . $this->dpSeparator() . date('Y'),
+            'datestart'   => date('Y-m-d'),
             'starttime'   => '',
             'dateend'     => '',
             'endtime'     => '',

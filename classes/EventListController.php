@@ -165,13 +165,13 @@ class EventListController extends Controller
     private function fetchEvents()
     {
         $event_yearmonth_array  = array();
-        $events = (new EventDataService)->readEvents();
+        $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $event) {
-            list($event->startday, $event->startmonth, $event->startyear)
-                = explode($this->dpSeparator(), $event->datestart);
+            list($event->startyear, $event->startmonth, $event->startday)
+                = explode('-', $event->datestart);
             if (isset($event->dateend)) {
-                list($event->endday, $event->endmonth, $event->endyear)
-                    = explode($this->dpSeparator(), $event->dateend);
+                list($event->endyear, $event->endmonth, $event->endday)
+                    = explode('-', $event->dateend);
             } else {
                 $event->endday = $event->endmonth = $event->endyear = null;
             }

@@ -47,8 +47,6 @@ class Plugin
     {
         global $o, $pth, $plugin_cf, $plugin_tx, $admin, $action, $plugin;
 
-        $eventfile = (new EventDataService)->getFilename();
-
         $o .= print_plugin_admin('on');
 
         switch ($admin) {

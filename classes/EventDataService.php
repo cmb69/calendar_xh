@@ -35,7 +35,10 @@ class EventDataService
      */
     private $eventfile;
 
-    public function __construct()
+    /**
+     * @param string $separator
+     */
+    public function __construct($separator)
     {
         global $pth, $sl, $cf, $plugin_cf;
 
@@ -47,7 +50,7 @@ class EventDataService
         if (!file_exists("{$eventfile}.csv")) {
             if (file_exists("{$eventfile}.txt")) {
                 $this->eventfile = "{$eventfile}.txt";
-                $events = $this->readOldEvents();
+                $events = $this->readOldEvents($separator);
                 $this->eventfile = "{$eventfile}.csv";
                 $this->writeEvents($events);
             } else {
@@ -103,9 +106,10 @@ class EventDataService
     }
 
     /**
+     * @param string $separator
      * @return stdClass[]
      */
-    private function readOldEvents()
+    private function readOldEvents($separator)
     {
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
@@ -117,6 +121,14 @@ class EventDataService
                     $datestart = $eventdates;
                     $dateend = null;
                     $endtime = null;
+                }
+                if ($datestart) {
+                    list($day, $month, $year) = explode($separator, $datestart);
+                    $datestart = "$year-$month-$day";
+                }
+                if ($dateend) {
+                    list($day, $month, $year) = explode($separator, $dateend);
+                    $dateend = "$year-$month-$day";
                 }
                 if (strpos($link, ',') !== false) {
                     list($linkadr, $linktxt) = explode(',', $link);

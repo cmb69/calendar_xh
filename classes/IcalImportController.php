@@ -59,7 +59,7 @@ class IcalImportController extends Controller
     {
         $file = $this->getDataPath() . '/' . $_POST['calendar_ics'];
         $reader = new ICalendarReader($file, $this->dpSeparator());
-        $dataService = new EventDataService;
+        $dataService = new EventDataService($this->dpSeparator());
         $events = array_merge($dataService->readEvents(), $reader->read());
         $dataService->writeEvents($events);
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';

@@ -175,15 +175,15 @@ class CalendarController extends Controller
 
     private function fetchEvents()
     {
-        $events = (new EventDataService)->readEvents();
+        $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $entry) {
             if (isset($entry->dateend)) {
-                list($event_date, $event_month, $event_year) = explode($this->dpSeparator(), $entry->datestart);
+                list($event_year, $event_month, $event_date) = explode('-', $entry->datestart);
                 $entry->starttimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
-                list($event_date, $event_month, $event_year) = explode($this->dpSeparator(), $entry->dateend);
+                list($event_year, $event_month, $event_date) = explode('-', $entry->dateend);
                 $entry->endtimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
             } else {
-                list($entry->day, $entry->month, $entry->year) = explode($this->dpSeparator(), $entry->datestart);
+                list($entry->year, $entry->month, $entry->day) = explode('-', $entry->datestart);
             }
         }
 
