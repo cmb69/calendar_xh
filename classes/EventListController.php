@@ -62,6 +62,9 @@ class EventListController extends Controller
         $this->endMonth = $this->endMonth + $this->pastMonth + 1;
 
         list($events, $event_yearmonth_array) = $this->fetchEvents();
+        usort($events, function ($a, $b) {
+            return strcmp($a->datetime, $b->datetime);
+        });
 
         $x = 1;
 
@@ -97,9 +100,6 @@ class EventListController extends Controller
                 $t .= new HtmlString($this->createHeadlineView($tablecols, $textmonth));
             }
 
-            usort($events, function ($a, $b) {
-                return strcmp($a->datetime, $b->datetime);
-            });
             $t .= $this->renderEvents($events, $table, $tablecols, $textmonth);
             $x++;
             $this->advanceMonth();
