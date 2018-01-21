@@ -77,9 +77,9 @@ class EditEventsController extends Controller
             // sorting new event inputs, idea of manu, forum-message
             usort($newevent, array($this, 'dateSort'));
             if (!(new EventDataService)->writeEvents($newevent)) {
-                $o .= "<p><strong>{$this->lang['eventfile_not_saved']}</strong></p>\n";
+                $o .= XH_message('fail', $this->lang['eventfile_not_saved']);
             } else {
-                $o .= "<p><strong>{$this->lang['eventfile_saved']}</strong></p>\n";
+                $o .= XH_message('success', $this->lang['eventfile_saved']);
             }
         }
 
