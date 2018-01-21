@@ -88,8 +88,6 @@ class EventListController extends Controller
 
         while ($x <= $this->endMonth) {
             $textmonth = $monthnames[$this->month - 1];
-            $today = (isset($today)) ? $today : date('j');
-            $today = ($this->month == date('m') && $this->year == date('Y')) ? $today : 32;
             $t .= $this->renderMonthEvents($events, $tablecols, $textmonth);
             $x++;
             $this->advanceMonth();
