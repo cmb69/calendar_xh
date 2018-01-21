@@ -61,7 +61,7 @@ class EventListController extends Controller
 
         $this->endMonth = $this->endMonth + $this->pastMonth + 1;
 
-        list($events, $event_yearmonth_array) = $this->fetchEvents();
+        $events = $this->fetchEvents();
         usort($events, function ($a, $b) {
             return strcmp($a->datetime, $b->datetime);
         });
@@ -90,17 +90,7 @@ class EventListController extends Controller
             $textmonth = $monthnames[$this->month - 1];
             $today = (isset($today)) ? $today : date('j');
             $today = ($this->month == date('m') && $this->year == date('Y')) ? $today : 32;
-
-            $table = false;
-            /*headline with month, year and subheadline is being generated*/
-            if (in_array("{$this->month}.{$this->year}", $event_yearmonth_array)) {
-                $table = true;
-            }
-            if ($table) {
-                $t .= new HtmlString($this->createHeadlineView($tablecols, $textmonth));
-            }
-
-            $t .= $this->renderEvents($events, $table, $tablecols, $textmonth);
+            $t .= $this->renderMonthEvents($events, $tablecols, $textmonth);
             $x++;
             $this->advanceMonth();
         }
@@ -163,7 +153,6 @@ class EventListController extends Controller
 
     private function fetchEvents()
     {
-        $event_yearmonth_array  = array();
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $event) {
             list($event->startyear, $event->startmonth, $event->startday)
@@ -175,9 +164,8 @@ class EventListController extends Controller
                 $event->endday = $event->endmonth = $event->endyear = null;
             }
             $event->datetime = "{$event->datestart} {$event->starttime}";
-            $event_yearmonth_array[] = "{$event->startmonth}.{$event->startyear}";
         }
-        return [$events, $event_yearmonth_array];
+        return $events;
     }
 
     private function calcTablecols()
@@ -198,7 +186,7 @@ class EventListController extends Controller
         return $tablecols;
     }
 
-    private function renderEvents(array $events, $table, $tablecols, $textmonth)
+    private function renderMonthEvents(array $events, $tablecols, $textmonth)
     {
         $t = '';
         foreach ($events as $event) {
@@ -212,12 +200,6 @@ class EventListController extends Controller
                 $age = $this->year - $event->startyear;
                 if ($age >= 0) {
                     $this->month = sprintf('%02d', $this->month);
-
-                    //headline with month has to be generated in case there is no ordinary event
-                    if (!$table) {
-                        $table = true;
-                        $t .= $this->createHeadlineView($tablecols, $textmonth);
-                    }
                     $t .= $this->createBirthdayRowView($event, $age);
                 }
             }
@@ -233,6 +215,9 @@ class EventListController extends Controller
                 }
                 $t .= $this->createEventRowView($event);
             }
+        }
+        if ($t) {
+            $t = $this->createHeadlineView($tablecols, $textmonth) . $t;
         }
         return $t;
     }
