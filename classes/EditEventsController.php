@@ -56,35 +56,33 @@ class EditEventsController extends Controller
             $$var = isset($_POST[$var]) ? $_POST[$var] : [];
             $post[$var] = $$var;
         }
-        $newevent = [];
+        $events = [];
         foreach (array_keys($datestart) as $i) {
             if (!isset($_POST['delete'][$i])) {
                 $entry = (object) array_combine($varnames, array_column($post, $i));
                 $this->fixPostedEvent($entry);
-                $newevent[] = $entry;
+                $events[] = $entry;
             } else {
                 $deleted = true;
             }
         }
 
         if (isset($_POST['add'])) {
-            $newevent[] = $this->createDefaultEvent();
+            $events[] = $this->createDefaultEvent();
             $added = true;
         }
 
-        $o = '';
         if (!$deleted && !$added) {
             // sorting new event inputs, idea of manu, forum-message
-            usort($newevent, array($this, 'dateSort'));
-            if (!(new EventDataService)->writeEvents($newevent)) {
-                $o .= XH_message('fail', $this->lang['eventfile_not_saved']);
+            usort($events, array($this, 'dateSort'));
+            if ((new EventDataService)->writeEvents($events)) {
+                echo XH_message('success', $this->lang['eventfile_saved']);
             } else {
-                $o .= XH_message('success', $this->lang['eventfile_saved']);
+                echo XH_message('fail', $this->lang['eventfile_not_saved']);
             }
         }
 
-        $o .= $this->eventForm($newevent);
-        echo $o;
+        echo $this->eventForm($events);
     }
 
     private function fixPostedEvent(stdClass $event)
