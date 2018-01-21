@@ -51,49 +51,33 @@ class EventListController extends Controller
     {
         $this->determineYearAndMonth();
         $this->determineEndMonth();
-    
-        $display_end_month = $this->month + $this->endMonth + $this->pastMonth;
-        $display_end_year = $this->year;
-        while ($display_end_month > 12) {
-            $display_end_year = $display_end_year + 1;
-            $display_end_month = $display_end_month - 12;
-        }
-
-        $this->endMonth = $this->endMonth + $this->pastMonth + 1;
+        $this->endMonth = $this->endMonth + $this->pastMonth;
 
         $events = $this->fetchEvents();
-        usort($events, function ($a, $b) {
-            return strcmp($a->datetime, $b->datetime);
-        });
 
-        $x = 1;
-
-        $monthnames = explode(',', $this->lang['monthnames_array']);
-
-        $t = '';
-        if ($this->conf['show_period_of_events']) {
-            $t .= "<p class=\"period_of_events\">"
-               .  $this->lang['text_announcing_overall_period']
-               .  " <span>"
-               .  $monthnames[$this->month - 1] . " "
-               .  $this->year . "</span> "
-               .  $this->lang['event_date_till_date']
-               .  " <span>" . $monthnames[$display_end_month - 1]
-               .  " " . $display_end_year . "</span></p>\n";
+        $endmonth = $this->month + $this->endMonth;
+        $endyear = $this->year;
+        while ($endmonth > 12) {
+            $endyear++;
+            $endmonth -= 12;
         }
-
-        $t .= "<table border=\"0\" width=\"100%\">\n";
 
         $tablecols = $this->calcTablecols();
 
+        $view = new View('eventlist');
+        $view->showHeading = (bool) $this->conf['show_period_of_events'];
+        $view->start = new HtmlString('<span>' . XH_hsc($this->formatMonthYear($this->month, $this->year)) . '</span>');
+        $view->end = new HtmlString('<span>' . XH_hsc($this->formatMonthYear($endmonth, $endyear)) . '</span>');
+        $monthEvents = [];
+        $x = 0;
         while ($x <= $this->endMonth) {
-            $textmonth = $monthnames[$this->month - 1];
-            $t .= $this->renderMonthEvents($events, $tablecols, $textmonth);
+            $filteredEvents = (new EventDataService($this->dpSeparator()))->filterByMonth($events, sprintf('%04d-%02d', $this->year, $this->month));
+            $monthEvents[] = new HtmlString($this->renderMonthEvents($filteredEvents, $tablecols));
             $x++;
             $this->advanceMonth();
         }
-        $t .="</table>\n";
-        echo $t;
+        $view->monthEvents = $monthEvents;
+        $view->render();
     }
 
     private function determineYearAndMonth()
@@ -161,7 +145,6 @@ class EventListController extends Controller
             } else {
                 $event->endday = $event->endmonth = $event->endyear = null;
             }
-            $event->datetime = "{$event->datestart} {$event->starttime}";
         }
         return $events;
     }
@@ -184,29 +167,19 @@ class EventListController extends Controller
         return $tablecols;
     }
 
-    private function renderMonthEvents(array $events, $tablecols, $textmonth)
+    private function renderMonthEvents(array $events, $tablecols)
     {
         $t = '';
-        foreach ($events as $event) {
-            if ($event->startmonth != $this->month) {
-                continue;
-            }
-            // birthday announcements
-            if (trim($event->location) == '###') {
-                $age = $this->year - $event->startyear;
-                if ($age >= 0) {
-                    $this->month = sprintf('%02d', $this->month);
-                    $t .= $this->createBirthdayRowView($event, $age);
+        if (!empty($events)) {
+            $this->month = sprintf('%02d', $this->month);
+            $t = $this->createHeadlineView($tablecols) . $t;
+            foreach ($events as $event) {
+                if (isset($event->age)) {
+                    $t .= $this->createBirthdayRowView($event, $event->age);
+                } else {
+                    $t .= $this->createEventRowView($event);
                 }
             }
-            // normal events
-            if (trim($event->location) !== '###' && $event->startyear == $this->year) {
-                $this->month = sprintf('%02d', $this->month);
-                $t .= $this->createEventRowView($event);
-            }
-        }
-        if ($t) {
-            $t = $this->createHeadlineView($tablecols, $textmonth) . $t;
         }
         return $t;
     }
@@ -291,12 +264,11 @@ class EventListController extends Controller
         }
     }
 
-    private function createHeadlineView($tablecols, $textmonth)
+    private function createHeadlineView($tablecols)
     {
         $view = new View("event-list-headline");
         $view->tablecols = $tablecols;
-        $view->textmonth = $textmonth;
-        $view->year = $this->year;
+        $view->monthYear = $this->formatMonthYear($this->month, $this->year);
         $view->showTime = $this->conf['show_event_time'];
         $view->showLocation = $this->conf['show_event_location'];
         $view->showLink = $this->conf['show_event_link'];

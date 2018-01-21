@@ -61,4 +61,15 @@ abstract class Controller
         }
         return $sep;
     }
+
+    /**
+     * @param int $month
+     * @param int $year
+     * @return string
+     */
+    protected function formatMonthYear($month, $year)
+    {
+        $monthnames = explode(',', $this->lang['monthnames_array']);
+        return "{$monthnames[$month-1]} $year";
+    }
 }

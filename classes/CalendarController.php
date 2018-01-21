@@ -154,7 +154,7 @@ class CalendarController extends Controller
         }
 
         $view = new View('calendar');
-        $view->caption = $this->getCaption();
+        $view->caption = $this->formatMonthYear($this->month, $this->year);
         $view->hasPrevNextButtons = $this->conf['prev_next_button'];
         $view->prevUrl = $this->getPrevUrl();
         $view->nextUrl = $this->getNextUrl();
@@ -227,14 +227,6 @@ class CalendarController extends Controller
             }
         }
         return $theevents;
-    }
-
-    private function getCaption()
-    {
-        $textmonth = date('F', mktime(1, 1, 1, $this->month, 1, $this->year));
-        $monthnames = explode(',', $this->lang['monthnames_array']);
-        $textmonth = $monthnames[$this->month - 1];
-        return "$textmonth {$this->year}";
     }
 
     private function getDayOfWeek($i)

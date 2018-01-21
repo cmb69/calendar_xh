@@ -106,6 +106,31 @@ class EventDataService
     }
 
     /**
+     * @param stdClass[] $events
+     * @param string $month
+     * @return stdClass[]
+     */
+    public function filterByMonth(array $events, $month)
+    {
+        $result = [];
+        foreach ($events as $event) {
+            $isBirthday = trim($event->location) === '###';
+            if (!$isBirthday && strpos($event->datestart, $month) === 0) {
+                $result[] = $event;
+            } elseif ($isBirthday && substr($month, 0, 4) >= substr($event->datestart, 0, 4) && strpos($event->datestart, substr($month, 5), 5) === 5) {
+                $newevent = clone $event;
+                $newevent->age = substr($month, 0, 4) - substr($newevent->datestart, 0, 4);
+                $newevent->datestart = $month . substr($newevent->datestart, 7);
+                $result[] = $newevent;
+            }
+        }
+        usort($result, function ($a, $b) {
+            return strcmp("{$a->datestart}T{$a->starttime}", "{$b->datestart}T{$b->starttime}");
+        });
+        return $result;
+    }
+
+    /**
      * @param string $separator
      * @return stdClass[]
      */
