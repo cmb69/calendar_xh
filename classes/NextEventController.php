@@ -46,7 +46,7 @@ class NextEventController extends Controller
                 list($event_year, $event_month, $event_date) = explode('-', $event->dateend);
                 $endevent->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");
                 $endevents[] = $endevent;
-            } else {
+            } elseif (trim($event->location !== '###')) {
                 $event->text = '';
                 list($event_year, $event_month, $event_date) = explode('-', $event->datestart);
                 $event->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");

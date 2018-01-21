@@ -207,7 +207,7 @@ class EventListController extends Controller
             //==================
             // now normal events
             //==================
-            if ($event->startyear == $this->year) {
+            if (trim($event->location) !== '###' && $event->startyear == $this->year) {
                 if ($this->month < 10) {
                     if (strlen($this->month) == 1) {
                         $this->month = '0' . $this->month;
