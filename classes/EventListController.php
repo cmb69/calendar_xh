@@ -191,9 +191,7 @@ class EventListController extends Controller
             if ($event->startmonth != $this->month) {
                 continue;
             }
-            //=============================================
-            //here the case of birthday annoncements starts
-            //=============================================
+            // birthday announcements
             if (trim($event->location) == '###') {
                 $age = $this->year - $event->startyear;
                 if ($age >= 0) {
@@ -201,16 +199,9 @@ class EventListController extends Controller
                     $t .= $this->createBirthdayRowView($event, $age);
                 }
             }
-
-            //==================
-            // now normal events
-            //==================
+            // normal events
             if (trim($event->location) !== '###' && $event->startyear == $this->year) {
-                if ($this->month < 10) {
-                    if (strlen($this->month) == 1) {
-                        $this->month = '0' . $this->month;
-                    }
-                }
+                $this->month = sprintf('%02d', $this->month);
                 $t .= $this->createEventRowView($event);
             }
         }
