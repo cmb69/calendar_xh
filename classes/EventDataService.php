@@ -105,7 +105,7 @@ class EventDataService
     /**
      * @return stdClass[]
      */
-    public function readOldEvents()
+    private function readOldEvents()
     {
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
