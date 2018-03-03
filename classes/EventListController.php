@@ -256,11 +256,10 @@ class EventListController extends Controller
             $target = (strpos($url, '://') === false) ? '_self' : '_blank';
             $title = strip_tags($event->event);
             $text = $event->linktxt ?: $event->linkadr;
-            return "<td class=\"event_data event_link\">"
-                . "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
-                . "{$text}</a></td>\n";
+            return "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
+                . "{$text}</a>";
         } else {
-            return "<td class=\"event_data event_link\">{$event->linktxt}</td>\n";
+            return $event->linktxt;
         }
     }
 
