@@ -108,11 +108,7 @@ class View
     {
         global $plugin_tx;
 
-        if ($count == 0) {
-            $key .= '_0';
-        } else {
-            $key .= XH_numberSuffix($count);
-        }
+        $key .= XH_numberSuffix($count);
         $args = func_get_args();
         array_shift($args);
         return $this->escape(vsprintf($plugin_tx['calendar'][$key], $args));
