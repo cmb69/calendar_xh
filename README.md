@@ -114,7 +114,7 @@ plugin call:
 
 ### Next Event
 
-Optionally, you can show the next scheduled event in a *marquee*, either
+Optionally, you can show the next scheduled event in a *marquee* like manner, either
 from the template:
 
     <?=nextevent()?>

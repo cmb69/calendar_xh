@@ -120,7 +120,7 @@ durch den folgenden Pluginaufruf eingebettet werden:
 ### Nächste Veranstaltung
 
 Optional kann die nächste geplante Veranstaltung als Lauftext
-(*marquee*) angezeigt werden, entweder im Template:
+(*marquee*-artig) angezeigt werden, entweder im Template:
 
     <?=nextevent()?>
 
