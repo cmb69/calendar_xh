@@ -28,7 +28,7 @@ namespace Calendar;
 
 class Plugin
 {
-    const VERSION = '@CALENDAR_VERSION@';
+    const VERSION = '2.0dev1';
 
     public function run()
     {
