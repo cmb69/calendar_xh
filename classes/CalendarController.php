@@ -6,7 +6,7 @@
  * Copyright 2008      Patrick Varlet
  * Copyright 2011      Holger Irmler
  * Copyright 2011-2013 Frank Ziesing
- * Copyright 2017-2018 Christoph M. Becker
+ * Copyright 2017-2019 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
