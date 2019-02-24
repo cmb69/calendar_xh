@@ -11,6 +11,7 @@ zusätzlicher Features anbietet, allerdings zu Lasten der Einfachheit.
 ## Inhaltsverzeichnis
 
   - [Voraussetzungen](#voraussetzungen)
+  - [Download](#download)
   - [Installation](#installation)
   - [Einstellungen](#einstellungen)
   - [Verwendung](#verwendung)
@@ -20,6 +21,7 @@ zusätzlicher Features anbietet, allerdings zu Lasten der Einfachheit.
       - [Nächste Veranstaltung](#nächste-veranstaltung)
       - [Import](#import)
   - [Beschränkungen](#beschränkungen)
+  - [Fehlerbehebung](#fehlerbehebung)
   - [Lizenz](#lizenz)
   - [Danksagung](#danksagung)
 
@@ -27,6 +29,11 @@ zusätzlicher Features anbietet, allerdings zu Lasten der Einfachheit.
 
 Calendar\_XH benötigt CMSimple\_XH ≥ 1.6.3 mit dem Fa\_XH Plugin, und
 PHP ≥ 5.5.4.
+
+## Download
+
+Das [aktuelle Release](https://github.com/cmb69/calendar_xh/releases/latest)
+kann von Github herunter geladen werden.
 
 ## Installation
 
@@ -138,10 +145,26 @@ Abhängigkeit vom Server sollten ca. 100 Veranstaltungen kein Problem
 darstellen, aber bei mehr Veranstaltungen könnte es zu Fehlfunktionen
 kommen.
 
+## Fehlerbehebung
+
+Melden Sie Programmfehler und stellen Sie Supportanfragen entweder auf [Github](https://github.com/cmb69/calendar_xh/issues)
+oder im [CMSimple_XH Forum](https://cmsimpleforum.com/).
+
 ## Lizenz
 
-Calendar\_XH kann unter Einhaltung der
-[GPLv3](http://www.gnu.org/licenses/gpl.html) verwendet werden.
+Calendar\_XH ist freie Software. Sie können es unter den Bedingungen
+der GNU General Public License, wie von der Free Software Foundation
+veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß
+Version 3 der Lizenz oder (nach Ihrer Option) jeder späteren Version.
+
+Die Veröffentlichung von Calendar\_XH erfolgt in der Hoffnung, daß es
+Ihnen von Nutzen sein wird, aber *ohne irgendeine Garantie*, sogar ohne
+die implizite Garantie der *Marktreife* oder der *Verwendbarkeit für einen
+bestimmten Zweck*. Details finden Sie in der GNU General Public License.
+
+Sie sollten ein Exemplar der GNU General Public License zusammen mit
+Calendar\_XH erhalten haben. Falls nicht, siehe
+<http://www.gnu.org/licenses/>.
 
 Copyright © 2005-2006 Michael Svarrer  
 Copyright © 2007-2008 Tory  

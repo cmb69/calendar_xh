@@ -11,6 +11,7 @@ features at the cost of greatly increased complexity.
 ## Table of Contents
 
   - [Requirements](#requirements)
+  - [Download](#download)
   - [Installation](#installation)
   - [Settings](#settings)
   - [Usage](#usage)
@@ -20,6 +21,7 @@ features at the cost of greatly increased complexity.
       - [Next Event](#next-event)
       - [Import](#import)
   - [Limitations](#limitations)
+  - [Troubleshooting](#troubleshooting)
   - [License](#license)
   - [Credits](#credits)
 
@@ -27,6 +29,11 @@ features at the cost of greatly increased complexity.
 
 Calendar\_XH requires CMSimple\_XH ≥ 1.6.3 with the Fa\_XH plugin, and
 PHP ≥ 5.5.4.
+
+## Download
+
+The [lastest release](https://github.com/cmb69/calendar_xh/releases/latest)
+is available for download on Github.
 
 ## Installation
 
@@ -130,10 +137,24 @@ events multiple times.
 Calendar\_XH is unsuitable for lots of events. Depending on the server,
 roughly 100 events should be fine, but more events may cause issues.
 
+## Troubleshooting
+Report bugs and ask for support either on [Github](https://github.com/cmb69/calendar_xh/issues)
+or in the [CMSimple_XH Forum](https://cmsimpleforum.com/).
+
 ## License
 
-Calendar\_XH is licensed under
-[GPLv3](http://www.gnu.org/licenses/gpl.html).
+Calendar\_XH is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Calendar\_XH is distributed in the hope that it will be useful,
+but *without any warranty*; without even the implied warranty of
+*merchantibility* or *fitness for a particular purpose*. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Calendar\_XH.  If not, see <http://www.gnu.org/licenses/>.
 
 Copyright © 2005-2006 Michael Svarrer  
 Copyright © 2007-2008 Tory  
