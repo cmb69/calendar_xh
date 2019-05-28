@@ -160,8 +160,10 @@ class EventListController extends Controller
             if (isset($event->dateend)) {
                 list($event->endyear, $event->endmonth, $event->endday)
                     = explode('-', $event->dateend);
+                $event->past_event = (strtotime($event->dateend) < time());
             } else {
                 $event->endday = $event->endmonth = $event->endyear = null;
+                $event->past_event = (strtotime($event->datestart) < time());
             }
             $event->datetime = "{$event->datestart} {$event->starttime}";
         }

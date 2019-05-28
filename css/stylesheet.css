@@ -84,6 +84,17 @@
     font-size: 11px;
 }
 
+/*================================*/
+/*show past events in grey*/
+/*================================*/
+.past_event td, .past_event a,
+.past_event i, .past_event li,
+.past_event u  {
+    background: transparent;
+    color:#999 !important;
+}
+/*================================*/
+
 .birthday_data_row td {
     font-size: 11px;
     background: #fdd;
@@ -214,4 +225,7 @@ marquee {
 }
 .calendar_license {
     text-align: justify;
+}
+.event_heading, .event_data, .event_monthyear {
+border: 2px #fff solid;
 }

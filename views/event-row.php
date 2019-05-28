@@ -1,4 +1,4 @@
-<tr class="event_data_row">
+<tr class="event_data_row<?=$this->event->past_event? ' past_event':''?>">
     <td class="event_data event_date"><?=$this->date()?></td>
 <?php if ($this->showTime):?>
     <td class="event_data event_time"><?=$this->time()?></td>
