@@ -1,254 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<meta http-equiv="content-type" content="text/html;charset=utf-8">
-<title>Calendar_XH – User Manual</title>
-<link rel="stylesheet" type="text/css" href="./stylesheet.css">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Calendar_XH – User Manual</title>
+  <style type="text/css">
+    body {
+        font-family: Georgia, serif;
+        line-height: 1.5;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        background: #ffffe1;
+        max-width: 40em;
+    }
+    p {
+        text-align: justify;
+    }
+    pre {
+        color: black;
+        background: #ffe;
+        overflow: auto;
+        padding: 0.2em 0.5em;
+        border: 1px solid silver;
+    }
+  </style>
 </head>
-
 <body>
-
-<article>
-<h1>Calendar_XH – User Manual</h1>
-<img src="../calendar.png" class="logo" alt="Calendar">
-<p>
-    Calendar_XH facilitates the administration and display of event calendars
-    and lists on CMSimple_XH websites.
-</p>
-<p>
-    This version is a fork of Calendar 1.2.10. Note that svasti has developed
-    Calendar 1.2 further and <a
-    href="https://github.com/cmsimple-xh/calendar">that version</a> offers
-    plenty more features at the cost of greatly increased complexity.
-</p>
-
-<nav id="nav">
-<h2>Table of Contents</h2>
+<h1 id="calendar_xh">Calendar_XH</h1>
+<p>Calendar_XH facilitates the administration and display of event calendars and lists on CMSimple_XH websites.</p>
+<p>This version is a fork of Calendar 1.2.10. Note that svasti has developed Calendar 1.2 further and <a href="https://github.com/cmsimple-xh/calendar">that version</a> offers plenty more features at the cost of greatly increased complexity.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
 <ul>
-<li><a href="#notice">Important Notice</a></li>
 <li><a href="#requirements">Requirements</a></li>
+<li><a href="#download">Download</a></li>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#settings">Settings</a></li>
-<li>
-    <a href="#usage">Usage</a>
-    <ul>
-        <li><a href="#usage-editor">Event Editor</a></li>
-        <li><a href="#usage-calendars">Calendars</a></li>
-        <li><a href="#usage-eventlist">Event List</a></li>
-        <li><a href="#usage-nextevent">Next Event</a></li>
-        <li><a href="#usage-import">Import</a></li>
-    </ul>
-</li>
+<li><a href="#usage">Usage</a>
+<ul>
+<li><a href="#event-editor">Event Editor</a></li>
+<li><a href="#calendars">Calendars</a></li>
+<li><a href="#event-list">Event List</a></li>
+<li><a href="#next-event">Next Event</a></li>
+<li><a href="#import">Import</a></li>
+</ul></li>
 <li><a href="#limitations">Limitations</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
 <li><a href="#license">License</a></li>
 <li><a href="#credits">Credits</a></li>
 </ul>
-</nav>
-
-<section id="notice">
-<h2>Important Notice</h2>
-<p class="important">
-    Calendar_XH couldn't be tested so far in various environments. It is a so called
-    beta version. Use with caution!
-</p>
-</section>
-
-<section id="requirements">
-<h2>Requirements</h2>
-<p>
-    Calendar_XH requires CMSimple_XH ≥ 1.6.3 with the Fa_XH plugin, and PHP ≥ 5.5.4.
-</p>
-</section>
-
-<section id="installation">
-<h2>Installation</h2>
-<p>
-    The installation is done as with many other CMSimple_XH plugins.
-    See the <a href="http://www.cmsimple-xh.org/wiki/doku.php/installation">
-    CMSimple_XH wiki</a> for further details.
-</p>
-<ol>
-<li class="important">
-    Backup the data on your server.
-</li>
-<li>
-    Unzip the distribution on your computer.
-</li>
-<li>
-    Upload the whole directory <code>calendar/</code> to your server into
-    CMSimple_XH's <code>plugins/</code> directory.
-</li>
-<li>
-    Set write permissions for the subdirectories <code>config/</code>,
-    <code>css/</code> and <code>languages/</code>.
-</li>
-<li class="important">
-    Navigate to <i>Plugins</i> → <i>Calendar</i> in the back-end to check if
-    all requirements are fulfilled.
-</li>
+<h2 id="requirements">Requirements</h2>
+<p>Calendar_XH requires CMSimple_XH ≥ 1.7.0 with the Fa_XH plugin, and PHP ≥ 5.5.4.</p>
+<h2 id="download">Download</h2>
+<p>The <a href="https://github.com/cmb69/calendar_xh/releases/latest">lastest release</a> is available for download on Github.</p>
+<h2 id="installation">Installation</h2>
+<p>The installation is done as with many other CMSimple_XH plugins. See the <a href="https://wiki.cmsimple-xh.org/doku.php/installation#plugins">CMSimple_XH wiki</a> for further details.</p>
+<ol type="1">
+<li>Backup the data on your server.</li>
+<li>Unzip the distribution on your computer.</li>
+<li>Upload the whole directory <code>calendar/</code> to your server into CMSimple_XH’s <code>plugins/</code> directory.</li>
+<li>Set write permissions for the subdirectories <code>config/</code>, <code>css/</code> and <code>languages/</code>.</li>
+<li>Navigate to <em>Plugins</em> → <em>Calendar</em> in the back-end to check if all requirements are fulfilled.</li>
 </ol>
-</section>
-
-<section id="settings">
-<h2>Settings</h2>
-<p>
-    The plugin's configuration is done as with many other CMSimple_XH plugins in
-    the website's back-end. Select <i>Plugins</i> → <i>Calendar</i>.
-</p>
-<p>
-    You can change the default settings of Calendar_XH under <i>Config</i>.
-    Hints for the options will be displayed when hovering over the help icon
-    with your mouse.
-</p>
-<p>
-    Localization is done under <i>Language</i>. You can translate the character
-    strings to your own language if there is no appropriate language file available,
-    or customize them according to your needs.
-</p>
-<p>
-    The look of Calendar_XH can be customized under <i>Stylesheet</i>.
-</p>
-</section>
-
-<section id="usage">
-<h2>Usage</h2>
-
-<section id="usage-editor">
-<h3>Event Editor</h3>
-<p>
-    The administration of the events is done in the back-end (<i>Plugins</i> →
-    <i>Calendar</i> → <i>Edit Events</i>). Note that adding and deleting events
-    happens only temporarily; you have to save the events to make that change
-    permanent.
-</p>
-<p>
-    Alternatively, you can embed the event editor on a normal CMSimple_XH page,
-    so the events can be edited by non-admins also. Use the following plugin
-    call:
-</p>
-<pre>{{{editevents()}}}</pre>
-<p class="important">
-    Embedding the event editor on a page should only be done if access to this
-    page requires authorization via <a
-    href="http://3-magi.net/?CMSimple_XH/Register_XH">Register_XH</a> or <a
-    href="https://github.com/cmsimple-xh/memberpages">Memberpages</a>.
-</p>
-<p>
-    Besides normal events, it is also possible to define <i>birthdays</i> by
-    entering <code>###</code> as location, the name of the birthday child as
-    event and the date of birth as start date.
-</p>
-</section>
-
-<section id="usage-calendars">
-<h3>Calendars</h3>
-<p>
-    You can show the event calendar either from the template:
-</p>
-<pre>&lt;?=calendar()?&gt;</pre>
-<p>
-    or only on a page:
-</p>
-<pre>{{{calendar()}}}</pre>
-<p>
-    All defined events of the current month are highlighted in the calendar, and
-    linked to the <i>event page</i> that is defined in the language settings of
-    Calendar_XH.
-</p>
-</section>
-
-<section id="usage-eventlist">
-<h3>Event List</h3>
-<p>
-    The event list is supposed to be embedded on the <i>event page</i> that is
-    defined in the language settings of Calendar_XH with the following plugin
-    call:
-</p>
-<pre>{{{events()}}}</pre>
-</section>
-
-<section id="usage-nextevent">
-<h3>Next Event</h3>
-<p>
-    Optionally, you can show the next scheduled event in a <i>marquee</i>,
-    either from the template:
-</p>
-<pre>&lt;?=nextevent()?&gt;</pre>
-<p>
-    or on a page:
-</p>
-<pre>{{{nextevent()}}}</pre>
-</section>
-
-<section id="usage-import">
-<h3>Import</h3>
-<p>
-    To import existing <code>.ics</code> files (iCalendar format), you have to
-    put them in the <code>content/</code> folder (right besides the
-    <code>calendar.csv</code> file). Then navigate to <i>Plugins</i> →
-    <i>Calendar</i> → <i>Import</i>
-    where you can actually import the desired file(s). Note that the imported
-    events are treated as new events; importing the same <code>.ics</code> file
-    multiple times will add all events multiple times.
-</p>
-</section>
-
-</section>
-
-<section id="limitations">
-<h2>Limitations</h2>
-<p>
-    Calendar_XH is unsuitable for lots of events. Depending on the server,
-    roughly 100 events should be fine, but more events may cause issues.
-</p>
-</section>
-
-<section id="license">
-<h2>License</h2>
-<p>
-    Calendar_XH is licensed under
-    <a href="http://www.gnu.org/licenses/gpl.html">GPLv3</a>.
-</p>
-<p>
-    Copyright © 2005-2006 Michael Svarrer<br>
-    Copyright © 2007-2008 Tory<br>
-    Copyright © 2008      Patrick Varlet<br>
-    Copyright © 2011      Holger Irmler<br>
-    Copyright © 2011-2013 Frank Ziesing<br>
-    Copyright © 2017-2018 Christoph M. Becker
-</p>
-</section>
-
-<section id="credits">
-<h2>Credits</h2>
-<p>
-    The Calendar plugin for CMSimple has originally be developed by Michael
-    Svarrer, and then been improved by Tory, Patrick Varlet, Holger Irmler and
-    Frank Ziesing. Many thanks to all these developers!
-</p>
-<p>
-    The plugin logo has been designed by <a
-    href="http://www.mentalrey.it/">Alessandro Rei</a>. Many thanks for
-    publishing this icon under GPL.
-</p>
-<!--
-<p>
-    Many thanks to the community at the <a
-    href="http://www.cmsimpleforum.com">CMSimple_XH forum</a> for tips,
-    suggestions and testing.
-</p>
--->
-<p>
-    And last but not least many thanks to <a href="http://harteg.dk/">Peter
-    Harteg</a>, the father of CMSimple, and all developers of <a
-    href="http://www.cmsimple-xh.org">CMSimple_XH</a> without whom this amazing
-    CMS wouldn't exist.
-</p>
-</section>
-
-</article>
-
+<h2 id="settings">Settings</h2>
+<p>The plugin’s configuration is done as with many other CMSimple_XH plugins in the website’s back-end. Select <em>Plugins</em> → <em>Calendar</em>.</p>
+<p>You can change the default settings of Calendar_XH under <em>Config</em>. Hints for the options will be displayed when hovering over the help icon with your mouse.</p>
+<p>Localization is done under <em>Language</em>. You can translate the character strings to your own language if there is no appropriate language file available, or customize them according to your needs.</p>
+<p>The look of Calendar_XH can be customized under <em>Stylesheet</em>.</p>
+<h2 id="usage">Usage</h2>
+<h3 id="event-editor">Event Editor</h3>
+<p>The administration of the events is done in the back-end (<em>Plugins</em> → <em>Calendar</em> → <em>Edit Events</em>). Note that adding and deleting events happens only temporarily; you have to save the events to make that change permanent.</p>
+<p>Alternatively, you can embed the event editor on a normal CMSimple_XH page, so the events can be edited by non-admins also. Use the following plugin call:</p>
+<pre><code>{{{editevents()}}}</code></pre>
+<p>Embedding the event editor on a page should only be done if access to this page requires authorization via <a href="https://github.com/cmb69/register_xh">Register_XH</a> or <a href="https://github.com/cmsimple-xh/memberpages">Memberpages</a>.</p>
+<p>Besides normal events, it is also possible to define <em>birthdays</em> by entering <code>###</code> as location, the name of the birthday child as event and the date of birth as start date.</p>
+<h3 id="calendars">Calendars</h3>
+<p>You can show the event calendar either from the template:</p>
+<pre><code>&lt;?=calendar()?&gt;</code></pre>
+<p>or only on a page:</p>
+<pre><code>{{{calendar()}}}</code></pre>
+<p>All defined events of the current month are highlighted in the calendar, and linked to the <em>event page</em> that is defined in the language settings of Calendar_XH.</p>
+<h3 id="event-list">Event List</h3>
+<p>The event list is supposed to be embedded on the <em>event page</em> that is defined in the language settings of Calendar_XH with the following plugin call:</p>
+<pre><code>{{{events()}}}</code></pre>
+<h3 id="next-event">Next Event</h3>
+<p>Optionally, you can show the next scheduled event in a <em>marquee</em> like manner, either from the template:</p>
+<pre><code>&lt;?=nextevent()?&gt;</code></pre>
+<p>or on a page:</p>
+<pre><code>{{{nextevent()}}}</code></pre>
+<h3 id="import">Import</h3>
+<p>To import existing <code>.ics</code> files (iCalendar format), you have to put them in the <code>content/</code> folder (right besides the <code>calendar.csv</code> file). Then navigate to <em>Plugins</em> → <em>Calendar</em> → <em>Import</em> where you can actually import the desired file(s). Note that the imported events are treated as new events; importing the same <code>.ics</code> file multiple times will add all events multiple times.</p>
+<h2 id="limitations">Limitations</h2>
+<p>Calendar_XH is unsuitable for lots of events. Depending on the server, roughly 100 events should be fine, but more events may cause issues.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>Report bugs and ask for support either on <a href="https://github.com/cmb69/calendar_xh/issues">Github</a> or in the <a href="https://cmsimpleforum.com/">CMSimple_XH Forum</a>.</p>
+<h2 id="license">License</h2>
+<p>Calendar_XH is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+<p>Calendar_XH is distributed in the hope that it will be useful, but <em>without any warranty</em>; without even the implied warranty of <em>merchantibility</em> or <em>fitness for a particular purpose</em>. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with Calendar_XH. If not, see <a href="http://www.gnu.org/licenses/" class="uri">http://www.gnu.org/licenses/</a>.</p>
+<p>Copyright © 2005-2006 Michael Svarrer<br />
+Copyright © 2007-2008 Tory<br />
+Copyright © 2008 Patrick Varlet<br />
+Copyright © 2011 Holger Irmler<br />
+Copyright © 2011-2013 Frank Ziesing<br />
+Copyright © 2017-2019 Christoph M. Becker</p>
+<h2 id="credits">Credits</h2>
+<p>The Calendar plugin for CMSimple has originally be developed by Michael Svarrer, and then been improved by Tory, Patrick Varlet, Holger Irmler and Frank Ziesing. Many thanks to all these developers!</p>
+<p>The plugin logo has been designed by <a href="http://www.mentalrey.it/">Alessandro Rei</a>. Many thanks for publishing this icon under GPL.</p>
+<p>And last but not least many thanks to <a href="http://harteg.dk/">Peter Harteg</a>, the father of CMSimple, and all developers of <a href="http://www.cmsimple-xh.org">CMSimple_XH</a> without whom this amazing CMS wouldn’t exist.</p>
 </body>
-
 </html>

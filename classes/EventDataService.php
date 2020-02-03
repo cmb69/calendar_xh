@@ -6,7 +6,7 @@
  * Copyright 2008      Patrick Varlet
  * Copyright 2011      Holger Irmler
  * Copyright 2011-2013 Frank Ziesing
- * Copyright 2017-2018 Christoph M. Becker
+ * Copyright 2017-2019 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -102,6 +102,31 @@ class EventDataService
             }
             fclose($stream);
         }
+        return $result;
+    }
+
+    /**
+     * @param stdClass[] $events
+     * @param string $month
+     * @return stdClass[]
+     */
+    public function filterByMonth(array $events, $month)
+    {
+        $result = [];
+        foreach ($events as $event) {
+            $isBirthday = trim($event->location) === '###';
+            if (!$isBirthday && strpos($event->datestart, $month) === 0) {
+                $result[] = $event;
+            } elseif ($isBirthday && substr($month, 0, 4) >= substr($event->datestart, 0, 4) && strpos($event->datestart, substr($month, 5), 5) === 5) {
+                $newevent = clone $event;
+                $newevent->age = substr($month, 0, 4) - substr($newevent->datestart, 0, 4);
+                $newevent->datestart = $month . substr($newevent->datestart, 7);
+                $result[] = $newevent;
+            }
+        }
+        usort($result, function ($a, $b) {
+            return strcmp("{$a->datestart}T{$a->starttime}", "{$b->datestart}T{$b->starttime}");
+        });
         return $result;
     }
 
