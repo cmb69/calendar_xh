@@ -8,6 +8,6 @@
     <td class="event_data event_location"><?=$this->text('birthday_text')?></td>
 <?php endif?>
 <?php if ($this->showLink):?>
-    <?=$this->link()?>
+    <td class="event_data event_link"><?=$this->link()?></td>
 <?php endif?>
 </tr>
