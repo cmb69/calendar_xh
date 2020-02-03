@@ -6,7 +6,7 @@
  * Copyright 2008      Patrick Varlet
  * Copyright 2011      Holger Irmler
  * Copyright 2011-2013 Frank Ziesing
- * Copyright 2017-2019 Christoph M. Becker
+ * Copyright 2017-2018 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -51,33 +51,51 @@ class EventListController extends Controller
     {
         $this->determineYearAndMonth();
         $this->determineEndMonth();
-        $this->endMonth = $this->endMonth + $this->pastMonth;
+    
+        $display_end_month = $this->month + $this->endMonth + $this->pastMonth;
+        $display_end_year = $this->year;
+        while ($display_end_month > 12) {
+            $display_end_year = $display_end_year + 1;
+            $display_end_month = $display_end_month - 12;
+        }
+
+        $this->endMonth = $this->endMonth + $this->pastMonth + 1;
 
         $events = $this->fetchEvents();
+        usort($events, function ($a, $b) {
+            return strcmp($a->datetime, $b->datetime);
+        });
 
-        $endmonth = $this->month + $this->endMonth;
-        $endyear = $this->year;
-        while ($endmonth > 12) {
-            $endyear++;
-            $endmonth -= 12;
+        $x = 1;
+
+        $monthnames = explode(',', $this->lang['monthnames_array']);
+
+        $t = '';
+        if ($this->conf['show_period_of_events']) {
+            $t .= "<p class=\"period_of_events\">"
+               .  $this->lang['text_announcing_overall_period']
+               .  " <span>"
+               .  $monthnames[$this->month - 1] . " "
+               .  $this->year . "</span> "
+               .  $this->lang['event_date_till_date']
+               .  " <span>" . $monthnames[$display_end_month - 1]
+               .  " " . $display_end_year . "</span></p>\n";
         }
+
+        $t .= "<table border=\"0\" width=\"100%\">\n";
 
         $tablecols = $this->calcTablecols();
 
-        $view = new View('eventlist');
-        $view->showHeading = (bool) $this->conf['show_period_of_events'];
-        $view->start = new HtmlString('<span>' . XH_hsc($this->formatMonthYear($this->month, $this->year)) . '</span>');
-        $view->end = new HtmlString('<span>' . XH_hsc($this->formatMonthYear($endmonth, $endyear)) . '</span>');
-        $monthEvents = [];
-        $x = 0;
         while ($x <= $this->endMonth) {
-            $filteredEvents = (new EventDataService($this->dpSeparator()))->filterByMonth($events, sprintf('%04d-%02d', $this->year, $this->month));
-            $monthEvents[] = new HtmlString($this->renderMonthEvents($filteredEvents, $tablecols));
+            $textmonth = $monthnames[$this->month - 1];
+            $today = (isset($today)) ? $today : date('j');
+            $today = ($this->month == date('m') && $this->year == date('Y')) ? $today : 32;
+            $t .= $this->renderMonthEvents($events, $tablecols, $textmonth);
             $x++;
             $this->advanceMonth();
         }
-        $view->monthEvents = $monthEvents;
-        $view->render();
+        $t .="</table>\n";
+        echo $t;
     }
 
     private function determineYearAndMonth()
@@ -147,6 +165,7 @@ class EventListController extends Controller
                 $event->endday = $event->endmonth = $event->endyear = null;
                 $event->past_event = (strtotime($event->datestart) < time());
             }
+            $event->datetime = "{$event->datestart} {$event->starttime}";
         }
         return $events;
     }
@@ -169,19 +188,38 @@ class EventListController extends Controller
         return $tablecols;
     }
 
-    private function renderMonthEvents(array $events, $tablecols)
+    private function renderMonthEvents(array $events, $tablecols, $textmonth)
     {
         $t = '';
-        if (!empty($events)) {
-            $this->month = sprintf('%02d', $this->month);
-            $t = $this->createHeadlineView($tablecols) . $t;
-            foreach ($events as $event) {
-                if (isset($event->age)) {
-                    $t .= $this->createBirthdayRowView($event, $event->age);
-                } else {
-                    $t .= $this->createEventRowView($event);
+        foreach ($events as $event) {
+            if ($event->startmonth != $this->month) {
+                continue;
+            }
+            //=============================================
+            //here the case of birthday annoncements starts
+            //=============================================
+            if (trim($event->location) == '###') {
+                $age = $this->year - $event->startyear;
+                if ($age >= 0) {
+                    $this->month = sprintf('%02d', $this->month);
+                    $t .= $this->createBirthdayRowView($event, $age);
                 }
             }
+
+            //==================
+            // now normal events
+            //==================
+            if (trim($event->location) !== '###' && $event->startyear == $this->year) {
+                if ($this->month < 10) {
+                    if (strlen($this->month) == 1) {
+                        $this->month = '0' . $this->month;
+                    }
+                }
+                $t .= $this->createEventRowView($event);
+            }
+        }
+        if ($t) {
+            $t = $this->createHeadlineView($tablecols, $textmonth) . $t;
         }
         return $t;
     }
@@ -258,18 +296,20 @@ class EventListController extends Controller
             $target = (strpos($url, '://') === false) ? '_self' : '_blank';
             $title = strip_tags($event->event);
             $text = $event->linktxt ?: $event->linkadr;
-            return "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
-                . "{$text}</a>";
+            return "<td class=\"event_data event_link\">"
+                . "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
+                . "{$text}</a></td>\n";
         } else {
-            return $event->linktxt;
+            return "<td class=\"event_data event_link\">{$event->linktxt}</td>\n";
         }
     }
 
-    private function createHeadlineView($tablecols)
+    private function createHeadlineView($tablecols, $textmonth)
     {
         $view = new View("event-list-headline");
         $view->tablecols = $tablecols;
-        $view->monthYear = $this->formatMonthYear($this->month, $this->year);
+        $view->textmonth = $textmonth;
+        $view->year = $this->year;
         $view->showTime = $this->conf['show_event_time'];
         $view->showLocation = $this->conf['show_event_location'];
         $view->showLink = $this->conf['show_event_link'];

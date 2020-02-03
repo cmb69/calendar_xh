@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2017-2019 Christoph M. Becker
+ * Copyright 2017-2018 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -108,7 +108,11 @@ class View
     {
         global $plugin_tx;
 
-        $key .= XH_numberSuffix($count);
+        if ($count == 0) {
+            $key .= '_0';
+        } else {
+            $key .= XH_numberSuffix($count);
+        }
         $args = func_get_args();
         array_shift($args);
         return $this->escape(vsprintf($plugin_tx['calendar'][$key], $args));

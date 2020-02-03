@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2017-2019 Christoph M. Becker
+ * Copyright 2017-2018 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -55,7 +55,7 @@ class SystemCheckService
         return array(
             $this->checkPhpVersion('5.5.4'),
             //$this->checkExtension('json'),
-            $this->checkXhVersion('1.7.0'),
+            $this->checkXhVersion('1.6.3'),
             $this->checkPlugin('fa'),
             $this->checkWritability("$this->pluginFolder/css/"),
             $this->checkWritability("$this->pluginFolder/config/"),

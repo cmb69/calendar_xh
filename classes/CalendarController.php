@@ -6,7 +6,7 @@
  * Copyright 2008      Patrick Varlet
  * Copyright 2011      Holger Irmler
  * Copyright 2011-2013 Frank Ziesing
- * Copyright 2017-2019 Christoph M. Becker
+ * Copyright 2017-2018 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -154,7 +154,7 @@ class CalendarController extends Controller
         }
 
         $view = new View('calendar');
-        $view->caption = $this->formatMonthYear($this->month, $this->year);
+        $view->caption = $this->getCaption();
         $view->hasPrevNextButtons = $this->conf['prev_next_button'];
         $view->prevUrl = $this->getPrevUrl();
         $view->nextUrl = $this->getNextUrl();
@@ -227,6 +227,14 @@ class CalendarController extends Controller
             }
         }
         return $theevents;
+    }
+
+    private function getCaption()
+    {
+        $textmonth = date('F', mktime(1, 1, 1, $this->month, 1, $this->year));
+        $monthnames = explode(',', $this->lang['monthnames_array']);
+        $textmonth = $monthnames[$this->month - 1];
+        return "$textmonth {$this->year}";
     }
 
     private function getDayOfWeek($i)

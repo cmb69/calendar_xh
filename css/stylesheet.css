@@ -156,20 +156,12 @@ but it should take the same width.) */
     width: 100%;
     text-align: center;
 }
-.calendar_marquee_outer {
+marquee {
     background:#eee;
-    overflow: hidden;
-}
-.calendar_marquee {
     width: 100%;
     margin:0 0 10px;
     text-align: center;
     height:50px;
-    animation: calendar_marquee 15s linear infinite;
-}
-@keyframes calendar_marquee {
-    0%   { transform: translateY(+150%); }
-    100% { transform: translateY(-250%); }
 }
 .nextevent_event {
     color: #aaa;

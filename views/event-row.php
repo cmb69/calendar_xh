@@ -8,6 +8,6 @@
     <td class="event_data event_location"><?=$this->escape($this->event->location)?></td>
 <?php endif?>
 <?php if ($this->showLink):?>
-    <td class="event_data event_link"><?=$this->link()?></td>
+    <?=$this->link()?>
 <?php endif?>
 </tr>

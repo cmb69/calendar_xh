@@ -64,12 +64,7 @@
             description="runs all tests"/>
 
     <target name="coverage" description="generates coverage report">
-        <exec command="phpdbg -qrr vendor/phpunit/phpunit/phpunit --configuration coverage.xml" logoutput="true"/>
-    </target>
-
-    <target name="gen-help" description="builds help.htm from README.md">
-        <exec command="pandoc -s --eol=lf --template=help/template.htm -Vlang=en -Vpagetitle=&quot;User Manual&quot; -o help/help.htm README.md -t html" logoutput="true"/>
-        <exec command="pandoc -s --eol=lf --template=help/template.htm -Vlang=cs -Vpagetitle=&quot;Benutzerhandbuch&quot; -o help/help_de.htm README_DE.md -t html" logoutput="true"/>
+        <exec command="phpunit --configuration coverage.xml" logoutput="true"/>
     </target>
 
     <target name="build" description="builds distributable ZIP archive">
@@ -77,6 +72,17 @@
         <exec command="git archive -o export.zip HEAD" checkreturn="true"/>
         <unzip file="export.zip" todir="export"/>
         <delete file="export.zip"/>
+        <move todir="dist">
+            <fileset dir="export">
+                <include name="classes/Plugin.php"/>
+                <include name="version.nfo"/>
+            </fileset>
+            <filterchain>
+                <replacetokens>
+                    <token key="CALENDAR_VERSION" value="${version}"/>
+                </replacetokens>
+            </filterchain>
+        </move>
         <jsMin targetDir="dist" suffix="" failOnError="false">
             <fileset dir="export">
                 <include name="*.min.js"/>
@@ -99,8 +105,7 @@
                 <exclude name="coverage.xml"/>
                 <exclude name="pax_global_header"/>
                 <exclude name="phpcompatinfo.*"/>
-                <exclude name="README*.md"/>
-                <exclude name="help/template.htm"/>
+                <exclude name="README.md"/>
                 <exclude name="tests/**"/>
             </fileset>
         </move>

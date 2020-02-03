@@ -19,28 +19,11 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Calendar;
-
-class HtmlString
-{
-    /**
-     * @var string
-     */
-    private $value;
-
-    /**
-     * @param string $string
-     */
-    public function __construct($string)
-    {
-        $this->value = (string) $string;
+spl_autoload_register(
+    function ($class) {
+        $parts = explode('\\', $class, 2);
+        if ($parts[0] === 'Calendar') {
+            include_once __DIR__ . "/{$parts[1]}.php";
+        }
     }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->value;
-    }
-}
+);

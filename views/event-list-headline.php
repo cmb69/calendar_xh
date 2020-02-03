@@ -1,5 +1,5 @@
 <tr>
-    <td class="event_monthyear" colspan="<?=$this->tablecols()?>"><?=$this->monthYear()?><br></td>
+    <td class="event_monthyear" colspan="<?=$this->tablecols()?>"><?=$this->textmonth()?> <?=$this->year()?><br></td>
 </tr>
 <tr class="event_heading_row">
     <td class="event_heading event_date"><?=$this->text('event_date')?></td>

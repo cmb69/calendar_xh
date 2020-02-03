@@ -9,7 +9,7 @@
     Copyright © 2008      Patrick Varlet<br>
     Copyright © 2011      Holger Irmler<br>
     Copyright © 2011-2013 Frank Ziesing<br>
-    Copyright © 2017-2019 Christoph M. Becker
+    Copyright © 2017-2018 Christoph M. Becker
 </p>
 <p class="calendar_license">
     Calendar_XH is free software: you can redistribute it and/or modify it under the
