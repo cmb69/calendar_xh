@@ -7,14 +7,6 @@
         <include name="classes/*.php"/>
     </fileset>
 
-    <fileset id="unit-tests" dir="tests/unit">
-        <include name="*Test.php"/>
-    </fileset>
-
-    <fileset id="attack-tests" dir="tests/attack">
-        <include name="*Test.php"/>
-    </fileset>
-
     <target name="help" description="lists available targets">
         <exec command="phing -l" outputProperty="help"/>
         <echo>${help}</echo>
@@ -23,16 +15,12 @@
     <target name="sniff" description="checks adherence to coding standards">
         <phpcodesniffer standard="PSR2" format="full" haltonerror="true">
             <fileset refid="php-sources"/>
-            <fileset refid="unit-tests"/>
-            <fileset refid="attack-tests"/>
         </phpcodesniffer>
     </target>
 
     <target name="mess" description="detects code flaws">
         <phpmd rulesets="codesize,unusedcode">
             <fileset refid="php-sources"/>
-            <fileset refid="unit-tests"/>
-            <fileset refid="attack-tests"/>
          </phpmd>
     </target>
 
@@ -40,28 +28,6 @@
             description="checks compatibility with PHP_CompatInfo">
         <exec command="phpcompatinfo analyser:run --alias current" logoutput="true"/>
     </target>
-
-    <target name="unit-tests" description="runs all unit tests">
-        <phpunit bootstrap="tests/unit/bootstrap.php" haltonerror="true" haltonfailure="true">
-            <formatter type="plain" usefile="false"/>
-            <batchtest>
-                <fileset refid="unit-tests"/>
-            </batchtest>
-        </phpunit>
-    </target>
-
-    <target name="attack-tests" description="runs all attack tests">
-        <fail unless="env.CMSIMPLEDIR" message="CMSIMPLEDIR undefined!"/>
-        <phpunit haltonerror="true" haltonfailure="true">
-            <formatter type="plain" usefile="false"/>
-            <batchtest>
-                <fileset refid="attack-tests"/>
-            </batchtest>
-        </phpunit>
-    </target>
-
-    <target name="all-tests" depends="unit-tests,attack-tests"
-            description="runs all tests"/>
 
     <target name="coverage" description="generates coverage report">
         <exec command="phpdbg -qrr vendor/phpunit/phpunit/phpunit --configuration coverage.xml" logoutput="true"/>
@@ -101,7 +67,6 @@
                 <exclude name="phpcompatinfo.*"/>
                 <exclude name="README*.md"/>
                 <exclude name="help/template.htm"/>
-                <exclude name="tests/**"/>
             </fileset>
         </move>
         <delete dir="export"/>
