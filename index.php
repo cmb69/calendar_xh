@@ -24,20 +24,36 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function calendar($year = '', $month = '', $eventpage = '')
+/**
+ * @param int $year
+ * @param int $month
+ * @param string $eventpage
+ * @return string
+ */
+function calendar($year = 0, $month = 0, $eventpage = '')
 {
     ob_start();
     (new Calendar\CalendarController($year, $month, $eventpage))->defaultAction();
     return ob_get_clean();
 }
 
-function events($month = null, $year = null, $end_month = null, $past_month = null)
+/**
+ * @param int $month
+ * @param int $year
+ * @param int $end_month
+ * @param int $past_month
+ * @return string
+ */
+function events($month = 0, $year = 0, $end_month = 0, $past_month = 0)
 {
     ob_start();
     (new Calendar\EventListController($month, $year, $end_month, $past_month))->defaultAction();
     return ob_get_clean();
 }
 
+/**
+ * @return string
+ */
 function nextevent()
 {
     ob_start();

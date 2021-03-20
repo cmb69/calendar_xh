@@ -43,7 +43,7 @@ class ICalendarReader
     /**
      * @var string[]
      */
-    private $lines;
+    private $lines = [];
 
     /**
      * @var array
@@ -51,11 +51,12 @@ class ICalendarReader
     private $events = [];
 
     /**
-     * @param string
+     * @param string $filename
+     * @param string $separator
      */
     public function __construct($filename, $separator)
     {
-        $this->filename = (string) $filename;
+        $this->filename = $filename;
         $this->separator = $separator;
     }
 
@@ -70,6 +71,9 @@ class ICalendarReader
         return $this->events;
     }
 
+    /**
+     * @return void
+     */
     private function unfold()
     {
         for ($i = count($this->lines) - 1; $i > 0; $i--) {
@@ -80,11 +84,15 @@ class ICalendarReader
         }
     }
 
+    /**
+     * @return void
+     */
     private function parse()
     {
         $isInEvent = false;
         foreach ($this->lines as $line) {
             if ($isInEvent) {
+                assert(isset($event));
                 if ($line === 'END:VEVENT') {
                     $isInEvent = false;
                     $this->events[] = (object) $event;
@@ -98,10 +106,14 @@ class ICalendarReader
                             $event->location = $value;
                             break;
                         case 'DTSTART':
-                            list($event->datestart, $event->starttime) = $this->parseDateTime($value);
+                            if (($datetime = $this->parseDateTime($value))) {
+                                list($event->datestart, $event->starttime) = $datetime;
+                            }
                             break;
                         case 'DTEND':
-                            list($event->dateend, $event->endtime) = $this->parseDateTime($value);
+                            if (($datetime = $this->parseDateTime($value))) {
+                                list($event->dateend, $event->endtime) = $datetime;
+                            }
                             break;
                     }
                 }
@@ -132,17 +144,18 @@ class ICalendarReader
      * ignores the timezone
      *
      * @param string $value
-     * @return string[]
+     * @return string[]|false
      */
     private function parseDateTime($value)
     {
         if (preg_match('/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/', $value, $matches)) {
             return ["$matches[3]{$this->separator}$matches[2]{$this->separator}$matches[1]", "$matches[4]:$matches[5]"];
         }
+        return false;
     }
 
     /**
-     * @var return stdClass
+     * @return stdClass
      */
     private function createEvent()
     {

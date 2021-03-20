@@ -30,14 +30,24 @@ use stdClass;
 
 class EventListController extends Controller
 {
+    /** @var int */
     private $month;
 
+    /** @var int */
     private $year;
 
+    /** @var int */
     private $endMonth;
 
+    /** @var int */
     private $pastMonth;
 
+    /**
+     * @param int $month
+     * @param int $year
+     * @param int $end_month
+     * @param int $past_month
+     */
     public function __construct($month, $year, $end_month, $past_month)
     {
         parent::__construct();
@@ -47,6 +57,9 @@ class EventListController extends Controller
         $this->pastMonth = $past_month;
     }
 
+    /**
+     * @return void
+     */
     public function defaultAction()
     {
         $this->determineYearAndMonth();
@@ -80,6 +93,9 @@ class EventListController extends Controller
         $view->render();
     }
 
+    /**
+     * @return void
+     */
     private function determineYearAndMonth()
     {
         $month_input = isset($_GET['month']) ? $_GET['month'] : '';
@@ -97,7 +113,7 @@ class EventListController extends Controller
         $this->year = isset($_GET['year']) ? $_GET['year'] : date('Y');
 
         if ($this->month == '') {
-            $this->month = date('m');
+            $this->month = (int) date('m');
         }
 
         if (!$this->pastMonth) {
@@ -112,17 +128,23 @@ class EventListController extends Controller
         }
     }
 
+    /**
+     * @return void
+     */
     private function determineEndMonth()
     {
         if ($this->endMonth == '') {
             if ($this->conf['show_number_of_future_months']) {
-                $this->endMonth = $this->conf['show_number_of_future_months'];
+                $this->endMonth = (int) $this->conf['show_number_of_future_months'];
             } else {
-                $this->endMonth= "1";
+                $this->endMonth= 1;
             }
         }
     }
 
+    /**
+     * @return void
+     */
     private function advanceMonth()
     {
         if ($this->month == 12) {
@@ -133,6 +155,9 @@ class EventListController extends Controller
         }
     }
 
+    /**
+     * @return stdClass[]
+     */
     private function fetchEvents()
     {
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
@@ -149,6 +174,9 @@ class EventListController extends Controller
         return $events;
     }
 
+    /**
+     * @return int
+     */
     private function calcTablecols()
     {
         // the number of tablecolumns is calculated
@@ -167,11 +195,14 @@ class EventListController extends Controller
         return $tablecols;
     }
 
+    /**
+     * @param int $tablecols
+     * @return string
+     */
     private function renderMonthEvents(array $events, $tablecols)
     {
         $t = '';
         if (!empty($events)) {
-            $this->month = sprintf('%02d', $this->month);
             $t = $this->createHeadlineView($tablecols) . $t;
             foreach ($events as $event) {
                 if (isset($event->age)) {
@@ -185,6 +216,7 @@ class EventListController extends Controller
     }
 
     /**
+     * @param int $age
      * @return View
      */
     private function createBirthdayRowView(stdClass $event, $age)
@@ -193,7 +225,7 @@ class EventListController extends Controller
         $view->event = $event;
         $view->age = $age;
         $view->date = $event->startday . $this->dpSeparator()
-            . $this->month . $this->dpSeparator() . $this->year;
+            . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year;
         $view->showTime = $this->conf['show_event_time'];
         $view->showLocation = $this->conf['show_event_location'];
         $view->showLink = $this->conf['show_event_link'];
@@ -224,6 +256,10 @@ class EventListController extends Controller
         return $view;
     }
 
+    /**
+     * @param stdClass $event
+     * @return string
+     */
     private function renderDate($event)
     {
         $t = $event->startday;
@@ -232,7 +268,7 @@ class EventListController extends Controller
             if ($this->month != $event->endmonth
                 || $this->year != $event->endyear
             ) {
-                $t .= $this->dpSeparator() . $this->month;
+                $t .= $this->dpSeparator() . sprintf('%02d', $this->month);
             }
             if ($this->year != $event->endyear) {
                 $t .= $this->dpSeparator() . $this->year;
@@ -244,11 +280,14 @@ class EventListController extends Controller
             $t .= $event->endday . $this->dpSeparator() . $event->endmonth
                 . $this->dpSeparator() . $event->endyear;
         } else {
-            $t .= $this->dpSeparator() . "{$this->month}" . $this->dpSeparator() . $this->year;
+            $t .= $this->dpSeparator() . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year;
         }
         return $t;
     }
 
+    /**
+     * @return string
+     */
     private function renderLink(stdClass $event)
     {
         if ($event->linkadr) {
@@ -263,6 +302,10 @@ class EventListController extends Controller
         }
     }
 
+    /**
+     * @param int $tablecols
+     * @return string
+     */
     private function createHeadlineView($tablecols)
     {
         $view = new View("event-list-headline");
@@ -271,6 +314,6 @@ class EventListController extends Controller
         $view->showTime = $this->conf['show_event_time'];
         $view->showLocation = $this->conf['show_event_location'];
         $view->showLink = $this->conf['show_event_link'];
-        return $view;
+        return (string) $view;
     }
 }

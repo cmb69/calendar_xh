@@ -37,12 +37,18 @@ class EditEventsController extends Controller
         (new FaRequireCommand)->execute();
     }
 
+    /**
+     * @return void
+     */
     public function defaultAction()
     {
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         echo $this->eventForm($events);
     }
 
+    /**
+     * @return void
+     */
     public function saveAction()
     {
         $deleted = false;
@@ -84,6 +90,9 @@ class EditEventsController extends Controller
         echo $this->eventForm($events);
     }
 
+    /**
+     * @return void
+     */
     private function fixPostedEvent(stdClass $event)
     {
         if (!$this->isValidDate($event->datestart)) {
@@ -101,6 +110,7 @@ class EditEventsController extends Controller
 
     /**
      * @param stdClass[] $events
+     * @return string
      */
     private function eventForm($events)
     {
@@ -114,13 +124,17 @@ class EditEventsController extends Controller
 
     /**
      * Checking the date format. Some impossible dates can be given, but don't hurt.
+     *
+     * @param string $date
+     * @return bool
      */
     private function isValidDate($date)
     {
-        return preg_match('/^\d{4}-\d\d-(?:\d\d|\?{1-2}|\-{1-2})$/', $date);
+        return (bool) preg_match('/^\d{4}-\d\d-(?:\d\d|\?{1-2}|\-{1-2})$/', $date);
     }
 
     /**
+     * @return int
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function dateSort(stdClass $a, stdClass $b)

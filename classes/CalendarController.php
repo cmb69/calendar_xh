@@ -31,12 +31,12 @@ use stdClass;
 class CalendarController extends Controller
 {
     /**
-     * @var string
+     * @var int
      */
     private $year;
 
     /**
-     * @var string
+     * @var int
      */
     private $month;
 
@@ -46,11 +46,11 @@ class CalendarController extends Controller
     private $eventpage;
 
     /**
-     * @param string $year
-     * @param string $month
+     * @param int $year
+     * @param int $month
      * @param string $eventpage
      */
-    public function __construct($year = '', $month = '', $eventpage = '')
+    public function __construct($year = 0, $month = 0, $eventpage = '')
     {
         parent::__construct();
         $this->year = $year;
@@ -58,6 +58,9 @@ class CalendarController extends Controller
         $this->eventpage = $eventpage;
     }
 
+    /**
+     * @return void
+     */
     public function defaultAction()
     {
         global $pth, $bjs;
@@ -82,9 +85,9 @@ class CalendarController extends Controller
         $events = $this->fetchEvents();
 
         $today = ($this->month == date('n') && $this->year == date('Y')) ? date('j') : 32;
-        $days = date('t', mktime(1, 1, 1, $this->month, 1, $this->year));
-        $dayone = date('w', mktime(1, 1, 1, $this->month, 1, $this->year));
-        $daylast = date('w', mktime(1, 1, 1, $this->month, $days, $this->year));
+        $days = (int) date('t', mktime(1, 1, 1, $this->month, 1, $this->year));
+        $dayone = (int) date('w', mktime(1, 1, 1, $this->month, 1, $this->year));
+        $daylast = (int) date('w', mktime(1, 1, 1, $this->month, $days, $this->year));
 
         $rows = [];
         $rows[] = $this->getDaynamesRow();
@@ -92,6 +95,7 @@ class CalendarController extends Controller
 
         $span1 = $this->getSpan1($dayone);
         $span2 = $this->getSpan2($daylast);
+        $row = [];
         for ($i = 1; $i <= $days; $i++) {
             $dayofweek = $this->getDayOfWeek($i);
 
@@ -173,15 +177,18 @@ class CalendarController extends Controller
         }
     }
 
+    /**
+     * @return stdClass[]
+     */
     private function fetchEvents()
     {
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $entry) {
             if (isset($entry->dateend)) {
                 list($event_year, $event_month, $event_date) = explode('-', $entry->datestart);
-                $entry->starttimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
+                $entry->starttimestamp = mktime(0, 0, 0, (int) $event_month, (int) $event_date, (int) $event_year);
                 list($event_year, $event_month, $event_date) = explode('-', $entry->dateend);
-                $entry->endtimestamp = mktime(null, null, null, $event_month, $event_date, $event_year);
+                $entry->endtimestamp = mktime(0, 0, 0, (int) $event_month, (int) $event_date, (int) $event_year);
             } else {
                 list($entry->year, $entry->month, $entry->day) = explode('-', $entry->datestart);
             }
@@ -229,9 +236,13 @@ class CalendarController extends Controller
         return $theevents;
     }
 
+    /**
+     * @param int $i
+     * @return int
+     */
     private function getDayOfWeek($i)
     {
-        $dayofweek = date('w', mktime(1, 1, 1, $this->month, $i, $this->year));
+        $dayofweek = (int) date('w', mktime(1, 1, 1, $this->month, $i, $this->year));
         if ($this->conf['week_starts_mon']) {
             $dayofweek = $dayofweek - 1;
         }
@@ -241,16 +252,27 @@ class CalendarController extends Controller
         return $dayofweek;
     }
 
+    /**
+     * @param int $day
+     * @return bool
+     */
     private function isEventOn(stdClass $event, $day)
     {
         return trim($event->location) !== '###' && $event->year == $this->year && $event->month == $this->month && $event->day == $day;
     }
 
+    /**
+     * @param int $day
+     * @return bool
+     */
     private function isBirthdayOn(stdClass $event, $day)
     {
         return trim($event->location) == '###' && $event->month == $this->month && $event->day == $day;
     }
 
+    /**
+     * @return stdClass[]
+     */
     private function getDaynamesRow()
     {
         $dayarray = explode(',', $this->lang['daynames_array']);
@@ -304,6 +326,7 @@ class CalendarController extends Controller
     }
 
     /**
+     * @param int $dayone
      * @return int
      */
     private function getSpan1($dayone)
@@ -320,6 +343,7 @@ class CalendarController extends Controller
     }
 
     /**
+     * @param int $daylast
      * @return int
      */
     private function getSpan2($daylast)

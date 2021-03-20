@@ -76,6 +76,7 @@ class EventDataService
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
             while (($record = fgetcsv($stream, 0, ';', '"', "\0")) !== false) {
+                assert(is_array($record));
                 list($datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt)
                     = $record;
                 if (!$dateend) {
@@ -119,14 +120,22 @@ class EventDataService
                 $result[] = $event;
             } elseif ($isBirthday && substr($month, 0, 4) >= substr($event->datestart, 0, 4) && strpos($event->datestart, substr($month, 5), 5) === 5) {
                 $newevent = clone $event;
-                $newevent->age = substr($month, 0, 4) - substr($newevent->datestart, 0, 4);
+                $newevent->age = (int) substr($month, 0, 4) - (int) substr($newevent->datestart, 0, 4);
                 $newevent->datestart = $month . substr($newevent->datestart, 7);
                 $result[] = $newevent;
             }
         }
-        usort($result, function ($a, $b) {
-            return strcmp("{$a->datestart}T{$a->starttime}", "{$b->datestart}T{$b->starttime}");
-        });
+        usort(
+            $result,
+            /**
+             * @param stdClass $a
+             * @param stdClass $b
+             * @return int
+             */
+            function ($a, $b) {
+                return strcmp("{$a->datestart}T{$a->starttime}", "{$b->datestart}T{$b->starttime}");
+            }
+        );
         return $result;
     }
 

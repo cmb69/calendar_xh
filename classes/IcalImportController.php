@@ -67,6 +67,9 @@ class IcalImportController extends Controller
         exit;
     }
 
+    /**
+     * @return string
+     */
     private function getDatapath()
     {
         global $pth, $sl, $cf;

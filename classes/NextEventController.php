@@ -26,8 +26,13 @@
 
 namespace Calendar;
 
+use stdClass;
+
 class NextEventController extends Controller
 {
+    /**
+     * @return void
+     */
     public function defaultAction()
     {
         $nextevent = null;
@@ -46,16 +51,24 @@ class NextEventController extends Controller
                 list($event_year, $event_month, $event_date) = explode('-', $event->dateend);
                 $endevent->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");
                 $endevents[] = $endevent;
-            } elseif (trim($event->location !== '###')) {
+            } elseif (trim($event->location) == '###') {
                 $event->text = '';
                 list($event_year, $event_month, $event_date) = explode('-', $event->datestart);
                 $event->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");
             }
         }
         $events = array_merge($events, $endevents);
-        usort($events, function ($a, $b) {
-            return $a->timestamp - $b->timestamp;
-        });
+        usort(
+            $events,
+            /**
+             * @param stdClass $a
+             * @param stdClass $b
+             * @return int
+             */
+            function ($a, $b) {
+                return $a->timestamp - $b->timestamp;
+            }
+        );
 
         $today = strtotime('now');
 

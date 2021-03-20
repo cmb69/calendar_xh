@@ -22,6 +22,12 @@
         </exec>
     </target>
 
+    <target name="psalm" description="run static analysis">
+        <exec executable="psalm" passthru="true" checkreturn="true">
+            <arg value="--no-cache"/>
+        </exec>
+    </target>
+
     <target name="compat"
             description="checks compatibility with PHP_CompatInfo">
         <exec command="phpcompatinfo analyser:run --alias current" logoutput="true"/>
@@ -52,6 +58,8 @@
                 <exclude name="build.xml"/>
                 <exclude name="composer.*"/>
                 <exclude name="phpcompatinfo.*"/>
+                <exclude name="psalm.xml"/>
+                <exclude name="stubs.php"/>
                 <exclude name="README*.md"/>
                 <exclude name="help/template.htm"/>
             </fileset>

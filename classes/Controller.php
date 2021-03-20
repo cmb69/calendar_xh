@@ -52,6 +52,8 @@ abstract class Controller
      *
      * Allowed seperators:
      * full-stop ".", forward slash "/" and minus/dash "-"
+     *
+     * @return string
      */
     protected function dpSeparator()
     {

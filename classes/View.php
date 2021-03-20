@@ -103,6 +103,7 @@ class View
     /**
      * @param string $key
      * @param int $count
+     * @return string
      */
     protected function plural($key, $count)
     {
@@ -115,12 +116,13 @@ class View
     }
 
     /**
-     * @return string
+     * @return void
      */
     public function render()
     {
         global $pth;
 
+        /** @psalm-suppress UnresolvableInclude */
         include "{$pth['folder']['plugins']}calendar/views/{$this->template}.php";
     }
 

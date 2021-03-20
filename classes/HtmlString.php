@@ -33,7 +33,7 @@ class HtmlString
      */
     public function __construct($string)
     {
-        $this->value = (string) $string;
+        $this->value = $string;
     }
 
     /**
@@ -41,6 +41,7 @@ class HtmlString
      */
     public function __toString()
     {
-        return $this->value;
+        /** @psalm-suppress RedundantCastGivenDocblockType */
+        return (string) $this->value;
     }
 }
