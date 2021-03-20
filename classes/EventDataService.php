@@ -26,8 +26,6 @@
 
 namespace Calendar;
 
-use stdClass;
-
 class EventDataService
 {
     /**
@@ -69,7 +67,7 @@ class EventDataService
     }
 
     /**
-     * @return stdClass[]
+     * @return Event[]
      */
     public function readEvents()
     {
@@ -89,15 +87,15 @@ class EventDataService
                     $linktxt = null;
                 }
                 if ($datestart != '' && $event != '') {
-                    $result[] = (object) compact(
-                        'datestart',
-                        'dateend',
-                        'starttime',
-                        'endtime',
-                        'event',
-                        'linkadr',
-                        'linktxt',
-                        'location'
+                    $result[] = new Event(
+                        $datestart,
+                        $dateend,
+                        $starttime,
+                        $endtime,
+                        $event,
+                        $linkadr,
+                        $linktxt,
+                        $location
                     );
                 }
             }
@@ -107,9 +105,9 @@ class EventDataService
     }
 
     /**
-     * @param stdClass[] $events
+     * @param Event[] $events
      * @param string $month
-     * @return stdClass[]
+     * @return Event[]
      */
     public function filterByMonth(array $events, $month)
     {
@@ -125,23 +123,15 @@ class EventDataService
                 $result[] = $newevent;
             }
         }
-        usort(
-            $result,
-            /**
-             * @param stdClass $a
-             * @param stdClass $b
-             * @return int
-             */
-            function ($a, $b) {
-                return strcmp("{$a->datestart}T{$a->starttime}", "{$b->datestart}T{$b->starttime}");
-            }
-        );
+        usort($result, /** @return int */ function (Event $a, Event $b) {
+            return strcmp("{$a->datestart}T{$a->starttime}", "{$b->datestart}T{$b->starttime}");
+        });
         return $result;
     }
 
     /**
      * @param string $separator
-     * @return stdClass[]
+     * @return Event[]
      */
     private function readOldEvents($separator)
     {
@@ -178,15 +168,15 @@ class EventDataService
                     $linktxt = "{$linkadr};{$linktxt}";
                 }
                 if ($datestart != '' && $event != '') {
-                    $result[] = (object) compact(
-                        'datestart',
-                        'dateend',
-                        'starttime',
-                        'endtime',
-                        'event',
-                        'linkadr',
-                        'linktxt',
-                        'location'
+                    $result[] = new Event(
+                        $datestart,
+                        $dateend,
+                        $starttime,
+                        $endtime,
+                        $event,
+                        $linkadr,
+                        $linktxt,
+                        $location
                     );
                 }
             }
@@ -196,7 +186,7 @@ class EventDataService
     }
 
     /**
-     * @param stdClass[] $events
+     * @param Event[] $events
      * @return bool
      */
     public function writeEvents(array $events)
@@ -230,7 +220,7 @@ class EventDataService
      * @param resource $fp
      * @return bool
      */
-    private function writeEventLine($fp, stdClass $entry)
+    private function writeEventLine($fp, Event $entry)
     {
         $record = [
             $entry->datestart,

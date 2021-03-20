@@ -21,8 +21,6 @@
 
 namespace Calendar;
 
-use stdClass;
-
 /**
  * Read all events from an iCalendar file
  *
@@ -61,7 +59,7 @@ class ICalendarReader
     }
 
     /**
-     * @return stdClass[]
+     * @return Event[]
      */
     public function read()
     {
@@ -95,7 +93,7 @@ class ICalendarReader
                 assert(isset($event));
                 if ($line === 'END:VEVENT') {
                     $isInEvent = false;
-                    $this->events[] = (object) $event;
+                    $this->events[] = $event;
                 } else {
                     list($property, $value) = $this->parseLine($line);
                     switch ($property) {
@@ -155,11 +153,10 @@ class ICalendarReader
     }
 
     /**
-     * @return stdClass
+     * @return Event
      */
     private function createEvent()
     {
-        return (object) ['datestart' => '', 'starttime' => '', 'dateend' => '',
-        'endtime' => '', 'event' => '', 'location' => '', 'linkadr' => '', 'linktxt' => ''];
+        return new Event('', '', '', '', '', '', '', '');
     }
 }

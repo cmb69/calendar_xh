@@ -26,7 +26,6 @@
 
 namespace Calendar;
 
-use stdClass;
 use Fa\RequireCommand as FaRequireCommand;
 
 class EditEventsController extends Controller
@@ -55,7 +54,7 @@ class EditEventsController extends Controller
         $added = false;
 
         $varnames = array(
-            'datestart', 'starttime', 'dateend', 'endtime', 'event', 'location', 'linkadr', 'linktxt'
+            'datestart', 'dateend', 'starttime', 'endtime', 'event', 'linkadr', 'linktxt', 'location'
         );
         $post = [];
         foreach ($varnames as $var) {
@@ -64,7 +63,7 @@ class EditEventsController extends Controller
         $events = [];
         foreach (array_keys($post['datestart']) as $i) {
             if (!isset($_POST['delete'][$i])) {
-                $entry = (object) array_combine($varnames, array_column($post, $i));
+                $entry = new Event(...array_column($post, $i));
                 $this->fixPostedEvent($entry);
                 $events[] = $entry;
             } else {
@@ -79,7 +78,14 @@ class EditEventsController extends Controller
 
         if (!$deleted && !$added) {
             // sorting new event inputs, idea of manu, forum-message
-            usort($events, array($this, 'dateSort'));
+            usort($events, /** @return int */ function (Event $a, Event $b) {
+                $a_i = "{$a->datestart}T{$a->starttime}";
+                $b_i = "{$b->datestart}T{$b->starttime}";
+                if ($a_i == $b_i) {
+                    return 0;
+                }
+                return ($a_i < $b_i) ? -1 : 1;
+            });
             if ((new EventDataService($this->dpSeparator()))->writeEvents($events)) {
                 echo XH_message('success', $this->lang['eventfile_saved']);
             } else {
@@ -93,11 +99,12 @@ class EditEventsController extends Controller
     /**
      * @return void
      */
-    private function fixPostedEvent(stdClass $event)
+    private function fixPostedEvent(Event $event)
     {
         if (!$this->isValidDate($event->datestart)) {
             $event->datestart = '';
         }
+        assert($event->dateend !== null);
         if (!$this->isValidDate($event->dateend)) {
             $event->dateend = '';
         }
@@ -109,7 +116,7 @@ class EditEventsController extends Controller
     }
 
     /**
-     * @param stdClass[] $events
+     * @param Event[] $events
      * @return string
      */
     private function eventForm($events)
@@ -134,33 +141,19 @@ class EditEventsController extends Controller
     }
 
     /**
-     * @return int
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     */
-    private function dateSort(stdClass $a, stdClass $b)
-    {
-        $a_i = "{$a->datestart}T{$a->starttime}";
-        $b_i = "{$b->datestart}T{$b->starttime}";
-        if ($a_i == $b_i) {
-            return 0;
-        }
-        return ($a_i < $b_i) ? -1 : 1;
-    }
-
-    /**
-     * @return stdClass
+     * @return Event
      */
     private function createDefaultEvent()
     {
-        return (object) array(
-            'datestart'   => date('Y-m-d'),
-            'starttime'   => '',
-            'dateend'     => '',
-            'endtime'     => '',
-            'event'       => $this->lang['event_event'],
-            'location'    => '',
-            'linkadr'     => '',
-            'linktxt'     => ''
+        return new Event(
+            date('Y-m-d'),
+            '',
+            '',
+            '',
+            $this->lang['event_event'],
+            '',
+            '',
+            ''
         );
     }
 }

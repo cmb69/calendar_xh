@@ -26,8 +26,6 @@
 
 namespace Calendar;
 
-use stdClass;
-
 class EventListController extends Controller
 {
     /** @var int */
@@ -156,7 +154,7 @@ class EventListController extends Controller
     }
 
     /**
-     * @return stdClass[]
+     * @return Event[]
      */
     private function fetchEvents()
     {
@@ -219,7 +217,7 @@ class EventListController extends Controller
      * @param int $age
      * @return View
      */
-    private function createBirthdayRowView(stdClass $event, $age)
+    private function createBirthdayRowView(Event $event, $age)
     {
         $view = new View('birthday-row');
         $view->event = $event;
@@ -236,7 +234,7 @@ class EventListController extends Controller
     /**
      * @return View
      */
-    private function createEventRowView(stdClass $event)
+    private function createEventRowView(Event $event)
     {
         $view = new View('event-row');
         $view->event = $event;
@@ -257,10 +255,9 @@ class EventListController extends Controller
     }
 
     /**
-     * @param stdClass $event
      * @return string
      */
-    private function renderDate($event)
+    private function renderDate(Event $event)
     {
         $t = $event->startday;
         // if beginning and end dates are there, these are put one under the other
@@ -288,7 +285,7 @@ class EventListController extends Controller
     /**
      * @return string
      */
-    private function renderLink(stdClass $event)
+    private function renderLink(Event $event)
     {
         if ($event->linkadr) {
             $url = $event->linkadr;
@@ -298,7 +295,7 @@ class EventListController extends Controller
             return "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
                 . "{$text}</a>";
         } else {
-            return $event->linktxt;
+            return (string) $event->linktxt;
         }
     }
 

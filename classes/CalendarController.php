@@ -102,6 +102,8 @@ class CalendarController extends Controller
             foreach ($events as $event) {
                 if ($this->isEventOn($event, $i)) {
                     $event_day = $i;
+                    assert($event->time !== null);
+                    assert($event->text !== null);
                     $event_titles[] = trim($event->time) . strip_tags($event->text);
                 }
 
@@ -178,7 +180,7 @@ class CalendarController extends Controller
     }
 
     /**
-     * @return stdClass[]
+     * @return Event[]
      */
     private function fetchEvents()
     {
@@ -203,12 +205,13 @@ class CalendarController extends Controller
                 } else {
                     $count = $entry->endtimestamp - $entry->starttimestamp;
                 }
+                assert($entry->starttimestamp !== null);
+                assert($entry->endtimestamp !== null);
                 for ($i = $entry->starttimestamp; $i <= $entry->endtimestamp; $i += $count) {
-                    $newentry = new stdClass;
+                    $newentry = new Event('', '', '', '', '', '', '', $entry->location);
                     $newentry->year = date('Y', $i);
                     $newentry->month = date('m', $i);
                     $newentry->day = date('d', $i);
-                    $newentry->location = $entry->location;
                     if ($i == $entry->starttimestamp) {
                         $newentry->time = $entry->starttime;
                         $newentry->text = " {$txt}";
@@ -219,7 +222,7 @@ class CalendarController extends Controller
                     $theevents[] = $newentry;
                 }
             } else {
-                $newentry = new stdClass;
+                $newentry = new Event('', '', '', '', '', '', '', $entry->location);
                 $newentry->year = $entry->year;
                 $newentry->month = $entry->month;
                 $newentry->day = $entry->day;
@@ -228,7 +231,6 @@ class CalendarController extends Controller
                 } else {
                     $newentry->text = $entry->event;
                 }
-                $newentry->location = $entry->location;
                 $newentry->time = $entry->starttime;
                 $theevents[] = $newentry;
             }
@@ -256,7 +258,7 @@ class CalendarController extends Controller
      * @param int $day
      * @return bool
      */
-    private function isEventOn(stdClass $event, $day)
+    private function isEventOn(Event $event, $day)
     {
         return trim($event->location) !== '###' && $event->year == $this->year && $event->month == $this->month && $event->day == $day;
     }
@@ -265,7 +267,7 @@ class CalendarController extends Controller
      * @param int $day
      * @return bool
      */
-    private function isBirthdayOn(stdClass $event, $day)
+    private function isBirthdayOn(Event $event, $day)
     {
         return trim($event->location) == '###' && $event->month == $this->month && $event->day == $day;
     }

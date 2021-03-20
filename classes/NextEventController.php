@@ -26,8 +26,6 @@
 
 namespace Calendar;
 
-use stdClass;
-
 class NextEventController extends Controller
 {
     /**
@@ -58,17 +56,9 @@ class NextEventController extends Controller
             }
         }
         $events = array_merge($events, $endevents);
-        usort(
-            $events,
-            /**
-             * @param stdClass $a
-             * @param stdClass $b
-             * @return int
-             */
-            function ($a, $b) {
-                return $a->timestamp - $b->timestamp;
-            }
-        );
+        usort($events, /** @return int */ function (Event $a, Event $b) {
+            return $a->timestamp - $b->timestamp;
+        });
 
         $today = strtotime('now');
 
