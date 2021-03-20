@@ -53,11 +53,10 @@ class EditEventsController extends Controller
         );
         $post = [];
         foreach ($varnames as $var) {
-            $$var = isset($_POST[$var]) ? $_POST[$var] : [];
-            $post[$var] = $$var;
+            $post[$var] = isset($_POST[$var]) ? $_POST[$var] : [];
         }
         $events = [];
-        foreach (array_keys($datestart) as $i) {
+        foreach (array_keys($post['datestart']) as $i) {
             if (!isset($_POST['delete'][$i])) {
                 $entry = (object) array_combine($varnames, array_column($post, $i));
                 $this->fixPostedEvent($entry);
