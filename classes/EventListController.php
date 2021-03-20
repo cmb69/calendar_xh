@@ -246,7 +246,7 @@ class EventListController extends Controller
             if (!$event->endday) {
                 $time .= ' ' . $this->lang['event_time_till_time'];
             }
-            $time .= tag('br') . $event->endtime;
+            $time .= '<br>' . $event->endtime;
         }
         $view->data = [
             'event' => $event,
@@ -279,7 +279,7 @@ class EventListController extends Controller
             if ($this->year == $event->endyear && $this->dpSeparator() == '.') {
                 $t.= '.';
             }
-            $t .= "&nbsp;" . $this->lang['event_date_till_date'] . tag('br');
+            $t .= "&nbsp;" . $this->lang['event_date_till_date'] . '<br>';
             $t .= $event->endday . $this->dpSeparator() . $event->endmonth
                 . $this->dpSeparator() . $event->endyear;
         } else {

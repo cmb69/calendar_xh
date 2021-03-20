@@ -40,11 +40,11 @@ class NextEventController extends Controller
         foreach ($events as $event) {
             if (isset($event->dateend)) {
                 $endevent = clone $event;
-                $event->text = $this->lang['event_date_till_date'] . " " . tag('br')
+                $event->text = $this->lang['event_date_till_date'] . " " . '<br>'
                     . $event->dateend . " " . $event->endtime;
                 list($event_year, $event_month, $event_date) = explode('-', $event->datestart);
                 $event->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");
-                $endevent->text = $this->lang['event_started'] . tag('br')
+                $endevent->text = $this->lang['event_started'] . '<br>'
                         . $event->datestart . " " . $event->starttime;
                 list($event_year, $event_month, $event_date) = explode('-', $event->dateend);
                 $endevent->timestamp = strtotime("$event_month/$event_date/$event_year {$event->starttime}");

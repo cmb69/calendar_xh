@@ -21,12 +21,6 @@ function plugin_admin_common() {}
 function print_plugin_admin($main) {}
 
 /**
- * @param string $s
- * @return string
- */
-function tag($s) {}
-
-/**
  * @param string $string
  * @return string
  */
