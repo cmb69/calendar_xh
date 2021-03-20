@@ -212,14 +212,3 @@ but it should take the same width.) */
 .calendar_loading {
     visibility: hidden;
 }
-
-/**
- * Back-End
- */
-.calendar_logo {
-    float: left;
-    margin: 0 1.5em 0.5em 0;
-}
-.calendar_license {
-    text-align: justify;
-}
