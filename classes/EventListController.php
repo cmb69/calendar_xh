@@ -75,10 +75,6 @@ class EventListController extends Controller
 
         $tablecols = $this->calcTablecols();
 
-        $view = new View('eventlist');
-        $view->showHeading = (bool) $this->conf['show_period_of_events'];
-        $view->start = new HtmlString('<span>' . XH_hsc($this->formatMonthYear($this->month, $this->year)) . '</span>');
-        $view->end = new HtmlString('<span>' . XH_hsc($this->formatMonthYear($endmonth, $endyear)) . '</span>');
         $monthEvents = [];
         $x = 0;
         while ($x <= $this->endMonth) {
@@ -87,7 +83,13 @@ class EventListController extends Controller
             $x++;
             $this->advanceMonth();
         }
-        $view->monthEvents = $monthEvents;
+        $view = new View('eventlist');
+        $view->data = [
+            'showHeading' => (bool) $this->conf['show_period_of_events'],
+            'start' => new HtmlString('<span>' . XH_hsc($this->formatMonthYear($this->month, $this->year)) . '</span>'),
+            'end' => new HtmlString('<span>' . XH_hsc($this->formatMonthYear($endmonth, $endyear)) . '</span>'),
+            'monthEvents' => $monthEvents,
+        ];
         $view->render();
     }
 
@@ -220,14 +222,16 @@ class EventListController extends Controller
     private function createBirthdayRowView(Event $event, $age)
     {
         $view = new View('birthday-row');
-        $view->event = $event;
-        $view->age = $age;
-        $view->date = $event->startday . $this->dpSeparator()
-            . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year;
-        $view->showTime = $this->conf['show_event_time'];
-        $view->showLocation = $this->conf['show_event_location'];
-        $view->showLink = $this->conf['show_event_link'];
-        $view->link = new HtmlString($this->renderLink($event));
+        $view->data = [
+            'event' => $event,
+            'age' => $age,
+            'date' => $event->startday . $this->dpSeparator()
+                . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year,
+            'showTime' => $this->conf['show_event_time'],
+            'showLocation' => $this->conf['show_event_location'],
+            'showLink' => $this->conf['show_event_link'],
+            'link' => new HtmlString($this->renderLink($event)),
+        ];
         return $view;
     }
 
@@ -237,12 +241,6 @@ class EventListController extends Controller
     private function createEventRowView(Event $event)
     {
         $view = new View('event-row');
-        $view->event = $event;
-        $view->date = new HtmlString($this->renderDate($event));
-        $view->showTime = $this->conf['show_event_time'];
-        $view->showLocation = $this->conf['show_event_location'];
-        $view->showLink = $this->conf['show_event_link'];
-        $view->link = new HtmlString($this->renderLink($event));
         $time = $event->starttime;
         if ($event->endtime) {
             if (!$event->endday) {
@@ -250,7 +248,15 @@ class EventListController extends Controller
             }
             $time .= tag('br') . $event->endtime;
         }
-        $view->time = new HtmlString($time);
+        $view->data = [
+            'event' => $event,
+            'date' => new HtmlString($this->renderDate($event)),
+            'showTime' => $this->conf['show_event_time'],
+            'showLocation' => $this->conf['show_event_location'],
+            'showLink' => $this->conf['show_event_link'],
+            'link' => new HtmlString($this->renderLink($event)),
+            'time' => new HtmlString($time),
+        ];
         return $view;
     }
 
@@ -306,11 +312,13 @@ class EventListController extends Controller
     private function createHeadlineView($tablecols)
     {
         $view = new View("event-list-headline");
-        $view->tablecols = $tablecols;
-        $view->monthYear = $this->formatMonthYear($this->month, $this->year);
-        $view->showTime = $this->conf['show_event_time'];
-        $view->showLocation = $this->conf['show_event_location'];
-        $view->showLink = $this->conf['show_event_link'];
+        $view->data = [
+            'tablecols' => $tablecols,
+            'monthYear' => $this->formatMonthYear($this->month, $this->year),
+            'showTime' => $this->conf['show_event_time'],
+            'showLocation' => $this->conf['show_event_location'],
+            'showLink' => $this->conf['show_event_link'],
+        ];
         return (string) $view;
     }
 }

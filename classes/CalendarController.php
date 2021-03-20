@@ -160,11 +160,13 @@ class CalendarController extends Controller
         }
 
         $view = new View('calendar');
-        $view->caption = $this->formatMonthYear($this->month, $this->year);
-        $view->hasPrevNextButtons = $this->conf['prev_next_button'];
-        $view->prevUrl = $this->getPrevUrl();
-        $view->nextUrl = $this->getNextUrl();
-        $view->rows = $rows;
+        $view->data = [
+            'caption' => $this->formatMonthYear($this->month, $this->year),
+            'hasPrevNextButtons' => $this->conf['prev_next_button'],
+            'prevUrl' => $this->getPrevUrl(),
+            'nextUrl' => $this->getNextUrl(),
+            'rows' => $rows,
+        ];
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             while (ob_get_level()) {
                 ob_end_clean();

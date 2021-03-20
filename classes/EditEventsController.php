@@ -122,10 +122,12 @@ class EditEventsController extends Controller
     private function eventForm($events)
     {
         $view = new View('event-form');
-        $view->showEventTime = (bool) $this->conf['show_event_time'];
-        $view->showEventLocation = (bool) $this->conf['show_event_location'];
-        $view->showEventLink = (bool) $this->conf['show_event_link'];
-        $view->events = $events;
+        $view->data = [
+            'showEventTime' => (bool) $this->conf['show_event_time'],
+            'showEventLocation' => (bool) $this->conf['show_event_location'],
+            'showEventLink' => (bool) $this->conf['show_event_link'],
+            'events' => $events,
+        ];
         return (string) $view;
     }
 

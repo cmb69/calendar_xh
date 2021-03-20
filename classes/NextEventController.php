@@ -70,12 +70,14 @@ class NextEventController extends Controller
         }
         $view = new View('nextevent');
         if (isset($nextevent)) {
-            $view->event = $nextevent;
             $date = date($this->lang['event_date_representation_in_next_event_marquee'], $nextevent->timestamp);
             if (date('H:i', $nextevent->timestamp) != "00:00") {
                 $date.= ' — ' . date('H:i', $nextevent->timestamp);
             }
-            $view->date = $date;
+            $view->data = [
+                'event' => $nextevent,
+                'date' => $date,
+            ];
         }
         $view->render();
     }

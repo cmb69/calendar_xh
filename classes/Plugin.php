@@ -59,9 +59,11 @@ class Plugin
         switch ($admin) {
             case '':
                 $view = new View('info');
-                $view->logo = "{$pth['folder']['plugins']}calendar/calendar.png";
-                $view->version = self::VERSION;
-                $view->checks = (new SystemCheckService)->getChecks();
+                $view->data = [
+                    'logo' => "{$pth['folder']['plugins']}calendar/calendar.png",
+                    'version' => self::VERSION,
+                    'checks' => (new SystemCheckService)->getChecks(),
+                ];
                 $o .= $view;
                 break;
             case 'plugin_main':

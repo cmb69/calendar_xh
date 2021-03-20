@@ -33,8 +33,10 @@ class IcalImportController extends Controller
         global $sn;
 
         $view = new View('import');
-        $view->url = $sn . '?&calendar&admin=import&action=import';
-        $view->files = $this->findIcsFiles();
+        $view->data = [
+            'url' => $sn . '?&calendar&admin=import&action=import',
+            'files' => $this->findIcsFiles(),
+        ];
         $view->render();
     }
 
