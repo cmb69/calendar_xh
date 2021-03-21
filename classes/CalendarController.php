@@ -188,8 +188,8 @@ class CalendarController extends Controller
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         $newevents = [];
         foreach ($events as $event) {
-            if (isset($event->dateend)) {
-                $txt = "{$event->event} {$this->lang['event_date_till_date']} {$event->dateend} {$event->endtime}";
+            if ($event->getDateEnd() !== null) {
+                $txt = "{$event->event} {$this->lang['event_date_till_date']} {$event->getDateEnd()} {$event->getEndTime()}";
                 if ($this->conf['show_days_between_dates']) {
                     $count = 86400;
                 } else {

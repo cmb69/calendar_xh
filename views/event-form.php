@@ -21,15 +21,15 @@
 <?php   endif?>
             <label>
                 <?=$this->text('event_date_end')?>
-                <input type="date" class="calendar_input_date" maxlength="10" name="dateend[<?=$this->escape($i)?>]" value="<?=$this->escape($event->dateend)?>" id="dateend<?=$this->escape($i)?>">
+                <input type="date" class="calendar_input_date" maxlength="10" name="dateend[<?=$this->escape($i)?>]" value="<?=$this->escape($event->getDateEnd())?>" id="dateend<?=$this->escape($i)?>">
             </label>
 <?php   if ($this->showEventTime):?>
             <label>
                 <?=$this->text('event_time')?>
-                <input type="time" class="calendar_input_time" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->endtime)?>">
+                <input type="time" class="calendar_input_time" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->getEndTime())?>">
             </label>
 <?php   else:?>
-            <input type="hidden" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->endtime)?>">
+            <input type="hidden" maxlength="5" name="endtime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->getEndTime())?>">
 <?php   endif?>
             <label>
                 <?=$this->text('event_event')?>

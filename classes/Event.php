@@ -32,10 +32,10 @@ class Event
     private $start;
 
     /** @var string|null */
-    public $dateend;
+    private $dateend;
 
     /** @var string|null */
-    public $endtime;
+    private $endtime;
 
     /** @var string */
     public $event;
@@ -115,6 +115,22 @@ class Event
     public function getStartTime()
     {
         return $this->start->getTime();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDateEnd()
+    {
+        return $this->dateend;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEndTime()
+    {
+        return $this->endtime;
     }
 
     /**

@@ -164,9 +164,9 @@ class EventListController extends Controller
     {
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $event) {
-            if (isset($event->dateend)) {
+            if ($event->getDateEnd() !== null) {
                 list($event->endyear, $event->endmonth, $event->endday)
-                    = explode('-', $event->dateend);
+                    = explode('-', (string) $event->getDateEnd());
             } else {
                 $event->endday = $event->endmonth = $event->endyear = null;
             }
@@ -220,10 +220,10 @@ class EventListController extends Controller
      */
     private function getBirthdayRowView(Event $event)
     {
-        assert($event->dateend !== null);
+        assert($event->getDateEnd() !== null);
         return [
             'is_birthday' => true,
-            'age' => $this->year - (int) substr($event->dateend, 0, 4),
+            'age' => $this->year - (int) substr((string) $event->getDateEnd(), 0, 4),
             'event' => $event,
             'date' => sprintf('%02d', $event->getStart()->getDay()) . $this->dpSeparator()
                 . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year,
@@ -240,11 +240,11 @@ class EventListController extends Controller
     private function getEventRowView(Event $event)
     {
         $time = $event->getStartTime();
-        if ($event->endtime) {
+        if ($event->getEndTime()) {
             if (!$event->endday) {
                 $time .= ' ' . $this->lang['event_time_till_time'];
             }
-            $time .= '<br>' . $event->endtime;
+            $time .= '<br>' . $event->getEndTime();
         }
         return [
             'is_birthday' => false,

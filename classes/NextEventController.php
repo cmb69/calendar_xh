@@ -38,15 +38,15 @@ class NextEventController extends Controller
         $endevents = [];
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $event) {
-            if (isset($event->dateend)) {
+            if ($event->getDateEnd() !== null) {
                 $endevent = clone $event;
                 $event->text = $this->lang['event_date_till_date'] . " " . '<br>'
-                    . $event->dateend . " " . $event->endtime;
+                    . $event->getDateEnd() . " " . $event->getEndTime();
                 list($event_year, $event_month, $event_date) = explode('-', $event->getDateStart());
                 $event->timestamp = strtotime("$event_month/$event_date/$event_year {$event->getStartTime()}");
                 $endevent->text = $this->lang['event_started'] . '<br>'
                         . $event->getDateStart() . " " . $event->getStartTime();
-                list($event_year, $event_month, $event_date) = explode('-', $event->dateend);
+                list($event_year, $event_month, $event_date) = explode('-', (string) $event->getDateEnd());
                 $endevent->timestamp = strtotime("$event_month/$event_date/$event_year {$event->getStartTime()}");
                 $endevents[] = $endevent;
             } elseif ($event->isBirthday()) {
