@@ -164,8 +164,6 @@ class EventListController extends Controller
     {
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $event) {
-            list($event->startyear, $event->startmonth, $event->startday)
-                = explode('-', $event->getDateStart());
             if (isset($event->dateend)) {
                 list($event->endyear, $event->endmonth, $event->endday)
                     = explode('-', $event->dateend);
@@ -227,7 +225,7 @@ class EventListController extends Controller
             'is_birthday' => true,
             'age' => $this->year - (int) substr($event->dateend, 0, 4),
             'event' => $event,
-            'date' => $event->startday . $this->dpSeparator()
+            'date' => sprintf('%02d', $event->getStart()->getDay()) . $this->dpSeparator()
                 . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year,
             'showTime' => $this->conf['show_event_time'],
             'showLocation' => $this->conf['show_event_location'],
@@ -265,7 +263,7 @@ class EventListController extends Controller
      */
     private function renderDate(Event $event)
     {
-        $t = $event->startday;
+        $t = sprintf("%02d", $event->getStart()->getDay());
         // if beginning and end dates are there, these are put one under the other
         if ($event->endday) {
             if ($this->month != $event->endmonth

@@ -56,15 +56,6 @@ class Event
     public $text = null;
 
     /** @var string|null */
-    public $startday = null;
-
-    /** @var string|null */
-    public $startmonth = null;
-
-    /** @var string|null */
-    public $startyear = null;
-
-    /** @var string|null */
     public $endday = null;
 
     /** @var string|null */
