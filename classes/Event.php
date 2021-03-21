@@ -31,11 +31,8 @@ class Event
     /** @var LocalDateTime */
     private $start;
 
-    /** @var string|null */
-    private $dateend;
-
-    /** @var string|null */
-    private $endtime;
+    /** @var LocalDateTime|null */
+    private $end;
 
     /** @var string */
     public $event;
@@ -85,8 +82,7 @@ class Event
         $location
     ) {
         $this->start = new LocalDateTime($datestart ?: null, $starttime ?: null);
-        $this->dateend = $dateend;
-        $this->endtime = $endtime;
+        $this->end = $dateend !== null && $dateend !== '' ? new LocalDateTime($dateend, $endtime) : null;
         $this->event = $event;
         $this->linkadr = $linkadr;
         $this->linktxt = $linktxt;
@@ -122,7 +118,7 @@ class Event
      */
     public function getDateEnd()
     {
-        return $this->dateend;
+        return $this->end !== null ? $this->end->getDate() : null;
     }
 
     /**
@@ -130,7 +126,7 @@ class Event
      */
     public function getEndTime()
     {
-        return $this->endtime;
+        return $this->end !== null ? $this->end->getTime() : null;
     }
 
     /**
@@ -146,9 +142,8 @@ class Event
      */
     public function getEndTimestamp()
     {
-        assert($this->dateend !== null);
-        list($year, $month, $day) = explode('-', $this->dateend);
-        return mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
+        assert($this->end !== null);
+        return mktime(0, 0, 0, $this->end->getMonth(), $this->end->getDay(), $this->end->getYear());
     }
 
     /**

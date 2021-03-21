@@ -50,7 +50,7 @@ class LocalDateTime
             $this->month = (int) $month;
             $this->day = (int) $day;
         }
-        if ($time !== null) {
+        if ($time !== null && $time !== '') {
             list($hour, $minute) = explode(':', $time);
             $this->hour = (int) $hour;
             $this->minute = (int) $minute;
