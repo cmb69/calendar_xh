@@ -56,18 +56,6 @@ class Event
     public $text = null;
 
     /** @var string|null */
-    public $day = null;
-
-    /** @var string|null */
-    public $month = null;
-
-    /** @var string|null */
-    public $year = null;
-
-    /** @var string|null */
-    public $time = null;
-
-    /** @var string|null */
     public $startday = null;
 
     /** @var string|null */
@@ -115,6 +103,14 @@ class Event
         $this->linkadr = $linkadr;
         $this->linktxt = $linktxt;
         $this->location = $location;
+    }
+
+    /**
+     * @return LocalDateTime
+     */
+    public function getStart()
+    {
+        return $this->start;
     }
 
     /**

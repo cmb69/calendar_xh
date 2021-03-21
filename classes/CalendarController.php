@@ -102,14 +102,13 @@ class CalendarController extends Controller
             foreach ($events as $event) {
                 if ($this->isEventOn($event, $i)) {
                     $event_day = $i;
-                    assert($event->time !== null);
                     assert($event->text !== null);
-                    $event_titles[] = trim($event->time) . strip_tags($event->text);
+                    $event_titles[] = trim($event->getStartTime()) . strip_tags($event->text);
                 }
 
                 if ($this->isBirthdayOn($event, $i)) {
                     $event_day = $i;
-                    $age = $this->year - $event->year;
+                    $age = $this->year - $event->getStart()->getYear();
                     $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
                     $event_titles[] = "{$event->text} {$age}";
                 }
@@ -197,31 +196,23 @@ class CalendarController extends Controller
                     $count = $event->getEndTimestamp() - $event->getStartTimestamp();
                 }
                 for ($i = $event->getStartTimestamp(); $i <= $event->getEndTimestamp(); $i += $count) {
-                    $newevent = new Event('', '', '', '', '', '', '', $event->location);
-                    $newevent->year = date('Y', $i);
-                    $newevent->month = date('m', $i);
-                    $newevent->day = date('d', $i);
                     if ($i == $event->getStartTimestamp()) {
-                        $newevent->time = $event->getStartTime();
+                        $newevent = new Event(date('Y-m-d', $i), '', $event->getStartTime(), '', '', '', '', $event->location);
                         $newevent->text = " {$txt}";
                     } else {
-                        $newevent->time = '';
+                        $newevent = new Event(date('Y-m-d', $i), '', '', '', '', '', '', $event->location);
                         $newevent->text = $txt;
                     }
                     $newevents[] = $newevent;
                 }
             } else {
-                list($event->year, $event->month, $event->day) = explode('-', $event->getDateStart());
-                $newevent = new Event('', '', '', '', '', '', '', $event->location);
-                $newevent->year = $event->year;
-                $newevent->month = $event->month;
-                $newevent->day = $event->day;
                 if ($event->getStartTime() != '') {
+                    $newevent = new Event($event->getDateStart(), '', $event->getStartTime(), '', '', '', '', $event->location);
                     $newevent->text = " {$event->event}";
                 } else {
+                    $newevent = new Event($event->getDateStart(), '', $event->getStartTime(), '', '', '', '', $event->location);
                     $newevent->text = $event->event;
                 }
-                $newevent->time = $event->getStartTime();
                 $newevents[] = $newevent;
             }
         }
@@ -250,7 +241,8 @@ class CalendarController extends Controller
      */
     private function isEventOn(Event $event, $day)
     {
-        return !$event->isBirthday() && $event->year == $this->year && $event->month == $this->month && $event->day == $day;
+        $date = $event->getStart();
+        return !$event->isBirthday() && $date->getYear() == $this->year && $date->getMonth() == $this->month && $date->getDay() == $day;
     }
 
     /**
@@ -259,7 +251,8 @@ class CalendarController extends Controller
      */
     private function isBirthdayOn(Event $event, $day)
     {
-        return $event->isBirthday() && $event->month == $this->month && $event->day == $day;
+        $date = $event->getStart();
+        return $event->isBirthday() && $date->getMonth() == $this->month && $date->getDay() == $day;
     }
 
     /**
