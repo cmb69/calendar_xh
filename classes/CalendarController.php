@@ -250,7 +250,7 @@ class CalendarController extends Controller
      */
     private function isEventOn(Event $event, $day)
     {
-        return trim($event->location) !== '###' && $event->year == $this->year && $event->month == $this->month && $event->day == $day;
+        return !$event->isBirthday() && $event->year == $this->year && $event->month == $this->month && $event->day == $day;
     }
 
     /**
@@ -259,7 +259,7 @@ class CalendarController extends Controller
      */
     private function isBirthdayOn(Event $event, $day)
     {
-        return trim($event->location) == '###' && $event->month == $this->month && $event->day == $day;
+        return $event->isBirthday() && $event->month == $this->month && $event->day == $day;
     }
 
     /**

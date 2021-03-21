@@ -139,4 +139,12 @@ class Event
         list($year, $month, $day) = explode('-', $this->dateend);
         return mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
     }
+
+    /**
+     * @return bool
+     */
+    public function isBirthday()
+    {
+        return trim($this->location) == '###';
+    }
 }

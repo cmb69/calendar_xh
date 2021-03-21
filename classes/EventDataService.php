@@ -113,10 +113,9 @@ class EventDataService
     {
         $result = [];
         foreach ($events as $event) {
-            $isBirthday = trim($event->location) === '###';
-            if (!$isBirthday && strpos($event->datestart, $month) === 0) {
+            if (!$event->isBirthday() && strpos($event->datestart, $month) === 0) {
                 $result[] = $event;
-            } elseif ($isBirthday && substr($month, 0, 4) >= substr($event->datestart, 0, 4) && strpos($event->datestart, substr($month, 5), 5) === 5) {
+            } elseif ($event->isBirthday() && substr($month, 0, 4) >= substr($event->datestart, 0, 4) && strpos($event->datestart, substr($month, 5), 5) === 5) {
                 $newevent = clone $event;
                 $newevent->age = (int) substr($month, 0, 4) - (int) substr($newevent->datestart, 0, 4);
                 $newevent->datestart = $month . substr($newevent->datestart, 7);

@@ -110,7 +110,7 @@ class EditEventsController extends Controller
         }
 
         //Birthday should never have an enddate
-        if ($event->location == '###') {
+        if ($event->isBirthday()) {
             $event->dateend = '';
         }
     }
