@@ -126,7 +126,7 @@ class EventDataService
                     $event->linktxt,
                     $event->location
                 );
-                $newevent->age = (int) substr($month, 0, 4) - (int) substr($newevent->getDateStart(), 0, 4);
+                $newevent->age = (int) substr($month, 0, 4) - (int) substr($event->getDateStart(), 0, 4);
                 $result[] = $newevent;
             }
         }

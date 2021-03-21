@@ -28,14 +28,11 @@ namespace Calendar;
 
 class Event
 {
-    /** @var string */
-    private $datestart;
+    /** @var LocalDateTime */
+    private $start;
 
     /** @var string|null */
     public $dateend;
-
-    /** @var string */
-    private $starttime;
 
     /** @var string|null */
     public $endtime;
@@ -111,9 +108,8 @@ class Event
         $linktxt,
         $location
     ) {
-        $this->datestart = $datestart;
+        $this->start = new LocalDateTime($datestart ?: null, $starttime ?: null);
         $this->dateend = $dateend;
-        $this->starttime = $starttime;
         $this->endtime = $endtime;
         $this->event = $event;
         $this->linkadr = $linkadr;
@@ -126,7 +122,7 @@ class Event
      */
     public function getDateStart()
     {
-        return $this->datestart;
+        return $this->start->getDate();
     }
 
     /**
@@ -134,7 +130,7 @@ class Event
      */
     public function getStartTime()
     {
-        return $this->starttime;
+        return $this->start->getTime();
     }
 
     /**
@@ -142,8 +138,7 @@ class Event
      */
     public function getStartTimestamp()
     {
-        list($year, $month, $day) = explode('-', $this->datestart);
-        return mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
+        return mktime(0, 0, 0, $this->start->getMonth(), $this->start->getDay(), $this->start->getYear());
     }
 
     /**
