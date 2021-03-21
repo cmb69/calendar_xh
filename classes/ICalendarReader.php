@@ -93,24 +93,33 @@ class ICalendarReader
                 assert(isset($event));
                 if ($line === 'END:VEVENT') {
                     $isInEvent = false;
-                    $this->events[] = $event;
+                    $this->events[] = new Event(
+                        $event['datestart'],
+                        $event['dateend'],
+                        $event['starttime'],
+                        $event['endtime'],
+                        $event['event'],
+                        '',
+                        '',
+                        $event['location']
+                    );
                 } else {
                     list($property, $value) = $this->parseLine($line);
                     switch ($property) {
                         case 'SUMMARY':
-                            $event->event = $value;
+                            $event['event'] = $value;
                             break;
                         case 'LOCATION':
-                            $event->location = $value;
+                            $event['location'] = $value;
                             break;
                         case 'DTSTART':
                             if (($datetime = $this->parseDateTime($value))) {
-                                list($event->datestart, $event->starttime) = $datetime;
+                                list($event['datestart'], $event['starttime']) = $datetime;
                             }
                             break;
                         case 'DTEND':
                             if (($datetime = $this->parseDateTime($value))) {
-                                list($event->dateend, $event->endtime) = $datetime;
+                                list($event['dateend'], $event['endtime']) = $datetime;
                             }
                             break;
                     }
@@ -118,7 +127,7 @@ class ICalendarReader
             } else {
                 if ($line === 'BEGIN:VEVENT') {
                     $isInEvent = true;
-                    $event = $this->createEvent();
+                    $event = [];
                 }
             }
         }
@@ -150,13 +159,5 @@ class ICalendarReader
             return ["$matches[3]{$this->separator}$matches[2]{$this->separator}$matches[1]", "$matches[4]:$matches[5]"];
         }
         return false;
-    }
-
-    /**
-     * @return Event
-     */
-    private function createEvent()
-    {
-        return new Event('', '', '', '', '', '', '', '');
     }
 }

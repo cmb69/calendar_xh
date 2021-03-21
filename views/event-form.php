@@ -9,15 +9,15 @@
         <div>
             <label>
                 <?=$this->text('event_date_start')?>
-                <input type="date" class="calendar_input_date" maxlength="10" name="datestart[<?=$this->escape($i)?>]" value="<?=$this->escape($event->datestart)?>" id="datestart<?=$this->escape($i)?>">
+                <input type="date" class="calendar_input_date" maxlength="10" name="datestart[<?=$this->escape($i)?>]" value="<?=$this->escape($event->getDateStart())?>" id="datestart<?=$this->escape($i)?>">
             </label>
 <?php   if ($this->showEventTime):?>
             <label>
                 <?=$this->text('event_time')?>
-                <input type="time" class="calendar_input_time" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->starttime)?>">
+                <input type="time" class="calendar_input_time" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->getStartTime())?>">
             </label>
 <?php   else:?>
-            <input type="hidden" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->starttime)?>">
+            <input type="hidden" maxlength="5" name="starttime[<?=$this->escape($i)?>]" value="<?=$this->escape($event->getStartTime())?>">
 <?php   endif?>
             <label>
                 <?=$this->text('event_date_end')?>

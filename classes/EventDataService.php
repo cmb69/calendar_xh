@@ -113,17 +113,25 @@ class EventDataService
     {
         $result = [];
         foreach ($events as $event) {
-            if (!$event->isBirthday() && strpos($event->datestart, $month) === 0) {
+            if (!$event->isBirthday() && strpos($event->getDateStart(), $month) === 0) {
                 $result[] = $event;
-            } elseif ($event->isBirthday() && substr($month, 0, 4) >= substr($event->datestart, 0, 4) && strpos($event->datestart, substr($month, 5), 5) === 5) {
-                $newevent = clone $event;
-                $newevent->age = (int) substr($month, 0, 4) - (int) substr($newevent->datestart, 0, 4);
-                $newevent->datestart = $month . substr($newevent->datestart, 7);
+            } elseif ($event->isBirthday() && substr($month, 0, 4) >= substr($event->getDateStart(), 0, 4) && strpos($event->getDateStart(), substr($month, 5), 5) === 5) {
+                $newevent = new Event(
+                    $month . substr($event->getDateStart(), 7),
+                    $event->dateend,
+                    $event->getStartTime(),
+                    $event->endtime,
+                    $event->event,
+                    $event->linkadr,
+                    $event->linktxt,
+                    $event->location
+                );
+                $newevent->age = (int) substr($month, 0, 4) - (int) substr($newevent->getDateStart(), 0, 4);
                 $result[] = $newevent;
             }
         }
         usort($result, /** @return int */ function (Event $a, Event $b) {
-            return strcmp("{$a->datestart}T{$a->starttime}", "{$b->datestart}T{$b->starttime}");
+            return strcmp("{$a->getDateStart()}T{$a->getStartTime()}", "{$b->getDateStart()}T{$b->getStartTime()}");
         });
         return $result;
     }
@@ -222,8 +230,8 @@ class EventDataService
     private function writeEventLine($fp, Event $event)
     {
         $record = [
-            $event->datestart,
-            $event->starttime,
+            $event->getDateStart(),
+            $event->getStartTime(),
             $event->dateend,
             $event->endtime,
             $event->event,

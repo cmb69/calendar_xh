@@ -202,7 +202,7 @@ class CalendarController extends Controller
                     $newevent->month = date('m', $i);
                     $newevent->day = date('d', $i);
                     if ($i == $event->getStartTimestamp()) {
-                        $newevent->time = $event->starttime;
+                        $newevent->time = $event->getStartTime();
                         $newevent->text = " {$txt}";
                     } else {
                         $newevent->time = '';
@@ -211,17 +211,17 @@ class CalendarController extends Controller
                     $newevents[] = $newevent;
                 }
             } else {
-                list($event->year, $event->month, $event->day) = explode('-', $event->datestart);
+                list($event->year, $event->month, $event->day) = explode('-', $event->getDateStart());
                 $newevent = new Event('', '', '', '', '', '', '', $event->location);
                 $newevent->year = $event->year;
                 $newevent->month = $event->month;
                 $newevent->day = $event->day;
-                if ($event->starttime != '') {
+                if ($event->getStartTime() != '') {
                     $newevent->text = " {$event->event}";
                 } else {
                     $newevent->text = $event->event;
                 }
-                $newevent->time = $event->starttime;
+                $newevent->time = $event->getStartTime();
                 $newevents[] = $newevent;
             }
         }

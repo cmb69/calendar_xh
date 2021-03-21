@@ -29,13 +29,13 @@ namespace Calendar;
 class Event
 {
     /** @var string */
-    public $datestart;
+    private $datestart;
 
     /** @var string|null */
     public $dateend;
 
     /** @var string */
-    public $starttime;
+    private $starttime;
 
     /** @var string|null */
     public $endtime;
@@ -122,6 +122,22 @@ class Event
     }
 
     /**
+     * @return string
+     */
+    public function getDateStart()
+    {
+        return $this->datestart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStartTime()
+    {
+        return $this->starttime;
+    }
+
+    /**
      * @return int
      */
     public function getStartTimestamp()
@@ -145,6 +161,6 @@ class Event
      */
     public function isBirthday()
     {
-        return trim($this->location) == '###';
+        return trim($this->location) === '###';
     }
 }

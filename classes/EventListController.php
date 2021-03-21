@@ -165,7 +165,7 @@ class EventListController extends Controller
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $event) {
             list($event->startyear, $event->startmonth, $event->startday)
-                = explode('-', $event->datestart);
+                = explode('-', $event->getDateStart());
             if (isset($event->dateend)) {
                 list($event->endyear, $event->endmonth, $event->endday)
                     = explode('-', $event->dateend);
@@ -239,7 +239,7 @@ class EventListController extends Controller
      */
     private function getEventRowView(Event $event)
     {
-        $time = $event->starttime;
+        $time = $event->getStartTime();
         if ($event->endtime) {
             if (!$event->endday) {
                 $time .= ' ' . $this->lang['event_time_till_time'];

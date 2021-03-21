@@ -63,9 +63,18 @@ class EditEventsController extends Controller
         $events = [];
         foreach (array_keys($post['datestart']) as $i) {
             if (!isset($_POST['delete'][$i])) {
-                $event = new Event(...array_column($post, $i));
-                $this->fixPostedEvent($event);
-                $events[] = $event;
+                if (!$this->isValidDate($post['datestart'][$i])) {
+                    $post['datestart'][$i] = '';
+                }
+                assert($post['dateend'][$i] !== null);
+                if (!$this->isValidDate($post['dateend'][$i])) {
+                    $post['dateend'][$i] = '';
+                }
+                //Birthday should never have an enddate
+                if (trim($post['location'][$i]) === '###') {
+                    $post['dateend'][$i] = '';
+                }
+                $events[] = new Event(...array_column($post, $i));
             } else {
                 $deleted = true;
             }
@@ -79,8 +88,8 @@ class EditEventsController extends Controller
         if (!$deleted && !$added) {
             // sorting new event inputs, idea of manu, forum-message
             usort($events, /** @return int */ function (Event $a, Event $b) {
-                $a_i = "{$a->datestart}T{$a->starttime}";
-                $b_i = "{$b->datestart}T{$b->starttime}";
+                $a_i = "{$a->getDateStart()}T{$a->getStartTime()}";
+                $b_i = "{$b->getDateStart()}T{$b->getStartTime()}";
                 if ($a_i == $b_i) {
                     return 0;
                 }
@@ -94,25 +103,6 @@ class EditEventsController extends Controller
         }
 
         echo $this->eventForm($events);
-    }
-
-    /**
-     * @return void
-     */
-    private function fixPostedEvent(Event $event)
-    {
-        if (!$this->isValidDate($event->datestart)) {
-            $event->datestart = '';
-        }
-        assert($event->dateend !== null);
-        if (!$this->isValidDate($event->dateend)) {
-            $event->dateend = '';
-        }
-
-        //Birthday should never have an enddate
-        if ($event->isBirthday()) {
-            $event->dateend = '';
-        }
     }
 
     /**
