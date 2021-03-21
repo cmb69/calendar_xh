@@ -187,45 +187,45 @@ class CalendarController extends Controller
     private function fetchEvents()
     {
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
-        $theevents = [];
-        foreach ($events as $entry) {
-            if (isset($entry->dateend)) {
-                $txt = "{$entry->event} {$this->lang['event_date_till_date']} {$entry->dateend} {$entry->endtime}";
+        $newevents = [];
+        foreach ($events as $event) {
+            if (isset($event->dateend)) {
+                $txt = "{$event->event} {$this->lang['event_date_till_date']} {$event->dateend} {$event->endtime}";
                 if ($this->conf['show_days_between_dates']) {
                     $count = 86400;
                 } else {
-                    $count = $entry->getEndTimestamp() - $entry->getStartTimestamp();
+                    $count = $event->getEndTimestamp() - $event->getStartTimestamp();
                 }
-                for ($i = $entry->getStartTimestamp(); $i <= $entry->getEndTimestamp(); $i += $count) {
-                    $newentry = new Event('', '', '', '', '', '', '', $entry->location);
-                    $newentry->year = date('Y', $i);
-                    $newentry->month = date('m', $i);
-                    $newentry->day = date('d', $i);
-                    if ($i == $entry->getStartTimestamp()) {
-                        $newentry->time = $entry->starttime;
-                        $newentry->text = " {$txt}";
+                for ($i = $event->getStartTimestamp(); $i <= $event->getEndTimestamp(); $i += $count) {
+                    $newevent = new Event('', '', '', '', '', '', '', $event->location);
+                    $newevent->year = date('Y', $i);
+                    $newevent->month = date('m', $i);
+                    $newevent->day = date('d', $i);
+                    if ($i == $event->getStartTimestamp()) {
+                        $newevent->time = $event->starttime;
+                        $newevent->text = " {$txt}";
                     } else {
-                        $newentry->time = '';
-                        $newentry->text = $txt;
+                        $newevent->time = '';
+                        $newevent->text = $txt;
                     }
-                    $theevents[] = $newentry;
+                    $newevents[] = $newevent;
                 }
             } else {
-                list($entry->year, $entry->month, $entry->day) = explode('-', $entry->datestart);
-                $newentry = new Event('', '', '', '', '', '', '', $entry->location);
-                $newentry->year = $entry->year;
-                $newentry->month = $entry->month;
-                $newentry->day = $entry->day;
-                if ($entry->starttime != '') {
-                    $newentry->text = " {$entry->event}";
+                list($event->year, $event->month, $event->day) = explode('-', $event->datestart);
+                $newevent = new Event('', '', '', '', '', '', '', $event->location);
+                $newevent->year = $event->year;
+                $newevent->month = $event->month;
+                $newevent->day = $event->day;
+                if ($event->starttime != '') {
+                    $newevent->text = " {$event->event}";
                 } else {
-                    $newentry->text = $entry->event;
+                    $newevent->text = $event->event;
                 }
-                $newentry->time = $entry->starttime;
-                $theevents[] = $newentry;
+                $newevent->time = $event->starttime;
+                $newevents[] = $newevent;
             }
         }
-        return $theevents;
+        return $newevents;
     }
 
     /**

@@ -63,9 +63,9 @@ class EditEventsController extends Controller
         $events = [];
         foreach (array_keys($post['datestart']) as $i) {
             if (!isset($_POST['delete'][$i])) {
-                $entry = new Event(...array_column($post, $i));
-                $this->fixPostedEvent($entry);
-                $events[] = $entry;
+                $event = new Event(...array_column($post, $i));
+                $this->fixPostedEvent($event);
+                $events[] = $event;
             } else {
                 $deleted = true;
             }

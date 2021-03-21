@@ -206,8 +206,8 @@ class EventDataService
         if ($fp === false) {
             return false;
         }
-        foreach ($events as $entry) {
-            if (!$this->writeEventLine($fp, $entry)) {
+        foreach ($events as $event) {
+            if (!$this->writeEventLine($fp, $event)) {
                 fclose($fp);
                 return false;
             }
@@ -220,17 +220,17 @@ class EventDataService
      * @param resource $fp
      * @return bool
      */
-    private function writeEventLine($fp, Event $entry)
+    private function writeEventLine($fp, Event $event)
     {
         $record = [
-            $entry->datestart,
-            $entry->starttime,
-            $entry->dateend,
-            $entry->endtime,
-            $entry->event,
-            $entry->location,
-            $entry->linkadr,
-            $entry->linktxt
+            $event->datestart,
+            $event->starttime,
+            $event->dateend,
+            $event->endtime,
+            $event->event,
+            $event->location,
+            $event->linkadr,
+            $event->linktxt
         ];
         return fputcsv($fp, $record, ';', '"', "\0") !== false;
     }
