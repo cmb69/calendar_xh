@@ -64,7 +64,7 @@ class EventListController extends Controller
         $this->determineEndMonth();
         $this->endMonth = $this->endMonth + $this->pastMonth;
 
-        $events = $this->fetchEvents();
+        $events = (new EventDataService($this->dpSeparator()))->readEvents();
 
         $endmonth = $this->month + $this->endMonth;
         $endyear = $this->year;
@@ -158,23 +158,6 @@ class EventListController extends Controller
     }
 
     /**
-     * @return Event[]
-     */
-    private function fetchEvents()
-    {
-        $events = (new EventDataService($this->dpSeparator()))->readEvents();
-        foreach ($events as $event) {
-            if ($event->getDateEnd() !== null) {
-                list($event->endyear, $event->endmonth, $event->endday)
-                    = explode('-', (string) $event->getDateEnd());
-            } else {
-                $event->endday = $event->endmonth = $event->endyear = null;
-            }
-        }
-        return $events;
-    }
-
-    /**
      * @return int
      */
     private function calcTablecols()
@@ -240,8 +223,8 @@ class EventListController extends Controller
     private function getEventRowView(Event $event)
     {
         $time = $event->getStartTime();
-        if ($event->getEndTime()) {
-            if (!$event->endday) {
+        if (($end = $event->getEnd()) !== null) {
+            if (!$end->getDay()) {
                 $time .= ' ' . $this->lang['event_time_till_time'];
             }
             $time .= '<br>' . $event->getEndTime();
@@ -265,21 +248,21 @@ class EventListController extends Controller
     {
         $t = sprintf("%02d", $event->getStart()->getDay());
         // if beginning and end dates are there, these are put one under the other
-        if ($event->endday) {
-            if ($this->month != $event->endmonth
-                || $this->year != $event->endyear
+        if (($end = $event->getEnd()) !== null) {
+            if ($this->month != $end->getMonth()
+                || $this->year != $end->getYear()
             ) {
                 $t .= $this->dpSeparator() . sprintf('%02d', $this->month);
             }
-            if ($this->year != $event->endyear) {
+            if ($this->year != $end->getYear()) {
                 $t .= $this->dpSeparator() . $this->year;
             }
-            if ($this->year == $event->endyear && $this->dpSeparator() == '.') {
+            if ($this->year == $end->getYear() && $this->dpSeparator() == '.') {
                 $t.= '.';
             }
             $t .= "&nbsp;" . $this->lang['event_date_till_date'] . '<br>';
-            $t .= $event->endday . $this->dpSeparator() . $event->endmonth
-                . $this->dpSeparator() . $event->endyear;
+            $t .= sprintf("%02d", $end->getDay()) . $this->dpSeparator() . sprintf("%02d", $end->getMonth())
+                . $this->dpSeparator() . sprintf("%04d", $end->getYear());
         } else {
             $t .= $this->dpSeparator() . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year;
         }

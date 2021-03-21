@@ -52,15 +52,6 @@ class Event
     /** @var string|null */
     public $text = null;
 
-    /** @var string|null */
-    public $endday = null;
-
-    /** @var string|null */
-    public $endmonth = null;
-
-    /** @var string|null */
-    public $endyear = null;
-
     /**
      * @param string $datestart
      * @param string|null $dateend
@@ -111,6 +102,14 @@ class Event
     public function getStartTime()
     {
         return $this->start->getTime();
+    }
+
+    /**
+     * @return LocalDateTime|null
+     */
+    public function getEnd()
+    {
+        return $this->end;
     }
 
     /**
