@@ -123,4 +123,12 @@ class LocalDateTime
         }
         return sprintf("%02d:%02d", $this->hour, $this->minute);
     }
+
+    /**
+     * @return int
+     */
+    public function compare(LocalDateTime $other)
+    {
+        return strcmp("{$this->getDate()}T{$this->getTime()}", "{$other->getDate()}T{$other->getTime()}");
+    }
 }

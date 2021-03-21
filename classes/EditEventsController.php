@@ -88,12 +88,7 @@ class EditEventsController extends Controller
         if (!$deleted && !$added) {
             // sorting new event inputs, idea of manu, forum-message
             usort($events, /** @return int */ function (Event $a, Event $b) {
-                $a_i = "{$a->getDateStart()}T{$a->getStartTime()}";
-                $b_i = "{$b->getDateStart()}T{$b->getStartTime()}";
-                if ($a_i == $b_i) {
-                    return 0;
-                }
-                return ($a_i < $b_i) ? -1 : 1;
+                return $a->getStart()->compare($b->getStart());
             });
             if ((new EventDataService($this->dpSeparator()))->writeEvents($events)) {
                 echo XH_message('success', $this->lang['eventfile_saved']);

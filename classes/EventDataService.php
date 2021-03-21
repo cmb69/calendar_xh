@@ -130,7 +130,7 @@ class EventDataService
             }
         }
         usort($result, /** @return int */ function (Event $a, Event $b) {
-            return strcmp("{$a->getDateStart()}T{$a->getStartTime()}", "{$b->getDateStart()}T{$b->getStartTime()}");
+            return $a->getStart()->compare($b->getStart());
         });
         return $result;
     }
