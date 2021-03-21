@@ -73,9 +73,6 @@ class Event
     /** @var string|null */
     public $endyear = null;
 
-    /** @var int|null */
-    public $age = null;
-
     /**
      * @param string $datestart
      * @param string|null $dateend

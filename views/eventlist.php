@@ -26,7 +26,7 @@
 <?php           if ($row['showTime']):?>
         <td class="event_data event_time"></td>
 <?php           endif?>
-        <td class="event_data event_event"><?=$this->escape($row['event']->event)?> <?=$this->plural('age', $row['event']->age)?></td>
+        <td class="event_data event_event"><?=$this->escape($row['event']->event)?> <?=$this->plural('age', $row['age'])?></td>
 <?php           if ($row['showLocation']):?>
         <td class="event_data event_location"><?=$this->text('birthday_text')?></td>
 <?php           endif?>

@@ -118,7 +118,7 @@ class EventDataService
             } elseif ($event->isBirthday() && substr($month, 0, 4) >= substr($event->getDateStart(), 0, 4) && strpos($event->getDateStart(), substr($month, 5), 5) === 5) {
                 $newevent = new Event(
                     $month . substr($event->getDateStart(), 7),
-                    $event->dateend,
+                    $event->getDateStart(),
                     $event->getStartTime(),
                     $event->endtime,
                     $event->event,
@@ -126,7 +126,6 @@ class EventDataService
                     $event->linktxt,
                     $event->location
                 );
-                $newevent->age = (int) substr($month, 0, 4) - (int) substr($event->getDateStart(), 0, 4);
                 $result[] = $newevent;
             }
         }

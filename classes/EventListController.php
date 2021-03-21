@@ -208,7 +208,7 @@ class EventListController extends Controller
         }
         $result = ['headline' => $this->getHeadline($tablecols), 'rows' => []];
         foreach ($events as $event) {
-            if (isset($event->age)) {
+            if ($event->isBirthday()) {
                 $result['rows'][] = $this->getBirthdayRowView($event);
             } else {
                 $result['rows'][] = $this->getEventRowView($event);
@@ -222,8 +222,10 @@ class EventListController extends Controller
      */
     private function getBirthdayRowView(Event $event)
     {
+        assert($event->dateend !== null);
         return [
             'is_birthday' => true,
+            'age' => $this->year - (int) substr($event->dateend, 0, 4),
             'event' => $event,
             'date' => $event->startday . $this->dpSeparator()
                 . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year,
