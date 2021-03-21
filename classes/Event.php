@@ -91,12 +91,6 @@ class Event
     /** @var int|null */
     public $age = null;
 
-    /** @var int|null */
-    public $starttimestamp = null;
-
-    /** @var int|null */
-    public $endtimestamp = null;
-
     /**
      * @param string $datestart
      * @param string|null $dateend
@@ -125,5 +119,24 @@ class Event
         $this->linkadr = $linkadr;
         $this->linktxt = $linktxt;
         $this->location = $location;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStartTimestamp()
+    {
+        list($year, $month, $day) = explode('-', $this->datestart);
+        return mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
+    }
+
+    /**
+     * @return int
+     */
+    public function getEndTimestamp()
+    {
+        assert($this->dateend !== null);
+        list($year, $month, $day) = explode('-', $this->dateend);
+        return mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
     }
 }

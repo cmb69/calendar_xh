@@ -187,17 +187,6 @@ class CalendarController extends Controller
     private function fetchEvents()
     {
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
-        foreach ($events as $entry) {
-            if (isset($entry->dateend)) {
-                list($event_year, $event_month, $event_date) = explode('-', $entry->datestart);
-                $entry->starttimestamp = mktime(0, 0, 0, (int) $event_month, (int) $event_date, (int) $event_year);
-                list($event_year, $event_month, $event_date) = explode('-', $entry->dateend);
-                $entry->endtimestamp = mktime(0, 0, 0, (int) $event_month, (int) $event_date, (int) $event_year);
-            } else {
-                list($entry->year, $entry->month, $entry->day) = explode('-', $entry->datestart);
-            }
-        }
-
         $theevents = [];
         foreach ($events as $entry) {
             if (isset($entry->dateend)) {
@@ -205,16 +194,14 @@ class CalendarController extends Controller
                 if ($this->conf['show_days_between_dates']) {
                     $count = 86400;
                 } else {
-                    $count = $entry->endtimestamp - $entry->starttimestamp;
+                    $count = $entry->getEndTimestamp() - $entry->getStartTimestamp();
                 }
-                assert($entry->starttimestamp !== null);
-                assert($entry->endtimestamp !== null);
-                for ($i = $entry->starttimestamp; $i <= $entry->endtimestamp; $i += $count) {
+                for ($i = $entry->getStartTimestamp(); $i <= $entry->getEndTimestamp(); $i += $count) {
                     $newentry = new Event('', '', '', '', '', '', '', $entry->location);
                     $newentry->year = date('Y', $i);
                     $newentry->month = date('m', $i);
                     $newentry->day = date('d', $i);
-                    if ($i == $entry->starttimestamp) {
+                    if ($i == $entry->getStartTimestamp()) {
                         $newentry->time = $entry->starttime;
                         $newentry->text = " {$txt}";
                     } else {
@@ -224,6 +211,7 @@ class CalendarController extends Controller
                     $theevents[] = $newentry;
                 }
             } else {
+                list($entry->year, $entry->month, $entry->day) = explode('-', $entry->datestart);
                 $newentry = new Event('', '', '', '', '', '', '', $entry->location);
                 $newentry->year = $entry->year;
                 $newentry->month = $entry->month;
