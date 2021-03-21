@@ -79,7 +79,9 @@ class EventListController extends Controller
         $x = 0;
         while ($x <= $this->endMonth) {
             $filteredEvents = (new EventDataService($this->dpSeparator()))->filterByMonth($events, sprintf('%04d-%02d', $this->year, $this->month));
-            $monthEvents[] = new HtmlString($this->renderMonthEvents($filteredEvents, $tablecols));
+            if (($oneMonthEvents = $this->getMonthEvents($filteredEvents, $tablecols))) {
+                $monthEvents[] = $oneMonthEvents;
+            }
             $x++;
             $this->advanceMonth();
         }
@@ -197,34 +199,32 @@ class EventListController extends Controller
 
     /**
      * @param int $tablecols
-     * @return string
+     * @return array
      */
-    private function renderMonthEvents(array $events, $tablecols)
+    private function getMonthEvents(array $events, $tablecols)
     {
-        $t = '';
-        if (!empty($events)) {
-            $t = $this->createHeadlineView($tablecols) . $t;
-            foreach ($events as $event) {
-                if (isset($event->age)) {
-                    $t .= $this->createBirthdayRowView($event, $event->age);
-                } else {
-                    $t .= $this->createEventRowView($event);
-                }
+        if (empty($events)) {
+            return [];
+        }
+        $result = ['headline' => $this->getHeadline($tablecols), 'rows' => []];
+        foreach ($events as $event) {
+            if (isset($event->age)) {
+                $result['rows'][] = $this->getBirthdayRowView($event);
+            } else {
+                $result['rows'][] = $this->getEventRowView($event);
             }
         }
-        return $t;
+        return $result;
     }
 
     /**
-     * @param int $age
-     * @return View
+     * @return array
      */
-    private function createBirthdayRowView(Event $event, $age)
+    private function getBirthdayRowView(Event $event)
     {
-        $view = new View('birthday-row');
-        $view->data = [
+        return [
+            'is_birthday' => true,
             'event' => $event,
-            'age' => $age,
             'date' => $event->startday . $this->dpSeparator()
                 . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year,
             'showTime' => $this->conf['show_event_time'],
@@ -232,15 +232,13 @@ class EventListController extends Controller
             'showLink' => $this->conf['show_event_link'],
             'link' => new HtmlString($this->renderLink($event)),
         ];
-        return $view;
     }
 
     /**
-     * @return View
+     * @return array
      */
-    private function createEventRowView(Event $event)
+    private function getEventRowView(Event $event)
     {
-        $view = new View('event-row');
         $time = $event->starttime;
         if ($event->endtime) {
             if (!$event->endday) {
@@ -248,7 +246,8 @@ class EventListController extends Controller
             }
             $time .= '<br>' . $event->endtime;
         }
-        $view->data = [
+        return [
+            'is_birthday' => false,
             'event' => $event,
             'date' => new HtmlString($this->renderDate($event)),
             'showTime' => $this->conf['show_event_time'],
@@ -257,7 +256,6 @@ class EventListController extends Controller
             'link' => new HtmlString($this->renderLink($event)),
             'time' => new HtmlString($time),
         ];
-        return $view;
     }
 
     /**
@@ -307,18 +305,16 @@ class EventListController extends Controller
 
     /**
      * @param int $tablecols
-     * @return string
+     * @return array
      */
-    private function createHeadlineView($tablecols)
+    private function getHeadline($tablecols)
     {
-        $view = new View("event-list-headline");
-        $view->data = [
+        return [
             'tablecols' => $tablecols,
             'monthYear' => $this->formatMonthYear($this->month, $this->year),
             'showTime' => $this->conf['show_event_time'],
             'showLocation' => $this->conf['show_event_location'],
             'showLink' => $this->conf['show_event_link'],
         ];
-        return (string) $view;
     }
 }
