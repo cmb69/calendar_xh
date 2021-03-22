@@ -46,9 +46,6 @@ class Event
     /** @var string */
     public $location;
 
-    /** @var int|null */
-    public $timestamp = null;
-
     /** @var string|null */
     public $text = null;
 

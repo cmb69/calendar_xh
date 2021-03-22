@@ -35,44 +35,62 @@ class NextEventController extends Controller
     {
         $nextevent = null;
 
-        $endevents = [];
+        $allevents = [];
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $event) {
-            if ($event->getDateEnd() !== null) {
-                $endevent = clone $event;
+            if (($end = $event->getDateEnd()) !== null) {
                 $event->text = $this->lang['event_date_till_date'] . " " . '<br>'
-                    . $event->getDateEnd() . " " . $event->getEndTime();
-                list($event_year, $event_month, $event_date) = explode('-', $event->getDateStart());
-                $event->timestamp = strtotime("$event_month/$event_date/$event_year {$event->getStartTime()}");
+                    . $end . " " . $event->getEndTime();
+                $allevents[] = $event;
+                $endevent = new Event(
+                    $end,
+                    $end,
+                    (string) $event->getEndTime(),
+                    $event->getEndTime(),
+                    $event->event,
+                    $event->linkadr,
+                    $event->linktxt,
+                    $event->location
+                );
                 $endevent->text = $this->lang['event_started'] . '<br>'
                         . $event->getDateStart() . " " . $event->getStartTime();
-                list($event_year, $event_month, $event_date) = explode('-', (string) $event->getDateEnd());
-                $endevent->timestamp = strtotime("$event_month/$event_date/$event_year {$event->getStartTime()}");
-                $endevents[] = $endevent;
+                $allevents[] = $endevent;
             } elseif ($event->isBirthday()) {
-                $event->text = '';
-                list($event_year, $event_month, $event_date) = explode('-', $event->getDateStart());
-                $event->timestamp = strtotime("$event_month/$event_date/$event_year {$event->getStartTime()}");
+                $newevent = new Event(
+                    sprintf("%04d-%02d-%02d", (int) date("Y"), $event->getStart()->getMonth(), $event->getStart()->getDay()),
+                    $event->getDateEnd(),
+                    $event->getStartTime(),
+                    $event->getEndTime(),
+                    $event->event,
+                    $event->linkadr,
+                    $event->linktxt,
+                    $event->location
+                );
+                $newevent->text = '';
+                $allevents[] = $newevent;
+            } else {
+                $allevents[] = $event;
             }
         }
-        $events = array_merge($events, $endevents);
+        $events = $allevents;
         usort($events, /** @return int */ function (Event $a, Event $b) {
-            return $a->timestamp - $b->timestamp;
+            return $a->getStart()->compare($b->getStart());
         });
 
-        $today = strtotime('now');
+        $today = new LocalDateTime(date("Y-m-d"), date("H:i:s"));
 
         foreach ($events as $event) {
-            if ($event->timestamp > $today) {
+            if ($event->getStart()->compare($today) > 0) {
                 $nextevent = $event;
                 break;
             }
         }
         $view = new View('nextevent');
         if (isset($nextevent)) {
-            $date = date($this->lang['event_date_representation_in_next_event_marquee'], $nextevent->timestamp);
-            if (date('H:i', $nextevent->timestamp) != "00:00") {
-                $date.= ' — ' . date('H:i', $nextevent->timestamp);
+            $timestamp = $nextevent->getStart()->getTimestamp();
+            $date = date($this->lang['event_date_representation_in_next_event_marquee'], $timestamp);
+            if (date('H:i', $timestamp) != "00:00") {
+                $date.= ' — ' . date('H:i', $timestamp);
             }
             $view->data = [
                 'event' => $nextevent,
