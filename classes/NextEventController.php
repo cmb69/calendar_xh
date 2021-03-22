@@ -36,12 +36,13 @@ class NextEventController extends Controller
         $nextevent = null;
 
         $allevents = [];
+        $eventtexts = [];
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         foreach ($events as $event) {
             if (($end = $event->getDateEnd()) !== null) {
-                $event->text = $this->lang['event_date_till_date'] . " " . '<br>'
-                    . $end . " " . $event->getEndTime();
                 $allevents[] = $event;
+                $eventtexts[] = $this->lang['event_date_till_date'] . " " . '<br>'
+                    . $end . " " . $event->getEndTime();
                 $endevent = new Event(
                     $end,
                     $end,
@@ -52,9 +53,9 @@ class NextEventController extends Controller
                     $event->linktxt,
                     $event->location
                 );
-                $endevent->text = $this->lang['event_started'] . '<br>'
-                        . $event->getDateStart() . " " . $event->getStartTime();
                 $allevents[] = $endevent;
+                $eventtexts[] = $this->lang['event_started'] . '<br>'
+                        . $event->getDateStart() . " " . $event->getStartTime();
             } elseif ($event->isBirthday()) {
                 $newevent = new Event(
                     sprintf("%04d-%02d-%02d", (int) date("Y"), $event->getStart()->getMonth(), $event->getStart()->getDay()),
@@ -66,22 +67,24 @@ class NextEventController extends Controller
                     $event->linktxt,
                     $event->location
                 );
-                $newevent->text = '';
                 $allevents[] = $newevent;
+                $eventtexts[] = '';
             } else {
                 $allevents[] = $event;
+                $eventtexts[] = '';
             }
         }
         $events = $allevents;
-        usort($events, /** @return int */ function (Event $a, Event $b) {
+        uasort($events, /** @return int */ function (Event $a, Event $b) {
             return $a->getStart()->compare($b->getStart());
         });
 
         $today = new LocalDateTime(date("Y-m-d"), date("H:i:s"));
 
-        foreach ($events as $event) {
+        foreach ($events as $i => $event) {
             if ($event->getStart()->compare($today) > 0) {
                 $nextevent = $event;
+                $nexteventtext = $eventtexts[$i];
                 break;
             }
         }
@@ -92,8 +95,10 @@ class NextEventController extends Controller
             if (date('H:i', $timestamp) != "00:00") {
                 $date.= ' — ' . date('H:i', $timestamp);
             }
+            assert(isset($nexteventtext));
             $view->data = [
                 'event' => $nextevent,
+                'event_text' => $nexteventtext,
                 'date' => $date,
             ];
         }

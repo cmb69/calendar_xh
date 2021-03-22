@@ -82,7 +82,7 @@ class CalendarController extends Controller
         $event_titles = [];
 
 
-        $events = $this->fetchEvents();
+        list($events, $eventtexts) = $this->fetchEvents();
 
         $today = ($this->month == date('n') && $this->year == date('Y')) ? date('j') : 32;
         $days = (int) date('t', mktime(1, 1, 1, $this->month, 1, $this->year));
@@ -99,18 +99,18 @@ class CalendarController extends Controller
         for ($i = 1; $i <= $days; $i++) {
             $dayofweek = $this->getDayOfWeek($i);
 
-            foreach ($events as $event) {
+            foreach ($events as $idx => $event) {
                 if ($this->isEventOn($event, $i)) {
                     $event_day = $i;
-                    assert($event->text !== null);
-                    $event_titles[] = trim($event->getStartTime()) . strip_tags($event->text);
+                    assert($eventtexts[$idx] !== null);
+                    $event_titles[] = trim($event->getStartTime()) . strip_tags($eventtexts[$idx]);
                 }
 
                 if ($this->isBirthdayOn($event, $i)) {
                     $event_day = $i;
                     $age = $this->year - $event->getStart()->getYear();
                     $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
-                    $event_titles[] = "{$event->text} {$age}";
+                    $event_titles[] = "{$eventtexts[$idx]} {$age}";
                 }
             }
 
@@ -181,12 +181,13 @@ class CalendarController extends Controller
     }
 
     /**
-     * @return Event[]
+     * @return array[]
      */
     private function fetchEvents()
     {
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
         $newevents = [];
+        $neweventtexts = [];
         foreach ($events as $event) {
             if ($event->getDateEnd() !== null) {
                 $txt = "{$event->event} {$this->lang['event_date_till_date']} {$event->getDateEnd()} {$event->getEndTime()}";
@@ -198,25 +199,27 @@ class CalendarController extends Controller
                 for ($i = $event->getStartTimestamp(); $i <= $event->getEndTimestamp(); $i += $count) {
                     if ($i == $event->getStartTimestamp()) {
                         $newevent = new Event(date('Y-m-d', $i), '', $event->getStartTime(), '', '', '', '', $event->location);
-                        $newevent->text = " {$txt}";
+                        $neweventtext = " {$txt}";
                     } else {
                         $newevent = new Event(date('Y-m-d', $i), '', '', '', '', '', '', $event->location);
-                        $newevent->text = $txt;
+                        $neweventtext = $txt;
                     }
                     $newevents[] = $newevent;
+                    $neweventtexts[] = $neweventtext;
                 }
             } else {
                 if ($event->getStartTime() != '') {
                     $newevent = new Event($event->getDateStart(), '', $event->getStartTime(), '', '', '', '', $event->location);
-                    $newevent->text = " {$event->event}";
+                    $neweventtext = " {$event->event}";
                 } else {
                     $newevent = new Event($event->getDateStart(), '', $event->getStartTime(), '', '', '', '', $event->location);
-                    $newevent->text = $event->event;
+                    $neweventtext = $event->event;
                 }
                 $newevents[] = $newevent;
+                $neweventtexts[] = $neweventtext;
             }
         }
-        return $newevents;
+        return [$newevents, $neweventtexts];
     }
 
     /**

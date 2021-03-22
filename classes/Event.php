@@ -46,9 +46,6 @@ class Event
     /** @var string */
     public $location;
 
-    /** @var string|null */
-    public $text = null;
-
     /**
      * @param string $datestart
      * @param string|null $dateend
