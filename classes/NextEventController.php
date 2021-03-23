@@ -35,6 +35,7 @@ class NextEventController extends Controller
     {
         $nextevent = null;
 
+        /** @var array<int,Event> $allevents */
         $allevents = [];
         $eventtexts = [];
         $events = (new EventDataService($this->dpSeparator()))->readEvents();
@@ -42,7 +43,7 @@ class NextEventController extends Controller
             if (($end = $event->getDateEnd()) !== null) {
                 $allevents[] = $event;
                 $eventtexts[] = $this->lang['event_date_till_date'] . " " . '<br>'
-                    . $end . " " . $event->getEndTime();
+                    . $end . " " . (string) $event->getEndTime();
                 $endevent = new Event(
                     $end,
                     $end,
@@ -78,11 +79,13 @@ class NextEventController extends Controller
         uasort($events, /** @return int */ function (Event $a, Event $b) {
             return $a->getStart()->compare($b->getStart());
         });
+        /** @var array<int,Event> $events */
 
         $today = new LocalDateTime(date("Y-m-d"), date("H:i:s"));
 
         foreach ($events as $i => $event) {
             if ($event->getStart()->compare($today) > 0) {
+                /** @var Event $nextevent */
                 $nextevent = $event;
                 $nexteventtext = $eventtexts[$i];
                 break;

@@ -59,6 +59,7 @@ class IcalImportController extends Controller
      */
     public function importAction()
     {
+        assert(is_string($_POST['calendar_ics']));
         $file = $this->getDataPath() . '/' . $_POST['calendar_ics'];
         $reader = new ICalendarReader($file, $this->dpSeparator());
         $dataService = new EventDataService($this->dpSeparator());

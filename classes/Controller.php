@@ -29,12 +29,12 @@ namespace Calendar;
 abstract class Controller
 {
     /**
-     * @var array
+     * @var array<string,string>
      */
     protected $conf;
 
     /**
-     * @var array
+     * @var array<string,string>
      */
     protected $lang;
 

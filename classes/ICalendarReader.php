@@ -44,7 +44,7 @@ class ICalendarReader
     private $lines = [];
 
     /**
-     * @var array
+     * @var Event[]
      */
     private $events = [];
 
@@ -87,10 +87,11 @@ class ICalendarReader
      */
     private function parse()
     {
+        /** @var array<string,string> $event */
+        $event = [];
         $isInEvent = false;
         foreach ($this->lines as $line) {
             if ($isInEvent) {
-                assert(isset($event));
                 if ($line === 'END:VEVENT') {
                     $isInEvent = false;
                     $this->events[] = new Event(

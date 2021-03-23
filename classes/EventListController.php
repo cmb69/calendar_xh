@@ -100,7 +100,8 @@ class EventListController extends Controller
      */
     private function determineYearAndMonth()
     {
-        $month_input = isset($_GET['month']) ? $_GET['month'] : '';
+        assert(!isset($_GET['month']) || is_string($_GET['month']));
+        $month_input = isset($_GET['month']) ? (int) $_GET['month'] : 0;
 
         if ($this->month) {
             if ($month_input) {
@@ -112,16 +113,16 @@ class EventListController extends Controller
             $this->month = $month_input;
         }
 
-        $this->year = isset($_GET['year']) ? $_GET['year'] : date('Y');
+        assert(!isset($_GET['year']) || is_string($_GET['year']));
+        $this->year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
 
         if ($this->month == '') {
             $this->month = (int) date('m');
         }
 
         if (!$this->pastMonth) {
-            $this->pastMonth = $this->conf['show_number_of_previous_months'];
+            $this->pastMonth = (int) $this->conf['show_number_of_previous_months'];
         }
-        $this->pastMonth = (int) $this->pastMonth;
 
         $this->month = $this->month - $this->pastMonth;
         if ($this->month < 1) {
@@ -179,6 +180,7 @@ class EventListController extends Controller
     }
 
     /**
+     * @param Event[] $events
      * @param int $tablecols
      * @return array
      */
@@ -227,7 +229,7 @@ class EventListController extends Controller
             if (!$end->getDay()) {
                 $time .= ' ' . $this->lang['event_time_till_time'];
             }
-            $time .= '<br>' . $event->getEndTime();
+            $time .= '<br>' . (string) $event->getEndTime();
         }
         return [
             'is_birthday' => false,

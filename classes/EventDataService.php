@@ -132,6 +132,7 @@ class EventDataService
         usort($result, /** @return int */ function (Event $a, Event $b) {
             return $a->getStart()->compare($b->getStart());
         });
+        /** @var Event[] $result */
         return $result;
     }
 

@@ -58,6 +58,7 @@ class EditEventsController extends Controller
         );
         $post = [];
         foreach ($varnames as $var) {
+            assert(!isset($_POST[$var]) || is_array($_POST[$var]));
             $post[$var] = isset($_POST[$var]) ? $_POST[$var] : [];
         }
         $events = [];
@@ -66,7 +67,6 @@ class EditEventsController extends Controller
                 if (!$this->isValidDate($post['datestart'][$i])) {
                     $post['datestart'][$i] = '';
                 }
-                assert($post['dateend'][$i] !== null);
                 if (!$this->isValidDate($post['dateend'][$i])) {
                     $post['dateend'][$i] = '';
                 }
@@ -74,7 +74,9 @@ class EditEventsController extends Controller
                 if (trim($post['location'][$i]) === '###') {
                     $post['dateend'][$i] = '';
                 }
-                $events[] = new Event(...array_column($post, $i));
+                /** @var string[] $args */
+                $args = array_column($post, $i);
+                $events[] = new Event(...$args);
             } else {
                 $deleted = true;
             }
@@ -90,6 +92,7 @@ class EditEventsController extends Controller
             usort($events, /** @return int */ function (Event $a, Event $b) {
                 return $a->getStart()->compare($b->getStart());
             });
+            /** @var Event[] $events */
             if ((new EventDataService($this->dpSeparator()))->writeEvents($events)) {
                 echo XH_message('success', $this->lang['eventfile_saved']);
             } else {

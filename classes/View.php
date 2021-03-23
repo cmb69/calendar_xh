@@ -43,7 +43,7 @@ class View
 
     /**
      * @param string $name
-     * @return string
+     * @return mixed
      */
     public function __get($name)
     {
@@ -119,14 +119,14 @@ class View
 
     /**
      * @param mixed $value
-     * @return mixed
+     * @return string
      */
     protected function escape($value)
     {
         if ($value instanceof HtmlString) {
-            return $value;
+            return (string) $value;
         } else {
-            return XH_hsc($value);
+            return XH_hsc((string) $value);
         }
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<psalm errorLevel="2">
+<psalm errorLevel="1">
   <projectFiles>
     <directory name="classes"/>
     <file name="index.php"/>
@@ -7,4 +7,15 @@
   <stubs>
     <file name="stubs.php"/>
   </stubs>
+  <globals>
+    <var name="_GET" type="array&lt;string,(string|array&lt;(string|int),string&gt;)&gt;"/>
+    <var name="_POST" type="array&lt;string,(string|array&lt;(string|int),string&gt;)&gt;"/>
+    <var name="bjs" type="string"/>
+    <var name="cf" type="array&lt;string,array&lt;string,string&gt;&gt;"/>
+    <var name="o" type="string"/>
+    <var name="plugin_cf" type="array&lt;string,array&lt;string,string&gt;&gt;"/>
+    <var name="plugin_tx" type="array&lt;string,array&lt;string,string&gt;&gt;"/>
+    <var name="pth" type="array{folder:array&lt;string,string&gt;,files:array}"/>
+    <var name="sn" type="string"/>
+  </globals>
 </psalm>

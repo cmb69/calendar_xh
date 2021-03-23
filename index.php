@@ -67,8 +67,10 @@ function nextevent()
 function editevents()
 {
     if (isset($_POST['action'])) {
+        assert(is_string($_POST['action']));
         $action = $_POST['action'];
     } elseif (isset($_GET['action'])) {
+        assert(is_string($_GET['action']));
         $action = $_GET['action'];
     } else {
         $action = 'editevents';

@@ -71,10 +71,10 @@ class CalendarController extends Controller
         }
 
         if ($this->month == '') {
-            $this->month = isset($_GET['month']) ? $_GET['month'] : date('m');
+            $this->month = isset($_GET['month']) ? (int) $_GET['month'] : (int) date('m');
         }
         if ($this->year == '') {
-            $this->year = isset($_GET['year']) ? $_GET['year'] : date('Y');
+            $this->year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
         }
 
         $event_day        = '';
@@ -102,7 +102,6 @@ class CalendarController extends Controller
             foreach ($events as $idx => $event) {
                 if ($this->isEventOn($event, $i)) {
                     $event_day = $i;
-                    assert($eventtexts[$idx] !== null);
                     $event_titles[] = trim($event->getStartTime()) . strip_tags($eventtexts[$idx]);
                 }
 
@@ -181,7 +180,7 @@ class CalendarController extends Controller
     }
 
     /**
-     * @return array[]
+     * @return array{0: Event[], 1: string[]}
      */
     private function fetchEvents()
     {
