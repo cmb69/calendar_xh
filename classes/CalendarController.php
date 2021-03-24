@@ -85,76 +85,62 @@ class CalendarController extends Controller
         list($events, $eventtexts) = $this->fetchEvents();
 
         $today = ($this->month == date('n') && $this->year == date('Y')) ? date('j') : 32;
-        $days = (int) date('t', mktime(1, 1, 1, $this->month, 1, $this->year));
-        $dayone = (int) date('w', mktime(1, 1, 1, $this->month, 1, $this->year));
-        $daylast = (int) date('w', mktime(1, 1, 1, $this->month, $days, $this->year));
 
         $rows = [];
         $rows[] = $this->getDaynamesRow();
         //done printing the top row of days
 
-        $span1 = $this->getSpan1($dayone);
-        $span2 = $this->getSpan2($daylast);
-        $row = [];
-        for ($i = 1; $i <= $days; $i++) {
-            $dayofweek = $this->getDayOfWeek($i);
-
-            foreach ($events as $idx => $event) {
-                if ($this->isEventOn($event, $i)) {
-                    $event_day = $i;
-                    $event_titles[] = trim($event->getStartTime()) . strip_tags($eventtexts[$idx]);
-                }
-
-                if ($this->isBirthdayOn($event, $i)) {
-                    $event_day = $i;
-                    $age = $this->year - $event->getStart()->getYear();
-                    $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
-                    $event_titles[] = "{$eventtexts[$idx]} {$age}";
-                }
-            }
-
-            $tableday = $i;
-            if ($i == 1 || $dayofweek == 0) {
-                $row = [];
-                while ($span1-- && $i == 1) {
+        foreach ((new Calendar((bool) $this->conf['week_starts_mon']))->getMonthMatrix($this->year, $this->month) as $columns) {
+            $row = [];
+            foreach ($columns as $i) {
+                if ($i === null) {
                     $row[] = (object) ['classname' => 'calendar_noday', 'content' => ''];
+                    continue;
+                }
+
+                foreach ($events as $idx => $event) {
+                    if ($this->isEventOn($event, $i)) {
+                        $event_day = $i;
+                        $event_titles[] = trim($event->getStartTime()) . strip_tags($eventtexts[$idx]);
+                    }
+
+                    if ($this->isBirthdayOn($event, $i)) {
+                        $event_day = $i;
+                        $age = $this->year - $event->getStart()->getYear();
+                        $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
+                        $event_titles[] = "{$eventtexts[$idx]} {$age}";
+                    }
+                }
+
+                if ($today == $event_day) {
+                    $event_today = $today;
+                }
+
+                switch ($i) {
+                    case $event_today:
+                        $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
+                        $row[] = (object) ['classname' => 'calendar_today', 'content' => $i,
+                            'href' => $url, 'title' => implode(' | ', $event_titles)];
+                        $event_titles = [];
+                        break;
+                    case $today:
+                        $row[] = (object) ['classname' => 'calendar_today', 'content' => $i];
+                        break;
+                    case $event_day:
+                        $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
+                        $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $i,
+                            'href' => $url, 'title' => implode(' | ', $event_titles)];
+                        $event_titles = [];
+                        break;
+                    default:
+                        if (count($row) == $this->conf['week-end_day_1'] || count($row) == $this->conf['week-end_day_2']) {
+                            $row[] = (object) ['classname' => 'calendar_we', 'content' => $i];
+                        } else {
+                            $row[] = (object) ['classname' => 'calendar_day', 'content' => $i];
+                        }
                 }
             }
-
-            if ($today == $event_day) {
-                $event_today = $today;
-            }
-
-            switch ($i) {
-                case $event_today:
-                    $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
-                    $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday,
-                        'href' => $url, 'title' => implode(' | ', $event_titles)];
-                    $event_titles = [];
-                    break;
-                case $today:
-                    $row[] = (object) ['classname' => 'calendar_today', 'content' => $tableday];
-                    break;
-                case $event_day:
-                    $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
-                    $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $tableday,
-                        'href' => $url, 'title' => implode(' | ', $event_titles)];
-                    $event_titles = [];
-                    break;
-                default:
-                    if ($dayofweek == $this->conf['week-end_day_1'] || $dayofweek == $this->conf['week-end_day_2']) {
-                        $row[] = (object) ['classname' => 'calendar_we', 'content' => $tableday];
-                    } else {
-                        $row[] = (object) ['classname' => 'calendar_day', 'content' => $tableday];
-                    }
-            }
-
-            while ($i == $days && $span2--) {
-                $row[] = (object) ['classname' => 'calendar_noday', 'content' => ''];
-            }
-            if ($dayofweek == 6 || $i == $days) {
-                $rows[] = $row;
-            }
+            $rows[] = $row;
         }
 
         $view = new View('calendar');
@@ -219,22 +205,6 @@ class CalendarController extends Controller
             }
         }
         return [$newevents, $neweventtexts];
-    }
-
-    /**
-     * @param int $i
-     * @return int
-     */
-    private function getDayOfWeek($i)
-    {
-        $dayofweek = (int) date('w', mktime(1, 1, 1, $this->month, $i, $this->year));
-        if ($this->conf['week_starts_mon']) {
-            $dayofweek = $dayofweek - 1;
-        }
-        if ($dayofweek == -1) {
-            $dayofweek = 6;
-        }
-        return $dayofweek;
     }
 
     /**
@@ -310,39 +280,5 @@ class CalendarController extends Controller
             $year_next = $this->year;
         }
         return "$sn?$su&month=$month_next&year=$year_next";
-    }
-
-    /**
-     * @param int $dayone
-     * @return int
-     */
-    private function getSpan1($dayone)
-    {
-        if ($this->conf['week_starts_mon']) {
-            $span1 = $dayone - 1;
-        } else {
-            $span1 = $dayone;
-        }
-        if ($span1 == -1) {
-            $span1 = 6;
-        }
-        return $span1;
-    }
-
-    /**
-     * @param int $daylast
-     * @return int
-     */
-    private function getSpan2($daylast)
-    {
-        if ($this->conf['week_starts_mon']) {
-            $span2 = 7 - $daylast;
-        } else {
-            $span2 = 6 - $daylast;
-        }
-        if ($span2 == 7) {
-            $span2 = 0;
-        }
-        return $span2;
     }
 }
