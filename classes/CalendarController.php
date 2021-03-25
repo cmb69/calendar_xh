@@ -69,80 +69,13 @@ class CalendarController extends Controller
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
         }
-
-        if ($this->month == '') {
-            $this->month = isset($_GET['month']) ? (int) $_GET['month'] : (int) date('m');
-        }
-        if ($this->year == '') {
-            $this->year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
-        }
-
-        $event_day        = '';
-        $event_today      = '';
-        $event_titles = [];
-
-
-        list($events, $eventtexts) = $this->fetchEvents();
-
-        $today = ($this->month == date('n') && $this->year == date('Y')) ? date('j') : 32;
-
+        $this->determineYearAndMonth();
+        $calendar = new Calendar((bool) $this->conf['week_starts_mon']);
         $rows = [];
         $rows[] = $this->getDaynamesRow();
-        //done printing the top row of days
-
-        foreach ((new Calendar((bool) $this->conf['week_starts_mon']))->getMonthMatrix($this->year, $this->month) as $columns) {
-            $row = [];
-            foreach ($columns as $i) {
-                if ($i === null) {
-                    $row[] = (object) ['classname' => 'calendar_noday', 'content' => ''];
-                    continue;
-                }
-
-                foreach ($events as $idx => $event) {
-                    if ($this->isEventOn($event, $i)) {
-                        $event_day = $i;
-                        $event_titles[] = trim($event->getStartTime()) . strip_tags($eventtexts[$idx]);
-                    }
-
-                    if ($this->isBirthdayOn($event, $i)) {
-                        $event_day = $i;
-                        $age = $this->year - $event->getStart()->getYear();
-                        $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
-                        $event_titles[] = "{$eventtexts[$idx]} {$age}";
-                    }
-                }
-
-                if ($today == $event_day) {
-                    $event_today = $today;
-                }
-
-                switch ($i) {
-                    case $event_today:
-                        $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
-                        $row[] = (object) ['classname' => 'calendar_today', 'content' => $i,
-                            'href' => $url, 'title' => implode(' | ', $event_titles)];
-                        $event_titles = [];
-                        break;
-                    case $today:
-                        $row[] = (object) ['classname' => 'calendar_today', 'content' => $i];
-                        break;
-                    case $event_day:
-                        $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
-                        $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $i,
-                            'href' => $url, 'title' => implode(' | ', $event_titles)];
-                        $event_titles = [];
-                        break;
-                    default:
-                        if (count($row) == $this->conf['week-end_day_1'] || count($row) == $this->conf['week-end_day_2']) {
-                            $row[] = (object) ['classname' => 'calendar_we', 'content' => $i];
-                        } else {
-                            $row[] = (object) ['classname' => 'calendar_day', 'content' => $i];
-                        }
-                }
-            }
-            $rows[] = $row;
+        foreach ($calendar->getMonthMatrix($this->year, $this->month) as $columns) {
+            $rows[] = $this->getRowData($columns);
         }
-
         $view = new View('calendar');
         $view->data = [
             'caption' => $this->formatMonthYear($this->month, $this->year),
@@ -166,6 +99,65 @@ class CalendarController extends Controller
     }
 
     /**
+     * @return void
+     */
+    private function determineYearAndMonth()
+    {
+        if ($this->month == '') {
+            $this->month = isset($_GET['month']) ? (int) $_GET['month'] : (int) date('m');
+        }
+        if ($this->year == '') {
+            $this->year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
+        }
+    }
+
+    /**
+     * @param (int|null)[] $columns
+     * @return stdClass[]
+     */
+    private function getRowData(array $columns)
+    {
+        list($events, $eventtexts) = $this->fetchEvents();
+        $today = ($this->month == date('n') && $this->year == date('Y')) ? date('j') : 32;
+        $row = [];
+        foreach ($columns as $day) {
+            if ($day === null) {
+                $row[] = (object) ['classname' => 'calendar_noday', 'content' => ''];
+                continue;
+            }
+            $hasEvent = false;
+            $event_titles = [];
+            foreach ($events as $idx => $event) {
+                if ($this->isEventOn($event, $day)) {
+                    $hasEvent = true;
+                    $event_titles[] = trim($event->getStartTime()) . strip_tags($eventtexts[$idx]);
+                } elseif ($this->isBirthdayOn($event, $day)) {
+                    $hasEvent = true;
+                    $age = $this->year - $event->getStart()->getYear();
+                    $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
+                    $event_titles[] = "{$eventtexts[$idx]} {$age}";
+                }
+            }
+            if ($day == $today && $hasEvent) {
+                $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
+                $row[] = (object) ['classname' => 'calendar_today', 'content' => $day,
+                    'href' => $url, 'title' => implode(' | ', $event_titles)];
+            } elseif ($day == $today) {
+                $row[] = (object) ['classname' => 'calendar_today', 'content' => $day];
+            } elseif ($hasEvent) {
+                $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
+                $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $day,
+                    'href' => $url, 'title' => implode(' | ', $event_titles)];
+            } elseif ($this->isWeekEnd(count($row))) {
+                $row[] = (object) ['classname' => 'calendar_we', 'content' => $day];
+            } else {
+                $row[] = (object) ['classname' => 'calendar_day', 'content' => $day];
+            }
+        }
+        return $row;
+    }
+
+    /**
      * @return array{0: Event[], 1: string[]}
      */
     private function fetchEvents()
@@ -175,7 +167,13 @@ class CalendarController extends Controller
         $neweventtexts = [];
         foreach ($events as $event) {
             if ($event->getDateEnd() !== null) {
-                $txt = "{$event->event} {$this->lang['event_date_till_date']} {$event->getDateEnd()} {$event->getEndTime()}";
+                $txt = sprintf(
+                    "%s %s %s %s",
+                    $event->event,
+                    $this->lang['event_date_till_date'],
+                    (string) $event->getDateEnd(),
+                    (string) $event->getEndTime()
+                );
                 if ($this->conf['show_days_between_dates']) {
                     $count = 86400;
                 } else {
@@ -183,7 +181,16 @@ class CalendarController extends Controller
                 }
                 for ($i = $event->getStartTimestamp(); $i <= $event->getEndTimestamp(); $i += $count) {
                     if ($i == $event->getStartTimestamp()) {
-                        $newevent = new Event(date('Y-m-d', $i), '', $event->getStartTime(), '', '', '', '', $event->location);
+                        $newevent = new Event(
+                            date('Y-m-d', $i),
+                            '',
+                            $event->getStartTime(),
+                            '',
+                            '',
+                            '',
+                            '',
+                            $event->location
+                        );
                         $neweventtext = " {$txt}";
                     } else {
                         $newevent = new Event(date('Y-m-d', $i), '', '', '', '', '', '', $event->location);
@@ -194,10 +201,28 @@ class CalendarController extends Controller
                 }
             } else {
                 if ($event->getStartTime() != '') {
-                    $newevent = new Event($event->getDateStart(), '', $event->getStartTime(), '', '', '', '', $event->location);
+                    $newevent = new Event(
+                        $event->getDateStart(),
+                        '',
+                        $event->getStartTime(),
+                        '',
+                        '',
+                        '',
+                        '',
+                        $event->location
+                    );
                     $neweventtext = " {$event->event}";
                 } else {
-                    $newevent = new Event($event->getDateStart(), '', $event->getStartTime(), '', '', '', '', $event->location);
+                    $newevent = new Event(
+                        $event->getDateStart(),
+                        '',
+                        $event->getStartTime(),
+                        '',
+                        '',
+                        '',
+                        '',
+                        $event->location
+                    );
                     $neweventtext = $event->event;
                 }
                 $newevents[] = $newevent;
@@ -214,7 +239,10 @@ class CalendarController extends Controller
     private function isEventOn(Event $event, $day)
     {
         $date = $event->getStart();
-        return !$event->isBirthday() && $date->getYear() == $this->year && $date->getMonth() == $this->month && $date->getDay() == $day;
+        return !$event->isBirthday()
+            && $date->getYear() == $this->year
+            && $date->getMonth() == $this->month
+            && $date->getDay() == $day;
     }
 
     /**
@@ -225,6 +253,16 @@ class CalendarController extends Controller
     {
         $date = $event->getStart();
         return $event->isBirthday() && $date->getMonth() == $this->month && $date->getDay() == $day;
+    }
+
+    /**
+     * @param int $dayOfWeek
+     * @return bool
+     */
+    private function isWeekEnd($dayOfWeek)
+    {
+        return $dayOfWeek === (int) $this->conf['week-end_day_1']
+            || $dayOfWeek === (int) $this->conf['week-end_day_2'];
     }
 
     /**
