@@ -20,3 +20,6 @@
  */
 
 require_once './classes/Calendar.php';
+require_once './classes/Event.php';
+require_once './classes/LocalDateTime.php';
+require_once './classes/ICalendarReader.php';
