@@ -75,6 +75,8 @@ class EventListController extends Controller
 
         $tablecols = $this->calcTablecols();
 
+        $startmonth = $this->month;
+        $startyear = $this->year;
         $monthEvents = [];
         $x = 0;
         while ($x <= $this->endMonth) {
@@ -88,7 +90,7 @@ class EventListController extends Controller
         $view = new View('eventlist');
         $view->data = [
             'showHeading' => (bool) $this->conf['show_period_of_events'],
-            'start' => new HtmlString('<span>' . XH_hsc($this->formatMonthYear($this->month, $this->year)) . '</span>'),
+            'start' => new HtmlString('<span>' . XH_hsc($this->formatMonthYear($startmonth, $startyear)) . '</span>'),
             'end' => new HtmlString('<span>' . XH_hsc($this->formatMonthYear($endmonth, $endyear)) . '</span>'),
             'monthEvents' => $monthEvents,
         ];
