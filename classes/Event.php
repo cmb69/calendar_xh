@@ -40,7 +40,7 @@ class Event
     /** @var string */
     public $linkadr;
 
-    /** @var string|null */
+    /** @var string */
     public $linktxt;
 
     /** @var string */
@@ -53,7 +53,7 @@ class Event
      * @param string|null $endtime
      * @param string $event
      * @param string $linkadr
-     * @param string|null $linktxt
+     * @param string $linktxt
      * @param string $location
      */
     public function __construct(

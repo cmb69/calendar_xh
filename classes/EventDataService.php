@@ -83,9 +83,6 @@ class EventDataService
                 if (!$endtime) {
                     $endtime = null;
                 }
-                if (!$linktxt) {
-                    $linktxt = null;
-                }
                 if ($datestart != '' && $event != '') {
                     $result[] = new Event(
                         $datestart,
@@ -165,7 +162,7 @@ class EventDataService
                     list($linkadr, $linktxt) = explode(',', $link);
                 } else {
                     $linkadr = $link;
-                    $linktxt = null;
+                    $linktxt = '';
                 }
                 if (strpos($linkadr, 'ext:') === 0) {
                     $linkadr = 'http://' . substr($linkadr, 4);

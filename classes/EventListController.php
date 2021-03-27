@@ -286,7 +286,7 @@ class EventListController extends Controller
             return "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
                 . "{$text}</a>";
         } else {
-            return (string) $event->linktxt;
+            return $event->linktxt;
         }
     }
 
