@@ -38,6 +38,7 @@ $plugin_tx['calendar']['label_delete_event']="Delete event";
 $plugin_tx['calendar']['label_save']="Save";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_import_button']="Import %s";
+$plugin_tx['calendar']['message_changed']="The event file has been changed in the meantime! Save again to overwrite these changes.";
 
 $plugin_tx['calendar']['alt_logo']="Calendar";
 

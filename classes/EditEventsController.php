@@ -93,6 +93,12 @@ class EditEventsController extends Controller
                 return $a->getStart()->compare($b->getStart());
             });
             /** @var Event[] $events */
+            $oldevents = (new EventDataService($this->dpSeparator()))->readEvents();
+            if ($_POST['calendar_hash'] !== '' && $_POST['calendar_hash'] !== sha1(serialize($oldevents))) {
+                echo XH_message('warning', $this->lang['message_changed']),
+                    $this->eventForm($events, true);
+                return;
+            }
             if ((new EventDataService($this->dpSeparator()))->writeEvents($events)) {
                 echo XH_message('success', $this->lang['eventfile_saved']);
             } else {
@@ -105,9 +111,10 @@ class EditEventsController extends Controller
 
     /**
      * @param Event[] $events
+     * @param bool $force
      * @return string
      */
-    private function eventForm($events)
+    private function eventForm($events, $force = false)
     {
         $view = new View('event-form');
         $view->data = [
@@ -115,6 +122,7 @@ class EditEventsController extends Controller
             'showEventLocation' => (bool) $this->conf['show_event_location'],
             'showEventLink' => (bool) $this->conf['show_event_link'],
             'events' => $events,
+            'hash' => !$force ? sha1(serialize($events)) : '',
         ];
         return (string) $view;
     }

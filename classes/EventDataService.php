@@ -73,6 +73,7 @@ class EventDataService
     {
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
+            flock($stream, LOCK_SH);
             while (($record = fgetcsv($stream, 0, ';', '"', "\0")) !== false) {
                 assert(is_array($record));
                 list($datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt)
@@ -96,6 +97,7 @@ class EventDataService
                     );
                 }
             }
+            flock($stream, LOCK_UN);
             fclose($stream);
         }
         return $result;
@@ -141,6 +143,7 @@ class EventDataService
     {
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
+            flock($stream, LOCK_SH);
             while (($line = fgets($stream)) !== false) {
                 list($eventdates, $event, $location, $link, $starttime) = explode(';', rtrim($line));
                 if (strpos($eventdates, ',') !== false) {
@@ -184,6 +187,7 @@ class EventDataService
                     );
                 }
             }
+            flock($stream, LOCK_UN);
             fclose($stream);
         }
         return $result;
@@ -206,16 +210,19 @@ class EventDataService
             rename($eventfile, "{$eventfile}.bak");
         }
     
-        $fp = fopen($eventfile, "w");
+        $fp = fopen($eventfile, "c");
         if ($fp === false) {
             return false;
         }
+        flock($fp, LOCK_EX);
         foreach ($events as $event) {
             if (!$this->writeEventLine($fp, $event)) {
+                flock($fp, LOCK_UN);
                 fclose($fp);
                 return false;
             }
         }
+        flock($fp, LOCK_UN);
         fclose($fp);
         return true;
     }

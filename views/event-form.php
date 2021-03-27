@@ -1,5 +1,6 @@
 <form method="post" action="">
     <input type="hidden" name="action" value="saveevents">
+    <input type="hidden" name="calendar_hash" value="<?=$this->hash()?>">
     <div class="calendar_input">
         <div>
             <button name="send"><?=$this->text('label_save')?></button>

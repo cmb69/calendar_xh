@@ -38,6 +38,7 @@ $plugin_tx['calendar']['label_delete_event']="Veranstaltung löschen";
 $plugin_tx['calendar']['label_save']="Speichern";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_import_button']="Importiere %s";
+$plugin_tx['calendar']['message_changed']="Die Veranstaltungsdatei wurde in der Zwischenzeit geändert! Speichern Sie erneut, um diese Änderungen zu überschreiben.";
 
 $plugin_tx['calendar']['alt_logo']="Kalender";
 
