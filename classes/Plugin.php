@@ -52,17 +52,15 @@ class Plugin
      */
     private function handleAdministration()
     {
-        global $o, $pth, $plugin_cf, $plugin_tx, $admin, $action;
+        global $o, $plugin_cf, $plugin_tx, $admin, $action;
 
         $o .= print_plugin_admin('on');
 
         switch ($admin) {
             case '':
-                $o .= (new View())->getString('info', [
-                    'logo' => "{$pth['folder']['plugins']}calendar/calendar.png",
-                    'version' => self::VERSION,
-                    'checks' => (new SystemCheckService)->getChecks(),
-                ]);
+                ob_start();
+                (new InfoController($plugin_cf['calendar'], $plugin_tx['calendar'], new View()))->defaultAction();
+                $o .= ob_get_clean();
                 break;
             case 'plugin_main':
                 $o .= sprintf('<h1>Calendar – %s</h1>', XH_hsc($plugin_tx['calendar']['menu_main']));
