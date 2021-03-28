@@ -28,9 +28,10 @@ namespace Calendar;
 
 class EventDataService
 {
-    /**
-     * @var string
-     */
+    /** @var string */
+    private $separator;
+
+    /** @var string */
     private $eventfile;
 
     /**
@@ -40,22 +41,12 @@ class EventDataService
     {
         global $pth, $sl, $cf, $plugin_cf;
 
+        $this->separator = $separator;
         $datapath = $pth['folder']['content'];
         if ($plugin_cf['calendar']['same-event-calendar_for_all_languages'] && $sl != $cf['language']['default']) {
             $datapath = dirname($datapath) . '/';
         }
-        $eventfile = "{$datapath}calendar";
-        if (!file_exists("{$eventfile}.csv")) {
-            if (file_exists("{$eventfile}.txt")) {
-                $this->eventfile = "{$eventfile}.txt";
-                $events = $this->readOldEvents($separator);
-                $this->eventfile = "{$eventfile}.csv";
-                $this->writeEvents($events);
-            } else {
-                touch("{$eventfile}.csv");
-            }
-        }
-        $this->eventfile = "{$eventfile}.csv";
+        $this->eventfile = "{$datapath}calendar.csv";
     }
 
     /**
@@ -71,6 +62,17 @@ class EventDataService
      */
     public function readEvents()
     {
+        $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".csv");
+        if (!is_file("{$eventfile}.csv")) {
+            if (is_file("{$eventfile}.txt")) {
+                $this->eventfile = "{$eventfile}.txt";
+                $events = $this->readOldEvents();
+                $this->eventfile = "{$eventfile}.csv";
+                $this->writeEvents($events);
+            } else {
+                touch("{$eventfile}.csv");
+            }
+        }
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
             flock($stream, LOCK_SH);
@@ -128,10 +130,9 @@ class EventDataService
     }
 
     /**
-     * @param string $separator
      * @return Event[]
      */
-    private function readOldEvents($separator)
+    private function readOldEvents()
     {
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
@@ -146,11 +147,11 @@ class EventDataService
                     $endtime = null;
                 }
                 if ($datestart) {
-                    list($day, $month, $year) = explode($separator, $datestart);
+                    list($day, $month, $year) = explode($this->separator, $datestart);
                     $datestart = "$year-$month-$day";
                 }
                 if ($dateend) {
-                    list($day, $month, $year) = explode($separator, $dateend);
+                    list($day, $month, $year) = explode($this->separator, $dateend);
                     $dateend = "$year-$month-$day";
                 }
                 if (strpos($link, ',') !== false) {
