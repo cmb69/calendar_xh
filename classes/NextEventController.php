@@ -28,14 +28,18 @@ namespace Calendar;
 
 class NextEventController extends Controller
 {
+    /** @var View */
+    private $view;
+
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
      */
-    public function __construct(array $conf, array $lang)
+    public function __construct(array $conf, array $lang, View $view)
     {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->view = $view;
     }
 
     /**
@@ -45,7 +49,7 @@ class NextEventController extends Controller
     {
         $now = time();
         $nextevent = $this->findNextEvent($now);
-        $view = new View('nextevent');
+        $data = [];
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
                 $start = $nextevent->getStart();
@@ -70,13 +74,13 @@ class NextEventController extends Controller
             if (date('H:i', $timestamp) != "00:00") {
                 $date.= ' — ' . date('H:i', $timestamp);
             }
-            $view->data = [
+            $data = [
                 'event' => $nextevent,
                 'event_text' => $nexteventtext,
                 'date' => $date,
             ];
         }
-        $view->render();
+        $this->view->render('nextevent', $data);
     }
 
     /**

@@ -30,14 +30,18 @@ use Fa\RequireCommand as FaRequireCommand;
 
 class EditEventsController extends Controller
 {
+    /** @var View */
+    private $view;
+
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
      */
-    public function __construct(array $conf, array $lang)
+    public function __construct(array $conf, array $lang, View $view)
     {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->view = $view;
         (new FaRequireCommand)->execute();
     }
 
@@ -121,15 +125,13 @@ class EditEventsController extends Controller
      */
     private function eventForm($events, $force = false)
     {
-        $view = new View('event-form');
-        $view->data = [
+        return $this->view->getString('event-form', [
             'showEventTime' => (bool) $this->conf['show_event_time'],
             'showEventLocation' => (bool) $this->conf['show_event_location'],
             'showEventLink' => (bool) $this->conf['show_event_link'],
             'events' => $events,
             'hash' => !$force ? sha1(serialize($events)) : '',
-        ];
-        return (string) $view;
+        ]);
     }
 
     /**

@@ -58,20 +58,18 @@ class Plugin
 
         switch ($admin) {
             case '':
-                $view = new View('info');
-                $view->data = [
+                $o .= (new View())->getString('info', [
                     'logo' => "{$pth['folder']['plugins']}calendar/calendar.png",
                     'version' => self::VERSION,
                     'checks' => (new SystemCheckService)->getChecks(),
-                ];
-                $o .= $view;
+                ]);
                 break;
             case 'plugin_main':
                 $o .= sprintf('<h1>Calendar – %s</h1>', XH_hsc($plugin_tx['calendar']['menu_main']));
                 $o .= editevents();
                 break;
             case 'import':
-                $controller = new IcalImportController($plugin_cf['calendar'], $plugin_tx['calendar']);
+                $controller = new IcalImportController($plugin_cf['calendar'], $plugin_tx['calendar'], new View());
                 ob_start();
                 switch ($action) {
                     case 'import':

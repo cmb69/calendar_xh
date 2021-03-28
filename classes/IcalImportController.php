@@ -25,15 +25,18 @@ use DirectoryIterator;
 
 class IcalImportController extends Controller
 {
+    /** @var View */
+    private $view;
 
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
      */
-    public function __construct(array $conf, array $lang)
+    public function __construct(array $conf, array $lang, View $view)
     {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->view = $view;
     }
 
     /**
@@ -43,12 +46,10 @@ class IcalImportController extends Controller
     {
         global $sn;
 
-        $view = new View('import');
-        $view->data = [
+        $this->view->render('import', [
             'url' => $sn . '?&calendar&admin=import&action=import',
             'files' => $this->findIcsFiles(),
-        ];
-        $view->render();
+        ]);
     }
 
     /**

@@ -30,6 +30,9 @@ use stdClass;
 
 class CalendarController extends Controller
 {
+    /** @var View */
+    private $view;
+
     /**
      * @var int
      */
@@ -52,10 +55,11 @@ class CalendarController extends Controller
      * @param int $month
      * @param string $eventpage
      */
-    public function __construct(array $conf, array $lang, $year = 0, $month = 0, $eventpage = '')
+    public function __construct(array $conf, array $lang, View $view, $year = 0, $month = 0, $eventpage = '')
     {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->view = $view;
         $this->year = $year;
         $this->month = $month;
         $this->eventpage = $eventpage;
@@ -79,8 +83,7 @@ class CalendarController extends Controller
         foreach ($calendar->getMonthMatrix($this->year, $this->month) as $columns) {
             $rows[] = $this->getRowData($columns);
         }
-        $view = new View('calendar');
-        $view->data = [
+        $data = [
             'caption' => $this->formatMonthYear($this->month, $this->year),
             'hasPrevNextButtons' => $this->conf['prev_next_button'],
             'prevUrl' => $this->getPrevUrl(),
@@ -92,11 +95,11 @@ class CalendarController extends Controller
                 ob_end_clean();
             }
             header('X-Location: ' . CMSIMPLE_URL . "?{$_SERVER['QUERY_STRING']}");
-            $view->render();
+            $this->view->render('calendar', $data);
             exit;
         } else {
             echo '<div class="calendar_calendar">';
-            $view->render();
+            $this->view->render('calendar', $data);
             echo '</div>';
         }
     }

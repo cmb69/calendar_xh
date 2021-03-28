@@ -28,6 +28,9 @@ namespace Calendar;
 
 class EventListController extends Controller
 {
+    /** @var View */
+    private $view;
+
     /** @var int */
     private $month;
 
@@ -48,10 +51,11 @@ class EventListController extends Controller
      * @param int $end_month
      * @param int $past_month
      */
-    public function __construct(array $conf, array $lang, $month, $year, $end_month, $past_month)
+    public function __construct(array $conf, array $lang, View $view, $month, $year, $end_month, $past_month)
     {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->view = $view;
         $this->month = $month;
         $this->year = $year;
         $this->endMonth = $end_month;
@@ -90,14 +94,12 @@ class EventListController extends Controller
             $x++;
             $this->advanceMonth();
         }
-        $view = new View('eventlist');
-        $view->data = [
+        $this->view->render('eventlist', [
             'showHeading' => (bool) $this->conf['show_period_of_events'],
             'start' => new HtmlString('<span>' . XH_hsc($this->formatMonthYear($startmonth, $startyear)) . '</span>'),
             'end' => new HtmlString('<span>' . XH_hsc($this->formatMonthYear($endmonth, $endyear)) . '</span>'),
             'monthEvents' => $monthEvents,
-        ];
-        $view->render();
+        ]);
     }
 
     /**

@@ -24,22 +24,9 @@ namespace Calendar;
 class View
 {
     /**
-     * @var string
-     */
-    private $template;
-
-    /**
      * @var array
      */
     public $data = array();
-
-    /**
-     * @param string $template
-     */
-    public function __construct($template)
-    {
-        $this->template = $template;
-    }
 
     /**
      * @param string $name
@@ -69,15 +56,17 @@ class View
     }
 
     /**
+     * @param string $template
+     * @param array<string,mixed> $data
      * @return string
      */
-    public function __toString()
+    public function getString($template, array $data)
     {
         ob_start();
-        $this->render();
+        $this->render($template, $data);
         return ob_get_clean();
     }
-    
+
     /**
      * @param string $key
      * @return string
@@ -107,14 +96,17 @@ class View
     }
 
     /**
+     * @param string $_template
+     * @param array<string,mixed> $_data
      * @return void
      */
-    public function render()
+    public function render($_template, $_data)
     {
         global $pth;
 
+        $this->data = $_data;
         /** @psalm-suppress UnresolvableInclude */
-        include "{$pth['folder']['plugins']}calendar/views/{$this->template}.php";
+        include "{$pth['folder']['plugins']}calendar/views/{$_template}.php";
     }
 
     /**

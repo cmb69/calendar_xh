@@ -35,7 +35,15 @@ function calendar($year = 0, $month = 0, $eventpage = '')
     global $plugin_cf, $plugin_tx;
 
     ob_start();
-    (new Calendar\CalendarController($plugin_cf['calendar'], $plugin_tx['calendar'], $year, $month, $eventpage))->defaultAction();
+    $controller = new Calendar\CalendarController(
+        $plugin_cf['calendar'],
+        $plugin_tx['calendar'],
+        new Calendar\View(),
+        $year,
+        $month,
+        $eventpage
+    );
+    $controller->defaultAction();
     return ob_get_clean();
 }
 
@@ -51,8 +59,16 @@ function events($month = 0, $year = 0, $end_month = 0, $past_month = 0)
     global $plugin_cf, $plugin_tx;
 
     ob_start();
-    (new Calendar\EventListController($plugin_cf['calendar'], $plugin_tx['calendar'], $month, $year, $end_month, $past_month))
-        ->defaultAction();
+    $controller = new Calendar\EventListController(
+        $plugin_cf['calendar'],
+        $plugin_tx['calendar'],
+        new Calendar\View(),
+        $month,
+        $year,
+        $end_month,
+        $past_month
+    );
+    $controller->defaultAction();
     return ob_get_clean();
 }
 
@@ -64,7 +80,12 @@ function nextevent()
     global $plugin_cf, $plugin_tx;
 
     ob_start();
-    (new Calendar\NextEventController($plugin_cf['calendar'], $plugin_tx['calendar']))->defaultAction();
+    $controller = new Calendar\NextEventController(
+        $plugin_cf['calendar'],
+        $plugin_tx['calendar'],
+        new Calendar\View()
+    );
+    $controller->defaultAction();
     return ob_get_clean();
 }
 
@@ -92,7 +113,12 @@ function editevents()
             $action = 'defaultAction';
     }
     ob_start();
-    (new Calendar\EditEventsController($plugin_cf['calendar'], $plugin_tx['calendar']))->{$action}();
+    $controller = new Calendar\EditEventsController(
+        $plugin_cf['calendar'],
+        $plugin_tx['calendar'],
+        new Calendar\View
+    );
+    $controller->{$action}();
     return ob_get_clean();
 }
 
