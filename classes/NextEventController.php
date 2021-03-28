@@ -29,6 +29,16 @@ namespace Calendar;
 class NextEventController extends Controller
 {
     /**
+     * @param array<string,string> $conf
+     * @param array<string,string> $lang
+     */
+    public function __construct(array $conf, array $lang)
+    {
+        $this->conf = $conf;
+        $this->lang = $lang;
+    }
+
+    /**
      * @return void
      */
     public function defaultAction()

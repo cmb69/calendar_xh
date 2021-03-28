@@ -46,13 +46,16 @@ class CalendarController extends Controller
     private $eventpage;
 
     /**
+     * @param array<string,string> $conf
+     * @param array<string,string> $lang
      * @param int $year
      * @param int $month
      * @param string $eventpage
      */
-    public function __construct($year = 0, $month = 0, $eventpage = '')
+    public function __construct(array $conf, array $lang, $year = 0, $month = 0, $eventpage = '')
     {
-        parent::__construct();
+        $this->conf = $conf;
+        $this->lang = $lang;
         $this->year = $year;
         $this->month = $month;
         $this->eventpage = $eventpage;

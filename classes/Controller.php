@@ -38,14 +38,6 @@ abstract class Controller
      */
     protected $lang;
 
-    public function __construct()
-    {
-        global $plugin_cf, $plugin_tx;
-
-        $this->conf = $plugin_cf['calendar'];
-        $this->lang = $plugin_tx['calendar'];
-    }
-
     /**
      * Helper-function to parse the date-seperator, set in plugin-config,
      * and to check for allowed separators

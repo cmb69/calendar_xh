@@ -52,7 +52,7 @@ class Plugin
      */
     private function handleAdministration()
     {
-        global $o, $pth, $plugin_tx, $admin, $action;
+        global $o, $pth, $plugin_cf, $plugin_tx, $admin, $action;
 
         $o .= print_plugin_admin('on');
 
@@ -71,7 +71,7 @@ class Plugin
                 $o .= editevents();
                 break;
             case 'import':
-                $controller = new IcalImportController;
+                $controller = new IcalImportController($plugin_cf['calendar'], $plugin_tx['calendar']);
                 ob_start();
                 switch ($action) {
                     case 'import':

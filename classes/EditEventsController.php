@@ -30,9 +30,14 @@ use Fa\RequireCommand as FaRequireCommand;
 
 class EditEventsController extends Controller
 {
-    public function __construct()
+    /**
+     * @param array<string,string> $conf
+     * @param array<string,string> $lang
+     */
+    public function __construct(array $conf, array $lang)
     {
-        parent::__construct();
+        $this->conf = $conf;
+        $this->lang = $lang;
         (new FaRequireCommand)->execute();
     }
 

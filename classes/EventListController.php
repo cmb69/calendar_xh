@@ -41,14 +41,17 @@ class EventListController extends Controller
     private $pastMonth;
 
     /**
+     * @param array<string,string> $conf
+     * @param array<string,string> $lang
      * @param int $month
      * @param int $year
      * @param int $end_month
      * @param int $past_month
      */
-    public function __construct($month, $year, $end_month, $past_month)
+    public function __construct(array $conf, array $lang, $month, $year, $end_month, $past_month)
     {
-        parent::__construct();
+        $this->conf = $conf;
+        $this->lang = $lang;
         $this->month = $month;
         $this->year = $year;
         $this->endMonth = $end_month;
