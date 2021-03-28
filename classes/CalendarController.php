@@ -117,7 +117,7 @@ class CalendarController extends Controller
      */
     private function getRowData(array $columns)
     {
-        list($events, $eventtexts) = $this->fetchEvents();
+        $events = (new EventDataService($this->dpSeparator()))->readEvents();
         $today = ($this->month == date('n') && $this->year == date('Y')) ? date('j') : 32;
         $row = [];
         foreach ($columns as $day) {
@@ -125,29 +125,17 @@ class CalendarController extends Controller
                 $row[] = (object) ['classname' => 'calendar_noday', 'content' => ''];
                 continue;
             }
-            $hasEvent = false;
-            $event_titles = [];
-            foreach ($events as $idx => $event) {
-                if ($this->isEventOn($event, $day)) {
-                    $hasEvent = true;
-                    $event_titles[] = trim($event->getStartTime()) . strip_tags($eventtexts[$idx]);
-                } elseif ($this->isBirthdayOn($event, $day)) {
-                    $hasEvent = true;
-                    $age = $this->year - $event->getStart()->getYear();
-                    $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
-                    $event_titles[] = "{$eventtexts[$idx]} {$age}";
-                }
-            }
-            if ($day == $today && $hasEvent) {
+            $dayEvents = $this->filterEventsByDay($events, $day);
+            if ($day == $today && !empty($dayEvents)) {
                 $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
                 $row[] = (object) ['classname' => 'calendar_today', 'content' => $day,
-                    'href' => $url, 'title' => implode(' | ', $event_titles)];
+                    'href' => $url, 'title' => $this->getEventsTitle($dayEvents)];
             } elseif ($day == $today) {
                 $row[] = (object) ['classname' => 'calendar_today', 'content' => $day];
-            } elseif ($hasEvent) {
+            } elseif (!empty($dayEvents)) {
                 $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
                 $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $day,
-                    'href' => $url, 'title' => implode(' | ', $event_titles)];
+                    'href' => $url, 'title' => $this->getEventsTitle($dayEvents)];
             } elseif ($this->isWeekEnd(count($row))) {
                 $row[] = (object) ['classname' => 'calendar_we', 'content' => $day];
             } else {
@@ -158,78 +146,21 @@ class CalendarController extends Controller
     }
 
     /**
-     * @return array{0: Event[], 1: string[]}
+     * @param Event[] $events
+     * @param int $day
+     * @return Event[]
      */
-    private function fetchEvents()
+    private function filterEventsByDay(array $events, $day)
     {
-        $events = (new EventDataService($this->dpSeparator()))->readEvents();
-        $newevents = [];
-        $neweventtexts = [];
+        $result = [];
         foreach ($events as $event) {
-            if ($event->getDateEnd() !== null) {
-                $txt = sprintf(
-                    "%s %s %s %s",
-                    $event->event,
-                    $this->lang['event_date_till_date'],
-                    (string) $event->getDateEnd(),
-                    (string) $event->getEndTime()
-                );
-                if ($this->conf['show_days_between_dates']) {
-                    $count = 86400;
-                } else {
-                    $count = $event->getEndTimestamp() - $event->getStartTimestamp();
-                }
-                for ($i = $event->getStartTimestamp(); $i <= $event->getEndTimestamp(); $i += $count) {
-                    if ($i == $event->getStartTimestamp()) {
-                        $newevent = new Event(
-                            date('Y-m-d', $i),
-                            '',
-                            $event->getStartTime(),
-                            '',
-                            '',
-                            '',
-                            '',
-                            $event->location
-                        );
-                        $neweventtext = " {$txt}";
-                    } else {
-                        $newevent = new Event(date('Y-m-d', $i), '', '', '', '', '', '', $event->location);
-                        $neweventtext = $txt;
-                    }
-                    $newevents[] = $newevent;
-                    $neweventtexts[] = $neweventtext;
-                }
-            } else {
-                if ($event->getStartTime() != '') {
-                    $newevent = new Event(
-                        $event->getDateStart(),
-                        '',
-                        $event->getStartTime(),
-                        '',
-                        '',
-                        '',
-                        '',
-                        $event->location
-                    );
-                    $neweventtext = " {$event->event}";
-                } else {
-                    $newevent = new Event(
-                        $event->getDateStart(),
-                        '',
-                        $event->getStartTime(),
-                        '',
-                        '',
-                        '',
-                        '',
-                        $event->location
-                    );
-                    $neweventtext = $event->event;
-                }
-                $newevents[] = $newevent;
-                $neweventtexts[] = $neweventtext;
+            if ($this->isEventOn($event, $day)) {
+                $result[] = $event;
+            } elseif ($this->isBirthdayOn($event, $day)) {
+                $result[] = $event;
             }
         }
-        return [$newevents, $neweventtexts];
+        return $result;
     }
 
     /**
@@ -238,11 +169,18 @@ class CalendarController extends Controller
      */
     private function isEventOn(Event $event, $day)
     {
-        $date = $event->getStart();
-        return !$event->isBirthday()
-            && $date->getYear() == $this->year
-            && $date->getMonth() == $this->month
-            && $date->getDay() == $day;
+        if ($event->isBirthday()) {
+            return false;
+        }
+        $today = mktime(0, 0, 0, $this->month, $day, $this->year);
+        $endDate = $event->getDateEnd();
+        if ($endDate === null) {
+            return $event->getStartTimestamp() === $today;
+        }
+        if ($this->conf['show_days_between_dates']) {
+            return $today >= $event->getStartTimestamp() && $today <= $event->getEndTimestamp();
+        }
+        return $today === $event->getStartTimestamp() && $today === $event->getEndTimestamp();
     }
 
     /**
@@ -253,6 +191,36 @@ class CalendarController extends Controller
     {
         $date = $event->getStart();
         return $event->isBirthday() && $date->getMonth() == $this->month && $date->getDay() == $day;
+    }
+
+    /**
+     * @param Event[] $events
+     * @return string
+     */
+    private function getEventsTitle(array $events)
+    {
+        $titles = [];
+        foreach ($events as $event) {
+            if ($event->getDateEnd() !== null) {
+                $text = sprintf(
+                    "%s %s %s %s",
+                    $event->event,
+                    $this->lang['event_date_till_date'],
+                    (string) $event->getDateEnd(),
+                    (string) $event->getEndTime()
+                );
+            } else {
+                $text = $event->event;
+            }
+            if (!$event->isBirthday()) {
+                $titles[] = trim($event->getStartTime()) . " " . strip_tags($text);
+            } else {
+                $age = $this->year - $event->getStart()->getYear();
+                $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
+                $titles[] = "{$text} {$age}";
+            }
+        }
+        return implode(" | ", $titles);
     }
 
     /**

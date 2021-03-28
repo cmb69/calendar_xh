@@ -115,21 +115,13 @@ class EventDataService
             if (!$event->isBirthday() && strpos($event->getDateStart(), $month) === 0) {
                 $result[] = $event;
             } elseif ($event->isBirthday() && substr($month, 0, 4) >= substr($event->getDateStart(), 0, 4) && strpos($event->getDateStart(), substr($month, 5), 5) === 5) {
-                $newevent = new Event(
-                    $month . substr($event->getDateStart(), 7),
-                    $event->getDateStart(),
-                    $event->getStartTime(),
-                    $event->getEndTime(),
-                    $event->event,
-                    $event->linkadr,
-                    $event->linktxt,
-                    $event->location
-                );
-                $result[] = $newevent;
+                $result[] = $event;
             }
         }
-        usort($result, /** @return int */ function (Event $a, Event $b) {
-            return $a->getStart()->compare($b->getStart());
+        usort($result, /** @return int */ function (Event $a, Event $b) use ($month) {
+            $dt1 = $a->isBirthday() ? new LocalDateTime($month . substr($a->getDateStart(), 7), null) : $a->getStart();
+            $dt2 = $b->isBirthday() ? new LocalDateTime($month . substr($a->getDateStart(), 7), null) : $b->getStart();
+            return $dt1->compare($dt2);
         });
         /** @var Event[] $result */
         return $result;

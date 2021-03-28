@@ -207,10 +207,9 @@ class EventListController extends Controller
      */
     private function getBirthdayRowView(Event $event)
     {
-        assert($event->getDateEnd() !== null);
         return [
             'is_birthday' => true,
-            'age' => $this->year - (int) substr((string) $event->getDateEnd(), 0, 4),
+            'age' => $this->year - (int) substr($event->getDateStart(), 0, 4),
             'event' => $event,
             'date' => sprintf('%02d', $event->getStart()->getDay()) . $this->dpSeparator()
                 . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year,
