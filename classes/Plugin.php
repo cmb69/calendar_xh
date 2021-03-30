@@ -132,7 +132,7 @@ class Plugin
     {
         global $action, $plugin_cf, $plugin_tx;
 
-        $controller = new IcalImportController($plugin_cf['calendar'], $plugin_tx['calendar'], new View());
+        $controller = new IcalImportController($plugin_cf['calendar'], $plugin_tx['calendar'], self::getDataFolder(), new View());
         ob_start();
         switch ($action) {
             case 'import':
@@ -240,5 +240,17 @@ class Plugin
         ob_start();
         $controller->{$action}();
         return ob_get_clean();
+    }
+
+    /** @return string */
+    private static function getDataFolder()
+    {
+        global $pth, $sl, $cf, $plugin_cf;
+
+        $dataFolder = $pth['folder']['content'];
+        if ($plugin_cf['calendar']['same-event-calendar_for_all_languages'] && $sl !== $cf['language']['default']) {
+            $dataFolder = dirname($dataFolder) . '/';
+        }
+        return $dataFolder;
     }
 }

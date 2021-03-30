@@ -25,18 +25,23 @@ use DirectoryIterator;
 
 class IcalImportController extends Controller
 {
+    /** @var string */
+    private $dataFolder;
+
     /** @var View */
     private $view;
 
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
+     * @param string $dataFolder
      */
-    public function __construct(array $conf, array $lang, View $view)
+    public function __construct(array $conf, array $lang, $dataFolder, View $view)
     {
         $this->conf = $conf;
         $this->lang = $lang;
         $this->view = $view;
+        $this->dataFolder = $dataFolder;
     }
 
     /**
@@ -58,7 +63,7 @@ class IcalImportController extends Controller
     private function findIcsFiles()
     {
         $result = [];
-        foreach (new DirectoryIterator($this->getDatapath()) as $file) {
+        foreach (new DirectoryIterator($this->dataFolder) as $file) {
             if ($file->isFile() && $file->getExtension() === 'ics') {
                 $result[] = $file->getFilename();
             }
@@ -72,7 +77,7 @@ class IcalImportController extends Controller
     public function importAction()
     {
         assert(is_string($_POST['calendar_ics']));
-        $file = $this->getDataPath() . '/' . $_POST['calendar_ics'];
+        $file = $this->dataFolder . '/' . $_POST['calendar_ics'];
         $reader = new ICalendarReader($file);
         $dataService = new EventDataService($this->dpSeparator());
         $events = array_merge($dataService->readEvents(), $reader->read());
@@ -80,19 +85,5 @@ class IcalImportController extends Controller
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';
         header("Location: $url", true, 303);
         exit;
-    }
-
-    /**
-     * @return string
-     */
-    private function getDatapath()
-    {
-        global $pth, $sl, $cf;
-
-        $datapath = $pth['folder']['content'];
-        if ($this->conf['same-event-calendar_for_all_languages'] && $sl != $cf['language']['default']) {
-            $datapath = dirname($datapath) . '/';
-        }
-        return $datapath;
     }
 }
