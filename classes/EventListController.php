@@ -28,6 +28,9 @@ namespace Calendar;
 
 class EventListController extends Controller
 {
+    /** @var string */
+    private $dpSeparator;
+
     /** @var View */
     private $view;
 
@@ -46,15 +49,25 @@ class EventListController extends Controller
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
+     * @param string $dpSeparator
      * @param int $month
      * @param int $year
      * @param int $end_month
      * @param int $past_month
      */
-    public function __construct(array $conf, array $lang, View $view, $month, $year, $end_month, $past_month)
-    {
+    public function __construct(
+        array $conf,
+        array $lang,
+        $dpSeparator,
+        View $view,
+        $month,
+        $year,
+        $end_month,
+        $past_month
+    ) {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->dpSeparator = $dpSeparator;
         $this->view = $view;
         $this->month = $month;
         $this->year = $year;
@@ -71,7 +84,7 @@ class EventListController extends Controller
         $this->determineEndMonth();
         $this->endMonth = $this->endMonth + $this->pastMonth;
 
-        $events = (new EventDataService($this->dpSeparator()))->readEvents();
+        $events = (new EventDataService($this->dpSeparator))->readEvents();
 
         $endmonth = $this->month + $this->endMonth;
         $endyear = $this->year;
@@ -87,7 +100,7 @@ class EventListController extends Controller
         $monthEvents = [];
         $x = 0;
         while ($x <= $this->endMonth) {
-            $filteredEvents = (new EventDataService($this->dpSeparator()))->filterByMonth($events, sprintf('%04d-%02d', $this->year, $this->month));
+            $filteredEvents = (new EventDataService($this->dpSeparator))->filterByMonth($events, sprintf('%04d-%02d', $this->year, $this->month));
             if (($oneMonthEvents = $this->getMonthEvents($filteredEvents, $tablecols))) {
                 $monthEvents[] = $oneMonthEvents;
             }
@@ -216,8 +229,8 @@ class EventListController extends Controller
             'is_birthday' => true,
             'age' => $this->year - (int) substr($event->getDateStart(), 0, 4),
             'event' => $event,
-            'date' => sprintf('%02d', $event->getStart()->getDay()) . $this->dpSeparator()
-                . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year,
+            'date' => sprintf('%02d', $event->getStart()->getDay()) . $this->dpSeparator
+                . sprintf('%02d', $this->month) . $this->dpSeparator . $this->year,
             'showTime' => $this->conf['show_event_time'],
             'showLocation' => $this->conf['show_event_location'],
             'showLink' => $this->conf['show_event_link'],
@@ -260,19 +273,19 @@ class EventListController extends Controller
             if ($this->month != $end->getMonth()
                 || $this->year != $end->getYear()
             ) {
-                $t .= $this->dpSeparator() . sprintf('%02d', $this->month);
+                $t .= $this->dpSeparator . sprintf('%02d', $this->month);
             }
             if ($this->year != $end->getYear()) {
-                $t .= $this->dpSeparator() . $this->year;
+                $t .= $this->dpSeparator . $this->year;
             }
-            if ($this->year == $end->getYear() && $this->dpSeparator() == '.') {
+            if ($this->year == $end->getYear() && $this->dpSeparator == '.') {
                 $t.= '.';
             }
             $t .= "&nbsp;" . $this->lang['event_date_till_date'] . '<br>';
-            $t .= sprintf("%02d", $end->getDay()) . $this->dpSeparator() . sprintf("%02d", $end->getMonth())
-                . $this->dpSeparator() . sprintf("%04d", $end->getYear());
+            $t .= sprintf("%02d", $end->getDay()) . $this->dpSeparator . sprintf("%02d", $end->getMonth())
+                . $this->dpSeparator . sprintf("%04d", $end->getYear());
         } else {
-            $t .= $this->dpSeparator() . sprintf('%02d', $this->month) . $this->dpSeparator() . $this->year;
+            $t .= $this->dpSeparator . sprintf('%02d', $this->month) . $this->dpSeparator . $this->year;
         }
         return $t;
     }

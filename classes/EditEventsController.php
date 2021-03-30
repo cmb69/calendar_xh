@@ -30,17 +30,22 @@ use Fa\RequireCommand as FaRequireCommand;
 
 class EditEventsController extends Controller
 {
+    /** @var string */
+    private $dpSeparator;
+
     /** @var View */
     private $view;
 
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
+     * @param string $dpSeparator
      */
-    public function __construct(array $conf, array $lang, View $view)
+    public function __construct(array $conf, array $lang, $dpSeparator, View $view)
     {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->dpSeparator = $dpSeparator;
         $this->view = $view;
         (new FaRequireCommand)->execute();
     }
@@ -50,7 +55,7 @@ class EditEventsController extends Controller
      */
     public function defaultAction()
     {
-        $events = (new EventDataService($this->dpSeparator()))->readEvents();
+        $events = (new EventDataService($this->dpSeparator))->readEvents();
         echo $this->eventForm($events);
     }
 
@@ -102,13 +107,13 @@ class EditEventsController extends Controller
                 return $a->getStart()->compare($b->getStart());
             });
             /** @var Event[] $events */
-            $oldevents = (new EventDataService($this->dpSeparator()))->readEvents();
+            $oldevents = (new EventDataService($this->dpSeparator))->readEvents();
             if ($_POST['calendar_hash'] !== '' && $_POST['calendar_hash'] !== sha1(serialize($oldevents))) {
                 echo XH_message('warning', $this->lang['message_changed']),
                     $this->eventForm($events, true);
                 return;
             }
-            if ((new EventDataService($this->dpSeparator()))->writeEvents($events)) {
+            if ((new EventDataService($this->dpSeparator))->writeEvents($events)) {
                 echo XH_message('success', $this->lang['eventfile_saved']);
             } else {
                 echo XH_message('fail', $this->lang['eventfile_not_saved']);

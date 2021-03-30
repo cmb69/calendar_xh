@@ -39,24 +39,6 @@ abstract class Controller
     protected $lang;
 
     /**
-     * Helper-function to parse the date-seperator, set in plugin-config,
-     * and to check for allowed separators
-     *
-     * Allowed seperators:
-     * full-stop ".", forward slash "/" and minus/dash "-"
-     *
-     * @return string
-     */
-    protected function dpSeparator()
-    {
-        $sep = $this->conf['date_delimiter'];
-        if ($sep != '/' && $sep != '-') {
-            $sep = '.'; //set default
-        }
-        return $sep;
-    }
-
-    /**
      * @param int $month
      * @param int $year
      * @return string

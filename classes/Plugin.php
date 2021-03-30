@@ -132,7 +132,13 @@ class Plugin
     {
         global $action, $plugin_cf, $plugin_tx;
 
-        $controller = new IcalImportController($plugin_cf['calendar'], $plugin_tx['calendar'], self::getDataFolder(), new View());
+        $controller = new IcalImportController(
+            $plugin_cf['calendar'],
+            $plugin_tx['calendar'],
+            self::getDataFolder(),
+            self::getDpSeparator(),
+            new View()
+        );
         ob_start();
         switch ($action) {
             case 'import':
@@ -158,6 +164,7 @@ class Plugin
         $controller = new CalendarController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
+            self::getDpSeparator(),
             new View(),
             $year,
             $month,
@@ -182,6 +189,7 @@ class Plugin
         $controller = new EventListController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
+            self::getDpSeparator(),
             new View(),
             $month,
             $year,
@@ -203,6 +211,7 @@ class Plugin
         $controller = new NextEventController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
+            self::getDpSeparator(),
             new View()
         );
         $controller->defaultAction();
@@ -235,6 +244,7 @@ class Plugin
         $controller = new EditEventsController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
+            self::getDpSeparator(),
             new View()
         );
         ob_start();
@@ -252,5 +262,19 @@ class Plugin
             $dataFolder = dirname($dataFolder) . '/';
         }
         return $dataFolder;
+    }
+
+    /**
+     * @return string
+     */
+    private static function getDpSeparator()
+    {
+        global $plugin_cf;
+
+        $sep = $plugin_cf['calendar']['date_delimiter'];
+        if (!in_array($sep, ['.', '/', '-'], true)) {
+            $sep = '.';
+        }
+        return $sep;
     }
 }

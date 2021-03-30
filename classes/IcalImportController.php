@@ -28,6 +28,9 @@ class IcalImportController extends Controller
     /** @var string */
     private $dataFolder;
 
+    /** @var string */
+    private $dpSeparator;
+
     /** @var View */
     private $view;
 
@@ -35,13 +38,15 @@ class IcalImportController extends Controller
      * @param array<string,string> $conf
      * @param array<string,string> $lang
      * @param string $dataFolder
+     * @param string $dpSeparator
      */
-    public function __construct(array $conf, array $lang, $dataFolder, View $view)
+    public function __construct(array $conf, array $lang, $dataFolder, $dpSeparator, View $view)
     {
         $this->conf = $conf;
         $this->lang = $lang;
         $this->view = $view;
         $this->dataFolder = $dataFolder;
+        $this->dpSeparator = $dpSeparator;
     }
 
     /**
@@ -79,7 +84,7 @@ class IcalImportController extends Controller
         assert(is_string($_POST['calendar_ics']));
         $file = $this->dataFolder . '/' . $_POST['calendar_ics'];
         $reader = new ICalendarReader($file);
-        $dataService = new EventDataService($this->dpSeparator());
+        $dataService = new EventDataService($this->dpSeparator);
         $events = array_merge($dataService->readEvents(), $reader->read());
         $dataService->writeEvents($events);
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';

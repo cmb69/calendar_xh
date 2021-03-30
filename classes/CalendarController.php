@@ -30,6 +30,9 @@ use stdClass;
 
 class CalendarController extends Controller
 {
+    /** @var string */
+    private $dpSeparator;
+
     /** @var View */
     private $view;
 
@@ -51,14 +54,23 @@ class CalendarController extends Controller
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
+     * @param string $dpSeparator
      * @param int $year
      * @param int $month
      * @param string $eventpage
      */
-    public function __construct(array $conf, array $lang, View $view, $year = 0, $month = 0, $eventpage = '')
-    {
+    public function __construct(
+        array $conf,
+        array $lang,
+        $dpSeparator,
+        View $view,
+        $year = 0,
+        $month = 0,
+        $eventpage = ''
+    ) {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->dpSeparator = $dpSeparator;
         $this->view = $view;
         $this->year = $year;
         $this->month = $month;
@@ -123,7 +135,7 @@ class CalendarController extends Controller
      */
     private function getRowData(array $columns)
     {
-        $events = (new EventDataService($this->dpSeparator()))->readEvents();
+        $events = (new EventDataService($this->dpSeparator))->readEvents();
         $today = ($this->month == date('n') && $this->year == date('Y')) ? date('j') : 32;
         $row = [];
         foreach ($columns as $day) {
