@@ -34,11 +34,6 @@ class ICalendarReader
     private $filename;
 
     /**
-     * @var string
-     */
-    private $separator;
-
-    /**
      * @var string[]
      */
     private $lines = [];
@@ -50,12 +45,10 @@ class ICalendarReader
 
     /**
      * @param string $filename
-     * @param string $separator
      */
-    public function __construct($filename, $separator)
+    public function __construct($filename)
     {
         $this->filename = $filename;
-        $this->separator = $separator;
     }
 
     /**
@@ -157,7 +150,7 @@ class ICalendarReader
     private function parseDateTime($value)
     {
         if (preg_match('/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/', $value, $matches)) {
-            return ["$matches[1]{$this->separator}$matches[2]{$this->separator}$matches[3]", "$matches[4]:$matches[5]"];
+            return ["$matches[1]-$matches[2]-$matches[3]", "$matches[4]:$matches[5]"];
         }
         return false;
     }
