@@ -136,7 +136,7 @@ class Plugin
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
             self::getDataFolder(),
-            new EventDataService(self::getDpSeparator()),
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View()
         );
         ob_start();
@@ -164,7 +164,7 @@ class Plugin
         $controller = new CalendarController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
-            new EventDataService(self::getDpSeparator()),
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View(),
             $year,
             $month,
@@ -190,7 +190,7 @@ class Plugin
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
             self::getDpSeparator(),
-            new EventDataService(self::getDpSeparator()),
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View(),
             $month,
             $year,
@@ -212,7 +212,7 @@ class Plugin
         $controller = new NextEventController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
-            new EventDataService(self::getDpSeparator()),
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View()
         );
         $controller->defaultAction();
@@ -245,7 +245,7 @@ class Plugin
         $controller = new EditEventsController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
-            new EventDataService(self::getDpSeparator()),
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View()
         );
         ob_start();

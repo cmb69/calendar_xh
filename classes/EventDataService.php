@@ -35,18 +35,13 @@ class EventDataService
     private $eventfile;
 
     /**
+     * @param string $dataFolder
      * @param string $separator
      */
-    public function __construct($separator)
+    public function __construct($dataFolder, $separator)
     {
-        global $pth, $sl, $cf, $plugin_cf;
-
         $this->separator = $separator;
-        $datapath = $pth['folder']['content'];
-        if ($plugin_cf['calendar']['same-event-calendar_for_all_languages'] && $sl != $cf['language']['default']) {
-            $datapath = dirname($datapath) . '/';
-        }
-        $this->eventfile = "{$datapath}calendar.csv";
+        $this->eventfile = "{$dataFolder}calendar.csv";
     }
 
     /**
