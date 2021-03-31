@@ -28,8 +28,8 @@ namespace Calendar;
 
 class NextEventController extends Controller
 {
-    /** @var string */
-    private $dpSeparator;
+    /** @var EventDataService */
+    private $eventDataService;
 
     /** @var View */
     private $view;
@@ -39,11 +39,11 @@ class NextEventController extends Controller
      * @param array<string,string> $lang
      * @param string $dpSeparator
      */
-    public function __construct(array $conf, array $lang, $dpSeparator, View $view)
+    public function __construct(array $conf, array $lang, EventDataService $eventDataService, View $view)
     {
         $this->conf = $conf;
         $this->lang = $lang;
-        $this->dpSeparator = $dpSeparator;
+        $this->eventDataService = $eventDataService;
         $this->view = $view;
     }
 
@@ -96,7 +96,7 @@ class NextEventController extends Controller
     {
         $nextevent = null;
         $nextdiff = null;
-        $events = (new EventDataService($this->dpSeparator))->readEvents();
+        $events = $this->eventDataService->readEvents();
         foreach ($events as $event) {
             if ($event->isBirthday()) {
                 $start = $event->getStart();

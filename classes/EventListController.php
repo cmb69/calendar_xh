@@ -31,6 +31,9 @@ class EventListController extends Controller
     /** @var string */
     private $dpSeparator;
 
+    /** @var EventDataService */
+    private $eventDataService;
+
     /** @var View */
     private $view;
 
@@ -59,6 +62,7 @@ class EventListController extends Controller
         array $conf,
         array $lang,
         $dpSeparator,
+        EventDataService $eventDataService,
         View $view,
         $month,
         $year,
@@ -68,6 +72,7 @@ class EventListController extends Controller
         $this->conf = $conf;
         $this->lang = $lang;
         $this->dpSeparator = $dpSeparator;
+        $this->eventDataService = $eventDataService;
         $this->view = $view;
         $this->month = $month;
         $this->year = $year;
@@ -84,7 +89,7 @@ class EventListController extends Controller
         $this->determineEndMonth();
         $this->endMonth = $this->endMonth + $this->pastMonth;
 
-        $events = (new EventDataService($this->dpSeparator))->readEvents();
+        $events = $this->eventDataService->readEvents();
 
         $endmonth = $this->month + $this->endMonth;
         $endyear = $this->year;
@@ -100,7 +105,7 @@ class EventListController extends Controller
         $monthEvents = [];
         $x = 0;
         while ($x <= $this->endMonth) {
-            $filteredEvents = (new EventDataService($this->dpSeparator))->filterByMonth($events, sprintf('%04d-%02d', $this->year, $this->month));
+            $filteredEvents = $this->eventDataService->filterByMonth($events, sprintf('%04d-%02d', $this->year, $this->month));
             if (($oneMonthEvents = $this->getMonthEvents($filteredEvents, $tablecols))) {
                 $monthEvents[] = $oneMonthEvents;
             }
