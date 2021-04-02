@@ -19,7 +19,9 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once './vendor/autoload.php';
 require_once './classes/Calendar.php';
 require_once './classes/Event.php';
+require_once './classes/EventDataService.php';
 require_once './classes/LocalDateTime.php';
 require_once './classes/ICalendarReader.php';
