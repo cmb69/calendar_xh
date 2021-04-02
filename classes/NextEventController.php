@@ -58,7 +58,7 @@ class NextEventController extends Controller
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
                 $start = $nextevent->getStart();
-                $timestamp = mktime(0, 0, 0, (int) date("Y"), $start->getMonth(), $start->getDay());
+                $timestamp = mktime(0, 0, 0, $start->getMonth(), $start->getDay(), (int) date("Y"));
                 $nexteventtext = '';
             } elseif ($nextevent->getStart()->getTimestamp() >= $now) {
                 $timestamp = $nextevent->getStart()->getTimestamp();
