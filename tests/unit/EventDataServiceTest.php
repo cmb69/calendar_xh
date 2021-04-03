@@ -44,4 +44,19 @@ class EventDataServiceTest extends TestCase
         $this->assertIsArray($events);
         $this->assertEmpty($events);
     }
+
+    public function testFilterByMonthProperlySortsBirthdayEvents()
+    {
+        $csv = <<<CSV
+1969-04-03;;;;martin;###;;
+1971-04-02;;;;markus;###;;
+CSV;
+        vfsStream::setup("root");
+        file_put_contents(vfsStream::url("root/calendar.csv"), $csv);
+        $subject = new EventDataService(vfsStream::url("root/"), "-");
+        $events = $subject->filterByMonth($subject->readEvents(), "2021-04");
+        $this->assertCount(2, $events);
+        $this->assertSame("markus", $events[0]->event);
+        $this->assertSame("martin", $events[1]->event);
+    }
 }
