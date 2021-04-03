@@ -62,9 +62,9 @@ class NextEventController extends Controller
                 $nexteventtext = '';
             } elseif ($nextevent->start->getTimestamp() >= $now) {
                 $timestamp = $nextevent->start->getTimestamp();
-                if (($end = $nextevent->getDateEnd()) !== null) {
+                if (($nextevent->getDateEnd()) > $nextevent->getDateStart()) {
                     $nexteventtext = $this->lang['event_date_till_date'] . " " . '<br>'
-                        . $end . " " . (string) $nextevent->getEndTime();
+                        . $nextevent->getDateEnd() . " " . $nextevent->getEndTime();
                 } else {
                     $nexteventtext = '';
                 }

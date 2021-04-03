@@ -149,7 +149,7 @@ class Event
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getDateEnd()
     {
@@ -157,7 +157,7 @@ class Event
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getEndTime()
     {

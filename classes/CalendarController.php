@@ -190,8 +190,7 @@ class CalendarController extends Controller
             return false;
         }
         $today = mktime(0, 0, 0, $this->month, $day, $this->year);
-        $endDate = $event->getDateEnd();
-        if ($endDate === null) {
+        if ($event->getDateEnd() === $event->start->getDate()) {
             return $event->getStartTimestamp() === $today;
         }
         if ($this->conf['show_days_between_dates']) {
@@ -218,13 +217,13 @@ class CalendarController extends Controller
     {
         $titles = [];
         foreach ($events as $event) {
-            if ($event->getDateEnd() !== null) {
+            if ($event->getDateEnd() > $event->getDateStart()) {
                 $text = sprintf(
                     "%s %s %s %s",
                     $event->event,
                     $this->lang['event_date_till_date'],
-                    (string) $event->getDateEnd(),
-                    (string) $event->getEndTime()
+                    $event->getDateEnd(),
+                    $event->getEndTime()
                 );
             } else {
                 $text = $event->event;
