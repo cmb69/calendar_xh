@@ -147,7 +147,14 @@ class LocalDateTime
      */
     public function compare(LocalDateTime $other)
     {
-        return strcmp("{$this->getDate()}T{$this->getTime()}", "{$other->getDate()}T{$other->getTime()}");
+        $result = $this->compareDate($other);
+        if ($result !== 0) {
+            return $result;
+        }
+        if ($this->hour !== $other->hour) {
+            return $this->hour - $other->hour;
+        }
+        return $this->minute - $other->minute;
     }
 
     /**
