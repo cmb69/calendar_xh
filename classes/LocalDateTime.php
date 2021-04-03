@@ -21,40 +21,62 @@
 
 namespace Calendar;
 
+use Exception;
+
 class LocalDateTime
 {
-    /** @var int|null */
-    private $year = null;
+    /** @var int */
+    private $year;
 
-    /** @var int|null */
-    private $month = null;
+    /** @var int */
+    private $month;
 
-    /** @var int|null */
-    private $day = null;
+    /** @var int */
+    private $day;
 
-    /** @var int|null */
-    private $hour = null;
+    /** @var int */
+    private $hour;
 
-    /** @var int|null */
-    private $minute = null;
+    /** @var int */
+    private $minute;
 
     /**
-     * @param string|null $date
-     * @param string|null $time
+     * @param string $string
+     * @return LocalDateTime|null
      */
-    public function __construct($date, $time)
+    public static function fromIsoString($string)
     {
-        if ($date !== null) {
-            list($year, $month, $day) = explode('-', $date);
-            $this->year = (int) $year;
-            $this->month = (int) $month;
-            $this->day = (int) $day;
+        $pattern = '/^(\d{4})(?:-)(\d{2})(?:-)(\d{2})(?:T)(\d{2})(?::)(\d{2})$/';
+        if (!preg_match($pattern, $string, $matches)) {
+            return null;
         }
-        if ($time !== null && $time !== '') {
-            list($hour, $minute) = explode(':', $time);
-            $this->hour = (int) $hour;
-            $this->minute = (int) $minute;
+        try {
+            return new self(
+                (int) $matches[1],
+                (int) $matches[2],
+                (int) $matches[3],
+                (int) $matches[4],
+                (int) $matches[5]
+            );
+        } catch (Exception $ex) {
+            return null;
         }
+    }
+
+    /**
+     * @param int $year
+     * @param int $month
+     * @param int $day
+     * @param int $hour
+     * @param int $minute
+     */
+    public function __construct($year, $month, $day, $hour, $minute)
+    {
+        $this->year = $year;
+        $this->month = $month;
+        $this->day = $day;
+        $this->hour = $hour;
+        $this->minute = $minute;
     }
 
     /**
@@ -73,7 +95,6 @@ class LocalDateTime
      */
     public function getYear()
     {
-        assert($this->year !== null);
         return $this->year;
     }
 
@@ -82,7 +103,6 @@ class LocalDateTime
      */
     public function getMonth()
     {
-        assert($this->month !== null);
         return $this->month;
     }
 
@@ -91,7 +111,6 @@ class LocalDateTime
      */
     public function getDay()
     {
-        assert($this->day !== null);
         return $this->day;
     }
 
@@ -100,7 +119,6 @@ class LocalDateTime
      */
     public function getHour()
     {
-        assert($this->hour !== null);
         return $this->hour;
     }
 
@@ -109,7 +127,6 @@ class LocalDateTime
      */
     public function getMinute()
     {
-        assert($this->minute !== null);
         return $this->minute;
     }
 
@@ -118,9 +135,6 @@ class LocalDateTime
      */
     public function getDate()
     {
-        if ($this->year === null || $this->month === null || $this->day === null) {
-            return '';
-        }
         return sprintf("%04d-%02d-%02d", $this->year, $this->month, $this->day);
     }
 
@@ -129,9 +143,6 @@ class LocalDateTime
      */
     public function getTime()
     {
-        if ($this->hour === null || $this->minute === null) {
-            return '';
-        }
         return sprintf("%02d:%02d", $this->hour, $this->minute);
     }
 
@@ -140,7 +151,7 @@ class LocalDateTime
      */
     public function getTimestamp()
     {
-        return mktime((int) $this->hour, (int) $this->minute, 0, (int) $this->month, (int) $this->day, (int) $this->year);
+        return mktime($this->hour, $this->minute, 0, $this->month, $this->day, $this->year);
     }
 
     /**

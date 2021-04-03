@@ -82,7 +82,7 @@ class EventDataService
                     $endtime = null;
                 }
                 if ($datestart != '' && $event != '') {
-                    $result[] = new Event(
+                    $maybeEvent = Event::create(
                         $datestart,
                         $dateend,
                         $starttime,
@@ -92,6 +92,9 @@ class EventDataService
                         $linktxt,
                         $location
                     );
+                    if ($maybeEvent !== null) {
+                        $result[] = $maybeEvent;
+                    }
                 }
             }
             flock($stream, LOCK_UN);
@@ -164,7 +167,7 @@ class EventDataService
                     $linktxt = "{$linkadr};{$linktxt}";
                 }
                 if ($datestart != '' && $event != '') {
-                    $result[] = new Event(
+                    $maybeEvent = Event::create(
                         $datestart,
                         $dateend,
                         $starttime,
@@ -174,6 +177,9 @@ class EventDataService
                         $linktxt,
                         $location
                     );
+                    if ($maybeEvent !== null) {
+                        $result[] = $maybeEvent;
+                    }
                 }
             }
             flock($stream, LOCK_UN);

@@ -31,7 +31,7 @@ class Event
     /** @var LocalDateTime */
     private $start;
 
-    /** @var LocalDateTime|null */
+    /** @var LocalDateTime */
     private $end;
 
     /** @var string */
@@ -55,8 +55,9 @@ class Event
      * @param string $linkadr
      * @param string $linktxt
      * @param string $location
+     * @return self|null
      */
-    public function __construct(
+    public static function create(
         $datestart,
         $dateend,
         $starttime,
@@ -66,8 +67,47 @@ class Event
         $linktxt,
         $location
     ) {
-        $this->start = new LocalDateTime($datestart ?: null, $starttime ?: null);
-        $this->end = $dateend !== null && $dateend !== '' ? new LocalDateTime($dateend, $endtime) : null;
+        if (!$dateend) {
+            if ($endtime) {
+                return null;
+            }
+            $endtime = $starttime ? $starttime : "23:59";
+            if (($end = LocalDateTime::fromIsoString("{$datestart}T{$endtime}")) === null) {
+                return null;
+            }
+        } else {
+            if (!$endtime) {
+                $endtime = $starttime ? $starttime : "23:59";
+            }
+            if (($end = LocalDateTime::fromIsoString("{$dateend}T{$endtime}")) === null) {
+                return null;
+            }
+        }
+        if ($starttime === '') {
+            $starttime = "00:00";
+        }
+        if (($start = LocalDateTime::fromIsoString("{$datestart}T{$starttime}")) === null) {
+            return null;
+        }
+        return new self($start, $end, $event, $linkadr, $linktxt, $location);
+    }
+
+    /**
+     * @param string $event
+     * @param string $linkadr
+     * @param string $linktxt
+     * @param string $location
+     */
+    private function __construct(
+        LocalDateTime $start,
+        LocalDateTime $end,
+        $event,
+        $linkadr,
+        $linktxt,
+        $location
+    ) {
+        $this->start = $start;
+        $this->end = $end;
         $this->event = $event;
         $this->linkadr = $linkadr;
         $this->linktxt = $linktxt;
@@ -111,7 +151,7 @@ class Event
      */
     public function getDateEnd()
     {
-        return $this->end !== null ? $this->end->getDate() : null;
+        return $this->end->getDate();
     }
 
     /**
@@ -119,7 +159,7 @@ class Event
      */
     public function getEndTime()
     {
-        return $this->end !== null ? $this->end->getTime() : null;
+        return $this->end->getTime();
     }
 
     /**
@@ -135,7 +175,6 @@ class Event
      */
     public function getEndTimestamp()
     {
-        assert($this->end !== null);
         return mktime(0, 0, 0, $this->end->getMonth(), $this->end->getDay(), $this->end->getYear());
     }
 

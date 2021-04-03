@@ -83,13 +83,12 @@ class EditEventsController extends Controller
                 if (!$this->isValidDate($post['dateend'][$i])) {
                     $post['dateend'][$i] = '';
                 }
-                //Birthday should never have an enddate
-                if (trim($post['location'][$i]) === '###') {
-                    $post['dateend'][$i] = '';
-                }
                 /** @var string[] $args */
                 $args = array_column($post, $i);
-                $events[] = new Event(...$args);
+                $maybeEvent = Event::create(...$args);
+                if ($maybeEvent !== null) {
+                    $events[] = $maybeEvent;
+                }
             } else {
                 $deleted = true;
             }
@@ -154,7 +153,7 @@ class EditEventsController extends Controller
      */
     private function createDefaultEvent()
     {
-        return new Event(
+        $event = Event::create(
             date('Y-m-d'),
             '',
             '',
@@ -164,5 +163,7 @@ class EditEventsController extends Controller
             '',
             ''
         );
+        assert($event !== null);
+        return $event;
     }
 }

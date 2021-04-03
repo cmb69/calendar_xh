@@ -87,7 +87,7 @@ class ICalendarReader
             if ($isInEvent) {
                 if ($line === 'END:VEVENT') {
                     $isInEvent = false;
-                    $this->events[] = new Event(
+                    $maybeEvent = Event::create(
                         $event['datestart'],
                         $event['dateend'],
                         $event['starttime'],
@@ -97,6 +97,9 @@ class ICalendarReader
                         '',
                         $event['location']
                     );
+                    if ($maybeEvent !== null) {
+                        $this->events[] = $maybeEvent;
+                    }
                 } else {
                     list($property, $value) = $this->parseLine($line);
                     switch ($property) {
