@@ -110,7 +110,7 @@ class EventListController extends Controller
         $monthEvents = [];
         $x = 0;
         while ($x <= $this->endMonth) {
-            $filteredEvents = $this->eventDataService->filterByMonth($events, sprintf('%04d-%02d', $this->year, $this->month));
+            $filteredEvents = $this->eventDataService->filterByMonth($events, $this->year, $this->month);
             if (($oneMonthEvents = $this->getMonthEvents($filteredEvents, $tablecols))) {
                 $monthEvents[] = $oneMonthEvents;
             }

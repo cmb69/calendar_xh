@@ -105,21 +105,21 @@ class EventDataService
 
     /**
      * @param Event[] $events
-     * @param string $month
+     * @param int $year
+     * @param int $month
      * @return Event[]
      */
-    public function filterByMonth(array $events, $month)
+    public function filterByMonth(array $events, $year, $month)
     {
         $result = [];
         foreach ($events as $event) {
-            if (!$event->isBirthday() && strpos($event->getDateStart(), $month) === 0) {
-                $result[] = $event;
-            } elseif ($event->isBirthday() && substr($month, 0, 4) >= substr($event->getDateStart(), 0, 4) && strpos($event->getDateStart(), substr($month, 5), 5) === 5) {
-                $result[] = $event;
+            if ($event->start->month === $month) {
+                if ($event->start->year === $year || ($event->isBirthday() && $event->start->year < $year)) {
+                    $result[] = $event;
+                }
             }
         }
-        usort($result, /** @return int */ function (Event $a, Event $b) use ($month) {
-            $year = (int) substr($month, 0, 4);
+        usort($result, /** @return int */ function (Event $a, Event $b) use ($year) {
             $dt1 = $a->isBirthday() ? $a->start->withYear($year) : $a->start;
             $dt2 = $b->isBirthday() ? $b->start->withYear($year) : $b->start;
             return $dt1->compare($dt2);
