@@ -164,6 +164,7 @@ class Plugin
         $controller = new CalendarController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
+            self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View(),
             $year,
@@ -190,6 +191,7 @@ class Plugin
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
             self::getDpSeparator(),
+            self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View(),
             $month,
@@ -212,6 +214,7 @@ class Plugin
         $controller = new NextEventController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
+            self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View()
         );
@@ -245,6 +248,7 @@ class Plugin
         $controller = new EditEventsController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
+            self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View()
         );
@@ -277,5 +281,15 @@ class Plugin
             $sep = '.';
         }
         return $sep;
+    }
+
+    /**
+     * @return LocalDateTime
+     */
+    public static function now()
+    {
+        $result = LocalDateTime::fromIsoString(date('Y-m-d\TH:i'));
+        assert($result !== null);
+        return $result;
     }
 }

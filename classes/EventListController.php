@@ -31,6 +31,9 @@ class EventListController extends Controller
     /** @var string */
     private $dpSeparator;
 
+    /** @var LocalDateTime */
+    private $now;
+
     /** @var EventDataService */
     private $eventDataService;
 
@@ -62,6 +65,7 @@ class EventListController extends Controller
         array $conf,
         array $lang,
         $dpSeparator,
+        LocalDateTime $now,
         EventDataService $eventDataService,
         View $view,
         $month,
@@ -72,6 +76,7 @@ class EventListController extends Controller
         $this->conf = $conf;
         $this->lang = $lang;
         $this->dpSeparator = $dpSeparator;
+        $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->view = $view;
         $this->month = $month;
@@ -139,10 +144,10 @@ class EventListController extends Controller
         }
 
         assert(!isset($_GET['year']) || is_string($_GET['year']));
-        $this->year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
+        $this->year = isset($_GET['year']) ? (int) $_GET['year'] : $this->now->year;
 
         if ($this->month == '') {
-            $this->month = (int) date('m');
+            $this->month = $this->now->month;
         }
 
         if (!$this->pastMonth) {

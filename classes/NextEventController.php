@@ -28,6 +28,9 @@ namespace Calendar;
 
 class NextEventController extends Controller
 {
+    /** @var LocalDateTime */
+    private $now;
+
     /** @var EventDataService */
     private $eventDataService;
 
@@ -37,12 +40,17 @@ class NextEventController extends Controller
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
-     * @param string $dpSeparator
      */
-    public function __construct(array $conf, array $lang, EventDataService $eventDataService, View $view)
-    {
+    public function __construct(
+        array $conf,
+        array $lang,
+        LocalDateTime $now,
+        EventDataService $eventDataService,
+        View $view
+    ) {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->view = $view;
     }
@@ -58,7 +66,7 @@ class NextEventController extends Controller
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
                 $start = $nextevent->start;
-                $timestamp = mktime(0, 0, 0, $start->month, $start->day, (int) date("Y"));
+                $timestamp = mktime(0, 0, 0, $start->month, $start->day, $this->now->year);
                 $nexteventtext = '';
             } elseif ($nextevent->start->getTimestamp() >= $now) {
                 $timestamp = $nextevent->start->getTimestamp();
@@ -99,7 +107,7 @@ class NextEventController extends Controller
         foreach ($events as $event) {
             if ($event->isBirthday()) {
                 $start = $event->start;
-                $diff = mktime(0, 0, 0, (int) date("Y"), $start->month, $start->day) - $now;
+                $diff = mktime(0, 0, 0, $this->now->year, $start->month, $start->day) - $now;
                 if ($diff < 0) {
                     continue;
                 }

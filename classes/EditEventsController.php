@@ -30,6 +30,9 @@ use Fa\RequireCommand as FaRequireCommand;
 
 class EditEventsController extends Controller
 {
+    /** @var LocalDateTime */
+    private $now;
+
     /** @var EventDataService */
     private $eventDataService;
 
@@ -40,10 +43,16 @@ class EditEventsController extends Controller
      * @param array<string,string> $conf
      * @param array<string,string> $lang
      */
-    public function __construct(array $conf, array $lang, EventDataService $eventDataService, View $view)
-    {
+    public function __construct(
+        array $conf,
+        array $lang,
+        LocalDateTime $now,
+        EventDataService $eventDataService,
+        View $view
+    ) {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->view = $view;
         (new FaRequireCommand)->execute();
@@ -154,7 +163,7 @@ class EditEventsController extends Controller
     private function createDefaultEvent()
     {
         $event = Event::create(
-            date('Y-m-d'),
+            $this->now->getDate(),
             '',
             '',
             '',

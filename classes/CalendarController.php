@@ -30,6 +30,9 @@ use stdClass;
 
 class CalendarController extends Controller
 {
+    /** @var LocalDateTime */
+    private $now;
+
     /** @var EventDataService */
     private $eventDataService;
 
@@ -61,6 +64,7 @@ class CalendarController extends Controller
     public function __construct(
         array $conf,
         array $lang,
+        LocalDateTime $now,
         EventDataService $eventDataService,
         View $view,
         $year = 0,
@@ -69,6 +73,7 @@ class CalendarController extends Controller
     ) {
         $this->conf = $conf;
         $this->lang = $lang;
+        $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->view = $view;
         $this->year = $year;
@@ -121,10 +126,10 @@ class CalendarController extends Controller
     private function determineYearAndMonth()
     {
         if ($this->month == '') {
-            $this->month = isset($_GET['month']) ? (int) $_GET['month'] : (int) date('m');
+            $this->month = isset($_GET['month']) ? (int) $_GET['month'] : $this->now->month;
         }
         if ($this->year == '') {
-            $this->year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
+            $this->year = isset($_GET['year']) ? (int) $_GET['year'] : $this->now->year;
         }
     }
 
@@ -135,7 +140,9 @@ class CalendarController extends Controller
     private function getRowData(array $columns)
     {
         $events = $this->eventDataService->readEvents();
-        $today = ($this->month == date('n') && $this->year == date('Y')) ? date('j') : 32;
+        $today = ($this->month === $this->now->month && $this->year === $this->now->year)
+            ? $this->now->day
+            : 32;
         $row = [];
         foreach ($columns as $day) {
             if ($day === null) {
