@@ -165,22 +165,6 @@ class Event
     }
 
     /**
-     * @return int
-     */
-    public function getStartTimestamp()
-    {
-        return mktime(0, 0, 0, $this->start->month, $this->start->day, $this->start->year);
-    }
-
-    /**
-     * @return int
-     */
-    public function getEndTimestamp()
-    {
-        return mktime(0, 0, 0, $this->end->month, $this->end->day, $this->end->year);
-    }
-
-    /**
      * @return bool
      */
     public function isBirthday()

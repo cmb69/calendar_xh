@@ -189,14 +189,16 @@ class CalendarController extends Controller
         if ($event->isBirthday()) {
             return false;
         }
-        $today = mktime(0, 0, 0, $this->month, $day, $this->year);
+        $today = new LocalDateTime($this->year, $this->month, $day, 0, 0);
         if ($event->getDateEnd() === $event->start->getDate()) {
-            return $event->getStartTimestamp() === $today;
+            return $event->start->compareDate($today) === 0;
         }
         if ($this->conf['show_days_between_dates']) {
-            return $today >= $event->getStartTimestamp() && $today <= $event->getEndTimestamp();
+            return $event->start->compareDate($today) <= 0
+                && $event->end->compareDate($today) >= 0;
         }
-        return $today === $event->getStartTimestamp() && $today === $event->getEndTimestamp();
+        return $event->start->compareDate($today) === 0
+            || $event->end->compareDate($today) === 0;
     }
 
     /**

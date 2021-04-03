@@ -149,4 +149,18 @@ class LocalDateTime
     {
         return strcmp("{$this->getDate()}T{$this->getTime()}", "{$other->getDate()}T{$other->getTime()}");
     }
+
+    /**
+     * @return int
+     */
+    public function compareDate(LocalDateTime $other)
+    {
+        if ($this->year !== $other->year) {
+            return $this->year - $other->year;
+        }
+        if ($this->month !== $other->month) {
+            return $this->month - $other->month;
+        }
+        return $this->day - $other->day;
+    }
 }

@@ -57,4 +57,22 @@ class LocalDateTimeTest extends TestCase
         $this->assertSame(3, $subject->month);
         $this->assertSame(1, $subject->day);
     }
+
+    /**
+     * @dataProvider compareDateProvider
+     * @param int $expected
+     */
+    public function testCompareDate(LocalDateTime $one, LocalDateTime $other, $expected): void
+    {
+        $this->assertSame($expected, $one->compareDate($other));
+    }
+
+    public function compareDateProvider(): array
+    {
+        return [
+            [new LocalDateTime(2021, 4, 3, 18, 50), new LocalDateTime(2021, 4, 3, 0, 0), 0],
+            [new LocalDateTime(2020, 4, 3, 0, 0), new LocalDateTime(2021, 4, 3, 0, 0), -1],
+            [new LocalDateTime(2021, 4, 3, 0, 0), new LocalDateTime(2021, 3, 3, 0, 0), 1],
+        ];
+    }
 }
