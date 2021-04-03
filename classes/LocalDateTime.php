@@ -72,6 +72,12 @@ class LocalDateTime
      */
     public function __construct($year, $month, $day, $hour, $minute)
     {
+        if (!checkdate($month, $day, $year)) {
+            throw new Exception("Invalid date");
+        }
+        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59) {
+            throw new Exception("Invalid time");
+        }
         $this->year = $year;
         $this->month = $month;
         $this->day = $day;
@@ -87,6 +93,13 @@ class LocalDateTime
     {
         $localDateTime = clone $this;
         $localDateTime->year = $year;
+        if ($localDateTime->month === 2 && $localDateTime->day === 29
+            && !checkdate($localDateTime->month, $localDateTime->day, $localDateTime->year)
+        ) {
+            $localDateTime->month = 3;
+            $localDateTime->day = 1;
+        }
+        assert(checkdate($localDateTime->month, $localDateTime->day, $localDateTime->year));
         return $localDateTime;
     }
 
