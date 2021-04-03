@@ -58,6 +58,17 @@ class LocalDateTime
     }
 
     /**
+     * @param int $year
+     * @return self
+     */
+    public function withYear($year)
+    {
+        $localDateTime = clone $this;
+        $localDateTime->year = $year;
+        return $localDateTime;
+    }
+
+    /**
      * @return int
      */
     public function getYear()

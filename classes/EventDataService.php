@@ -116,8 +116,9 @@ class EventDataService
             }
         }
         usort($result, /** @return int */ function (Event $a, Event $b) use ($month) {
-            $dt1 = $a->isBirthday() ? new LocalDateTime($month . substr($a->getDateStart(), 7), null) : $a->getStart();
-            $dt2 = $b->isBirthday() ? new LocalDateTime($month . substr($b->getDateStart(), 7), null) : $b->getStart();
+            $year = (int) substr($month, 4);
+            $dt1 = $a->isBirthday() ? $a->getStart()->withYear($year) : $a->getStart();
+            $dt2 = $b->isBirthday() ? $b->getStart()->withYear($year) : $b->getStart();
             return $dt1->compare($dt2);
         });
         /** @var Event[] $result */
