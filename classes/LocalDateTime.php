@@ -25,20 +25,35 @@ use Exception;
 
 class LocalDateTime
 {
-    /** @var int */
-    private $year;
+    /**
+     * @readonly
+     * @var int
+     */
+    public $year;
 
-    /** @var int */
-    private $month;
+    /**
+     * @readonly
+     * @var int
+     */
+    public $month;
 
-    /** @var int */
-    private $day;
+    /**
+     * @readonly
+     * @var int
+     */
+    public $day;
 
-    /** @var int */
-    private $hour;
+    /**
+     * @readonly
+     * @var int
+     */
+    public $hour;
 
-    /** @var int */
-    private $minute;
+    /**
+     * @readonly
+     * @var int
+     */
+    public $minute;
 
     /**
      * @param string $string
@@ -101,46 +116,6 @@ class LocalDateTime
         }
         assert(checkdate($localDateTime->month, $localDateTime->day, $localDateTime->year));
         return $localDateTime;
-    }
-
-    /**
-     * @return int
-     */
-    public function getYear()
-    {
-        return $this->year;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMonth()
-    {
-        return $this->month;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDay()
-    {
-        return $this->day;
-    }
-
-    /**
-     * @return int
-     */
-    public function getHour()
-    {
-        return $this->hour;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMinute()
-    {
-        return $this->minute;
     }
 
     /**

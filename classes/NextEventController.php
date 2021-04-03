@@ -57,11 +57,11 @@ class NextEventController extends Controller
         $data = [];
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
-                $start = $nextevent->getStart();
-                $timestamp = mktime(0, 0, 0, $start->getMonth(), $start->getDay(), (int) date("Y"));
+                $start = $nextevent->start;
+                $timestamp = mktime(0, 0, 0, $start->month, $start->day, (int) date("Y"));
                 $nexteventtext = '';
-            } elseif ($nextevent->getStart()->getTimestamp() >= $now) {
-                $timestamp = $nextevent->getStart()->getTimestamp();
+            } elseif ($nextevent->start->getTimestamp() >= $now) {
+                $timestamp = $nextevent->start->getTimestamp();
                 if (($end = $nextevent->getDateEnd()) !== null) {
                     $nexteventtext = $this->lang['event_date_till_date'] . " " . '<br>'
                         . $end . " " . (string) $nextevent->getEndTime();
@@ -69,8 +69,7 @@ class NextEventController extends Controller
                     $nexteventtext = '';
                 }
             } else {
-                $end = $nextevent->getEnd();
-                assert($end !== null);
+                $end = $nextevent->end;
                 $timestamp = $end->getTimestamp();
                 $nexteventtext = $this->lang['event_started'] . '<br>'
                     . $nextevent->getDateStart() . " " . $nextevent->getStartTime();
@@ -99,17 +98,17 @@ class NextEventController extends Controller
         $events = $this->eventDataService->readEvents();
         foreach ($events as $event) {
             if ($event->isBirthday()) {
-                $start = $event->getStart();
-                $diff = mktime(0, 0, 0, (int) date("Y"), $start->getMonth(), $start->getDay()) - $now;
+                $start = $event->start;
+                $diff = mktime(0, 0, 0, (int) date("Y"), $start->month, $start->day) - $now;
                 if ($diff < 0) {
                     continue;
                 }
             } else {
-                $diff = $event->getStart()->getTimestamp() - $now;
-                $end = $event->getEnd();
-                if ($diff < 0 && $end === null) {
+                $diff = $event->start->getTimestamp() - $now;
+                $end = $event->end;
+                if ($diff < 0) {
                     continue;
-                } elseif ($end !== null) {
+                } else {
                     $diff = $end->getTimestamp() - $now;
                     if ($diff < 0) {
                         continue;

@@ -102,7 +102,7 @@ class EditEventsController extends Controller
         if (!$deleted && !$added) {
             // sorting new event inputs, idea of manu, forum-message
             usort($events, /** @return int */ function (Event $a, Event $b) {
-                return $a->getStart()->compare($b->getStart());
+                return $a->start->compare($b->start);
             });
             /** @var Event[] $events */
             $oldevents = $this->eventDataService->readEvents();

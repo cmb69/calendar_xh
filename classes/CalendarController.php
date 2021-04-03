@@ -206,8 +206,8 @@ class CalendarController extends Controller
      */
     private function isBirthdayOn(Event $event, $day)
     {
-        $date = $event->getStart();
-        return $event->isBirthday() && $date->getMonth() == $this->month && $date->getDay() == $day;
+        $date = $event->start;
+        return $event->isBirthday() && $date->month == $this->month && $date->day == $day;
     }
 
     /**
@@ -232,7 +232,7 @@ class CalendarController extends Controller
             if (!$event->isBirthday()) {
                 $titles[] = trim($event->getStartTime()) . " " . strip_tags($text);
             } else {
-                $age = $this->year - $event->getStart()->getYear();
+                $age = $this->year - $event->start->year;
                 $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
                 $titles[] = "{$text} {$age}";
             }

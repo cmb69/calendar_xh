@@ -28,22 +28,40 @@ namespace Calendar;
 
 class Event
 {
-    /** @var LocalDateTime */
-    private $start;
+    /**
+     * @readonly
+     * @var LocalDateTime
+     */
+    public $start;
 
-    /** @var LocalDateTime */
-    private $end;
+    /**
+     * @readonly
+     * @var LocalDateTime
+     */
+    public $end;
 
-    /** @var string */
+    /**
+     * @readonly
+     * @var string
+     */
     public $event;
 
-    /** @var string */
+    /**
+     * @readonly
+     * @var string
+     */
     public $linkadr;
 
-    /** @var string */
+    /**
+     * @readonly
+     * @var string
+     */
     public $linktxt;
 
-    /** @var string */
+    /**
+     * @readonly
+     * @var string
+     */
     public $location;
 
     /**
@@ -115,14 +133,6 @@ class Event
     }
 
     /**
-     * @return LocalDateTime
-     */
-    public function getStart()
-    {
-        return $this->start;
-    }
-
-    /**
      * @return string
      */
     public function getDateStart()
@@ -136,14 +146,6 @@ class Event
     public function getStartTime()
     {
         return $this->start->getTime();
-    }
-
-    /**
-     * @return LocalDateTime|null
-     */
-    public function getEnd()
-    {
-        return $this->end;
     }
 
     /**
@@ -167,7 +169,7 @@ class Event
      */
     public function getStartTimestamp()
     {
-        return mktime(0, 0, 0, $this->start->getMonth(), $this->start->getDay(), $this->start->getYear());
+        return mktime(0, 0, 0, $this->start->month, $this->start->day, $this->start->year);
     }
 
     /**
@@ -175,7 +177,7 @@ class Event
      */
     public function getEndTimestamp()
     {
-        return mktime(0, 0, 0, $this->end->getMonth(), $this->end->getDay(), $this->end->getYear());
+        return mktime(0, 0, 0, $this->end->month, $this->end->day, $this->end->year);
     }
 
     /**
