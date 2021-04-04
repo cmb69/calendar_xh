@@ -187,7 +187,6 @@ class Plugin
         $controller = new EventListController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
-            self::getDpSeparator(),
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),

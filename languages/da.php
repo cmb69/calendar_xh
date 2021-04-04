@@ -28,7 +28,7 @@ $plugin_tx['calendar']['text_announcing_overall_period']="Aktiviteter i perioden
 $plugin_tx['calendar']['eventfile_saved']="Ændringer i aktivitets data er gemt . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="FEJL: kan ikke gemme aktivetets datane.";
 
-$plugin_tx['calendar']['cf_date_delimiter']="Glyphs bruges til at adskille dag, måned og år. Du kan vælge mellem \".\", \"-\", \"/\".";
+$plugin_tx['calendar']['cf_date_delimiter']="Glyphs bruges til at adskille dag, måned og år. Du kan vælge mellem \".\", \"-\", \"/\". This is only used for import from the old calendar.txt files.";
 $plugin_tx['calendar']['cf_week-end_day_1']="Skriv her hvilken dag der skal have weekend farver. \"0\" vil vise den første dag \"6\" vil vise den sidste dag om ugen.";
 $plugin_tx['calendar']['cf_week-end_day_2']="Samme som weekend dag 1.";
 $plugin_tx['calendar']['cf_show_number_of_future_months']="Antallet af fremtidige måneder, der skal vises i aktivitets-listen . Standard er indeværende måned, \"2\" vil også vise næste måned.";

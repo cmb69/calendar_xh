@@ -36,7 +36,6 @@ class IcalImportController
 
     /**
      * @param string $dataFolder
-     * @param string $dpSeparator
      */
     public function __construct(
         $dataFolder,
