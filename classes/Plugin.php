@@ -213,6 +213,7 @@ class Plugin
             $plugin_tx['calendar'],
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new DateTimeFormatter($plugin_tx['calendar']),
             new View()
         );
         $controller->defaultAction();

@@ -35,4 +35,20 @@ class DateTimeFormatterTest extends TestCase
         $actual = $subject->formatMonthYear(4, 2021);
         $this->assertSame("April 2021", $actual);
     }
+
+    public function testFormatDate(): void
+    {
+        $lang = ['format_date' => "{day}. {month}. {year}"];
+        $subject = new DateTimeFormatter($lang);
+        $actual = $subject->formatDate(new LocalDateTime(2021, 4, 4, 14, 21));
+        $this->assertSame("4. 4. 2021", $actual);
+    }
+
+    public function testFormatDateTime(): void
+    {
+        $lang = ['format_date_time' => "{day}. {month}. {year} {hour}:{minute}"];
+        $subject = new DateTimeFormatter($lang);
+        $actual = $subject->formatDateTime(new LocalDateTime(2021, 4, 4, 14, 21));
+        $this->assertSame("4. 4. 2021 14:21", $actual);
+    }
 }

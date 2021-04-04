@@ -51,4 +51,24 @@ class DateTimeFormatter
         $monthnames = explode(',', $this->lang['monthnames_array']);
         return "{$monthnames[$month-1]} $year";
     }
+
+    /**
+     * @return string
+     */
+    public function formatDate(LocalDateTime $ldt)
+    {
+        $search = ["{year}", "{month}", "{day}"];
+        $replace = [$ldt->year, $ldt->month, $ldt->day];
+        return str_replace($search, $replace, $this->lang['format_date']);
+    }
+
+    /**
+     * @return string
+     */
+    public function formatDateTime(LocalDateTime $ldt)
+    {
+        $search = ["{year}", "{month}", "{day}", "{hour}", "{minute}"];
+        $replace = [$ldt->year, $ldt->month, $ldt->day, $ldt->hour, $ldt->minute];
+        return str_replace($search, $replace, $this->lang['format_date_time']);
+    }
 }

@@ -23,13 +23,15 @@ $plugin_tx['calendar']['prev_button_text']="Vorheriger Monat";
 $plugin_tx['calendar']['next_button_text']="Nachster Monat";
 $plugin_tx['calendar']['notice_no_next_event']="Keine weitere Veranstaltung eingeplant.";
 
+$plugin_tx['calendar']['format_date']="{day}. {month}. {year}";
+$plugin_tx['calendar']['format_date_time']="{day}. {month}. {year} – {hour}:{minute}";
+
 //new in version 1.1 & 1.2
 $plugin_tx['calendar']['event_date_till_date']="bis";
 $plugin_tx['calendar']['event_time_till_time']="-";
 $plugin_tx['calendar']['event_link_txt']="Link-Text oder anderer Text";
 
 $plugin_tx['calendar']['text_announcing_overall_period']="Termine für den Zeitraum";
-$plugin_tx['calendar']['event_date_representation_in_next_event_marquee']="d.m.Y";
 $plugin_tx['calendar']['eventfile_saved']="Geänderte Veranstaltungsdaten gespeichert . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen konnten NICHT gespeichert werden.";
 

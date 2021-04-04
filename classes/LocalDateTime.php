@@ -137,14 +137,6 @@ class LocalDateTime
     /**
      * @return int
      */
-    public function getTimestamp()
-    {
-        return mktime($this->hour, $this->minute, 0, $this->month, $this->day, $this->year);
-    }
-
-    /**
-     * @return int
-     */
     public function compare(LocalDateTime $other)
     {
         $result = $this->compareDate($other);

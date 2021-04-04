@@ -23,13 +23,15 @@ $plugin_tx['calendar']['prev_button_text']="Prev month";
 $plugin_tx['calendar']['next_button_text']="Next month";
 $plugin_tx['calendar']['notice_no_next_event']="No further event scheduled.";
 
+$plugin_tx['calendar']['format_date']="{month}/{day}/{year}";
+$plugin_tx['calendar']['format_date_time']="{month}/{day}/{year} – {hour}:{minute}";
+
 //new in version 1.1 & 1.2
 $plugin_tx['calendar']['event_date_till_date']="till";
 $plugin_tx['calendar']['event_time_till_time']="-";
 $plugin_tx['calendar']['event_link_txt']="Link text";
 
 $plugin_tx['calendar']['text_announcing_overall_period']="Events in the period from";
-$plugin_tx['calendar']['event_date_representation_in_next_event_marquee']="d.m.Y";
 $plugin_tx['calendar']['eventfile_saved']="Changes in event data saved . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="ERROR: could not save event data.";
 

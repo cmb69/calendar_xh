@@ -167,6 +167,15 @@ class Event
     /**
      * @return bool
      */
+    public function isFullDay()
+    {
+        return $this->start->hour === 0 && $this->start->minute === 0
+            && $this->end->hour === 23 && $this->end->minute === 59;
+    }
+
+    /**
+     * @return bool
+     */
     public function isBirthday()
     {
         return trim($this->location) === '###';

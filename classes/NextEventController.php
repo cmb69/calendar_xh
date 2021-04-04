@@ -37,6 +37,9 @@ class NextEventController
     /** @var EventDataService */
     private $eventDataService;
 
+    /** @var DateTimeFormatter */
+    private $dateTimeFormatter;
+
     /** @var View */
     private $view;
 
@@ -47,11 +50,13 @@ class NextEventController
         array $lang,
         LocalDateTime $now,
         EventDataService $eventDataService,
+        DateTimeFormatter $dateTimeFormatter,
         View $view
     ) {
         $this->lang = $lang;
         $this->now = $now;
         $this->eventDataService = $eventDataService;
+        $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
     }
 
@@ -60,17 +65,15 @@ class NextEventController
      */
     public function defaultAction()
     {
-        $now = time();
         $events = $this->eventDataService->readEvents();
         $nextevent = $this->eventDataService->findNextEvent($events, $this->now);
         $data = [];
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
-                $start = $nextevent->start;
-                $timestamp = mktime(0, 0, 0, $start->month, $start->day, $this->now->year);
+                $ldt = $nextevent->start->withYear($this->now->year);
                 $nexteventtext = '';
-            } elseif ($nextevent->start->getTimestamp() >= $now) {
-                $timestamp = $nextevent->start->getTimestamp();
+            } elseif ($nextevent->start->compare($this->now) >= 0) {
+                $ldt = $nextevent->start;
                 if ($nextevent->end->compareDate($nextevent->start) > 0) {
                     $nexteventtext = $this->lang['event_date_till_date'] . " " . '<br>'
                         . $nextevent->getDateEnd() . " " . $nextevent->getEndTime();
@@ -78,14 +81,14 @@ class NextEventController
                     $nexteventtext = '';
                 }
             } else {
-                $end = $nextevent->end;
-                $timestamp = $end->getTimestamp();
+                $ldt = $nextevent->end;
                 $nexteventtext = $this->lang['event_started'] . '<br>'
                     . $nextevent->getDateStart() . " " . $nextevent->getStartTime();
             }
-            $date = date($this->lang['event_date_representation_in_next_event_marquee'], $timestamp);
-            if (date('H:i', $timestamp) != "00:00") {
-                $date.= ' — ' . date('H:i', $timestamp);
+            if ($nextevent->isFullDay()) {
+                $date = $this->dateTimeFormatter->formatDate($ldt);
+            } else {
+                $date = $this->dateTimeFormatter->formatDateTime($ldt);
             }
             $data = [
                 'event' => $nextevent,
