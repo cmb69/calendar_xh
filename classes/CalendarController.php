@@ -197,7 +197,7 @@ class CalendarController extends Controller
             return false;
         }
         $today = new LocalDateTime($this->year, $this->month, $day, 0, 0);
-        if ($event->getDateEnd() === $event->start->getDate()) {
+        if ($event->end->compareDate($event->start) === 0) {
             return $event->start->compareDate($today) === 0;
         }
         if ($this->conf['show_days_between_dates']) {
@@ -226,7 +226,7 @@ class CalendarController extends Controller
     {
         $titles = [];
         foreach ($events as $event) {
-            if ($event->getDateEnd() > $event->getDateStart()) {
+            if ($event->end->compareDate($event->start) > 0) {
                 $text = sprintf(
                     "%s %s %s %s",
                     $event->event,

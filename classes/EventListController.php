@@ -237,7 +237,7 @@ class EventListController extends Controller
     {
         return [
             'is_birthday' => true,
-            'age' => $this->year - (int) substr($event->getDateStart(), 0, 4),
+            'age' => $this->year - $event->start->year,
             'event' => $event,
             'date' => sprintf('%02d', $event->start->day) . $this->dpSeparator
                 . sprintf('%02d', $this->month) . $this->dpSeparator . $this->year,
@@ -254,7 +254,7 @@ class EventListController extends Controller
     private function getEventRowView(Event $event)
     {
         $time = $event->getStartTime();
-        if ($event->end->getDate() > $event->start->getDate()) {
+        if ($event->end->compareDate($event->start) > 0) {
             if (!$event->end->day) {
                 $time .= ' ' . $this->lang['event_time_till_time'];
             }
@@ -279,7 +279,7 @@ class EventListController extends Controller
     {
         $t = sprintf("%02d", $event->start->day);
         // if beginning and end dates are there, these are put one under the other
-        if ($event->getDateEnd() > $event->getDateStart()) {
+        if ($event->end->compareDate($event->start) > 0) {
             $end = $event->end;
             if ($this->month != $end->month
                 || $this->year != $end->year
