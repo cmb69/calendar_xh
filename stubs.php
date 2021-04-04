@@ -59,12 +59,3 @@ function XH_registerStandardPluginMenuItems($showMain) {}
  * @return bool
  */
 function XH_wantsPluginAdministration($pluginName) {}
-
-namespace Fa {
-    class RequireCommand {
-        /**
-         * @return void
-         */
-        public function execute() {}
-    }
-}

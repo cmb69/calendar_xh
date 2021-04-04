@@ -26,8 +26,6 @@
 
 namespace Calendar;
 
-use Fa\RequireCommand as FaRequireCommand;
-
 class EditEventsController
 {
     /** @var array<string,string> */
@@ -61,7 +59,6 @@ class EditEventsController
         $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->view = $view;
-        (new FaRequireCommand)->execute();
     }
 
     /**

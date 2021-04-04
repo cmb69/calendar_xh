@@ -4,7 +4,7 @@
     <div class="calendar_input">
         <div>
             <button name="send"><?=$this->text('label_save')?></button>
-            <button name="add[0]" value="add" title="<?=$this->text('label_add_event')?>"><span class="fa fa-plus fa-fw"></span></button>
+            <button name="add[0]" value="add"><?=$this->text('label_add_event')?></button>
         </div>
 <?php foreach ($this->events as $i => $event):?>
         <div>
@@ -58,13 +58,13 @@
             <input type="hidden" name="linktxt[<?=$this->escape($i)?>]" value="<?=$this->escape($event->linktxt)?>">
 <?php   endif?>
             <div>
-                <button name="delete[<?=$this->escape($i)?>]" value="delete" title="<?=$this->text('label_delete_event')?>"><span class="fa fa-trash fa-fw"></span></button>
+                <button name="delete[<?=$this->escape($i)?>]" value="delete"><?=$this->text('label_delete_event')?></button>
             </div>
         </div>
 <?php endforeach?>
         <div>
             <button name="send"><?=$this->text('label_save')?></button>
-            <button name="add[0]" value="add" title="<?=$this->text('label_add_event')?>"><span class="fa fa-plus fa-fw"></span></button>
+            <button name="add[0]" value="add"><?=$this->text('label_add_event')?></button>
         </div>
     </div>
 </form>

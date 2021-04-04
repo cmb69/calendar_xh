@@ -27,8 +27,8 @@ zusätzlicher Features anbietet, allerdings zu Lasten der Einfachheit.
 
 ## Voraussetzungen
 
-Calendar\_XH benötigt CMSimple\_XH ≥ 1.7.0 mit dem Fa\_XH Plugin, und
-PHP ≥ 5.5.4.
+Calendar\_XH ist ein Plugin für CMSimple\_XH.
+Es benötigt CMSimple_XH ≥ 1.7.0, und PHP ≥ 5.5.4.
 
 ## Download
 
