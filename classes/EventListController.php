@@ -122,10 +122,15 @@ class EventListController
             $x++;
             $this->advanceMonth();
         }
+        $start = $this->dateTimeFormatter->formatMonthYear($startmonth, $startyear);
+        $end = $this->dateTimeFormatter->formatMonthYear($endmonth, $endyear);
         $this->view->render('eventlist', [
             'showHeading' => (bool) $this->conf['show_period_of_events'],
-            'start' => $this->dateTimeFormatter->formatMonthYear($startmonth, $startyear),
-            'end' => $this->dateTimeFormatter->formatMonthYear($endmonth, $endyear),
+            'heading' => new HtmlString(sprintf(
+                XH_hsc($this->lang['event_list_heading']),
+                '<span>' . XH_hsc($start) . '</span>',
+                '<span>' . XH_hsc($end) . '</span>'
+            )),
             'monthEvents' => $monthEvents,
         ]);
     }
@@ -257,22 +262,28 @@ class EventListController
      */
     private function getEventRowView(Event $event)
     {
-        $time = $event->getStartTime();
-        if ($event->end->compareDate($event->start) > 0) {
-            if (!$event->end->day) {
-                $time .= ' ' . $this->lang['event_time_till_time'];
+        if ($event->isFullDay()) {
+            $time = "";
+        } else {
+            if ($event->end->compareDate($event->start) > 0) {
+                $time = sprintf(
+                    $this->lang['format_time_interval'],
+                    $this->dateTimeFormatter->formatTime($event->start),
+                    $this->dateTimeFormatter->formatTime($event->end)
+                );
+            } else {
+                $time = $this->dateTimeFormatter->formatTime($event->start);
             }
-            $time .= '<br>' . $event->getEndTime();
         }
         return [
             'is_birthday' => false,
             'event' => $event,
-            'date' => new HtmlString($this->renderDate($event)),
+            'date' => $this->renderDate($event),
             'showTime' => $this->conf['show_event_time'],
             'showLocation' => $this->conf['show_event_location'],
             'showLink' => $this->conf['show_event_link'],
             'link' => new HtmlString($this->renderLink($event)),
-            'time' => new HtmlString($time),
+            'time' => $time,
         ];
     }
 
@@ -282,9 +293,11 @@ class EventListController
     private function renderDate(Event $event)
     {
         if ($event->end->compareDate($event->start) > 0) {
-            return $this->dateTimeFormatter->formatDate($event->start)
-                . "&nbsp;" . $this->lang['event_date_till_date'] . '<br>'
-                . $this->dateTimeFormatter->formatDate($event->end);
+            return sprintf(
+                $this->lang['format_date_interval'],
+                $this->dateTimeFormatter->formatDate($event->start),
+                $this->dateTimeFormatter->formatDate($event->end)
+            );
         } else {
             return $this->dateTimeFormatter->formatDate($event->start);
         }

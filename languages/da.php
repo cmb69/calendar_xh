@@ -19,12 +19,12 @@ $plugin_tx['calendar']['age_5']="%d år";
 $plugin_tx['calendar']['prev_button_text']="Forrige måned";
 $plugin_tx['calendar']['next_button_text']="Næste måned";
 
+$plugin_tx['calendar']['event_list_heading']="Aktiviteter i perioden fra %s til %s";
+
 //new in version 1.1 & 1.2
 $plugin_tx['calendar']['event_date_till_date']="til";
-$plugin_tx['calendar']['event_time_till_time']="-";
 $plugin_tx['calendar']['event_link_txt']="Link tekst";
 
-$plugin_tx['calendar']['text_announcing_overall_period']="Aktiviteter i perioden fra";
 $plugin_tx['calendar']['eventfile_saved']="Ændringer i aktivitets data er gemt . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="FEJL: kan ikke gemme aktivetets datane.";
 

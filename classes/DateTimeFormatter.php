@@ -71,4 +71,14 @@ class DateTimeFormatter
         $replace = [$ldt->year, $ldt->month, $ldt->day, $ldt->hour, $ldt->minute];
         return str_replace($search, $replace, $this->lang['format_date_time']);
     }
+
+    /**
+     * @return string
+     */
+    public function formatTime(LocalDateTime $ldt)
+    {
+        $search = ["{hour}", "{minute}"];
+        $replace = [$ldt->hour, $ldt->minute];
+        return str_replace($search, $replace, $this->lang['format_time']);
+    }
 }

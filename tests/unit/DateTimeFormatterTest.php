@@ -51,4 +51,12 @@ class DateTimeFormatterTest extends TestCase
         $actual = $subject->formatDateTime(new LocalDateTime(2021, 4, 4, 14, 21));
         $this->assertSame("4. 4. 2021 14:21", $actual);
     }
+
+    public function testFormatTime(): void
+    {
+        $lang = ['format_time' => "{hour}:{minute}"];
+        $subject = new DateTimeFormatter($lang);
+        $actual = $subject->formatTime(new LocalDateTime(2021, 4, 4, 14, 21));
+        $this->assertSame("14:21", $actual);
+    }
 }

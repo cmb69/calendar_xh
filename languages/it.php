@@ -19,7 +19,6 @@ $plugin_tx['calendar']['age_5']="%d anni";
 $plugin_tx['calendar']['prev_button_text']="il mese scorso";
 $plugin_tx['calendar']['next_button_text']="il mese prossimo";
 
-$plugin_tx['calendar']['event_date_till_date']="a";
-$plugin_tx['calendar']['event_time_till_time']="-";
+$plugin_tx['calendar']['event_list_heading']="Eventi nel periodo da %s a %s";
 
-$plugin_tx['calendar']['text_announcing_overall_period']="Eventi nel periodo da";
+$plugin_tx['calendar']['event_date_till_date']="a";

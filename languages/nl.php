@@ -19,7 +19,6 @@ $plugin_tx['calendar']['age_5']="%d Jaaren";
 $plugin_tx['calendar']['prev_button_text']="vorafgaande maand";
 $plugin_tx['calendar']['next_button_text']="volgende maand";
 
-$plugin_tx['calendar']['event_date_till_date']="tot";
-$plugin_tx['calendar']['event_time_till_time']="-";
+$plugin_tx['calendar']['event_list_heading']="Evenementen in de periode van %s tot %s";
 
-$plugin_tx['calendar']['text_announcing_overall_period']="Evenementen in de periode van";
+$plugin_tx['calendar']['event_date_till_date']="tot";

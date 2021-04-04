@@ -19,12 +19,12 @@ $plugin_tx['calendar']['age_5']="%d rokov";
 $plugin_tx['calendar']['prev_button_text']="<<";
 $plugin_tx['calendar']['next_button_text']=">>";
 
+$plugin_tx['calendar']['event_list_heading']="Udalosti za obdobie %s do %s";
+
 //new in version 1.1 & 1.2
 $plugin_tx['calendar']['event_date_till_date']="do";
-$plugin_tx['calendar']['event_time_till_time']="-";
 $plugin_tx['calendar']['event_link_txt']="Text odkazu";
 
-$plugin_tx['calendar']['text_announcing_overall_period']="Udalosti za obdobie";
 $plugin_tx['calendar']['eventfile_saved']="Zmeny v udalosti boli uložené . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="CHYBA: udalosť sa nepodarilo uložiť.";
 
