@@ -26,8 +26,11 @@
 
 namespace Calendar;
 
-class NextEventController extends Controller
+class NextEventController
 {
+    /** @var array<string,string> */
+    private $lang;
+
     /** @var LocalDateTime */
     private $now;
 
@@ -38,17 +41,14 @@ class NextEventController extends Controller
     private $view;
 
     /**
-     * @param array<string,string> $conf
      * @param array<string,string> $lang
      */
     public function __construct(
-        array $conf,
         array $lang,
         LocalDateTime $now,
         EventDataService $eventDataService,
         View $view
     ) {
-        $this->conf = $conf;
         $this->lang = $lang;
         $this->now = $now;
         $this->eventDataService = $eventDataService;

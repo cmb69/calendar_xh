@@ -21,6 +21,7 @@
 
 require_once './vendor/autoload.php';
 require_once './classes/Calendar.php';
+require_once './classes/DateTimeFormatter.php';
 require_once './classes/Event.php';
 require_once './classes/EventDataService.php';
 require_once './classes/LocalDateTime.php';

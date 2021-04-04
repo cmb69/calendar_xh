@@ -107,10 +107,8 @@ class Plugin
      */
     private static function info()
     {
-        global $plugin_cf, $plugin_tx;
-
         ob_start();
-        (new InfoController($plugin_cf['calendar'], $plugin_tx['calendar'], new View()))->defaultAction();
+        (new InfoController(new View()))->defaultAction();
         return ob_get_clean();
     }
 
@@ -130,11 +128,9 @@ class Plugin
      */
     private static function iCalendarImport()
     {
-        global $action, $plugin_cf, $plugin_tx;
+        global $action;
 
         $controller = new IcalImportController(
-            $plugin_cf['calendar'],
-            $plugin_tx['calendar'],
             self::getDataFolder(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new View()
@@ -166,6 +162,7 @@ class Plugin
             $plugin_tx['calendar'],
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new DateTimeFormatter($plugin_tx['calendar']),
             new View(),
             $year,
             $month,
@@ -193,6 +190,7 @@ class Plugin
             self::getDpSeparator(),
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new DateTimeFormatter($plugin_tx['calendar']),
             new View(),
             $month,
             $year,
@@ -208,11 +206,10 @@ class Plugin
      */
     public static function nextEvent()
     {
-        global $plugin_cf, $plugin_tx;
+        global $plugin_tx;
 
         ob_start();
         $controller = new NextEventController(
-            $plugin_cf['calendar'],
             $plugin_tx['calendar'],
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),

@@ -23,7 +23,7 @@ namespace Calendar;
 
 use DirectoryIterator;
 
-class IcalImportController extends Controller
+class IcalImportController
 {
     /** @var string */
     private $dataFolder;
@@ -35,20 +35,14 @@ class IcalImportController extends Controller
     private $view;
 
     /**
-     * @param array<string,string> $conf
-     * @param array<string,string> $lang
      * @param string $dataFolder
      * @param string $dpSeparator
      */
     public function __construct(
-        array $conf,
-        array $lang,
         $dataFolder,
         EventDataService $eventDataService,
         View $view
     ) {
-        $this->conf = $conf;
-        $this->lang = $lang;
         $this->view = $view;
         $this->dataFolder = $dataFolder;
         $this->eventDataService = $eventDataService;

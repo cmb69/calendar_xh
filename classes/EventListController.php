@@ -26,8 +26,14 @@
 
 namespace Calendar;
 
-class EventListController extends Controller
+class EventListController
 {
+    /** @var array<string,string> */
+    private $conf;
+
+    /** @var array<string,string> */
+    private $lang;
+
     /** @var string */
     private $dpSeparator;
 
@@ -36,6 +42,9 @@ class EventListController extends Controller
 
     /** @var EventDataService */
     private $eventDataService;
+
+    /** @var DateTimeFormatter */
+    private $dateTimeFormatter;
 
     /** @var View */
     private $view;
@@ -67,6 +76,7 @@ class EventListController extends Controller
         $dpSeparator,
         LocalDateTime $now,
         EventDataService $eventDataService,
+        DateTimeFormatter $dateTimeFormatter,
         View $view,
         $month,
         $year,
@@ -78,6 +88,7 @@ class EventListController extends Controller
         $this->dpSeparator = $dpSeparator;
         $this->now = $now;
         $this->eventDataService = $eventDataService;
+        $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
         $this->month = $month;
         $this->year = $year;
@@ -119,8 +130,8 @@ class EventListController extends Controller
         }
         $this->view->render('eventlist', [
             'showHeading' => (bool) $this->conf['show_period_of_events'],
-            'start' => new HtmlString('<span>' . XH_hsc($this->formatMonthYear($startmonth, $startyear)) . '</span>'),
-            'end' => new HtmlString('<span>' . XH_hsc($this->formatMonthYear($endmonth, $endyear)) . '</span>'),
+            'start' => $this->dateTimeFormatter->formatMonthYear($startmonth, $startyear),
+            'end' => $this->dateTimeFormatter->formatMonthYear($endmonth, $endyear),
             'monthEvents' => $monthEvents,
         ]);
     }
@@ -326,7 +337,7 @@ class EventListController extends Controller
     {
         return [
             'tablecols' => $tablecols,
-            'monthYear' => $this->formatMonthYear($this->month, $this->year),
+            'monthYear' => $this->dateTimeFormatter->formatMonthYear($this->month, $this->year),
             'showTime' => $this->conf['show_event_time'],
             'showLocation' => $this->conf['show_event_location'],
             'showLink' => $this->conf['show_event_link'],

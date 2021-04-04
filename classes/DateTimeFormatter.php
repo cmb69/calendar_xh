@@ -26,24 +26,27 @@
 
 namespace Calendar;
 
-abstract class Controller
+class DateTimeFormatter
 {
     /**
      * @var array<string,string>
      */
-    protected $conf;
+    private $lang;
 
     /**
-     * @var array<string,string>
+     * @param array<string,string> $lang
      */
-    protected $lang;
+    public function __construct(array $lang)
+    {
+        $this->lang = $lang;
+    }
 
     /**
      * @param int $month
      * @param int $year
      * @return string
      */
-    protected function formatMonthYear($month, $year)
+    public function formatMonthYear($month, $year)
     {
         $monthnames = explode(',', $this->lang['monthnames_array']);
         return "{$monthnames[$month-1]} $year";

@@ -28,13 +28,22 @@ namespace Calendar;
 
 use stdClass;
 
-class CalendarController extends Controller
+class CalendarController
 {
+    /** @var array<string,string> */
+    private $conf;
+
+    /** @var array<string,string> */
+    private $lang;
+
     /** @var LocalDateTime */
     private $now;
 
     /** @var EventDataService */
     private $eventDataService;
+
+    /** @var DateTimeFormatter */
+    private $dateTimeFormatter;
 
     /** @var View */
     private $view;
@@ -66,6 +75,7 @@ class CalendarController extends Controller
         array $lang,
         LocalDateTime $now,
         EventDataService $eventDataService,
+        DateTimeFormatter $dateTimeFormatter,
         View $view,
         $year = 0,
         $month = 0,
@@ -75,6 +85,7 @@ class CalendarController extends Controller
         $this->lang = $lang;
         $this->now = $now;
         $this->eventDataService = $eventDataService;
+        $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
         $this->year = $year;
         $this->month = $month;
@@ -100,7 +111,7 @@ class CalendarController extends Controller
             $rows[] = $this->getRowData($columns);
         }
         $data = [
-            'caption' => $this->formatMonthYear($this->month, $this->year),
+            'caption' => $this->dateTimeFormatter->formatMonthYear($this->month, $this->year),
             'hasPrevNextButtons' => $this->conf['prev_next_button'],
             'prevUrl' => $this->getPrevUrl(),
             'nextUrl' => $this->getNextUrl(),

@@ -28,8 +28,14 @@ namespace Calendar;
 
 use Fa\RequireCommand as FaRequireCommand;
 
-class EditEventsController extends Controller
+class EditEventsController
 {
+    /** @var array<string,string> */
+    private $conf;
+
+    /** @var array<string,string> */
+    private $lang;
+
     /** @var LocalDateTime */
     private $now;
 

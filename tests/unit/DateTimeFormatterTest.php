@@ -1,12 +1,7 @@
 <?php
 
 /**
- * Copyright 2005-2006 Michael Svarrer
- * Copyright 2007-2008 Tory
- * Copyright 2008      Patrick Varlet
- * Copyright 2011      Holger Irmler
- * Copyright 2011-2013 Frank Ziesing
- * Copyright 2017-2021 Christoph M. Becker
+ * Copyright 2021 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -26,27 +21,18 @@
 
 namespace Calendar;
 
-class InfoController
+use PHPUnit\Framework\TestCase;
+
+class DateTimeFormatterTest extends TestCase
 {
-    /** @var View */
-    private $view;
-
-    public function __construct(View $view)
+    public function testFormatMonthYear()
     {
-        $this->view = $view;
-    }
-
-    /**
-     * @return void
-     */
-    public function defaultAction()
-    {
-        global $pth;
-
-        $this->view->render('info', [
-            'logo' => "{$pth['folder']['plugins']}calendar/calendar.png",
-            'version' => Plugin::VERSION,
-            'checks' => (new SystemCheckService)->getChecks(),
-        ]);
+        $lang = [
+            'monthnames_array' => "January,February,March,April,May,June"
+                . ",July,August,September,Oktober,November,December",
+        ];
+        $subject = new DateTimeFormatter($lang);
+        $actual = $subject->formatMonthYear(4, 2021);
+        $this->assertSame("April 2021", $actual);
     }
 }
