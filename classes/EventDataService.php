@@ -129,6 +129,37 @@ class EventDataService
     }
 
     /**
+     * @param Event[] $events
+     * @return Event|null
+     */
+    public function findNextEvent(array $events, LocalDateTime $now)
+    {
+        $nextevent = null;
+        $nextldt = null;
+        foreach ($events as $event) {
+            if ($event->isBirthday()) {
+                $ldt = $event->start->withYear($now->year);
+                if ($ldt->compare($now) < 0) {
+                    continue;
+                }
+            } else {
+                $ldt = $event->start;
+                if ($ldt->compare($now) < 0) {
+                    $ldt = $event->end;
+                    if ($ldt->compare($now) < 0) {
+                        continue;
+                    }
+                }
+            }
+            if ($nextldt === null || $ldt->compare($nextldt) < 0) {
+                $nextevent = $event;
+                $nextldt = $ldt;
+            }
+        }
+        return $nextevent;
+    }
+
+    /**
      * @return Event[]
      */
     private function readOldEvents()

@@ -61,7 +61,8 @@ class NextEventController
     public function defaultAction()
     {
         $now = time();
-        $nextevent = $this->findNextEvent();
+        $events = $this->eventDataService->readEvents();
+        $nextevent = $this->eventDataService->findNextEvent($events, $this->now);
         $data = [];
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
@@ -93,38 +94,5 @@ class NextEventController
             ];
         }
         $this->view->render('nextevent', $data);
-    }
-
-    /**
-     * @return Event|null
-     */
-    private function findNextEvent()
-    {
-        $nextevent = null;
-        $nextldt = null;
-        $events = $this->eventDataService->readEvents();
-        foreach ($events as $event) {
-            if ($event->isBirthday()) {
-                $ldt = $event->start->withYear($this->now->year);
-                if ($ldt->compare($this->now) < 0) {
-                    continue;
-                }
-            } else {
-                $ldt = $event->start;
-                if ($ldt->compare($this->now) < 0) {
-                    continue;
-                } else {
-                    $ldt = $event->end;
-                    if ($ldt->compare($this->now) < 0) {
-                        continue;
-                    }
-                }
-            }
-            if ($nextldt === null || $ldt->compare($nextldt) < 0) {
-                $nextevent = $event;
-                $nextldt = $ldt;
-            }
-        }
-        return $nextevent;
     }
 }

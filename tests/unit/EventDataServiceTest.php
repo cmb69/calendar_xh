@@ -59,4 +59,37 @@ CSV;
         $this->assertSame("markus", $events[0]->event);
         $this->assertSame("martin", $events[1]->event);
     }
+
+    /**
+     * @dataProvider findNextEventProvider
+     * @param string|null $expected
+     */
+    public function testFindNextEvent(LocalDateTime $now, $expected): void
+    {
+        $csv = <<<CSV
+1969-03-24;00:00;1969-03-24;23:59;cmb;###;;
+2021-04-21;00:00;2021-04-23;23:59;multi day;;;
+2021-04-21;10:30;2021-04-21;10:30;instant;;;
+CSV;
+        vfsStream::setup("root");
+        file_put_contents(vfsStream::url("root/calendar.csv"), $csv);
+        $subject = new EventDataService(vfsStream::url("root/"), "-");
+        $nextevent = $subject->findNextEvent($subject->readEvents(), $now);
+        if ($expected !== null) {
+            $this->assertInstanceOf(Event::class, $nextevent);
+            $this->assertSame($expected, $nextevent->event);
+        } else {
+            $this->assertNull($nextevent);
+        }
+    }
+
+    public function findNextEventProvider(): array
+    {
+        return [
+            [new LocalDateTime(2021, 4, 4, 13, 36), "multi day"],
+            [new LocalDateTime(2021, 4, 21, 1, 0), "instant"],
+            [new LocalDateTime(2021, 3, 21, 0, 0), "cmb"],
+            [new LocalDateTime(2021, 4, 24, 0, 0), null],
+        ];
+    }
 }
