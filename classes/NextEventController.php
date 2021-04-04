@@ -61,7 +61,7 @@ class NextEventController extends Controller
     public function defaultAction()
     {
         $now = time();
-        $nextevent = $this->findNextEvent($now);
+        $nextevent = $this->findNextEvent();
         $data = [];
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
@@ -96,36 +96,33 @@ class NextEventController extends Controller
     }
 
     /**
-     * @param int $now
      * @return Event|null
      */
-    private function findNextEvent($now)
+    private function findNextEvent()
     {
         $nextevent = null;
-        $nextdiff = null;
+        $nextldt = null;
         $events = $this->eventDataService->readEvents();
         foreach ($events as $event) {
             if ($event->isBirthday()) {
-                $start = $event->start;
-                $diff = mktime(0, 0, 0, $this->now->year, $start->month, $start->day) - $now;
-                if ($diff < 0) {
+                $ldt = $event->start->withYear($this->now->year);
+                if ($ldt->compare($this->now) < 0) {
                     continue;
                 }
             } else {
-                $diff = $event->start->getTimestamp() - $now;
-                $end = $event->end;
-                if ($diff < 0) {
+                $ldt = $event->start;
+                if ($ldt->compare($this->now) < 0) {
                     continue;
                 } else {
-                    $diff = $end->getTimestamp() - $now;
-                    if ($diff < 0) {
+                    $ldt = $event->end;
+                    if ($ldt->compare($this->now) < 0) {
                         continue;
                     }
                 }
             }
-            if ($nextdiff === null || $diff < $nextdiff) {
+            if ($nextldt === null || $ldt->compare($nextldt) < 0) {
                 $nextevent = $event;
-                $nextdiff = $diff;
+                $nextldt = $ldt;
             }
         }
         return $nextevent;
