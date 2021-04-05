@@ -79,6 +79,8 @@
     padding-top: 13px;
 }
 
+.past_event {}
+
 .event_data_row td { /*definition here take precedence over definitions in fields*/
     color:black;
     font-size: 11px;

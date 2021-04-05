@@ -35,7 +35,7 @@
 <?php           endif?>
     </tr>
 <?php       else:?>
-    <tr class="event_data_row">
+    <tr class="event_data_row <?=$this->escape($row['past_event_class'])?>">
         <td class="event_data event_date"><?=$this->escape($row['date'])?></td>
 <?php           if ($row['showTime']):?>
         <td class="event_data event_time"><?=$this->escape($row['time'])?></td>
