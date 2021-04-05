@@ -96,7 +96,7 @@ class NextEventController
             }
             $data = [
                 'event' => $nextevent,
-                'event_text' => $nexteventtext,
+                'event_text' => new HtmlString($nexteventtext),
                 'date' => $date,
             ];
         }
