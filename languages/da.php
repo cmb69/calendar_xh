@@ -7,7 +7,6 @@ $plugin_tx['calendar']['daynames_array']="Søn,Man,Tir,Ons,Tor,Fre,Lør";
 $plugin_tx['calendar']['event_page']="Aktiviteter";
 $plugin_tx['calendar']['event_date']="Dato";
 $plugin_tx['calendar']['event_time']="Tid";
-$plugin_tx['calendar']['event_event']="Aktivitet";
 $plugin_tx['calendar']['event_location']="Sted";
 $plugin_tx['calendar']['event_link']="Link";
 $plugin_tx['calendar']['event_link_etc']="Link etc.";

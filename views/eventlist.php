@@ -11,7 +11,7 @@
 <?php   if ($monthEvent['headline']['showTime']):?>
         <td class="event_heading event_time"><?=$this->text('event_time')?></td>
 <?php   endif?>
-        <td class="event_heading event_event"><?=$this->text('event_event')?></td>
+        <td class="event_heading event_summary"><?=$this->text('event_summary')?></td>
 <?php   if ($monthEvent['headline']['showLocation']):?>
         <td class="event_heading event_location"><?=$this->text('event_location')?></td>
 <?php   endif?>
@@ -26,7 +26,7 @@
 <?php           if ($row['showTime']):?>
         <td class="event_data event_time"></td>
 <?php           endif?>
-        <td class="event_data event_event"><?=$this->escape($row['event']->event)?> <?=$this->plural('age', $row['age'])?></td>
+        <td class="event_data event_summary"><?=$this->escape($row['event']->summary)?> <?=$this->plural('age', $row['age'])?></td>
 <?php           if ($row['showLocation']):?>
         <td class="event_data event_location"><?=$this->text('birthday_text')?></td>
 <?php           endif?>
@@ -40,7 +40,7 @@
 <?php           if ($row['showTime']):?>
         <td class="event_data event_time"><?=$this->escape($row['time'])?></td>
 <?php           endif?>
-        <td class="event_data event_event"><?=$this->escape($row['event']->event)?></td>
+        <td class="event_data event_summary"><?=$this->escape($row['event']->summary)?></td>
 <?php           if ($row['showLocation']):?>
         <td class="event_data event_location"><?=$this->escape($row['event']->location)?></td>
 <?php           endif?>

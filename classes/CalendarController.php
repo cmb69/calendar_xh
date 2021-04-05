@@ -240,13 +240,13 @@ class CalendarController
             if ($event->end->compareDate($event->start) > 0) {
                 $text = sprintf(
                     "%s %s %s %s",
-                    $event->event,
+                    $event->summary,
                     $this->lang['event_date_till_date'],
                     $event->getDateEnd(),
                     $event->getEndTime()
                 );
             } else {
-                $text = $event->event;
+                $text = $event->summary;
             }
             if (!$event->isBirthday()) {
                 $titles[] = trim($event->getStartTime()) . " " . strip_tags($text);

@@ -7,7 +7,6 @@ $plugin_tx['calendar']['daynames_array']="Ne,Po,Ut,St,Št,Pi,So";
 $plugin_tx['calendar']['event_page']="Podujatia";
 $plugin_tx['calendar']['event_date']="Dátum";
 $plugin_tx['calendar']['event_time']="Čas";
-$plugin_tx['calendar']['event_event']="Podujatie";
 $plugin_tx['calendar']['event_location']="Miesto/Poznámka";
 $plugin_tx['calendar']['event_link']="Odkaz/Poznámka";
 $plugin_tx['calendar']['event_link_etc']="Odkaz/Poznámka";

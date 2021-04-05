@@ -4,7 +4,7 @@
 </div>
 <div class="calendar_marquee_outer">
     <div class="calendar_marquee">
-        <div class="nextevent_event"><?=$this->event->event?></div>
+        <div class="nextevent_event"><?=$this->event->summary?></div>
         <div class="nextevent_date"><?=$this->event_text?></div>
         <div class="nextevent_location"><?=$this->event->location?></div>
     </div>

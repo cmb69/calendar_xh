@@ -33,7 +33,7 @@ class ICalendarReaderTest extends TestCase
         // var_dump(new LocalDateTime(1997, 7, 15, 3, 59), $actual[0]->getEnd());
         $this->assertSame(0, (new LocalDateTime(1997, 7, 14, 17, 0))->compare($actual[0]->start));
         $this->assertSame(0, (new LocalDateTime(1997, 7, 15, 3, 59))->compare($actual[0]->end));
-        $this->assertSame("Bastille Day Party", $actual[0]->event);
+        $this->assertSame("Bastille Day Party", $actual[0]->summary);
         $this->assertSame("", $actual[0]->linkadr);
         $this->assertSame("", $actual[0]->linktxt);
         $this->assertSame("Place de la Bastille", $actual[0]->location);

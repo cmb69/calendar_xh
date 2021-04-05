@@ -25,8 +25,8 @@
     <input type="hidden" maxlength="5" name="endtime" value="<?=$this->escape($this->event->getEndTime())?>">
 <?php endif?>
     <label>
-      <?=$this->text('event_event')?>
-      <input class="calendar_input_event event_highlighting" type="text" name="event" value="<?=$this->escape($this->event->event)?>" required>
+      <?=$this->text('event_summary')?>
+      <input class="calendar_input_event event_highlighting" type="text" name="event" value="<?=$this->escape($this->event->summary)?>" required>
     </label>
 <?php if ($this->showEventLocation):?>
     <label>

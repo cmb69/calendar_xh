@@ -56,8 +56,8 @@ CSV;
         $subject = new EventDataService(vfsStream::url("root/"), "-");
         $events = array_values($subject->filterByMonth($subject->readEvents(), 2021, 4));
         $this->assertCount(2, $events);
-        $this->assertSame("markus", $events[0]->event);
-        $this->assertSame("martin", $events[1]->event);
+        $this->assertSame("markus", $events[0]->summary);
+        $this->assertSame("martin", $events[1]->summary);
     }
 
     /**
@@ -77,7 +77,7 @@ CSV;
         $nextevent = $subject->findNextEvent($subject->readEvents(), $now);
         if ($expected !== null) {
             $this->assertInstanceOf(Event::class, $nextevent);
-            $this->assertSame($expected, $nextevent->event);
+            $this->assertSame($expected, $nextevent->summary);
         } else {
             $this->assertNull($nextevent);
         }

@@ -265,7 +265,7 @@ class EventDataService
             $event->getStartTime(),
             $event->getDateEnd(),
             $event->getEndTime(),
-            $event->event,
+            $event->summary,
             $event->location,
             $event->linkadr,
             $event->linktxt

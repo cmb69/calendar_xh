@@ -277,7 +277,7 @@ class EditEventsController
             '',
             '',
             '',
-            $this->lang['event_event'],
+            $this->lang['event_summary'],
             '',
             '',
             ''

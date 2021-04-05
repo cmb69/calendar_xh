@@ -7,7 +7,6 @@ $plugin_tx['calendar']['daynames_array']="Di,Lu,Ma,Me,Je,Ve,Sa";
 $plugin_tx['calendar']['event_page']="Evènements";
 $plugin_tx['calendar']['event_date']="Date";
 $plugin_tx['calendar']['event_time']="Heure";
-$plugin_tx['calendar']['event_event']="Evènement";
 $plugin_tx['calendar']['event_location']="Lieu";
 $plugin_tx['calendar']['event_link']="Lien";
 $plugin_tx['calendar']['event_link_etc']="Lien etc.";

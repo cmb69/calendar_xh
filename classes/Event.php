@@ -44,7 +44,7 @@ class Event
      * @readonly
      * @var string
      */
-    public $event;
+    public $summary;
 
     /**
      * @readonly
@@ -69,7 +69,7 @@ class Event
      * @param string|null $dateend
      * @param string $starttime
      * @param string|null $endtime
-     * @param string $event
+     * @param string $summary
      * @param string $linkadr
      * @param string $linktxt
      * @param string $location
@@ -80,7 +80,7 @@ class Event
         $dateend,
         $starttime,
         $endtime,
-        $event,
+        $summary,
         $linkadr,
         $linktxt,
         $location
@@ -107,11 +107,11 @@ class Event
         if (($start = LocalDateTime::fromIsoString("{$datestart}T{$starttime}")) === null) {
             return null;
         }
-        return new self($start, $end, $event, $linkadr, $linktxt, $location);
+        return new self($start, $end, $summary, $linkadr, $linktxt, $location);
     }
 
     /**
-     * @param string $event
+     * @param string $summary
      * @param string $linkadr
      * @param string $linktxt
      * @param string $location
@@ -119,14 +119,14 @@ class Event
     private function __construct(
         LocalDateTime $start,
         LocalDateTime $end,
-        $event,
+        $summary,
         $linkadr,
         $linktxt,
         $location
     ) {
         $this->start = $start;
         $this->end = $end;
-        $this->event = $event;
+        $this->summary = $summary;
         $this->linkadr = $linkadr;
         $this->linktxt = $linktxt;
         $this->location = $location;

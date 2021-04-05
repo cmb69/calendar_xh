@@ -311,7 +311,7 @@ class EventListController
         if ($event->linkadr) {
             $url = $event->linkadr;
             $target = (strpos($url, '://') === false) ? '_self' : '_blank';
-            $title = strip_tags($event->event);
+            $title = strip_tags($event->summary);
             $text = $event->linktxt ?: $event->linkadr;
             return "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
                 . "{$text}</a>";
