@@ -20,7 +20,6 @@ features at the cost of greatly increased complexity.
       - [Event List](#event-list)
       - [Next Event](#next-event)
       - [Import](#import)
-  - [Limitations](#limitations)
   - [Troubleshooting](#troubleshooting)
   - [License](#license)
   - [Credits](#credits)
@@ -71,9 +70,7 @@ The look of Calendar\_XH can be customized under *Stylesheet*.
 ### Event Editor
 
 The administration of the events is done in the back-end (*Plugins* →
-*Calendar* → *Edit Events*). Note that adding and deleting events
-happens only temporarily; you have to save the events to make that
-change permanent.
+*Calendar* → *Edit Events*).
 
 Alternatively, you can embed the event editor on a normal CMSimple\_XH
 page, so the events can be edited by non-admins also. Use the following
@@ -128,14 +125,8 @@ or on a page:
 To import existing `.ics` files (iCalendar format), you have to put them
 in the `content/` folder (right besides the `calendar.csv` file). Then
 navigate to *Plugins* → *Calendar* → *Import* where you can actually
-import the desired file(s). Note that the imported events are treated as
-new events; importing the same `.ics` file multiple times will add all
-events multiple times.
-
-## Limitations
-
-Calendar\_XH is unsuitable for lots of events. Depending on the server,
-roughly 100 events should be fine, but more events may cause issues.
+import the desired file(s). Note that only a very minimalistic import is
+implemented so far. Also note that no synchronization is being done on import.
 
 ## Troubleshooting
 Report bugs and ask for support either on [Github](https://github.com/cmb69/calendar_xh/issues)

@@ -73,6 +73,7 @@ class EventDataService
             flock($stream, LOCK_SH);
             while (($record = fgetcsv($stream, 0, ';', '"', "\0")) !== false) {
                 assert(is_array($record));
+                $id = md5(serialize($record));
                 list($datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt)
                     = $record;
                 if (!$dateend) {
@@ -93,7 +94,7 @@ class EventDataService
                         $location
                     );
                     if ($maybeEvent !== null) {
-                        $result[] = $maybeEvent;
+                        $result[$id] = $maybeEvent;
                     }
                 }
             }
@@ -119,7 +120,7 @@ class EventDataService
                 }
             }
         }
-        usort($result, /** @return int */ function (Event $a, Event $b) use ($year) {
+        uasort($result, /** @return int */ function (Event $a, Event $b) use ($year) {
             $dt1 = $a->isBirthday() ? $a->start->withYear($year) : $a->start;
             $dt2 = $b->isBirthday() ? $b->start->withYear($year) : $b->start;
             return $dt1->compare($dt2);

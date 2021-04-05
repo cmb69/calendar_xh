@@ -66,6 +66,9 @@ class EditEventsController
      */
     public function defaultAction()
     {
+        global $pth, $bjs;
+
+        $bjs .= "<script src=\"{$pth['folder']['plugins']}calendar/calendar.min.js\"></script>";
         $events = $this->eventDataService->readEvents();
         echo $this->eventForm($events);
     }
@@ -73,64 +76,149 @@ class EditEventsController
     /**
      * @return void
      */
-    public function saveAction()
+    public function createAction()
     {
-        $deleted = false;
-        $added = false;
+        $event = $this->createDefaultEvent();
+        $this->renderEditForm($event, null, "create");
+    }
 
+    /**
+     * @return void
+     */
+    public function updateAction()
+    {
+        $events = $this->eventDataService->readEvents();
+        assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
+        if (!array_key_exists($_GET['event_id'], $events)) {
+            $this->redirectToOverview();
+        }
+        $id = $_GET['event_id'];
+        $event = $events[$id];
+        $this->renderEditForm($event, $id, "update");
+    }
+
+    /**
+     * @return void
+     */
+    public function deleteAction()
+    {
+        $events = $this->eventDataService->readEvents();
+        assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
+        if (!array_key_exists($_GET['event_id'], $events)) {
+            $this->redirectToOverview();
+        }
+        $id = $_GET['event_id'];
+        $event = $events[$id];
+        $this->renderEditForm($event, $id, "delete");
+    }
+
+    /**
+     * @param string|null $id
+     * @param string $action
+     * @return void
+     */
+    private function renderEditForm(Event $event, $id, $action)
+    {
+        global $su;
+
+        $url = "?$su&admin=plugin_main&action=$action";
+        if ($id !== null) {
+            $url .= "&event_id=$id";
+        }
+        $label = $action === "delete" ? "label_delete" : "label_save";
+        $this->view->render('edit-form', [
+            'action' => $url,
+            'showEventTime' => (bool) $this->conf['show_event_time'],
+            'showEventLocation' => (bool) $this->conf['show_event_location'],
+            'showEventLink' => (bool) $this->conf['show_event_link'],
+            'event' => $event,
+            'button_label' => $this->lang[$label],
+        ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function doCreateAction()
+    {
+        $events = $this->eventDataService->readEvents();
+        $this->upsert($events, null);
+    }
+
+    /**
+     * @return void
+     */
+    public function doUpdateAction()
+    {
+        assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
+        $id = $_GET['event_id'];
+        $events = $this->eventDataService->readEvents();
+        $this->upsert($events, array_key_exists($id, $events) ? $id : null);
+    }
+
+    /**
+     * @param Event[] $events
+     * @param string|null $id
+     * @return void
+     */
+    private function upsert(array $events, $id)
+    {
         $varnames = array(
             'datestart', 'dateend', 'starttime', 'endtime', 'event', 'linkadr', 'linktxt', 'location'
         );
         $post = [];
         foreach ($varnames as $var) {
-            assert(!isset($_POST[$var]) || is_array($_POST[$var]));
-            $post[$var] = isset($_POST[$var]) ? $_POST[$var] : [];
+            assert(!isset($_POST[$var]) || is_string($_POST[$var]));
+            $post[$var] = isset($_POST[$var]) ? $_POST[$var] : "";
         }
-        $events = [];
-        foreach (array_keys($post['datestart']) as $i) {
-            if (!isset($_POST['delete'][$i])) {
-                if (!$this->isValidDate($post['datestart'][$i])) {
-                    $post['datestart'][$i] = '';
-                }
-                if (!$this->isValidDate($post['dateend'][$i])) {
-                    $post['dateend'][$i] = '';
-                }
-                /** @var string[] $args */
-                $args = array_column($post, $i);
-                $maybeEvent = Event::create(...$args);
-                if ($maybeEvent !== null) {
-                    $events[] = $maybeEvent;
-                }
-            } else {
-                $deleted = true;
-            }
+        if (!$this->isValidDate($post['datestart'])) {
+            $post['datestart'] = '';
+        }
+        if (!$this->isValidDate($post['dateend'])) {
+            $post['dateend'] = '';
+        }
+        $maybeEvent = Event::create(...array_values($post));
+        if ($maybeEvent === null) {
+            $this->redirectToOverview();
+        }
+        if ($id !== null) {
+            $events[$id] = $maybeEvent;
+        } else {
+            $events[] = $maybeEvent;
         }
 
-        if (isset($_POST['add'])) {
-            $events[] = $this->createDefaultEvent();
-            $added = true;
+        // sorting new event inputs, idea of manu, forum-message
+        uasort($events, /** @return int */ function (Event $a, Event $b) {
+            return $a->start->compare($b->start);
+        });
+        /** @var Event[] $events */
+        if ($this->eventDataService->writeEvents($events)) {
+            $this->redirectToOverview();
+        } else {
+            echo XH_message('fail', $this->lang['eventfile_not_saved']);
+            $this->renderEditForm($maybeEvent, $id, $id !== null ? "create" : "update");
         }
+    }
 
-        if (!$deleted && !$added) {
-            // sorting new event inputs, idea of manu, forum-message
-            usort($events, /** @return int */ function (Event $a, Event $b) {
-                return $a->start->compare($b->start);
-            });
-            /** @var Event[] $events */
-            $oldevents = $this->eventDataService->readEvents();
-            if ($_POST['calendar_hash'] !== '' && $_POST['calendar_hash'] !== sha1(serialize($oldevents))) {
-                echo XH_message('warning', $this->lang['message_changed']),
-                    $this->eventForm($events, true);
-                return;
-            }
-            if ($this->eventDataService->writeEvents($events)) {
-                echo XH_message('success', $this->lang['eventfile_saved']);
-            } else {
-                echo XH_message('fail', $this->lang['eventfile_not_saved']);
-            }
+    /**
+     * @return void
+     */
+    public function doDeleteAction()
+    {
+        assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
+        $id = $_GET['event_id'];
+        $events = $this->eventDataService->readEvents();
+        if (!array_key_exists($id, $events)) {
+            $this->redirectToOverview();
         }
-
-        echo $this->eventForm($events);
+        $event = $events[$id];
+        unset($events[$id]);
+        if ($this->eventDataService->writeEvents($events)) {
+            $this->redirectToOverview();
+        } else {
+            echo XH_message('fail', $this->lang['eventfile_not_saved']);
+            $this->renderEditForm($event, $id, "delete");
+        }
     }
 
     /**
@@ -140,13 +228,32 @@ class EditEventsController
      */
     private function eventForm($events, $force = false)
     {
-        return $this->view->getString('event-form', [
+        global $su;
+
+        return $this->view->getString('event-table', [
+            'selected' => $su ? $su : 'calendar',
             'showEventTime' => (bool) $this->conf['show_event_time'],
             'showEventLocation' => (bool) $this->conf['show_event_location'],
             'showEventLink' => (bool) $this->conf['show_event_link'],
             'events' => $events,
             'hash' => !$force ? sha1(serialize($events)) : '',
         ]);
+    }
+
+    /**
+     * @return no-return
+     */
+    private function redirectToOverview()
+    {
+        global $su;
+
+        if ($su === '' || $su === 'calendar') {
+            $url = CMSIMPLE_URL . "?calendar&admin=plugin_main&action=plugin_text";
+        } else {
+            $url = CMSIMPLE_URL . "?$su";
+        }
+        header("Location: $url");
+        exit;
     }
 
     /**

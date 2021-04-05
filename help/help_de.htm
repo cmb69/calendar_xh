@@ -46,7 +46,6 @@
 <li><a href="#nächste-veranstaltung">Nächste Veranstaltung</a></li>
 <li><a href="#import">Import</a></li>
 </ul></li>
-<li><a href="#beschränkungen">Beschränkungen</a></li>
 <li><a href="#fehlerbehebung">Fehlerbehebung</a></li>
 <li><a href="#lizenz">Lizenz</a></li>
 <li><a href="#danksagung">Danksagung</a></li>
@@ -71,7 +70,7 @@
 <p>Das Aussehen von Calendar_XH kann unter <em>Stylesheet</em> angepasst werden.</p>
 <h2 id="verwendung">Verwendung</h2>
 <h3 id="veranstaltungs-editor">Veranstaltungs-Editor</h3>
-<p>Die Administration der Veranstaltungen erfolgt im Backend (<em>Plugins</em> → <em>Calendar</em> → <em>Events bearbeiten</em>). Es ist zu beachten, dass das Hinzufügen und Löschen von Veranstaltungen zunächst nur vorübergehend wirkt; um die Änderungen permanent zu übernehmen, müssen die Veranstaltungen gespeichert werden.</p>
+<p>Die Administration der Veranstaltungen erfolgt im Backend (<em>Plugins</em> → <em>Calendar</em> → <em>Events bearbeiten</em>).</p>
 <p>Alternativ kann der Veranstaltungs-Editor auf einer normalen CMSimple_XH Seite eingebettet werden, so dass die Veranstaltungen ebenfalls von Nicht-Admins bearbeitet werden können. Dazu wird der folgende Pluginaufruf verwendet:</p>
 <pre><code>{{{editevents()}}}</code></pre>
 <p>Das Einbetten des Veranstaltungs-Editors auf einer Seite sollte nur erfolgen, wenn der Zugriff auf diese Seite Authorisierung durch <a href="https://github.com/cmb69/register_xh">Register_XH</a> oder <a href="https://github.com/cmsimple-xh/memberpages">Memberpages</a> erfordert.</p>
@@ -91,9 +90,7 @@
 <p>oder auf einer Seite:</p>
 <pre><code>{{{nextevent()}}}</code></pre>
 <h3 id="import">Import</h3>
-<p>Um vorhandene <code>.ics</code> Dateien (iCalendar-Format) zu importieren, müssen diese zunächst im <code>content/</code> Ordner (neben der <code>calendar.csv</code> Datei) abgelegt werden. Unter <em>Plugins</em> → <em>Calendar</em> → <em>Import</em> kann dann der eigentliche Import der Datei(en) durchgeführt werden. Es ist zu beachten, dass die importierten Events als neue Events hinzugefügt werden; mehrfacher Import der gleichen <code>.ics</code> Datei fügt alle Events mehrfach hinzu.</p>
-<h2 id="beschränkungen">Beschränkungen</h2>
-<p>Calendar_XH ist nicht für viele Veranstaltungen geeignet. In Abhängigkeit vom Server sollten ca. 100 Veranstaltungen kein Problem darstellen, aber bei mehr Veranstaltungen könnte es zu Fehlfunktionen kommen.</p>
+<p>Um vorhandene <code>.ics</code> Dateien (iCalendar-Format) zu importieren, müssen diese zunächst im <code>content/</code> Ordner (neben der <code>calendar.csv</code> Datei) abgelegt werden. Unter <em>Plugins</em> → <em>Calendar</em> → <em>Import</em> kann dann der eigentliche Import der Datei(en) durchgeführt werden. Es ist zu beachten, dass bisland nur ein sehr minimalistischer Import implementiert ist. Es ist ebenfalls zu beachten, dass beim Import keine Synchronisation durchgeführt wird.</p>
 <h2 id="fehlerbehebung">Fehlerbehebung</h2>
 <p>Melden Sie Programmfehler und stellen Sie Supportanfragen entweder auf <a href="https://github.com/cmb69/calendar_xh/issues">Github</a> oder im <a href="https://cmsimpleforum.com/">CMSimple_XH Forum</a>.</p>
 <h2 id="lizenz">Lizenz</h2>

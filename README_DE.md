@@ -20,7 +20,6 @@ zusätzlicher Features anbietet, allerdings zu Lasten der Einfachheit.
       - [Veranstaltungsliste](#veranstaltungsliste)
       - [Nächste Veranstaltung](#nächste-veranstaltung)
       - [Import](#import)
-  - [Beschränkungen](#beschränkungen)
   - [Fehlerbehebung](#fehlerbehebung)
   - [Lizenz](#lizenz)
   - [Danksagung](#danksagung)
@@ -74,10 +73,7 @@ Das Aussehen von Calendar\_XH kann unter *Stylesheet* angepasst werden.
 ### Veranstaltungs-Editor
 
 Die Administration der Veranstaltungen erfolgt im Backend (*Plugins* →
-*Calendar* → *Events bearbeiten*). Es ist zu beachten, dass das
-Hinzufügen und Löschen von Veranstaltungen zunächst nur vorübergehend
-wirkt; um die Änderungen permanent zu übernehmen, müssen die
-Veranstaltungen gespeichert werden.
+*Calendar* → *Events bearbeiten*).
 
 Alternativ kann der Veranstaltungs-Editor auf einer normalen
 CMSimple\_XH Seite eingebettet werden, so dass die Veranstaltungen
@@ -133,17 +129,9 @@ oder auf einer Seite:
 Um vorhandene `.ics` Dateien (iCalendar-Format) zu importieren, müssen
 diese zunächst im `content/` Ordner (neben der `calendar.csv` Datei)
 abgelegt werden. Unter *Plugins* → *Calendar* → *Import* kann dann der
-eigentliche Import der Datei(en) durchgeführt werden. Es ist zu
-beachten, dass die importierten Events als neue Events hinzugefügt
-werden; mehrfacher Import der gleichen `.ics` Datei fügt alle Events
-mehrfach hinzu.
-
-## Beschränkungen
-
-Calendar\_XH ist nicht für viele Veranstaltungen geeignet. In
-Abhängigkeit vom Server sollten ca. 100 Veranstaltungen kein Problem
-darstellen, aber bei mehr Veranstaltungen könnte es zu Fehlfunktionen
-kommen.
+eigentliche Import der Datei(en) durchgeführt werden.
+Es ist zu beachten, dass bisland nur ein sehr minimalistischer Import implementiert ist.
+Es ist ebenfalls zu beachten, dass beim Import keine Synchronisation durchgeführt wird.
 
 ## Fehlerbehebung
 

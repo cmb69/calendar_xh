@@ -171,6 +171,12 @@ but it should take the same width.) */
     font-size: 13px;
 }
 /* backend edit events */
+.calendar_overview tr {
+    border: 1px solid;
+}
+.calendar_overview td {
+    padding: 0 0 0 1em;
+}
 .calendar_input {
 }
 .calendar_input button {

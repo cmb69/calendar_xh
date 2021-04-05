@@ -46,7 +46,6 @@
 <li><a href="#next-event">Next Event</a></li>
 <li><a href="#import">Import</a></li>
 </ul></li>
-<li><a href="#limitations">Limitations</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
 <li><a href="#license">License</a></li>
 <li><a href="#credits">Credits</a></li>
@@ -71,7 +70,7 @@
 <p>The look of Calendar_XH can be customized under <em>Stylesheet</em>.</p>
 <h2 id="usage">Usage</h2>
 <h3 id="event-editor">Event Editor</h3>
-<p>The administration of the events is done in the back-end (<em>Plugins</em> → <em>Calendar</em> → <em>Edit Events</em>). Note that adding and deleting events happens only temporarily; you have to save the events to make that change permanent.</p>
+<p>The administration of the events is done in the back-end (<em>Plugins</em> → <em>Calendar</em> → <em>Edit Events</em>).</p>
 <p>Alternatively, you can embed the event editor on a normal CMSimple_XH page, so the events can be edited by non-admins also. Use the following plugin call:</p>
 <pre><code>{{{editevents()}}}</code></pre>
 <p>Embedding the event editor on a page should only be done if access to this page requires authorization via <a href="https://github.com/cmb69/register_xh">Register_XH</a> or <a href="https://github.com/cmsimple-xh/memberpages">Memberpages</a>.</p>
@@ -91,9 +90,7 @@
 <p>or on a page:</p>
 <pre><code>{{{nextevent()}}}</code></pre>
 <h3 id="import">Import</h3>
-<p>To import existing <code>.ics</code> files (iCalendar format), you have to put them in the <code>content/</code> folder (right besides the <code>calendar.csv</code> file). Then navigate to <em>Plugins</em> → <em>Calendar</em> → <em>Import</em> where you can actually import the desired file(s). Note that the imported events are treated as new events; importing the same <code>.ics</code> file multiple times will add all events multiple times.</p>
-<h2 id="limitations">Limitations</h2>
-<p>Calendar_XH is unsuitable for lots of events. Depending on the server, roughly 100 events should be fine, but more events may cause issues.</p>
+<p>To import existing <code>.ics</code> files (iCalendar format), you have to put them in the <code>content/</code> folder (right besides the <code>calendar.csv</code> file). Then navigate to <em>Plugins</em> → <em>Calendar</em> → <em>Import</em> where you can actually import the desired file(s). Note that only a very minimalistic import is implemented so far. Also note that no synchronization is being done on import.</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>Report bugs and ask for support either on <a href="https://github.com/cmb69/calendar_xh/issues">Github</a> or in the <a href="https://cmsimpleforum.com/">CMSimple_XH Forum</a>.</p>
 <h2 id="license">License</h2>

@@ -38,12 +38,12 @@ $plugin_tx['calendar']['event_link_txt']="Link-Text oder anderer Text";
 $plugin_tx['calendar']['eventfile_saved']="Geänderte Veranstaltungsdaten gespeichert . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen konnten NICHT gespeichert werden.";
 
-$plugin_tx['calendar']['label_add_event']="Veranstaltung hinzufügen";
-$plugin_tx['calendar']['label_delete_event']="Veranstaltung löschen";
+$plugin_tx['calendar']['label_new']="Neu";
+$plugin_tx['calendar']['label_edit']="Bearbeiten";
+$plugin_tx['calendar']['label_delete']="Löschen";
 $plugin_tx['calendar']['label_save']="Speichern";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_import_button']="Importiere %s";
-$plugin_tx['calendar']['message_changed']="Die Veranstaltungsdatei wurde in der Zwischenzeit geändert! Speichern Sie erneut, um diese Änderungen zu überschreiben.";
 
 $plugin_tx['calendar']['alt_logo']="Kalender";
 

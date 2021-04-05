@@ -236,11 +236,20 @@ class Plugin
             $action = 'editevents';
         }
         switch ($action) {
-            case 'saveevents':
-                $action = 'saveAction';
+            case 'create':
+                $action = 'createAction';
+                break;
+            case 'update':
+                $action = 'updateAction';
+                break;
+            case 'delete':
+                $action = 'deleteAction';
                 break;
             default:
                 $action = 'defaultAction';
+        }
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $action = "do" . ucfirst($action);
         }
         $controller = new EditEventsController(
             $plugin_cf['calendar'],

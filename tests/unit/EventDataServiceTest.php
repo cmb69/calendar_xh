@@ -54,7 +54,7 @@ CSV;
         vfsStream::setup("root");
         file_put_contents(vfsStream::url("root/calendar.csv"), $csv);
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $events = $subject->filterByMonth($subject->readEvents(), 2021, 4);
+        $events = array_values($subject->filterByMonth($subject->readEvents(), 2021, 4));
         $this->assertCount(2, $events);
         $this->assertSame("markus", $events[0]->event);
         $this->assertSame("martin", $events[1]->event);
