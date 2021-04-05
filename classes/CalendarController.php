@@ -249,7 +249,7 @@ class CalendarController
                 $text = $event->summary;
             }
             if (!$event->isBirthday()) {
-                $titles[] = trim($event->getStartTime()) . " " . strip_tags($text);
+                $titles[] = trim($event->getStartTime()) . " " . $text;
             } else {
                 $age = $this->year - $event->start->year;
                 $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
