@@ -97,9 +97,9 @@ class CalendarController
      */
     public function defaultAction()
     {
-        global $pth, $bjs;
+        global $pth, $hjs;
 
-        $bjs .= '<script src="' . $pth['folder']['plugins'] . 'calendar/calendar.min.js"></script>';
+        $hjs .= '<script type="module" src="' . $pth['folder']['plugins'] . 'calendar/calendar.min.js"></script>';
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
         }

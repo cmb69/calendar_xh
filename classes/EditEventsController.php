@@ -66,9 +66,9 @@ class EditEventsController
      */
     public function defaultAction()
     {
-        global $pth, $bjs;
+        global $pth, $hjs;
 
-        $bjs .= "<script src=\"{$pth['folder']['plugins']}calendar/calendar.min.js\"></script>";
+        $hjs .= "<script type=\"module\" src=\"{$pth['folder']['plugins']}calendar/calendar.min.js\"></script>";
         $events = $this->eventDataService->readEvents();
         echo $this->eventForm($events);
     }
