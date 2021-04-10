@@ -51,7 +51,7 @@
 
     <target name="ts-check" description="">
         <exec executable="tsc" passthru="true" checkreturn="true">
-            <arg line="--allowJs --lib es6,dom --noEmit"/>
+            <arg line="--allowJs --lib es6,dom --noEmit --noImplicitAny"/>
             <arg file="calendar.min.js"/>
         </exec>
     </target>
