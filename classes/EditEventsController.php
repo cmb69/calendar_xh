@@ -68,7 +68,12 @@ class EditEventsController
     {
         global $pth, $hjs;
 
-        $hjs .= "<script type=\"module\" src=\"{$pth['folder']['plugins']}calendar/calendar.min.js\"></script>";
+        $hjs .= <<<HTML
+<script type="module">
+    import CalendarOverviewWidget from "{$pth['folder']['plugins']}calendar/js/overview.min.js";
+    document.querySelectorAll(".calendar_overview").forEach(form => new CalendarOverviewWidget(form));
+</script>
+HTML;
         $events = $this->eventDataService->readEvents();
         echo $this->eventForm($events);
     }

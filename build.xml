@@ -52,7 +52,8 @@
     <target name="ts-check" description="">
         <exec executable="tsc" passthru="true" checkreturn="true">
             <arg line="--allowJs --lib es6,dom --noEmit --noImplicitAny"/>
-            <arg file="calendar.min.js"/>
+            <arg file="js/calendar.min.js"/>
+            <arg file="js/overview.min.js"/>
         </exec>
     </target>
 
@@ -68,7 +69,7 @@
         <delete file="export.zip"/>
         <jsMin targetDir="dist" suffix="" failOnError="false">
             <fileset dir="export">
-                <include name="*.min.js"/>
+                <include name="js/*.min.js"/>
             </fileset>
         </jsMin>
         <move todir="dist">

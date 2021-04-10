@@ -99,7 +99,12 @@ class CalendarController
     {
         global $pth, $hjs;
 
-        $hjs .= '<script type="module" src="' . $pth['folder']['plugins'] . 'calendar/calendar.min.js"></script>';
+        $hjs .= <<<HTML
+<script type="module">
+    import CalendarWidget from "{$pth['folder']['plugins']}calendar/js/calendar.min.js";
+    document.querySelectorAll(".calendar_calendar").forEach(element => new CalendarWidget(element));
+</script>
+HTML;
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
         }
