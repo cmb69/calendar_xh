@@ -135,33 +135,33 @@ class Event
     /**
      * @return string
      */
-    public function getDateStart()
+    public function getIsoStartDate()
     {
-        return $this->start->getDate();
+        return $this->start->getIsoDate();
     }
 
     /**
      * @return string
      */
-    public function getStartTime()
+    public function getIsoStartTime()
     {
-        return $this->start->getTime();
+        return $this->start->getIsoTime();
     }
 
     /**
      * @return string
      */
-    public function getDateEnd()
+    public function getIsoEndDate()
     {
-        return $this->end->getDate();
+        return $this->end->getIsoDate();
     }
 
     /**
      * @return string
      */
-    public function getEndTime()
+    public function getIsoEndTime()
     {
-        return $this->end->getTime();
+        return $this->end->getIsoTime();
     }
 
     /**

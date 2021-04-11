@@ -261,10 +261,10 @@ class EventDataService
     private function writeEventLine($fp, Event $event)
     {
         $record = [
-            $event->getDateStart(),
-            $event->getStartTime(),
-            $event->getDateEnd(),
-            $event->getEndTime(),
+            $event->getIsoStartDate(),
+            $event->getIsoStartTime(),
+            $event->getIsoEndDate(),
+            $event->getIsoEndTime(),
             $event->summary,
             $event->location,
             $event->linkadr,

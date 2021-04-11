@@ -121,7 +121,7 @@ class LocalDateTime
     /**
      * @return string
      */
-    public function getDate()
+    public function getIsoDate()
     {
         return sprintf("%04d-%02d-%02d", $this->year, $this->month, $this->day);
     }
@@ -129,7 +129,7 @@ class LocalDateTime
     /**
      * @return string
      */
-    public function getTime()
+    public function getIsoTime()
     {
         return sprintf("%02d:%02d", $this->hour, $this->minute);
     }

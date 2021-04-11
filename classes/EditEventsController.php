@@ -278,7 +278,7 @@ HTML;
     private function createDefaultEvent()
     {
         $event = Event::create(
-            $this->now->getDate(),
+            $this->now->getIsoDate(),
             '',
             '',
             '',

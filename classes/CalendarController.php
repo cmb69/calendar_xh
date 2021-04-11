@@ -243,17 +243,16 @@ HTML;
         foreach ($events as $event) {
             if ($event->end->compareDate($event->start) > 0) {
                 $text = sprintf(
-                    "%s %s %s %s",
+                    "%s %s %s",
                     $event->summary,
                     $this->lang['event_date_till_date'],
-                    $event->getDateEnd(),
-                    $event->getEndTime()
+                    $this->dateTimeFormatter->formatDateTime($event->end)
                 );
             } else {
                 $text = $event->summary;
             }
             if (!$event->isBirthday()) {
-                $titles[] = trim($event->getStartTime()) . " " . $text;
+                $titles[] = $this->dateTimeFormatter->formatTime($event->start) . " " . $text;
             } else {
                 $age = $this->year - $event->start->year;
                 $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
