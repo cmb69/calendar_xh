@@ -11,8 +11,8 @@
   <table>
 <?php foreach ($this->events as $id => $event):?>
     <tr>
-      <td><?=$this->escape($event->getDateStart())?></td>
-      <td><?=$this->escape($event->getDateEnd())?></td>
+      <td><?=$this->escape($event->getIsoStartDate())?></td>
+      <td><?=$this->escape($event->getIsoEndDate())?></td>
       <td><?=$this->escape($event->summary)?></td>
       <td><input type="radio" name="event_id" value="<?=$this->escape($id)?>"></td>
     </tr>

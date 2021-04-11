@@ -2,27 +2,27 @@
   <div>
     <label>
       <?=$this->text('event_date_start')?>
-      <input type="date" class="calendar_input_date" maxlength="10" name="datestart" value="<?=$this->escape($this->event->getDateStart())?>">
+      <input type="date" class="calendar_input_date" maxlength="10" name="datestart" value="<?=$this->escape($this->event->getIsoStartDate())?>">
     </label>
 <?php if ($this->showEventTime):?>
     <label>
       <?=$this->text('event_time')?>
-      <input type="time" class="calendar_input_time" maxlength="5" name="starttime" value="<?=$this->escape($this->event->getStartTime())?>">
+      <input type="time" class="calendar_input_time" maxlength="5" name="starttime" value="<?=$this->escape($this->event->getIsoStartTime())?>">
     </label>
 <?php else:?>
-    <input type="hidden" maxlength="5" name="starttime" value="<?=$this->escape($this->event->getStartTime())?>">
+    <input type="hidden" maxlength="5" name="starttime" value="<?=$this->escape($this->event->getIsoStartTime())?>">
 <?php endif?>
     <label>
       <?=$this->text('event_date_end')?>
-      <input type="date" class="calendar_input_date" maxlength="10" name="dateend" value="<?=$this->escape($this->event->getDateEnd())?>">
+      <input type="date" class="calendar_input_date" maxlength="10" name="dateend" value="<?=$this->escape($this->event->getIsoEndDate())?>">
     </label>
 <?php if ($this->showEventTime):?>
     <label>
       <?=$this->text('event_time')?>
-      <input type="time" class="calendar_input_time" maxlength="5" name="endtime" value="<?=$this->escape($this->event->getEndTime())?>">
+      <input type="time" class="calendar_input_time" maxlength="5" name="endtime" value="<?=$this->escape($this->event->getIsoEndTime())?>">
     </label>
 <?php else:?>
-    <input type="hidden" maxlength="5" name="endtime" value="<?=$this->escape($this->event->getEndTime())?>">
+    <input type="hidden" maxlength="5" name="endtime" value="<?=$this->escape($this->event->getIsoEndTime())?>">
 <?php endif?>
     <label>
       <?=$this->text('event_summary')?>
