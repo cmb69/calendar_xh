@@ -34,11 +34,8 @@ class IcalImportController
     /** @var View */
     private $view;
 
-    /**
-     * @param string $dataFolder
-     */
     public function __construct(
-        $dataFolder,
+        string $dataFolder,
         EventDataService $eventDataService,
         View $view
     ) {
@@ -63,7 +60,7 @@ class IcalImportController
     /**
      * @return string[]
      */
-    private function findIcsFiles()
+    private function findIcsFiles(): array
     {
         $result = [];
         foreach (new DirectoryIterator($this->dataFolder) as $file) {

@@ -28,20 +28,13 @@ class HtmlString
      */
     private $value;
 
-    /**
-     * @param string $string
-     */
-    public function __construct($string)
+    public function __construct(string $string)
     {
         $this->value = $string;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        /** @psalm-suppress RedundantCastGivenDocblockType */
-        return (string) $this->value;
+        return $this->value;
     }
 }

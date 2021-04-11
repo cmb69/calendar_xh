@@ -66,9 +66,6 @@ class CalendarController
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
-     * @param int $year
-     * @param int $month
-     * @param string $eventpage
      */
     public function __construct(
         array $conf,
@@ -77,9 +74,9 @@ class CalendarController
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
         View $view,
-        $year = 0,
-        $month = 0,
-        $eventpage = ''
+        int $year = 0,
+        int $month = 0,
+        string $eventpage = ''
     ) {
         $this->conf = $conf;
         $this->lang = $lang;
@@ -152,7 +149,7 @@ HTML;
      * @param (int|null)[] $columns
      * @return stdClass[]
      */
-    private function getRowData(array $columns)
+    private function getRowData(array $columns): array
     {
         $events = $this->eventDataService->readEvents();
         $today = ($this->month === $this->now->month && $this->year === $this->now->year)
@@ -189,10 +186,9 @@ HTML;
 
     /**
      * @param Event[] $events
-     * @param int $day
      * @return Event[]
      */
-    private function filterEventsByDay(array $events, $day)
+    private function filterEventsByDay(array $events, int $day): array
     {
         $result = [];
         foreach ($events as $event) {
@@ -205,11 +201,7 @@ HTML;
         return $result;
     }
 
-    /**
-     * @param int $day
-     * @return bool
-     */
-    private function isEventOn(Event $event, $day)
+    private function isEventOn(Event $event, int $day): bool
     {
         if ($event->isBirthday()) {
             return false;
@@ -226,11 +218,7 @@ HTML;
             || $event->end->compareDate($today) === 0;
     }
 
-    /**
-     * @param int $day
-     * @return bool
-     */
-    private function isBirthdayOn(Event $event, $day)
+    private function isBirthdayOn(Event $event, int $day): bool
     {
         $date = $event->start;
         return $event->isBirthday() && $date->month == $this->month && $date->day == $day;
@@ -238,9 +226,8 @@ HTML;
 
     /**
      * @param Event[] $events
-     * @return string
      */
-    private function getEventsTitle(array $events)
+    private function getEventsTitle(array $events): string
     {
         $titles = [];
         foreach ($events as $event) {
@@ -265,11 +252,7 @@ HTML;
         return implode(" | ", $titles);
     }
 
-    /**
-     * @param int $dayOfWeek
-     * @return bool
-     */
-    private function isWeekEnd($dayOfWeek)
+    private function isWeekEnd(int $dayOfWeek): bool
     {
         return $dayOfWeek === (int) $this->conf['week-end_day_1']
             || $dayOfWeek === (int) $this->conf['week-end_day_2'];
@@ -278,7 +261,7 @@ HTML;
     /**
      * @return stdClass[]
      */
-    private function getDaynamesRow()
+    private function getDaynamesRow(): array
     {
         $dayarray = explode(',', $this->lang['daynames_array']);
         $row = [];
@@ -296,10 +279,7 @@ HTML;
         return $row;
     }
 
-    /**
-     * @return string
-     */
-    private function getPrevUrl()
+    private function getPrevUrl(): string
     {
         global $sn, $su;
 
@@ -313,10 +293,7 @@ HTML;
         return "$sn?$su&month=$month_prev&year=$year_prev";
     }
 
-    /**
-     * @return string
-     */
-    private function getNextUrl()
+    private function getNextUrl(): string
     {
         global $sn, $su;
 

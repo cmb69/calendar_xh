@@ -84,11 +84,7 @@ class Plugin
         }
     }
 
-    /**
-     * @param string $admin
-     * @return string
-     */
-    private static function admin($admin)
+    private static function admin(string $admin): string
     {
         switch ($admin) {
             case '':
@@ -102,20 +98,14 @@ class Plugin
         }
     }
 
-    /**
-     * @return string
-     */
-    private static function info()
+    private static function info(): string
     {
         ob_start();
         (new InfoController(new View()))->defaultAction();
         return ob_get_clean();
     }
 
-    /**
-     * @return string
-     */
-    private static function mainAdministration()
+    private static function mainAdministration(): string
     {
         global $plugin_tx;
 
@@ -123,10 +113,7 @@ class Plugin
             . self::editEvents();
     }
 
-    /**
-     * @return string
-     */
-    private static function iCalendarImport()
+    private static function iCalendarImport(): string
     {
         global $action;
 
@@ -146,13 +133,7 @@ class Plugin
         return ob_get_clean();
     }
 
-    /**
-     * @param int $year
-     * @param int $month
-     * @param string $eventpage
-     * @return string
-     */
-    public static function calendar($year = 0, $month = 0, $eventpage = '')
+    public static function calendar(int $year = 0, int $month = 0, string $eventpage = ''): string
     {
         global $plugin_cf, $plugin_tx;
 
@@ -172,14 +153,7 @@ class Plugin
         return ob_get_clean();
     }
 
-    /**
-     * @param int $month
-     * @param int $year
-     * @param int $end_month
-     * @param int $past_month
-     * @return string
-     */
-    public static function events($month = 0, $year = 0, $end_month = 0, $past_month = 0)
+    public static function events(int $month = 0, int $year = 0, int $end_month = 0, int $past_month = 0): string
     {
         global $plugin_cf, $plugin_tx;
 
@@ -200,10 +174,7 @@ class Plugin
         return ob_get_clean();
     }
 
-    /**
-     * @return string
-     */
-    public static function nextEvent()
+    public static function nextEvent(): string
     {
         global $plugin_tx;
 
@@ -219,10 +190,7 @@ class Plugin
         return ob_get_clean();
     }
 
-    /**
-     * @return string
-     */
-    public static function editEvents()
+    public static function editEvents(): string
     {
         global $plugin_cf, $plugin_tx;
 
@@ -263,8 +231,7 @@ class Plugin
         return ob_get_clean();
     }
 
-    /** @return string */
-    private static function getDataFolder()
+    private static function getDataFolder(): string
     {
         global $pth, $sl, $cf, $plugin_cf;
 
@@ -275,10 +242,7 @@ class Plugin
         return $dataFolder;
     }
 
-    /**
-     * @return string
-     */
-    private static function getDpSeparator()
+    private static function getDpSeparator(): string
     {
         global $plugin_cf;
 
@@ -289,10 +253,7 @@ class Plugin
         return $sep;
     }
 
-    /**
-     * @return LocalDateTime
-     */
-    public static function now()
+    public static function now(): LocalDateTime
     {
         $result = LocalDateTime::fromIsoString(date('Y-m-d\TH:i'));
         assert($result !== null);

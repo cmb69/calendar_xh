@@ -119,10 +119,9 @@ HTML;
 
     /**
      * @param string|null $id
-     * @param string $action
      * @return void
      */
-    private function renderEditForm(Event $event, $id, $action)
+    private function renderEditForm(Event $event, $id, string $action)
     {
         global $su;
 
@@ -228,10 +227,8 @@ HTML;
 
     /**
      * @param Event[] $events
-     * @param bool $force
-     * @return string
      */
-    private function eventForm($events, $force = false)
+    private function eventForm(array $events, bool $force = false): string
     {
         global $su;
 
@@ -261,21 +258,12 @@ HTML;
         exit;
     }
 
-    /**
-     * Checking the date format. Some impossible dates can be given, but don't hurt.
-     *
-     * @param string $date
-     * @return bool
-     */
-    private function isValidDate($date)
+    private function isValidDate(string $date): bool
     {
         return (bool) preg_match('/^\d{4}-\d\d-(?:\d\d|\?{1-2}|\-{1-2})$/', $date);
     }
 
-    /**
-     * @return Event
-     */
-    private function createDefaultEvent()
+    private function createDefaultEvent(): Event
     {
         $event = Event::create(
             $this->now->getIsoDate(),

@@ -29,49 +29,34 @@ class View
     public $data = array();
 
     /**
-     * @param string $name
      * @return mixed
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         return $this->data[$name];
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    public function __isset($name)
+    public function __isset(string $name): bool
     {
         return isset($this->data[$name]);
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
-    public function __call($name, array $args)
+    public function __call(string $name, array $args): string
     {
         return $this->escape($this->data[$name]);
     }
 
     /**
-     * @param string $template
      * @param array<string,mixed> $data
-     * @return string
      */
-    public function getString($template, array $data)
+    public function getString(string $template, array $data): string
     {
         ob_start();
         $this->render($template, $data);
         return ob_get_clean();
     }
 
-    /**
-     * @param string $key
-     * @return string
-     */
-    protected function text($key)
+    protected function text(string $key): string
     {
         global $plugin_tx;
 
@@ -80,12 +65,7 @@ class View
         return $this->escape(vsprintf($plugin_tx['calendar'][$key], $args));
     }
 
-    /**
-     * @param string $key
-     * @param int $count
-     * @return string
-     */
-    protected function plural($key, $count)
+    protected function plural(string $key, int $count): string
     {
         global $plugin_tx;
 
@@ -96,11 +76,10 @@ class View
     }
 
     /**
-     * @param string $_template
      * @param array<string,mixed> $_data
      * @return void
      */
-    public function render($_template, $_data)
+    public function render(string $_template, array $_data)
     {
         global $pth;
 
@@ -111,9 +90,8 @@ class View
 
     /**
      * @param mixed $value
-     * @return string
      */
-    protected function escape($value)
+    protected function escape($value): string
     {
         if ($value instanceof HtmlString) {
             return (string) $value;

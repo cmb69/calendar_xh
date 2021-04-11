@@ -45,12 +45,7 @@ class DateTimeFormatter
         $this->monthnames = explode(',', $this->lang['monthnames_array']);
     }
 
-    /**
-     * @param int $month
-     * @param int $year
-     * @return string
-     */
-    public function formatMonthYear($month, $year)
+    public function formatMonthYear(int $month, int $year): string
     {
         $replace = [
             "%Y" => sprintf("%04d", $year),
@@ -60,10 +55,7 @@ class DateTimeFormatter
         return strtr($this->lang['format_month_year'], $replace);
     }
 
-    /**
-     * @return string
-     */
-    public function formatDate(LocalDateTime $ldt)
+    public function formatDate(LocalDateTime $ldt): string
     {
         $replace = [
             "%Y" => sprintf("%04d", $ldt->year),
@@ -74,10 +66,7 @@ class DateTimeFormatter
         return strtr($this->lang['format_date'], $replace);
     }
 
-    /**
-     * @return string
-     */
-    public function formatDateTime(LocalDateTime $ldt)
+    public function formatDateTime(LocalDateTime $ldt): string
     {
         $replace = [
             "%Y" => sprintf("%04d", $ldt->year),
@@ -92,10 +81,7 @@ class DateTimeFormatter
         return strtr($this->lang['format_date_time'], $replace);
     }
 
-    /**
-     * @return string
-     */
-    public function formatTime(LocalDateTime $ldt)
+    public function formatTime(LocalDateTime $ldt): string
     {
         $replace = [
             "%a" => $ldt->hour < 12 ? "am" : "pm",

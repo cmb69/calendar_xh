@@ -61,10 +61,6 @@ class EventListController
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
-     * @param int $month
-     * @param int $year
-     * @param int $end_month
-     * @param int $past_month
      */
     public function __construct(
         array $conf,
@@ -73,10 +69,10 @@ class EventListController
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
         View $view,
-        $month,
-        $year,
-        $end_month,
-        $past_month
+        int $month,
+        int $year,
+        int $end_month,
+        int $past_month
     ) {
         $this->conf = $conf;
         $this->lang = $lang;
@@ -198,10 +194,7 @@ class EventListController
         }
     }
 
-    /**
-     * @return int
-     */
-    private function calcTablecols()
+    private function calcTablecols(): int
     {
         // the number of tablecolumns is calculated
         // starting with minimum number of columns (date + main entry)
@@ -221,10 +214,8 @@ class EventListController
 
     /**
      * @param Event[] $events
-     * @param int $tablecols
-     * @return array
      */
-    private function getMonthEvents(array $events, $tablecols)
+    private function getMonthEvents(array $events, int $tablecols): array
     {
         if (empty($events)) {
             return [];
@@ -240,10 +231,7 @@ class EventListController
         return $result;
     }
 
-    /**
-     * @return array
-     */
-    private function getBirthdayRowView(Event $event)
+    private function getBirthdayRowView(Event $event): array
     {
         return [
             'is_birthday' => true,
@@ -257,10 +245,7 @@ class EventListController
         ];
     }
 
-    /**
-     * @return array
-     */
-    private function getEventRowView(Event $event)
+    private function getEventRowView(Event $event): array
     {
         if ($event->isFullDay()) {
             $time = "";
@@ -288,10 +273,7 @@ class EventListController
         ];
     }
 
-    /**
-     * @return string
-     */
-    private function renderDate(Event $event)
+    private function renderDate(Event $event): string
     {
         if ($event->end->compareDate($event->start) > 0) {
             return sprintf(
@@ -304,10 +286,7 @@ class EventListController
         }
     }
 
-    /**
-     * @return string
-     */
-    private function renderLink(Event $event)
+    private function renderLink(Event $event): string
     {
         if ($event->linkadr) {
             $url = $event->linkadr;
@@ -321,11 +300,7 @@ class EventListController
         }
     }
 
-    /**
-     * @param int $tablecols
-     * @return array
-     */
-    private function getHeadline($tablecols)
+    private function getHeadline(int $tablecols): array
     {
         return [
             'tablecols' => $tablecols,

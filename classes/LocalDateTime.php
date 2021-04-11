@@ -56,10 +56,9 @@ class LocalDateTime
     public $minute;
 
     /**
-     * @param string $string
      * @return LocalDateTime|null
      */
-    public static function fromIsoString($string)
+    public static function fromIsoString(string $string)
     {
         $pattern = '/^(\d{4})(?:-)(\d{2})(?:-)(\d{2})(?:T)(\d{2})(?::)(\d{2})$/';
         if (!preg_match($pattern, $string, $matches)) {
@@ -78,14 +77,7 @@ class LocalDateTime
         }
     }
 
-    /**
-     * @param int $year
-     * @param int $month
-     * @param int $day
-     * @param int $hour
-     * @param int $minute
-     */
-    public function __construct($year, $month, $day, $hour, $minute)
+    public function __construct(int $year, int $month, int $day, int $hour, int $minute)
     {
         if (!checkdate($month, $day, $year)) {
             throw new Exception("Invalid date");
@@ -100,11 +92,7 @@ class LocalDateTime
         $this->minute = $minute;
     }
 
-    /**
-     * @param int $year
-     * @return self
-     */
-    public function withYear($year)
+    public function withYear(int $year): self
     {
         $localDateTime = clone $this;
         $localDateTime->year = $year;
@@ -118,26 +106,17 @@ class LocalDateTime
         return $localDateTime;
     }
 
-    /**
-     * @return string
-     */
-    public function getIsoDate()
+    public function getIsoDate(): string
     {
         return sprintf("%04d-%02d-%02d", $this->year, $this->month, $this->day);
     }
 
-    /**
-     * @return string
-     */
-    public function getIsoTime()
+    public function getIsoTime(): string
     {
         return sprintf("%02d:%02d", $this->hour, $this->minute);
     }
 
-    /**
-     * @return int
-     */
-    public function compare(LocalDateTime $other)
+    public function compare(LocalDateTime $other): int
     {
         $result = $this->compareDate($other);
         if ($result !== 0) {
@@ -149,10 +128,7 @@ class LocalDateTime
         return $this->minute - $other->minute;
     }
 
-    /**
-     * @return int
-     */
-    public function compareDate(LocalDateTime $other)
+    public function compareDate(LocalDateTime $other): int
     {
         if ($this->year !== $other->year) {
             return $this->year - $other->year;

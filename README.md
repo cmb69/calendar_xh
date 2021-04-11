@@ -28,7 +28,7 @@ features at the cost of greatly increased complexity.
 ## Requirements
 
 Calendar\_XH is a plugin for CMSimple\_XH.
-It requires CMSimple\_XH ≥ 1.7.0, and PHP ≥ 5.5.4.
+It requires CMSimple\_XH ≥ 1.7.0, and PHP ≥ 7.0.0.
 
 ## Download
 

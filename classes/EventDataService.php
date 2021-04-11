@@ -34,20 +34,13 @@ class EventDataService
     /** @var string */
     private $eventfile;
 
-    /**
-     * @param string $dataFolder
-     * @param string $separator
-     */
-    public function __construct($dataFolder, $separator)
+    public function __construct(string $dataFolder, string $separator)
     {
         $this->separator = $separator;
         $this->eventfile = "{$dataFolder}calendar.csv";
     }
 
-    /**
-     * @return string
-     */
-    public function getFilename()
+    public function getFilename(): string
     {
         return $this->eventfile;
     }
@@ -55,7 +48,7 @@ class EventDataService
     /**
      * @return Event[]
      */
-    public function readEvents()
+    public function readEvents(): array
     {
         $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".csv");
         if (!is_file("{$eventfile}.csv")) {
@@ -106,11 +99,9 @@ class EventDataService
 
     /**
      * @param Event[] $events
-     * @param int $year
-     * @param int $month
      * @return Event[]
      */
-    public function filterByMonth(array $events, $year, $month)
+    public function filterByMonth(array $events, int $year, int $month): array
     {
         $result = [];
         foreach ($events as $event) {
@@ -163,7 +154,7 @@ class EventDataService
     /**
      * @return Event[]
      */
-    private function readOldEvents()
+    private function readOldEvents(): array
     {
         $result = array();
         if ($stream = fopen($this->eventfile, 'r')) {
@@ -222,9 +213,8 @@ class EventDataService
 
     /**
      * @param Event[] $events
-     * @return bool
      */
-    public function writeEvents(array $events)
+    public function writeEvents(array $events): bool
     {
         $eventfile = $this->eventfile;
 
@@ -256,9 +246,8 @@ class EventDataService
 
     /**
      * @param resource $fp
-     * @return bool
      */
-    private function writeEventLine($fp, Event $event)
+    private function writeEventLine($fp, Event $event): bool
     {
         $record = [
             $event->getIsoStartDate(),

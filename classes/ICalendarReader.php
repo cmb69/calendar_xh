@@ -43,10 +43,7 @@ class ICalendarReader
      */
     private $events = [];
 
-    /**
-     * @param string $filename
-     */
-    public function __construct($filename)
+    public function __construct(string $filename)
     {
         $this->filename = $filename;
     }
@@ -54,7 +51,7 @@ class ICalendarReader
     /**
      * @return Event[]
      */
-    public function read()
+    public function read(): array
     {
         $this->lines = file($this->filename, FILE_IGNORE_NEW_LINES);
         $this->unfold();
@@ -133,10 +130,9 @@ class ICalendarReader
     /**
      * ignores property parameters
      *
-     * @param string $line
      * @return string[]
      */
-    private function parseLine($line)
+    private function parseLine(string $line): array
     {
         list($property, $value) = explode(':', $line);
         list($property) = explode(';', $property);
@@ -147,10 +143,9 @@ class ICalendarReader
     /**
      * ignores the timezone
      *
-     * @param string $value
      * @return string[]|false
      */
-    private function parseDateTime($value)
+    private function parseDateTime(string $value)
     {
         if (preg_match('/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/', $value, $matches)) {
             return ["$matches[1]-$matches[2]-$matches[3]", "$matches[4]:$matches[5]"];

@@ -65,25 +65,19 @@ class Event
     public $location;
 
     /**
-     * @param string $datestart
      * @param string|null $dateend
-     * @param string $starttime
      * @param string|null $endtime
-     * @param string $summary
-     * @param string $linkadr
-     * @param string $linktxt
-     * @param string $location
      * @return self|null
      */
     public static function create(
-        $datestart,
+        string $datestart,
         $dateend,
-        $starttime,
+        string $starttime,
         $endtime,
-        $summary,
-        $linkadr,
-        $linktxt,
-        $location
+        string $summary,
+        string $linkadr,
+        string $linktxt,
+        string $location
     ) {
         if (!$dateend) {
             if ($endtime) {
@@ -110,19 +104,13 @@ class Event
         return new self($start, $end, $summary, $linkadr, $linktxt, $location);
     }
 
-    /**
-     * @param string $summary
-     * @param string $linkadr
-     * @param string $linktxt
-     * @param string $location
-     */
     private function __construct(
         LocalDateTime $start,
         LocalDateTime $end,
-        $summary,
-        $linkadr,
-        $linktxt,
-        $location
+        string $summary,
+        string $linkadr,
+        string $linktxt,
+        string $location
     ) {
         $this->start = $start;
         $this->end = $end;
@@ -132,51 +120,33 @@ class Event
         $this->location = $location;
     }
 
-    /**
-     * @return string
-     */
-    public function getIsoStartDate()
+    public function getIsoStartDate(): string
     {
         return $this->start->getIsoDate();
     }
 
-    /**
-     * @return string
-     */
-    public function getIsoStartTime()
+    public function getIsoStartTime(): string
     {
         return $this->start->getIsoTime();
     }
 
-    /**
-     * @return string
-     */
-    public function getIsoEndDate()
+    public function getIsoEndDate(): string
     {
         return $this->end->getIsoDate();
     }
 
-    /**
-     * @return string
-     */
-    public function getIsoEndTime()
+    public function getIsoEndTime(): string
     {
         return $this->end->getIsoTime();
     }
 
-    /**
-     * @return bool
-     */
-    public function isFullDay()
+    public function isFullDay(): bool
     {
         return $this->start->hour === 0 && $this->start->minute === 0
             && $this->end->hour === 23 && $this->end->minute === 59;
     }
 
-    /**
-     * @return bool
-     */
-    public function isBirthday()
+    public function isBirthday(): bool
     {
         return trim($this->location) === '###';
     }

@@ -26,20 +26,15 @@ class Calendar
     /** @var bool */
     private $weekStartsMonday;
 
-    /**
-     * @param bool $weekStartsMonday
-     */
-    public function __construct($weekStartsMonday)
+    public function __construct(bool $weekStartsMonday)
     {
         $this->weekStartsMonday = $weekStartsMonday;
     }
 
     /**
-     * @param int $year
-     * @param int $month
      * @return array<int,array<int,(int|null)>>
      */
-    public function getMonthMatrix($year, $month)
+    public function getMonthMatrix(int $year, int $month): array
     {
         $result = [];
         $row = [];
@@ -65,13 +60,7 @@ class Calendar
         return $result;
     }
 
-    /**
-     * @param int $year
-     * @param int $month
-     * @param int $day
-     * @return int
-     */
-    private function getDayOfWeek($year, $month, $day)
+    private function getDayOfWeek(int $year, int $month, int $day): int
     {
         $dayofweek = (int) date('w', mktime(1, 1, 1, $month, $day, $year));
         if ($this->weekStartsMonday) {
