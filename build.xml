@@ -89,7 +89,7 @@
                 <exclude name=".phive/**"/>
                 <exclude name="build.xml"/>
                 <exclude name="composer.*"/>
-                <exclude name="phpcompatinfo.*"/>
+                <exclude name="coverage.xml"/>
                 <exclude name="psalm.xml"/>
                 <exclude name="stubs.php"/>
                 <exclude name="README*.md"/>
