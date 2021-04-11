@@ -40,6 +40,7 @@
 <li><a href="#settings">Settings</a></li>
 <li><a href="#usage">Usage</a>
 <ul>
+<li><a href="#date-and-time-formats">Date and Time Formats</a></li>
 <li><a href="#event-editor">Event Editor</a></li>
 <li><a href="#calendars">Calendars</a></li>
 <li><a href="#event-list">Event List</a></li>
@@ -69,6 +70,18 @@
 <p>Localization is done under <em>Language</em>. You can translate the character strings to your own language if there is no appropriate language file available, or customize them according to your needs.</p>
 <p>The look of Calendar_XH can be customized under <em>Stylesheet</em>.</p>
 <h2 id="usage">Usage</h2>
+<h3 id="date-and-time-formats">Date and Time Formats</h3>
+<p>The format of date and times shown to users can be configured under <em>Plugins</em> → <em>Calendar</em> → <em>Language</em> → <em>Format</em>. The entries for <em>Month year</em>, <em>Date</em>, <em>Date time</em> and <em>Time</em> accept arbitrary text, plus placeholders. The following placeholders are supported:</p>
+<ul>
+<li><code>%Y</code>: full numeric representation of a year, 4 digits</li>
+<li><code>%F</code>: full textual representation of a month, such as <code>January</code> or <code>March</code></li>
+<li><code>%n</code>: numeric representation of a month, without leading zeros</li>
+<li><code>%j</code>: day of the month without leading zeros</li>
+<li><code>%a</code>: lowercase ante meridiem and post meridiem, respectively</li>
+<li><code>%g</code>: 12-hour format of an hour without leading zeros</li>
+<li><code>%G</code>: 24-hour format of an hour without leading zeros</li>
+<li><code>%i</code>: minutes with leading zeros, 2 digits</li>
+</ul>
 <h3 id="event-editor">Event Editor</h3>
 <p>The administration of the events is done in the back-end (<em>Plugins</em> → <em>Calendar</em> → <em>Edit Events</em>).</p>
 <p>Alternatively, you can embed the event editor on a normal CMSimple_XH page, so the events can be edited by non-admins also. Use the following plugin call:</p>

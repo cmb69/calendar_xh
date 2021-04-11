@@ -40,6 +40,7 @@
 <li><a href="#einstellungen">Einstellungen</a></li>
 <li><a href="#verwendung">Verwendung</a>
 <ul>
+<li><a href="#datum-und-zeit-formate">Datum und Zeit-Formate</a></li>
 <li><a href="#veranstaltungs-editor">Veranstaltungs-Editor</a></li>
 <li><a href="#kalender">Kalender</a></li>
 <li><a href="#veranstaltungsliste">Veranstaltungsliste</a></li>
@@ -69,6 +70,18 @@
 <p>Die Lokalisierung wird unter <em>Sprache</em> vorgenommen. Sie können die Zeichenketten in Ihre eigene Sprache übersetzen, falls keine entsprechende Sprachdatei zur Verfügung steht, oder sie entsprechend Ihren Anforderungen anpassen.</p>
 <p>Das Aussehen von Calendar_XH kann unter <em>Stylesheet</em> angepasst werden.</p>
 <h2 id="verwendung">Verwendung</h2>
+<h3 id="datum-und-zeit-formate">Datum und Zeit-Formate</h3>
+<p>Das Format der Datums- und Zeitangaben, die Nutzern angezeigt werden, kann unter <em>Plugins</em> → <em>Calendar</em> → <em>Sprache</em> → <em>Format</em> eingestellt werden. Die Einträge für <em>Month year</em>, <em>Date</em>, <em>Date time</em> und <em>Time</em> akzeptieren beliebigen Text und Platzhalter. Folgende Platzhalter werden unterstützt:</p>
+<ul>
+<li><code>%Y</code>: vollständige numerische Repräsentation eines Jahres, 4-stellig</li>
+<li><code>%F</code>: vollständige textuelle Repräsentation eines Monats, wie <code>Januar</code> or <code>März</code></li>
+<li><code>%n</code>: numerische Repräsentation eines Montas ohne führende Null</li>
+<li><code>%j</code>: Tag des Monats ohne führende Null</li>
+<li><code>%a</code>: kleines ante Meridiem bzw. post Meridiem</li>
+<li><code>%g</code>: 12 Stunden Format einer Stunde ohne führende Null</li>
+<li><code>%G</code>: 24 Stunden Format einer Stunde ohne führende Null</li>
+<li><code>%i</code>: Minuten mit führender Null, 2-stellig</li>
+</ul>
 <h3 id="veranstaltungs-editor">Veranstaltungs-Editor</h3>
 <p>Die Administration der Veranstaltungen erfolgt im Backend (<em>Plugins</em> → <em>Calendar</em> → <em>Events bearbeiten</em>).</p>
 <p>Alternativ kann der Veranstaltungs-Editor auf einer normalen CMSimple_XH Seite eingebettet werden, so dass die Veranstaltungen ebenfalls von Nicht-Admins bearbeitet werden können. Dazu wird der folgende Pluginaufruf verwendet:</p>

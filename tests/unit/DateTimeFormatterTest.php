@@ -30,6 +30,7 @@ class DateTimeFormatterTest extends TestCase
         $lang = [
             'monthnames_array' => "January,February,March,April,May,June"
                 . ",July,August,September,Oktober,November,December",
+            'format_month_year' => "%F %Y",
         ];
         $subject = new DateTimeFormatter($lang);
         $actual = $subject->formatMonthYear(4, 2021);
@@ -38,7 +39,11 @@ class DateTimeFormatterTest extends TestCase
 
     public function testFormatDate(): void
     {
-        $lang = ['format_date' => "{day}. {month}. {year}"];
+        $lang = [
+            'monthnames_array' => "January,February,March,April,May,June"
+                . ",July,August,September,Oktober,November,December",
+            'format_date' => "%j. %n. %Y"
+        ];
         $subject = new DateTimeFormatter($lang);
         $actual = $subject->formatDate(new LocalDateTime(2021, 4, 3, 14, 2));
         $this->assertSame("3. 4. 2021", $actual);
@@ -46,7 +51,11 @@ class DateTimeFormatterTest extends TestCase
 
     public function testFormatDateTime(): void
     {
-        $lang = ['format_date_time' => "{day}. {month}. {year} {hour}:{minute}"];
+        $lang = [
+            'monthnames_array' => "January,February,March,April,May,June"
+                . ",July,August,September,Oktober,November,December",
+            'format_date_time' => "%j. %n. %Y %G:%i"
+        ];
         $subject = new DateTimeFormatter($lang);
         $actual = $subject->formatDateTime(new LocalDateTime(2021, 4, 3, 14, 2));
         $this->assertSame("3. 4. 2021 14:02", $actual);
@@ -54,7 +63,11 @@ class DateTimeFormatterTest extends TestCase
 
     public function testFormatTime(): void
     {
-        $lang = ['format_time' => "{hour}:{minute}"];
+        $lang = [
+            'monthnames_array' => "January,February,March,April,May,June"
+                . ",July,August,September,Oktober,November,December",
+            'format_time' => "%G:%i"
+        ];
         $subject = new DateTimeFormatter($lang);
         $actual = $subject->formatTime(new LocalDateTime(2021, 4, 3, 14, 2));
         $this->assertSame("14:02", $actual);

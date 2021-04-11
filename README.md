@@ -15,11 +15,12 @@ features at the cost of greatly increased complexity.
   - [Installation](#installation)
   - [Settings](#settings)
   - [Usage](#usage)
-      - [Event Editor](#event-editor)
-      - [Calendars](#calendars)
-      - [Event List](#event-list)
-      - [Next Event](#next-event)
-      - [Import](#import)
+    - [Date and Time Formats](#date-and-time-formats)
+    - [Event Editor](#event-editor)
+    - [Calendars](#calendars)
+    - [Event List](#event-list)
+    - [Next Event](#next-event)
+    - [Import](#import)
   - [Troubleshooting](#troubleshooting)
   - [License](#license)
   - [Credits](#credits)
@@ -66,6 +67,23 @@ available, or customize them according to your needs.
 The look of Calendar\_XH can be customized under *Stylesheet*.
 
 ## Usage
+
+### Date and Time Formats
+
+The format of date and times shown to users can be configured
+under *Plugins* → *Calendar* → *Language* → *Format*.
+The entries for *Month year*, *Date*, *Date time* and *Time*
+accept arbitrary text, plus placeholders.
+The following placeholders are supported:
+
+- `%Y`: full numeric representation of a year, 4 digits
+- `%F`: full textual representation of a month, such as `January` or `March`
+- `%n`: numeric representation of a month, without leading zeros
+- `%j`: day of the month without leading zeros
+- `%a`: lowercase ante meridiem and post meridiem, respectively
+- `%g`: 12-hour format of an hour without leading zeros
+- `%G`: 24-hour format of an hour without leading zeros
+- `%i`: minutes with leading zeros, 2 digits
 
 ### Event Editor
 

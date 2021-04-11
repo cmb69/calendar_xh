@@ -25,9 +25,10 @@ $plugin_tx['calendar']['notice_no_next_event']="No further event scheduled.";
 
 $plugin_tx['calendar']['event_list_heading']="Events in the period from %s till %s";
 
-$plugin_tx['calendar']['format_date']="{month}/{day}/{year}";
-$plugin_tx['calendar']['format_date_time']="{month}/{day}/{year} – {hour}:{minute}";
-$plugin_tx['calendar']['format_time']="{hour}:{minute}";
+$plugin_tx['calendar']['format_month_year']="%F %Y";
+$plugin_tx['calendar']['format_date']="%n/%j/%Y";
+$plugin_tx['calendar']['format_date_time']="%n/%j/%Y %g:%i %a";
+$plugin_tx['calendar']['format_time']="%g:%i %a";
 $plugin_tx['calendar']['format_date_interval']="%s till %s";
 $plugin_tx['calendar']['format_time_interval']="%s - %s";
 

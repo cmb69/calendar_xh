@@ -15,11 +15,12 @@ zusätzlicher Features anbietet, allerdings zu Lasten der Einfachheit.
   - [Installation](#installation)
   - [Einstellungen](#einstellungen)
   - [Verwendung](#verwendung)
-      - [Veranstaltungs-Editor](#veranstaltungs-editor)
-      - [Kalender](#kalender)
-      - [Veranstaltungsliste](#veranstaltungsliste)
-      - [Nächste Veranstaltung](#nächste-veranstaltung)
-      - [Import](#import)
+    - [Datum und Zeit-Formate](#datum-und-zeit-formate)
+    - [Veranstaltungs-Editor](#veranstaltungs-editor)
+    - [Kalender](#kalender)
+    - [Veranstaltungsliste](#veranstaltungsliste)
+    - [Nächste Veranstaltung](#nächste-veranstaltung)
+    - [Import](#import)
   - [Fehlerbehebung](#fehlerbehebung)
   - [Lizenz](#lizenz)
   - [Danksagung](#danksagung)
@@ -69,6 +70,23 @@ Ihren Anforderungen anpassen.
 Das Aussehen von Calendar\_XH kann unter *Stylesheet* angepasst werden.
 
 ## Verwendung
+
+### Datum und Zeit-Formate
+
+Das Format der Datums- und Zeitangaben, die Nutzern angezeigt werden,
+kann unter *Plugins* → *Calendar* → *Sprache* → *Format* eingestellt werden.
+Die Einträge für *Month year*, *Date*, *Date time* und *Time*
+akzeptieren beliebigen Text und Platzhalter.
+Folgende Platzhalter werden unterstützt:
+
+- `%Y`: vollständige numerische Repräsentation eines Jahres, 4-stellig
+- `%F`: vollständige textuelle Repräsentation eines Monats, wie `Januar` or `März`
+- `%n`: numerische Repräsentation eines Montas ohne führende Null
+- `%j`: Tag des Monats ohne führende Null
+- `%a`: kleines ante Meridiem bzw. post Meridiem
+- `%g`: 12 Stunden Format einer Stunde ohne führende Null
+- `%G`: 24 Stunden Format einer Stunde ohne führende Null
+- `%i`: Minuten mit führender Null, 2-stellig
 
 ### Veranstaltungs-Editor
 
