@@ -5,115 +5,55 @@
 }
 /*Calendar headline*/
 .calendar_monthyear {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 8pt;
     text-align: center;
 }
 .calendar_monthyear a {
     text-decoration: none;
-    color: red;
-}
-.calendar_monthyear a:hover {
-    background-color: red;
-    color: white;
 }
 
 /*Calendar subheading line with daynames*/
-.calendar_daynames {
-    color: #888;
-    font-weight: bold;
-}
+.calendar_daynames {}
 
 /*Calendar days display*/
-.calendar_main td { /*for all days*/
-    line-height: 17px;
-    font-size: 7pt;
+.calendar_main th, .calendar_main td { /*for all days*/
     width:14%;
 }
-.calendar_day { /*normal day*/
-    color: #055;
-}
-
+.calendar_day {} /*normal day*/
 .calendar_we { /*weekend days*/
-    color: #06f;
-    font-weight: bold;
+    font-style: italic;
 }
-
-.calendar_noday { /*beginning and end fields without digits*/
-}
-
+.calendar_noday {} /*beginning and end fields without digits*/
 .calendar_today {
-    background: #eee;
-}
-.calendar_eventday a, .calendar_today a {
-    text-decoration: none;
     font-weight: bold;
-    display: block;
-    color: red;
 }
+.calendar_eventday a, .calendar_today a {}
 
-.calendar_eventday a:hover, .calendar_today a:hover {
-    background-color: red;
-    color: white;
+.calendar_loading {
+    visibility: hidden;
 }
 
 /* ===================== Display of event list ===================== */
+.calendar_eventlist {}
+.calendar_eventlist th, .calendar_eventlist td {
+    border: 1px solid;
+}
 /* Display of introductory
    text-line in events list */
-.period_of_events {
-    font-size: 110%;
-    font-variant: small-caps;
-    margin-bottom: .5em;
-}
-.period_of_events span {
-    font-size: 91%;
-    font-weight: bold;
-    font-variant: normal;
-}
+.period_of_events {}
+.period_of_events span {}
 
 /*Start event list*/
-.event_monthyear { /*Heading with month and year*/
-    font-weight: bold;
-    font-size: 10pt;
-    padding-top: 13px;
-}
-
+.event_monthyear {} /*Heading with month and year*/
 .past_event {}
+.event_data_row td {} /*definition here take precedence over definitions in fields*/
+.birthday_data_row td {}
 
-.event_data_row td { /*definition here take precedence over definitions in fields*/
-    color:black;
-    font-size: 11px;
-}
-
-.birthday_data_row td {
-    font-size: 11px;
-    background: #fdd;
-}
-.event_data { /*this is for all data fields*/
-    padding: 1px 1px 3px 2px;
-    line-height: 1.25;
-}
-.event_date {/*this is the date field*/
-    width:14%;
-    background: #dfd;
-}
-.event_time {/*this is the time field*/
-    width:11%;
-    background: #dfd;
-}
-.event_summary {/*this is the summary field*/
-    width:28%;
-    background:#eef;
-}
-.event_location {/*this is the location field*/
-    width:29%;
-    background: #dfd;
-}
-.event_link {/*this is the link field*/
-    width:25%;
-    background: #dfd;
-}
+.event_data {} /*this is for all data fields*/
+.event_date {} /*this is the date field*/
+.event_time {} /*this is the time field*/
+.event_summary {} /*this is the summary field*/
+.event_location {} /*this is the location field*/
+.event_link {}/*this is the link field*/
 
 /*sub heading (=event_heading_row) should be put after event data
 as the sub heading fields have double classes
@@ -121,102 +61,47 @@ and the last data takes effect. (The subheading
 should not take the background-color of the events,
 but it should take the same width.) */
 
-.event_heading_row td { /*sub heading*/
-    background-color: #eee;
-    line-height:1.25;
-    color: #444;
-    font-weight: bold;
-    font-style: italic;
-    font-size: 11px;
-}
-.event_heading {
-    height:12px;
-    padding-left:1px;
-}
+.event_heading_row td {} /*sub heading*/
+.event_heading {}
 
 
 /* ===================== For display of next event only, with marquee-funktion, does not validate! ===================== */
 
 .nextevent_date {
-    background:#eee;
-    color: #888;
-    font-size: 8px;
-    font-weight: bold;
-    font-style: italic;
-    margin-top: 10px;
-    width: 100%;
     text-align: center;
 }
 .calendar_marquee_outer {
-    background:#eee;
     overflow: hidden;
 }
 .calendar_marquee {
     width: 100%;
-    margin:0 0 10px;
     text-align: center;
-    height:50px;
     animation: calendar_marquee 15s linear infinite;
 }
 @keyframes calendar_marquee {
     0%   { transform: translateY(+150%); }
     100% { transform: translateY(-250%); }
 }
-.nextevent_event {
-    color: #aaa;
-    font-size: 16px;
-    font-weight: bold;
-    letter-spacing: .1em;
-}
-.nextevent_location {
-    color: #999;
-    font-size: 13px;
-}
+.nextevent_event {}
+.nextevent_location {}
+
 /* backend edit events */
 .calendar_overview tr {
     border: 1px solid;
 }
-.calendar_overview td {
-    padding: 0 0 0 1em;
-}
-.calendar_input {
-}
-.calendar_input button {
-    margin: 0 .25em 0 0;
-    padding: .25em;
-}
+
+.calendar_input {}
+.calendar_input button {}
 .calendar_input > div {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: .5em;
-    background: #efefef;
-    font-size: .9em;
-    margin: 0 0 .5em 0;
-    border: 1px solid #999;
 }
 .calendar_input > div > div {
     align-self: flex-end;
 }
-.calendar_input > div:first-child, .calendar_input > div:last-child {
-    background: transparent;
-    padding: 1em 0;
-    margin: 0;
-    border: 0;
-    font-size: 1em;
-}
+.calendar_input > div:first-child, .calendar_input > div:last-child {}
 .calendar_input input {
-    margin: 0 .25em .25em 0;
-    padding: .25em;
-    border: 1px solid #999;
     display: block;
 }
-.calendar_input_event {
-/*controls also location etc*/
-}
-.event_highlighting {
-    color:red;
-}
-.calendar_loading {
-    visibility: hidden;
-}
+.calendar_input_event {} /*controls also location etc*/

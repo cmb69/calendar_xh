@@ -111,7 +111,6 @@ HTML;
         $this->determineYearAndMonth();
         $calendar = new Calendar((bool) $this->conf['week_starts_mon']);
         $rows = [];
-        $rows[] = $this->getDaynamesRow();
         foreach ($calendar->getMonthMatrix($this->year, $this->month) as $columns) {
             $rows[] = $this->getRowData($columns);
         }
@@ -120,6 +119,7 @@ HTML;
             'hasPrevNextButtons' => $this->conf['prev_next_button'],
             'prevUrl' => $this->getPrevUrl(),
             'nextUrl' => $this->getNextUrl(),
+            'headRow' => $this->getDaynamesRow(),
             'rows' => $rows,
         ];
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {

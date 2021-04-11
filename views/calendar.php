@@ -1,4 +1,4 @@
-<div class="calendar_monthyear">
+<h2 class="calendar_monthyear">
 <?php if ($this->hasPrevNextButtons):?>
   <a href="<?=$this->prevUrl()?>" rel="nofollow" title="<?=$this->text('prev_button_text')?>">&lt;&lt;</a>
 <?php endif?>
@@ -6,8 +6,13 @@
 <?php if ($this->hasPrevNextButtons):?>
   <a href="<?=$this->nextUrl()?>" rel="nofollow" title="<?=$this->text('next_button_text')?>">&gt;&gt;</a>
 <?php endif?>
-</div>
+</h2>
 <table class="calendar_main">
+  <tr>
+<?php foreach ($this->headRow as $cell):?>
+    <th class="<?=$this->escape($cell->classname)?>"><?=$this->escape($cell->content)?></th>
+<?php endforeach?>
+  <tr>
 <?php foreach ($this->rows as $row):?>
   <tr>
 <?php   foreach ($row as $cell):?>

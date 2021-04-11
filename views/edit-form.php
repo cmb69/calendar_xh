@@ -26,7 +26,7 @@
 <?php endif?>
     <label>
       <?=$this->text('event_summary')?>
-      <input class="calendar_input_event event_highlighting" type="text" name="event" value="<?=$this->escape($this->event->summary)?>" required>
+      <input class="calendar_input_event" type="text" name="event" value="<?=$this->escape($this->event->summary)?>" required>
     </label>
 <?php if ($this->showEventLocation):?>
     <label>
