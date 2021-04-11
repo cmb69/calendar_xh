@@ -55,4 +55,5 @@
   <div>
     <button><?=$this->button_label()?></button>
   </div>
+  <?=$this->csrf_token?>
 </form>

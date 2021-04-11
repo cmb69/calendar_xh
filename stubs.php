@@ -59,3 +59,10 @@ function XH_registerStandardPluginMenuItems($showMain) {}
  * @return bool
  */
 function XH_wantsPluginAdministration($pluginName) {}
+
+namespace XH {
+    class CSRFProtection {
+        public function tokenInput(): string {}
+        public function check() {}
+    }
+}

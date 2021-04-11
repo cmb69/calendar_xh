@@ -28,6 +28,7 @@ namespace Calendar;
 
 use ReflectionClass;
 use ReflectionMethod;
+use XH\CSRFProtection as CsrfProtector;
 
 class Plugin
 {
@@ -224,6 +225,7 @@ class Plugin
             $plugin_tx['calendar'],
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            self::getCsrfProtector(),
             new View()
         );
         ob_start();
@@ -258,5 +260,15 @@ class Plugin
         $result = LocalDateTime::fromIsoString(date('Y-m-d\TH:i'));
         assert($result !== null);
         return $result;
+    }
+
+    private static function getCsrfProtector(): CsrfProtector
+    {
+        global $_XH_csrfProtection;
+
+        if ($_XH_csrfProtection === null) {
+            $_XH_csrfProtection = new CsrfProtector();
+        }
+        return $_XH_csrfProtection;
     }
 }

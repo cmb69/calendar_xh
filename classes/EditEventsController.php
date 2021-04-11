@@ -26,6 +26,8 @@
 
 namespace Calendar;
 
+use XH\CSRFProtection as CsrfProtector;
+
 class EditEventsController
 {
     /** @var array<string,string> */
@@ -40,6 +42,9 @@ class EditEventsController
     /** @var EventDataService */
     private $eventDataService;
 
+    /** @var CsrfProtector */
+    private $csrfProtector;
+
     /** @var View */
     private $view;
 
@@ -52,12 +57,14 @@ class EditEventsController
         array $lang,
         LocalDateTime $now,
         EventDataService $eventDataService,
+        CSRFProtector $csrfProtector,
         View $view
     ) {
         $this->conf = $conf;
         $this->lang = $lang;
         $this->now = $now;
         $this->eventDataService = $eventDataService;
+        $this->csrfProtector = $csrfProtector;
         $this->view = $view;
     }
 
@@ -137,6 +144,7 @@ HTML;
             'showEventLink' => (bool) $this->conf['show_event_link'],
             'event' => $event,
             'button_label' => $this->lang[$label],
+            'csrf_token' => $this->csrfProtector->tokenInput(),
         ]);
     }
 
@@ -145,6 +153,7 @@ HTML;
      */
     public function doCreateAction()
     {
+        $this->csrfProtector->check();
         $events = $this->eventDataService->readEvents();
         $this->upsert($events, null);
     }
@@ -154,6 +163,7 @@ HTML;
      */
     public function doUpdateAction()
     {
+        $this->csrfProtector->check();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
         $id = $_GET['event_id'];
         $events = $this->eventDataService->readEvents();
@@ -209,6 +219,7 @@ HTML;
      */
     public function doDeleteAction()
     {
+        $this->csrfProtector->check();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
         $id = $_GET['event_id'];
         $events = $this->eventDataService->readEvents();

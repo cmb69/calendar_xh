@@ -10,6 +10,7 @@
   <globals>
     <var name="_GET" type="array&lt;string,(string|array&lt;(string|int),string&gt;)&gt;"/>
     <var name="_POST" type="array&lt;string,(string|array&lt;(string|int),string&gt;)&gt;"/>
+    <var name="_XH_csrfProtection" type="\XH\CSRFProtection|null"/>
     <var name="admin" type="string"/>
     <var name="cf" type="array&lt;string,array&lt;string,string&gt;&gt;"/>
     <var name="hjs" type="string"/>
