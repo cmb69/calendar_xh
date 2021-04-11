@@ -19,8 +19,10 @@ $plugin_tx['calendar']['birthday_text']="Birthday";
 $plugin_tx['calendar']['age_1']="%d year";
 $plugin_tx['calendar']['age_2_4']="%d years";
 $plugin_tx['calendar']['age_5']="%d years";
-$plugin_tx['calendar']['prev_button_text']="Prev month";
-$plugin_tx['calendar']['next_button_text']="Next month";
+$plugin_tx['calendar']['prev_button_text']="◀";
+$plugin_tx['calendar']['next_button_text']="▶";
+$plugin_tx['calendar']['prev_button_title']="Previous month";
+$plugin_tx['calendar']['next_button_title']="Next month";
 $plugin_tx['calendar']['notice_no_next_event']="No further event scheduled.";
 
 $plugin_tx['calendar']['event_list_heading']="Events in the period from %s till %s";

@@ -15,8 +15,10 @@ $plugin_tx['calendar']['birthday_text']="compleanno";
 $plugin_tx['calendar']['age_1']="%d anno";
 $plugin_tx['calendar']['age_2_4']="%d anni";
 $plugin_tx['calendar']['age_5']="%d anni";
-$plugin_tx['calendar']['prev_button_text']="il mese scorso";
-$plugin_tx['calendar']['next_button_text']="il mese prossimo";
+$plugin_tx['calendar']['prev_button_text']="◀";
+$plugin_tx['calendar']['next_button_text']="▶";
+$plugin_tx['calendar']['prev_button_title']="il mese scorso";
+$plugin_tx['calendar']['next_button_title']="il mese prossimo";
 
 $plugin_tx['calendar']['event_list_heading']="Eventi nel periodo da %s a %s";
 

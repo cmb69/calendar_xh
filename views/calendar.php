@@ -1,10 +1,10 @@
 <h2 class="calendar_monthyear">
 <?php if ($this->hasPrevNextButtons):?>
-  <a href="<?=$this->prevUrl()?>" rel="nofollow" title="<?=$this->text('prev_button_text')?>">&lt;&lt;</a>
+  <a href="<?=$this->prevUrl()?>" rel="nofollow" title="<?=$this->text('prev_button_title')?>"><?=$this->text('prev_button_text')?></a>
 <?php endif?>
   <?=$this->caption()?>
 <?php if ($this->hasPrevNextButtons):?>
-  <a href="<?=$this->nextUrl()?>" rel="nofollow" title="<?=$this->text('next_button_text')?>">&gt;&gt;</a>
+  <a href="<?=$this->nextUrl()?>" rel="nofollow" title="<?=$this->text('next_button_title')?>"><?=$this->text('next_button_text')?></a>
 <?php endif?>
 </h2>
 <table class="calendar_main">

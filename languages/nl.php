@@ -15,8 +15,10 @@ $plugin_tx['calendar']['birthday_text']="Geburtstag";
 $plugin_tx['calendar']['age_1']="%d Jaar";
 $plugin_tx['calendar']['age_2_4']="%d Jaaren";
 $plugin_tx['calendar']['age_5']="%d Jaaren";
-$plugin_tx['calendar']['prev_button_text']="vorafgaande maand";
-$plugin_tx['calendar']['next_button_text']="volgende maand";
+$plugin_tx['calendar']['prev_button_text']="◀";
+$plugin_tx['calendar']['next_button_text']="▶";
+$plugin_tx['calendar']['prev_button_title']="vorafgaande maand";
+$plugin_tx['calendar']['next_button_title']="volgende maand";
 
 $plugin_tx['calendar']['event_list_heading']="Evenementen in de periode van %s tot %s";
 

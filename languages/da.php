@@ -15,8 +15,10 @@ $plugin_tx['calendar']['birthday_text']="Fødselsdag";
 $plugin_tx['calendar']['age_1']="%d år";
 $plugin_tx['calendar']['age_2_4']="%d år";
 $plugin_tx['calendar']['age_5']="%d år";
-$plugin_tx['calendar']['prev_button_text']="Forrige måned";
-$plugin_tx['calendar']['next_button_text']="Næste måned";
+$plugin_tx['calendar']['prev_button_text']="◀";
+$plugin_tx['calendar']['next_button_text']="▶";
+$plugin_tx['calendar']['prev_button_title']="Forrige måned";
+$plugin_tx['calendar']['next_button_title']="Næste måned";
 
 $plugin_tx['calendar']['event_list_heading']="Aktiviteter i perioden fra %s til %s";
 
