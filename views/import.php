@@ -1,3 +1,5 @@
+<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+
 <div class="calendar_import">
   <h1>Calendar – <?=$this->text('label_import')?></h1>
   <form action="<?=$this->url?>" method="POST">

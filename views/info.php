@@ -1,3 +1,5 @@
+<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+
 <h1>Calendar <?=$this->version()?></h1>
 <div class="calendar_syscheck">
   <h2><?php echo $this->text('syscheck_title')?></h2>

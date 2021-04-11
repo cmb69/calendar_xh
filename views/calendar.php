@@ -1,3 +1,5 @@
+<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+
 <h2 class="calendar_monthyear">
 <?php if ($this->hasPrevNextButtons):?>
   <a href="<?=$this->prevUrl()?>" rel="nofollow" title="<?=$this->text('prev_button_title')?>"><?=$this->text('prev_button_text')?></a>

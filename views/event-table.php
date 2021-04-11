@@ -1,3 +1,5 @@
+<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+
 <form method="get" class="calendar_overview">
   <input type="hidden" name="selected" value="<?=$this->selected()?>">
 <?php if ($this->selected === 'calendar'):?>

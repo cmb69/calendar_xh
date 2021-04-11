@@ -1,3 +1,5 @@
+<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+
 <div class="nextevent_date">
 <?php if (isset($this->event)):?>
   <?=$this->date?>

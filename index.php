@@ -26,4 +26,9 @@
 
 use Calendar\Plugin;
 
+if (!defined(CMSIMPLE_XH_VERSION)) {
+    header("404 Not found");
+    exit;
+}
+
 Plugin::run();

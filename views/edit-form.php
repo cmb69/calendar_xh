@@ -1,3 +1,5 @@
+<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+
 <form method="post" action="<?=$this->action?>" class="calendar_input">
   <div>
     <label>

@@ -1,3 +1,5 @@
+<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+
 <section class="calendar_eventlist">
 <?php if ($this->showHeading):?>
   <h2 class="period_of_events"><?=$this->heading()?></h2>
