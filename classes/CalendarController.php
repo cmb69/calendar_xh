@@ -165,21 +165,24 @@ HTML;
                 continue;
             }
             $dayEvents = $this->filterEventsByDay($events, $day);
-            if ($day == $today && !empty($dayEvents)) {
-                $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
-                $row[] = (object) ['classname' => 'calendar_today', 'content' => $day,
-                    'href' => $url, 'title' => $this->getEventsTitle($dayEvents)];
-            } elseif ($day == $today) {
-                $row[] = (object) ['classname' => 'calendar_today', 'content' => $day];
-            } elseif (!empty($dayEvents)) {
-                $url = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
-                $row[] = (object) ['classname' => 'calendar_eventday', 'content' => $day,
-                    'href' => $url, 'title' => $this->getEventsTitle($dayEvents)];
-            } elseif ($this->isWeekEnd(count($row))) {
-                $row[] = (object) ['classname' => 'calendar_we', 'content' => $day];
-            } else {
-                $row[] = (object) ['classname' => 'calendar_day', 'content' => $day];
+            $field = [];
+            $classes = [];
+            $field['content'] = $day;
+            if (!empty($dayEvents)) {
+                $field['href'] = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
+                $field['title'] = $this->getEventsTitle($dayEvents);
+                $classes[] = "calendar_eventday";
             }
+            if ($day == $today) {
+                $classes[] = "calendar_today";
+            }
+            if ($this->isWeekEnd(count($row))) {
+                $classes[] = "calendar_we";
+            } else {
+                $classes[] = "calendar_day";
+            }
+            $field['classname'] = implode(" ", $classes);
+            $row[] = (object) $field;
         }
         return $row;
     }
