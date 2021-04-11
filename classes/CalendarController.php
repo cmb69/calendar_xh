@@ -126,7 +126,6 @@ HTML;
             while (ob_get_level()) {
                 ob_end_clean();
             }
-            header('X-Location: ' . CMSIMPLE_URL . "?{$_SERVER['QUERY_STRING']}");
             $this->view->render('calendar', $data);
             exit;
         } else {
