@@ -93,6 +93,7 @@
                 <exclude name="psalm.xml"/>
                 <exclude name="stubs.php"/>
                 <exclude name="README*.md"/>
+                <exclude name="teplad.xml"/>
                 <exclude name="help/template.htm"/>
             </fileset>
         </move>
