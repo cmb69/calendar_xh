@@ -55,7 +55,7 @@ class SystemCheckService
     public function getChecks(): array
     {
         return array(
-            $this->checkPhpVersion('5.5.4'),
+            $this->checkPhpVersion('7.0.0'),
             $this->checkXhVersion('1.7.0'),
             $this->checkWritability("$this->pluginFolder/css/"),
             $this->checkWritability("$this->pluginFolder/config/"),
