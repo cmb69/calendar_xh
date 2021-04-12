@@ -41,12 +41,12 @@
   <xml_url>https://raw.githubusercontent.com/cmb69/calendar_xh/master/teplad.xml</xml_url>
   <name type="plugin">Calendar_XH</name>
   <date_update>2021-04-12</date_update>
-  <version>2.0dev1</version>
-  <date_version>2018-01-14</date_version>
+  <version>2.0</version>
+  <date_version>2021-04-12</date_version>
   <coder>Christoph M. Becker</coder>
   <tags>calendar</tags>
   <url>
-    <download_url>https://github.com/cmb69/calendar_xh/releases/tag/2.0dev1</download_url>
+    <download_url>https://github.com/cmb69/calendar_xh/releases/tag/2.0</download_url>
     <coder_url>https://3-magi.net/</coder_url>
     <demo_url></demo_url>
   </url>

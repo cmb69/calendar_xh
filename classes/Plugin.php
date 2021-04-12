@@ -32,7 +32,7 @@ use XH\CSRFProtection as CsrfProtector;
 
 class Plugin
 {
-    const VERSION = '2.0dev1';
+    const VERSION = '2.0';
 
     /**
      * @return void
