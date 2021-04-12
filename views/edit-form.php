@@ -52,8 +52,8 @@
     <input type="hidden" name="linktxt" value="<?=$this->escape($this->event->linktxt)?>">
 <?php endif?>
   </div>
-  <div>
+  <p>
     <button><?=$this->button_label()?></button>
-  </div>
+  </p>
   <?=$this->csrf_token?>
 </form>

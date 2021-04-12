@@ -5,11 +5,11 @@
 <?php if ($this->selected === 'calendar'):?>
   <input type="hidden" name="admin" value="plugin_main">
 <?php endif?>
-  <div>
+  <p>
     <button name="action" value="create"><?=$this->text('label_new')?></button>
     <button name="action" value="update"><?=$this->text('label_edit')?></button>
     <button name="action" value="delete"><?=$this->text('label_delete')?></button>
-  </div>
+  </p>
   <table>
 <?php foreach ($this->events as $id => $event):?>
     <tr>
