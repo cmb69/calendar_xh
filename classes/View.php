@@ -56,23 +56,25 @@ class View
         return ob_get_clean();
     }
 
-    protected function text(string $key): string
+    /**
+     * @param float|int|string $args
+     */
+    protected function text(string $key, ...$args): string
     {
         global $plugin_tx;
 
-        $args = func_get_args();
-        array_shift($args);
-        return $this->escape(vsprintf($plugin_tx['calendar'][$key], $args));
+        return $this->escape(sprintf($plugin_tx['calendar'][$key], ...$args));
     }
 
-    protected function plural(string $key, int $count): string
+    /**
+     * @param float|int|string ...$args
+     */
+    protected function plural(string $key, int $count, ...$args): string
     {
         global $plugin_tx;
 
         $key .= XH_numberSuffix($count);
-        $args = func_get_args();
-        array_shift($args);
-        return $this->escape(vsprintf($plugin_tx['calendar'][$key], $args));
+        return $this->escape(sprintf($plugin_tx['calendar'][$key], $count, ...$args));
     }
 
     /**
