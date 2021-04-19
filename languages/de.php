@@ -27,6 +27,7 @@ $plugin_tx['calendar']['notice_no_next_event']="Keine weitere Veranstaltung eing
 
 $plugin_tx['calendar']['event_list_heading']="Termine für den Zeitraum %s bis %s";
 
+$plugin_tx['calendar']['format_month_year']="%F %Y";
 $plugin_tx['calendar']['format_date']="%j. %n. %Y";
 $plugin_tx['calendar']['format_date_time']="%j. %n. %Y %G:%i";
 $plugin_tx['calendar']['format_time']="%G:%i";
