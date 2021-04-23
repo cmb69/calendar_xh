@@ -37,28 +37,50 @@ class DateTimeFormatterTest extends TestCase
         $this->assertSame("April 2021", $actual);
     }
 
-    public function testFormatDate(): void
+    /**
+     * @dataProvider formatDateProvider
+     */
+    public function testFormatDate(LocalDateTime $ldt, string $format, string $expected): void
     {
         $lang = [
             'monthnames_array' => "January,February,March,April,May,June"
                 . ",July,August,September,Oktober,November,December",
-            'format_date' => "%j. %n. %Y"
+            'format_date' => $format
         ];
         $subject = new DateTimeFormatter($lang);
-        $actual = $subject->formatDate(new LocalDateTime(2021, 4, 3, 14, 2));
-        $this->assertSame("3. 4. 2021", $actual);
+        $actual = $subject->formatDate($ldt);
+        $this->assertSame($expected, $actual);
     }
 
-    public function testFormatDateTime(): void
+    public function formatDateProvider(): array
+    {
+        return [
+            [new LocalDateTime(2021, 4, 3, 14, 2), "%j. %n. %Y", "3. 4. 2021"],
+            [new LocalDateTime(2021, 4, 3, 14, 2), "%d. %m. %Y", "03. 04. 2021"],
+        ];
+    }
+
+    /**
+     * @dataProvider formatDateTimeProvider
+     */
+    public function testFormatDateTime(LocalDateTime $ldt, string $format, string $expected): void
     {
         $lang = [
             'monthnames_array' => "January,February,March,April,May,June"
                 . ",July,August,September,Oktober,November,December",
-            'format_date_time' => "%j. %n. %Y %G:%i"
+            'format_date_time' => $format
         ];
         $subject = new DateTimeFormatter($lang);
-        $actual = $subject->formatDateTime(new LocalDateTime(2021, 4, 3, 14, 2));
-        $this->assertSame("3. 4. 2021 14:02", $actual);
+        $actual = $subject->formatDateTime($ldt);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function formatDateTimeProvider(): array
+    {
+        return [
+            [new LocalDateTime(2021, 4, 3, 14, 2), "%j. %n. %Y %G:%i", "3. 4. 2021 14:02"],
+            [new LocalDateTime(2021, 4, 3, 14, 2), "%d. %m. %Y %G:%i", "03. 04. 2021 14:02"],
+        ];
     }
 
     public function testFormatTime(): void

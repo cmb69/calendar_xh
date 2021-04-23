@@ -81,7 +81,9 @@ Folgende Platzhalter werden unterstützt:
 
 - `%Y`: vollständige numerische Repräsentation eines Jahres, 4-stellig
 - `%F`: vollständige textuelle Repräsentation eines Monats, wie `Januar` or `März`
+- `%m`: numerische Repräsentation eines Monats, 2-stellig
 - `%n`: numerische Repräsentation eines Montas ohne führende Null
+- `%d`: Tag des Montas, 2-stellig
 - `%j`: Tag des Monats ohne führende Null
 - `%a`: kleines ante Meridiem bzw. post Meridiem
 - `%g`: 12 Stunden Format einer Stunde ohne führende Null

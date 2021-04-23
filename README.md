@@ -78,7 +78,9 @@ The following placeholders are supported:
 
 - `%Y`: full numeric representation of a year, 4 digits
 - `%F`: full textual representation of a month, such as `January` or `March`
+- `%m`: numeric representation of a month, 2 digits
 - `%n`: numeric representation of a month, without leading zeros
+- `%d`: day of the month, 2 digits
 - `%j`: day of the month without leading zeros
 - `%a`: lowercase ante meridiem and post meridiem, respectively
 - `%g`: 12-hour format of an hour without leading zeros
