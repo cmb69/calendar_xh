@@ -84,6 +84,7 @@ The following placeholders are supported:
 - `%j`: day of the month without leading zeros
 - `%a`: lowercase ante meridiem and post meridiem, respectively
 - `%g`: 12-hour format of an hour without leading zeros
+- `%H`: 24-hour format of an hour, 2 digits
 - `%G`: 24-hour format of an hour without leading zeros
 - `%i`: minutes with leading zeros, 2 digits
 

@@ -80,18 +80,30 @@ class DateTimeFormatterTest extends TestCase
         return [
             [new LocalDateTime(2021, 4, 3, 14, 2), "%j. %n. %Y %G:%i", "3. 4. 2021 14:02"],
             [new LocalDateTime(2021, 4, 3, 14, 2), "%d. %m. %Y %G:%i", "03. 04. 2021 14:02"],
+            [new LocalDateTime(2021, 4, 3, 7, 2), "%d. %m. %Y %H:%i", "03. 04. 2021 07:02"],
         ];
     }
 
-    public function testFormatTime(): void
+    /**
+     * @dataProvider formatTimeProvider
+     */
+    public function testFormatTime(LocalDateTime $ldt, string $format, string $expected): void
     {
         $lang = [
             'monthnames_array' => "January,February,March,April,May,June"
                 . ",July,August,September,Oktober,November,December",
-            'format_time' => "%G:%i"
+            'format_time' => $format,
         ];
         $subject = new DateTimeFormatter($lang);
-        $actual = $subject->formatTime(new LocalDateTime(2021, 4, 3, 14, 2));
-        $this->assertSame("14:02", $actual);
+        $actual = $subject->formatTime($ldt);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function formatTimeProvider(): array
+    {
+        return [
+            [new LocalDateTime(2021, 4, 3, 14, 2), "%G:%i", "14:02"],
+            [new LocalDateTime(2021, 4, 3, 7, 2), "%H:%i", "07:02"],
+        ];
     }
 }

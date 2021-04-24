@@ -79,6 +79,7 @@ class DateTimeFormatter
             "%j" => sprintf("%d", $ldt->day),
             "%a" => $ldt->hour < 12 ? "am" : "pm",
             "%g" => sprintf("%d", $ldt->hour % 12 === 0 ? 12 : $ldt->hour % 12),
+            "%H" => sprintf("%02d", $ldt->hour),
             "%G" => sprintf("%d", $ldt->hour),
             "%i" => sprintf("%02d", $ldt->minute),
         ];
@@ -90,6 +91,7 @@ class DateTimeFormatter
         $replace = [
             "%a" => $ldt->hour < 12 ? "am" : "pm",
             "%g" => sprintf("%d", $ldt->hour % 12 === 0 ? 12 : $ldt->hour % 12),
+            "%H" => sprintf("%02d", $ldt->hour),
             "%G" => sprintf("%d", $ldt->hour),
             "%i" => sprintf("%02d", $ldt->minute),
         ];

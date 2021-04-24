@@ -87,6 +87,7 @@ Folgende Platzhalter werden unterstützt:
 - `%j`: Tag des Monats ohne führende Null
 - `%a`: kleines ante Meridiem bzw. post Meridiem
 - `%g`: 12 Stunden Format einer Stunde ohne führende Null
+- `%H`: 24 Stunden Format einer Stunde, 2-stellig
 - `%G`: 24 Stunden Format einer Stunde ohne führende Null
 - `%i`: Minuten mit führender Null, 2-stellig
 
