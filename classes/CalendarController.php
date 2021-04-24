@@ -169,6 +169,21 @@ HTML;
                 $field['href'] = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
                 $field['title'] = $this->getEventsTitle($dayEvents);
                 $classes[] = "calendar_eventday";
+                $currentDay = new LocalDateTime($this->year, $this->month, $day, 0, 0);
+                foreach ($dayEvents as $dayEvent) {
+                    if ($dayEvent->start->compareDate($currentDay) === 0 &&
+                            $dayEvent->end->compareDate($currentDay) !== 0) {
+                        $classes[] = "calendar_eventstart";
+                        break;
+                    }
+                }
+                foreach ($dayEvents as $dayEvent) {
+                    if ($dayEvent->end->compareDate($currentDay) === 0 &&
+                            $dayEvent->start->compareDate($currentDay) !== 0) {
+                        $classes[] = "calendar_eventend";
+                        break;
+                    }
+                }
             }
             if ($day == $today) {
                 $classes[] = "calendar_today";
