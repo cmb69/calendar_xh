@@ -274,7 +274,10 @@ HTML;
             if ($j == 7) {
                 $j = 0;
             }
-            $row[] = (object) ['classname' => 'calendar_daynames', 'content' => $dayarray[$j]];
+            $row[] = (object) [
+                'classname' => 'calendar_daynames ' . ($this->isWeekEnd($i) ? 'calendar_we' : 'calendar_day'),
+                'content' => $dayarray[$j],
+            ];
         }
         return $row;
     }
