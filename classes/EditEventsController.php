@@ -73,7 +73,7 @@ class EditEventsController
      */
     public function defaultAction()
     {
-        global $pth, $hjs;
+        global $pth, $su, $hjs;
 
         $hjs .= <<<HTML
 <script type="module">
@@ -82,7 +82,14 @@ class EditEventsController
 </script>
 HTML;
         $events = $this->eventDataService->readEvents();
-        echo $this->eventForm($events);
+        $this->view->render('event-table', [
+            'selected' => $su ? $su : 'calendar',
+            'showEventTime' => (bool) $this->conf['show_event_time'],
+            'showEventLocation' => (bool) $this->conf['show_event_location'],
+            'showEventLink' => (bool) $this->conf['show_event_link'],
+            'events' => $events,
+            'hash' => sha1(serialize($events)),
+        ]);
     }
 
     /**
@@ -234,23 +241,6 @@ HTML;
             echo XH_message('fail', $this->lang['eventfile_not_saved']);
             $this->renderEditForm($event, $id, "delete");
         }
-    }
-
-    /**
-     * @param Event[] $events
-     */
-    private function eventForm(array $events, bool $force = false): string
-    {
-        global $su;
-
-        return $this->view->getString('event-table', [
-            'selected' => $su ? $su : 'calendar',
-            'showEventTime' => (bool) $this->conf['show_event_time'],
-            'showEventLocation' => (bool) $this->conf['show_event_location'],
-            'showEventLink' => (bool) $this->conf['show_event_link'],
-            'events' => $events,
-            'hash' => !$force ? sha1(serialize($events)) : '',
-        ]);
     }
 
     /**

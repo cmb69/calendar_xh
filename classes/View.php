@@ -47,16 +47,6 @@ class View
     }
 
     /**
-     * @param array<string,mixed> $data
-     */
-    public function getString(string $template, array $data): string
-    {
-        ob_start();
-        $this->render($template, $data);
-        return ob_get_clean();
-    }
-
-    /**
      * @param float|int|string $args
      */
     protected function text(string $key, ...$args): string
