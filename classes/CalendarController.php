@@ -137,10 +137,10 @@ HTML;
      */
     private function determineYearAndMonth()
     {
-        if ($this->month == '') {
+        if ($this->month === 0) {
             $this->month = isset($_GET['month']) ? (int) $_GET['month'] : $this->now->month;
         }
-        if ($this->year == '') {
+        if ($this->year === 0) {
             $this->year = isset($_GET['year']) ? (int) $_GET['year'] : $this->now->year;
         }
     }
