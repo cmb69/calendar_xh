@@ -96,12 +96,8 @@ class CalendarController
     {
         global $pth, $hjs;
 
-        $hjs .= <<<HTML
-<script type="module">
-    import CalendarWidget from "{$pth['folder']['plugins']}calendar/js/calendar.min.js";
-    document.querySelectorAll(".calendar_calendar").forEach(element => new CalendarWidget(element));
-</script>
-HTML;
+        $jsUrl = "{$pth['folder']['plugins']}calendar/js/calendar.min.js";
+        $hjs .= '<script type="module" src="' . XH_hsc($jsUrl) . '"></script>';
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
         }
@@ -118,6 +114,7 @@ HTML;
             'nextUrl' => $this->getNextUrl(),
             'headRow' => $this->getDaynamesRow(),
             'rows' => $rows,
+            'jsUrl' => $jsUrl,
         ];
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             while (ob_get_level()) {

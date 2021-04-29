@@ -1,5 +1,6 @@
 <?php if (!isset($this)) {header("404 Not found"); exit;}?>
 
+<script type="module" src="<?=$this->jsUrl()?>"></script>
 <form method="get" class="calendar_overview">
   <input type="hidden" name="selected" value="<?=$this->selected()?>">
 <?php if ($this->selected === 'calendar'):?>

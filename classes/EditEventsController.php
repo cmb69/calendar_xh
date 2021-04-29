@@ -75,12 +75,8 @@ class EditEventsController
     {
         global $pth, $su, $hjs;
 
-        $hjs .= <<<HTML
-<script type="module">
-    import CalendarOverviewWidget from "{$pth['folder']['plugins']}calendar/js/overview.min.js";
-    document.querySelectorAll(".calendar_overview").forEach(form => new CalendarOverviewWidget(form));
-</script>
-HTML;
+        $jsUrl = "{$pth['folder']['plugins']}calendar/js/overview.min.js";
+        $hjs .= '<script type="module" src="' . XH_hsc($jsUrl) . '"></script>';
         $events = $this->eventDataService->readEvents();
         $this->view->render('event-table', [
             'selected' => $su ? $su : 'calendar',
@@ -89,6 +85,7 @@ HTML;
             'showEventLink' => (bool) $this->conf['show_event_link'],
             'events' => $events,
             'hash' => sha1(serialize($events)),
+            'jsUrl' => $jsUrl,
         ]);
     }
 
