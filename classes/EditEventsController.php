@@ -73,10 +73,8 @@ class EditEventsController
      */
     public function defaultAction()
     {
-        global $pth, $su, $hjs;
+        global $pth, $su;
 
-        $jsUrl = "{$pth['folder']['plugins']}calendar/js/overview.min.js";
-        $hjs .= '<script type="module" src="' . XH_hsc($jsUrl) . '"></script>';
         $events = $this->eventDataService->readEvents();
         $this->view->render('event-table', [
             'selected' => $su ? $su : 'calendar',
@@ -85,7 +83,7 @@ class EditEventsController
             'showEventLink' => (bool) $this->conf['show_event_link'],
             'events' => $events,
             'hash' => sha1(serialize($events)),
-            'jsUrl' => $jsUrl,
+            'jsUrl' => "{$pth['folder']['plugins']}calendar/js/overview.min.js",
         ]);
     }
 
