@@ -13,7 +13,6 @@
     <var name="_XH_csrfProtection" type="\XH\CSRFProtection|null"/>
     <var name="admin" type="string"/>
     <var name="cf" type="array&lt;string,array&lt;string,string&gt;&gt;"/>
-    <var name="hjs" type="string"/>
     <var name="o" type="string"/>
     <var name="plugin_cf" type="array&lt;string,array&lt;string,string&gt;&gt;"/>
     <var name="plugin_tx" type="array&lt;string,array&lt;string,string&gt;&gt;"/>
