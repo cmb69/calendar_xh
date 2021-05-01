@@ -33,7 +33,9 @@
 }
 
 /* ===================== Display of event list ===================== */
-.calendar_eventlist {}
+.calendar_eventlist {
+    width: 100%;
+}
 .calendar_eventlist th, .calendar_eventlist td {
     border: 1px solid;
 }
