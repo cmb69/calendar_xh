@@ -30,7 +30,7 @@ class ICalendarReaderTest extends TestCase
         $subject = new ICalendarReader(__DIR__ . '/basic.ics', '-');
         $actual = $subject->read();
         $this->assertContainsOnlyInstancesOf(Event::class, $actual);
-        // var_dump(new LocalDateTime(1997, 7, 15, 3, 59), $actual[0]->getEnd());
+        $this->assertCount(1, $actual);
         $this->assertSame(0, (new LocalDateTime(1997, 7, 14, 17, 0))->compare($actual[0]->start));
         $this->assertSame(0, (new LocalDateTime(1997, 7, 15, 3, 59))->compare($actual[0]->end));
         $this->assertSame("Bastille Day Party", $actual[0]->summary);

@@ -85,14 +85,14 @@ class ICalendarReader
                 if ($line === 'END:VEVENT') {
                     $isInEvent = false;
                     $maybeEvent = Event::create(
-                        $event['datestart'],
-                        $event['dateend'],
-                        $event['starttime'],
-                        $event['endtime'],
-                        $event['event'],
+                        $event['datestart'] ?? "",
+                        $event['dateend'] ?? "",
+                        $event['starttime'] ?? "",
+                        $event['endtime'] ?? "",
+                        $event['event'] ?? "",
                         '',
                         '',
-                        $event['location']
+                        $event['location'] ?? ""
                     );
                     if ($maybeEvent !== null) {
                         $this->events[] = $maybeEvent;
