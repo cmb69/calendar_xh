@@ -30,12 +30,22 @@ class ICalendarReaderTest extends TestCase
         $subject = new ICalendarReader(__DIR__ . '/basic.ics', '-');
         $actual = $subject->read();
         $this->assertContainsOnlyInstancesOf(Event::class, $actual);
-        $this->assertCount(1, $actual);
-        $this->assertSame(0, (new LocalDateTime(1997, 7, 14, 17, 0))->compare($actual[0]->start));
-        $this->assertSame(0, (new LocalDateTime(1997, 7, 15, 3, 59))->compare($actual[0]->end));
-        $this->assertSame("Bastille Day Party", $actual[0]->summary);
-        $this->assertSame("", $actual[0]->linkadr);
-        $this->assertSame("", $actual[0]->linktxt);
-        $this->assertSame("Place de la Bastille", $actual[0]->location);
+        $this->assertCount(2, $actual);
+
+        $first = $actual[0];
+        $this->assertSame(0, (new LocalDateTime(1997, 7, 14, 17, 0))->compare($first->start));
+        $this->assertSame(0, (new LocalDateTime(1997, 7, 15, 3, 59))->compare($first->end));
+        $this->assertSame("Bastille Day Party", $first->summary);
+        $this->assertSame("", $first->linkadr);
+        $this->assertSame("", $first->linktxt);
+        $this->assertSame("Place de la Bastille", $first->location);
+
+        $second = $actual[1];
+        $this->assertSame(0, (new LocalDateTime(1969, 3, 24, 0, 0))->compare($second->start));
+        $this->assertSame(0, (new LocalDateTime(1969, 3, 24, 23, 59))->compare($second->end));
+        $this->assertSame("cmb", $second->summary);
+        $this->assertSame("", $second->linkadr);
+        $this->assertSame("", $second->linktxt);
+        $this->assertSame("", $second->location);
     }
 }

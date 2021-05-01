@@ -38,10 +38,16 @@ class ICalendarReader
      */
     private $lines = [];
 
+    /** @var string */
+    private $currentLine = "";
+
     /**
      * @var Event[]
      */
     private $events = [];
+
+    /** @var array<string,string> */
+    private $currentEvent = [];
 
     public function __construct(string $filename)
     {
@@ -77,52 +83,91 @@ class ICalendarReader
      */
     private function parse()
     {
-        /** @var array<string,string> $event */
-        $event = [];
+        $this->currentEvent = [];
         $isInEvent = false;
-        foreach ($this->lines as $line) {
+        foreach ($this->lines as $this->currentLine) {
             if ($isInEvent) {
-                if ($line === 'END:VEVENT') {
+                if ($this->currentLine === 'END:VEVENT') {
                     $isInEvent = false;
                     $maybeEvent = Event::create(
-                        $event['datestart'] ?? "",
-                        $event['dateend'] ?? "",
-                        $event['starttime'] ?? "",
-                        $event['endtime'] ?? "",
-                        $event['event'] ?? "",
+                        $this->currentEvent['datestart'] ?? "",
+                        $this->currentEvent['dateend'] ?? "",
+                        $this->currentEvent['starttime'] ?? "",
+                        $this->currentEvent['endtime'] ?? "",
+                        $this->currentEvent['event'] ?? "",
                         '',
                         '',
-                        $event['location'] ?? ""
+                        $this->currentEvent['location'] ?? ""
                     );
                     if ($maybeEvent !== null) {
                         $this->events[] = $maybeEvent;
                     }
                 } else {
-                    list($property, $value) = $this->parseLine($line);
-                    switch ($property) {
-                        case 'SUMMARY':
-                            $event['event'] = $value;
-                            break;
-                        case 'LOCATION':
-                            $event['location'] = $value;
-                            break;
-                        case 'DTSTART':
-                            if (($datetime = $this->parseDateTime($value))) {
-                                list($event['datestart'], $event['starttime']) = $datetime;
-                            }
-                            break;
-                        case 'DTEND':
-                            if (($datetime = $this->parseDateTime($value))) {
-                                list($event['dateend'], $event['endtime']) = $datetime;
-                            }
-                            break;
-                    }
+                    $this->processPropertyLine();
                 }
             } else {
-                if ($line === 'BEGIN:VEVENT') {
+                if ($this->currentLine === 'BEGIN:VEVENT') {
                     $isInEvent = true;
-                    $event = [];
+                    $this->currentEvent = [];
                 }
+            }
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function processPropertyLine()
+    {
+        list($property, $param, $value) = $this->parseLine();
+        assert($property !== null);
+        assert($value !== null);
+        switch ($property) {
+            case 'SUMMARY':
+                $this->currentEvent['event'] = $value;
+                return;
+            case 'LOCATION':
+                $this->currentEvent['location'] = $value;
+                return;
+            case 'DTSTART':
+                $this->processDtStart($param, $value);
+                return;
+            case 'DTEND':
+                $this->processDtEnd($param, $value);
+                return;
+        }
+    }
+
+    /**
+     * @param string|null $param
+     * @return void
+     */
+    private function processDtStart($param, string $value)
+    {
+        if ($param === null) {
+            if (($datetime = $this->parseDateTime($value))) {
+                list($this->currentEvent['datestart'], $this->currentEvent['starttime']) = $datetime;
+            }
+        } elseif ($param === "VALUE=DATE") {
+            if (($date = $this->parseDate($value))) {
+                $this->currentEvent['datestart'] = $date;
+            }
+        }
+    }
+
+    /**
+     * @param string|null $param
+     * @return void
+     */
+    private function processDtEnd($param, string $value)
+    {
+        if ($param === null) {
+            if (($datetime = $this->parseDateTime($value))) {
+                list($this->currentEvent['dateend'], $this->currentEvent['endtime']) = $datetime;
+            }
+        } elseif ($param === "VALUE=DATE") {
+            if (($date = $this->parseDate($value))) {
+                $this->currentEvent['dateend'] = $date;
             }
         }
     }
@@ -130,14 +175,20 @@ class ICalendarReader
     /**
      * ignores property parameters
      *
-     * @return string[]
+     * @return (string|null)[]
      */
-    private function parseLine(string $line): array
+    private function parseLine(): array
     {
-        list($property, $value) = explode(':', $line);
-        list($property) = explode(';', $property);
+        list($property, $value) = explode(':', $this->currentLine);
+        $parts = explode(';', $property);
+        $property = $parts[0];
+        if (count($parts) > 1) {
+            $param = $parts[1];
+        } else {
+            $param = null;
+        }
         $value = preg_replace('/\\\\(?!\\\\)/', '', $value);
-        return [$property, $value];
+        return [$property, $param, $value];
     }
 
     /**
@@ -149,6 +200,19 @@ class ICalendarReader
     {
         if (preg_match('/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/', $value, $matches)) {
             return ["$matches[1]-$matches[2]-$matches[3]", "$matches[4]:$matches[5]"];
+        }
+        return false;
+    }
+
+    /**
+     * ignores the timezone
+     *
+     * @return string|false
+     */
+    private function parseDate(string $value)
+    {
+        if (preg_match('/^(\d{4})(\d{2})(\d{2})/', $value, $matches)) {
+            return "$matches[1]-$matches[2]-$matches[3]";
         }
         return false;
     }
