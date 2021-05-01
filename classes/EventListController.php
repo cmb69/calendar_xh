@@ -152,7 +152,7 @@ class EventListController
         assert(!isset($_GET['year']) || is_string($_GET['year']));
         $this->year = isset($_GET['year']) ? (int) $_GET['year'] : $this->now->year;
 
-        if ($this->month == '') {
+        if ($this->month === 0) {
             $this->month = $this->now->month;
         }
 
@@ -172,7 +172,7 @@ class EventListController
      */
     private function determineEndMonth()
     {
-        if ($this->endMonth == '') {
+        if ($this->endMonth === 0) {
             if ($this->conf['show_number_of_future_months']) {
                 $this->endMonth = (int) $this->conf['show_number_of_future_months'];
             } else {
