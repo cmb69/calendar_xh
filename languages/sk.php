@@ -15,8 +15,8 @@ $plugin_tx['calendar']['birthday_text']="Narodeniny";
 $plugin_tx['calendar']['age_1']="%d rok";
 $plugin_tx['calendar']['age_2_4']="%d roky";
 $plugin_tx['calendar']['age_5']="%d rokov";
-$plugin_tx['calendar']['prev_button_text']="◀";
-$plugin_tx['calendar']['next_button_text']="▶";
+$plugin_tx['calendar']['prev_button_text']="◄";
+$plugin_tx['calendar']['next_button_text']="►";
 
 $plugin_tx['calendar']['event_list_heading']="Udalosti za obdobie %s do %s";
 
