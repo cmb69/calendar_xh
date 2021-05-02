@@ -77,22 +77,20 @@ class NextEventController
             } elseif ($nextevent->start->compare($this->now) >= 0) {
                 $ldt = $nextevent->start;
                 if ($nextevent->isMultiDay()) {
-                    $date = $nextevent->isFullDay()
+                    $nexteventtext = $this->lang['event_date_till_date'];
+                    $nexteventtext2 = $nextevent->isFullDay()
                         ? $this->dateTimeFormatter->formatDate($nextevent->end)
                         : $this->dateTimeFormatter->formatDateTime($nextevent->end);
-                    $nexteventtext = $this->lang['event_date_till_date'];
-                    $nexteventtext2 = $date;
                 } else {
                     $nexteventtext = '';
                     $nexteventtext2 = null;
                 }
             } else {
                 $ldt = $nextevent->end;
-                $date = $nextevent->isFullDay()
+                $nexteventtext = $this->lang['event_started'];
+                $nexteventtext2 = $nextevent->isFullDay()
                     ? $this->dateTimeFormatter->formatDate($nextevent->start)
                     : $this->dateTimeFormatter->formatDateTime($nextevent->start);
-                $nexteventtext = $this->lang['event_started'];
-                $nexteventtext2 = $date;
             }
             if ($nextevent->isFullDay()) {
                 $date = $this->dateTimeFormatter->formatDate($ldt);
