@@ -73,22 +73,26 @@ class NextEventController
                 $ldt = $nextevent->start->withYear($this->now->year);
                 $age = $this->now->year - $nextevent->start->year;
                 $nexteventtext = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
+                $nexteventtext2 = null;
             } elseif ($nextevent->start->compare($this->now) >= 0) {
                 $ldt = $nextevent->start;
                 if ($nextevent->end->compareDate($nextevent->start) > 0) {
                     $date = $nextevent->isFullDay()
                         ? $this->dateTimeFormatter->formatDate($nextevent->end)
                         : $this->dateTimeFormatter->formatDateTime($nextevent->end);
-                    $nexteventtext = $this->lang['event_date_till_date'] . " " . '<br>' . $date;
+                    $nexteventtext = $this->lang['event_date_till_date'];
+                    $nexteventtext2 = $date;
                 } else {
                     $nexteventtext = '';
+                    $nexteventtext2 = null;
                 }
             } else {
                 $ldt = $nextevent->end;
                 $date = $nextevent->isFullDay()
                     ? $this->dateTimeFormatter->formatDate($nextevent->start)
                     : $this->dateTimeFormatter->formatDateTime($nextevent->start);
-                $nexteventtext = $this->lang['event_started'] . '<br>' . $date;
+                $nexteventtext = $this->lang['event_started'];
+                $nexteventtext2 = $date;
             }
             if ($nextevent->isFullDay()) {
                 $date = $this->dateTimeFormatter->formatDate($ldt);
@@ -97,7 +101,8 @@ class NextEventController
             }
             $data = [
                 'event' => $nextevent,
-                'event_text' => $nextevent->isBirthday() ? $nexteventtext : new HtmlString($nexteventtext),
+                'event_text' => $nexteventtext,
+                'event_text_2' => $nexteventtext2,
                 'date' => $date,
                 'location' => $nextevent->isBirthday() ? $this->lang['birthday_text'] : $nextevent->location,
             ];
