@@ -76,7 +76,7 @@ class NextEventController
                 $nexteventtext2 = null;
             } elseif ($nextevent->start->compare($this->now) >= 0) {
                 $ldt = $nextevent->start;
-                if ($nextevent->end->compareDate($nextevent->start) > 0) {
+                if ($nextevent->isMultiDay()) {
                     $date = $nextevent->isFullDay()
                         ? $this->dateTimeFormatter->formatDate($nextevent->end)
                         : $this->dateTimeFormatter->formatDateTime($nextevent->end);

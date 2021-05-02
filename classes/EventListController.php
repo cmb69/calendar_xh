@@ -250,7 +250,7 @@ class EventListController
         if ($event->isFullDay()) {
             $time = "";
         } else {
-            if ($event->end->compareDate($event->start) > 0) {
+            if ($event->isMultiDay()) {
                 $time = sprintf(
                     $this->lang['format_time_interval'],
                     $this->dateTimeFormatter->formatTime($event->start),
@@ -275,7 +275,7 @@ class EventListController
 
     private function renderDate(Event $event): string
     {
-        if ($event->end->compareDate($event->start) > 0) {
+        if ($event->isMultiDay()) {
             return sprintf(
                 $this->lang['format_date_interval'],
                 $this->dateTimeFormatter->formatDate($event->start),

@@ -140,6 +140,11 @@ class Event
         return $this->end->getIsoTime();
     }
 
+    public function isMultiDay(): bool
+    {
+        return $this->end->compareDate($this->start) > 0;
+    }
+
     public function isFullDay(): bool
     {
         return $this->start->hour === 0 && $this->start->minute === 0
