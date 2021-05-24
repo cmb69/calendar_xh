@@ -21,6 +21,16 @@ function plugin_admin_common() {}
 function print_plugin_admin($main) {}
 
 /**
+ * @param string $add
+ * @param string $link
+ * @param string $target
+ * @param string $text
+ * @param array  $style
+ * @return mixed
+ */
+function pluginMenu($add = '', $link = '', $target = '', $text = '', array $style = array()) {}
+
+/**
  * @param string $string
  * @return string
  */

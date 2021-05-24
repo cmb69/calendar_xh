@@ -51,8 +51,16 @@ class Plugin
                 $sn . '?&calendar&admin=import&normal'
             );
             if (XH_wantsPluginAdministration('calendar')) {
-                $o .= print_plugin_admin('on')
-                    . self::admin($admin);
+                $o .= print_plugin_admin('on');
+                pluginMenu("ROW");
+                pluginMenu(
+                    "TAB",
+                    "$sn?&calendar&admin=import&normal",
+                    "",
+                    $plugin_tx['calendar']['label_import']
+                );
+                $o .= (string) pluginMenu("SHOW");
+                $o .= self::admin($admin);
             }
         }
     }
