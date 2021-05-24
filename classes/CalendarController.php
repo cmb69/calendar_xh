@@ -133,10 +133,10 @@ class CalendarController
     private function determineYearAndMonth()
     {
         if ($this->month === 0) {
-            $this->month = isset($_GET['month']) ? (int) $_GET['month'] : $this->now->month;
+            $this->month = isset($_GET['month']) ? max(1, min(12, (int) $_GET['month'])) : $this->now->month;
         }
         if ($this->year === 0) {
-            $this->year = isset($_GET['year']) ? (int) $_GET['year'] : $this->now->year;
+            $this->year = isset($_GET['year']) ? max(1, min(9000, (int) $_GET['year'])) : $this->now->year;
         }
     }
 

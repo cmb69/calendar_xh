@@ -137,7 +137,7 @@ class EventListController
     private function determineYearAndMonth()
     {
         assert(!isset($_GET['month']) || is_string($_GET['month']));
-        $month_input = isset($_GET['month']) ? (int) $_GET['month'] : 0;
+        $month_input = isset($_GET['month']) ? max(1, min(12, (int) $_GET['month'])) : 0;
 
         if ($this->month) {
             if ($month_input) {
@@ -150,7 +150,7 @@ class EventListController
         }
 
         assert(!isset($_GET['year']) || is_string($_GET['year']));
-        $this->year = isset($_GET['year']) ? (int) $_GET['year'] : $this->now->year;
+        $this->year = isset($_GET['year']) ? max(1, min(9000, (int) $_GET['year'])) : $this->now->year;
 
         if ($this->month === 0) {
             $this->month = $this->now->month;
