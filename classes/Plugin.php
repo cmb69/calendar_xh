@@ -228,6 +228,9 @@ class Plugin
             self::getCsrfProtector(),
             new View()
         );
+        if (!is_callable([$controller, $action])) {
+            $action = 'defaultAction';
+        }
         ob_start();
         $controller->{$action}();
         return ob_get_clean();
