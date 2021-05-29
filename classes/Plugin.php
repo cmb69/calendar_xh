@@ -78,6 +78,7 @@ class Plugin
                     $param = $arg = "\${$rp->getName()}";
                     if ($rp->isOptional()) {
                         $default = var_export($rp->getDefaultValue(), true);
+                        /** @psalm-suppress RedundantConditionGivenDocblockType */
                         assert($default !== null);
                         $param .= " = " . $default;
                     }
