@@ -41,10 +41,7 @@ class InfoController
      */
     public function defaultAction()
     {
-        global $pth;
-
         echo $this->view->render('info', [
-            'logo' => "{$pth['folder']['plugins']}calendar/calendar.png",
             'version' => Plugin::VERSION,
             'checks' => (new SystemCheckService(new SystemChecker()))->getChecks(),
         ]);
