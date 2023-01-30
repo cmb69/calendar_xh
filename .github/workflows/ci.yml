@@ -8,7 +8,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
-          tools: phive
+          tools: composer
       - name: Install CMSimple_XH
         run: |
           curl -fsSL -o CMSimple_XH-1.7.4.zip https://github.com/cmsimple-xh/cmsimple-xh/releases/download/1.7.4/CMSimple_XH-1.7.4.zip
@@ -17,15 +17,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: 'cmsimplexh/plugins/calendar'
-      - name: phive install
-        run: cd cmsimplexh/plugins/calendar && phive --no-progress install --trust-gpg-keys 0x0F9684B8B16B7AB0,0x12CE0F1D262429A5,0x2420BAE0A3BE25C6,0x31C7E470E2138192,0x4AA394086372C20A
       - name: composer install
         run: cd cmsimplexh/plugins/calendar && composer install
       - name: phing sniff
-        run: cd cmsimplexh/plugins/calendar && PATH=tools:$PATH phing sniff
+        run: cd cmsimplexh/plugins/calendar && PATH=vendor/bin:$PATH phing sniff
       - name: phing mess
-        run: cd cmsimplexh/plugins/calendar && PATH=tools:$PATH phing mess
+        run: cd cmsimplexh/plugins/calendar && PATH=vendor/bin:$PATH phing mess
       - name: phing psalm
-        run: cd cmsimplexh/plugins/calendar && PATH=tools:vendor/bin:$PATH phing psalm
+        run: cd cmsimplexh/plugins/calendar && PATH=vendor/bin:$PATH phing psalm
       - name: phing unit-tests
-        run: cd cmsimplexh/plugins/calendar && PATH=tools:$PATH phing unit-tests
+        run: cd cmsimplexh/plugins/calendar && PATH=vendor/bin:$PATH phing unit-tests
