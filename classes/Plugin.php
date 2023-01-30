@@ -143,16 +143,18 @@ class Plugin
 
     public static function calendar(int $year = 0, int $month = 0, string $eventpage = ''): string
     {
-        global $plugin_cf, $plugin_tx;
+        global $pth, $plugin_cf, $plugin_tx, $sn, $su;
 
         ob_start();
         $controller = new CalendarController(
+            "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view(),
+            "$sn?$su",
             $year,
             $month,
             $eventpage
