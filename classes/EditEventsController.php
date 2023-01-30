@@ -30,6 +30,9 @@ use XH\CSRFProtection as CsrfProtector;
 
 class EditEventsController
 {
+    /** @var string */
+    private $pluginFolder;
+
     /** @var array<string,string> */
     private $conf;
 
@@ -48,24 +51,31 @@ class EditEventsController
     /** @var View */
     private $view;
 
+    /** @var string */
+    private $url;
+
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
      */
     public function __construct(
+        string $pluginFolder,
         array $conf,
         array $lang,
         LocalDateTime $now,
         EventDataService $eventDataService,
         CSRFProtector $csrfProtector,
-        View $view
+        View $view,
+        string $url
     ) {
+        $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
         $this->lang = $lang;
         $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->csrfProtector = $csrfProtector;
         $this->view = $view;
+        $this->url = $url;
     }
 
     /**
@@ -73,17 +83,15 @@ class EditEventsController
      */
     public function defaultAction()
     {
-        global $pth, $su;
-
         $events = $this->eventDataService->readEvents();
         echo $this->view->render('event-table', [
-            'selected' => $su ? $su : 'calendar',
+            'selected' => $this->url ? $this->url : 'calendar',
             'showEventTime' => (bool) $this->conf['show_event_time'],
             'showEventLocation' => (bool) $this->conf['show_event_location'],
             'showEventLink' => (bool) $this->conf['show_event_link'],
             'events' => $events,
             'hash' => sha1(serialize($events)),
-            'jsUrl' => "{$pth['folder']['plugins']}calendar/js/overview.min.js",
+            'jsUrl' => "{$this->pluginFolder}js/overview.min.js",
         ]);
     }
 
@@ -132,9 +140,7 @@ class EditEventsController
      */
     private function renderEditForm(Event $event, $id, string $action)
     {
-        global $su;
-
-        $url = "?$su&admin=plugin_main&action=$action";
+        $url = "?{$this->url}&admin=plugin_main&action=$action";
         if ($id !== null) {
             $url .= "&event_id=$id";
         }
@@ -243,12 +249,10 @@ class EditEventsController
      */
     private function redirectToOverview()
     {
-        global $su;
-
-        if ($su === '' || $su === 'calendar') {
+        if ($this->url === '' || $this->url === 'calendar') {
             $url = CMSIMPLE_URL . "?calendar&admin=plugin_main&action=plugin_text";
         } else {
-            $url = CMSIMPLE_URL . "?$su";
+            $url = CMSIMPLE_URL . "?{$this->url}";
         }
         header("Location: $url");
         exit;

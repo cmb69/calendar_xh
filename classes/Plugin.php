@@ -200,7 +200,7 @@ class Plugin
 
     public static function editEvents(): string
     {
-        global $plugin_cf, $plugin_tx;
+        global $pth, $plugin_cf, $plugin_tx, $su;
 
         if (isset($_POST['action'])) {
             assert(is_string($_POST['action']));
@@ -228,12 +228,14 @@ class Plugin
             $action = "do" . ucfirst($action);
         }
         $controller = new EditEventsController(
+            "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::getCsrfProtector(),
-            self::view()
+            self::view(),
+            $su
         );
         if (!is_callable([$controller, $action])) {
             $action = 'defaultAction';
