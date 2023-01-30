@@ -90,14 +90,14 @@ class ICalendarReader
                 if ($this->currentLine === 'END:VEVENT') {
                     $isInEvent = false;
                     $maybeEvent = Event::create(
-                        $this->currentEvent['datestart'] ?? "",
-                        $this->currentEvent['dateend'] ?? "",
-                        $this->currentEvent['starttime'] ?? "",
-                        $this->currentEvent['endtime'] ?? "",
-                        $this->currentEvent['event'] ?? "",
+                        $this->currentEvent['datestart'] ?? "", // @phpstan-ignore-line
+                        $this->currentEvent['dateend'] ?? "", // @phpstan-ignore-line
+                        $this->currentEvent['starttime'] ?? "", // @phpstan-ignore-line
+                        $this->currentEvent['endtime'] ?? "", // @phpstan-ignore-line
+                        $this->currentEvent['event'] ?? "", // @phpstan-ignore-line
                         '',
                         '',
-                        $this->currentEvent['location'] ?? ""
+                        $this->currentEvent['location'] ?? "" // @phpstan-ignore-line
                     );
                     if ($maybeEvent !== null) {
                         $this->events[] = $maybeEvent;

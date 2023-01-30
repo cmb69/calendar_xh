@@ -42,8 +42,7 @@ class Plugin
         global $sn, $plugin_tx, $admin, $o;
 
         self::registerUserFunctions();
-        /** @psalm-suppress UndefinedConstant */
-        if (XH_ADM) {
+        if (XH_ADM) { // @phpstan-ignore-line
             XH_registerStandardPluginMenuItems(true);
             XH_registerPluginMenuItem(
                 'calendar',
@@ -78,7 +77,6 @@ class Plugin
                     $param = $arg = "\${$rp->getName()}";
                     if ($rp->isOptional()) {
                         $default = var_export($rp->getDefaultValue(), true);
-                        /** @psalm-suppress RedundantConditionGivenDocblockType */
                         assert($default !== null);
                         $param .= " = " . $default;
                     }

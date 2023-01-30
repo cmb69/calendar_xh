@@ -76,7 +76,6 @@ class View
         global $pth;
 
         $this->data = $_data;
-        /** @psalm-suppress UnresolvableInclude */
         include "{$pth['folder']['plugins']}calendar/views/{$_template}.php";
     }
 
