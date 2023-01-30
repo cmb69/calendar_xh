@@ -34,7 +34,7 @@ class NextEventControllerTest extends TestCase
         $now = LocalDateTime::fromIsoString("2021-03-23T12:34");
         $eventDataService = $this->createStub(EventDataService::class);
         $eventDataService->method("findNextEvent")->willReturn($event);
-        $dateTimeFormatter = $this->createStub(DateTimeFormatter::class);
+        $dateTimeFormatter = new DateTimeFormatter($lang);
         $view = new View("./views/", $lang);
         $subject = new NextEventController($lang, $now, $eventDataService, $dateTimeFormatter, $view);
         $response = $subject->defaultAction();
