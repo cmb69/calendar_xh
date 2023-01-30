@@ -101,7 +101,7 @@ class EditEventsController
     public function createAction()
     {
         $event = $this->createDefaultEvent();
-        $this->renderEditForm($event, null, "create");
+        echo $this->renderEditForm($event, null, "create");
     }
 
     /**
@@ -116,7 +116,7 @@ class EditEventsController
         }
         $id = $_GET['event_id'];
         $event = $events[$id];
-        $this->renderEditForm($event, $id, "update");
+        echo $this->renderEditForm($event, $id, "update");
     }
 
     /**
@@ -131,21 +131,20 @@ class EditEventsController
         }
         $id = $_GET['event_id'];
         $event = $events[$id];
-        $this->renderEditForm($event, $id, "delete");
+        echo $this->renderEditForm($event, $id, "delete");
     }
 
     /**
      * @param string|null $id
-     * @return void
      */
-    private function renderEditForm(Event $event, $id, string $action)
+    private function renderEditForm(Event $event, $id, string $action): string
     {
         $url = "?{$this->url}&admin=plugin_main&action=$action";
         if ($id !== null) {
             $url .= "&event_id=$id";
         }
         $label = $action === "delete" ? "label_delete" : "label_save";
-        echo $this->view->render('edit-form', [
+        return $this->view->render('edit-form', [
             'action' => $url,
             'showEventTime' => (bool) $this->conf['show_event_time'],
             'showEventLocation' => (bool) $this->conf['show_event_location'],
@@ -218,7 +217,7 @@ class EditEventsController
             $this->redirectToOverview();
         } else {
             echo XH_message('fail', $this->lang['eventfile_not_saved']);
-            $this->renderEditForm($maybeEvent, $id, $id !== null ? "create" : "update");
+            echo $this->renderEditForm($maybeEvent, $id, $id !== null ? "create" : "update");
         }
     }
 
@@ -240,7 +239,7 @@ class EditEventsController
             $this->redirectToOverview();
         } else {
             echo XH_message('fail', $this->lang['eventfile_not_saved']);
-            $this->renderEditForm($event, $id, "delete");
+            echo $this->renderEditForm($event, $id, "delete");
         }
     }
 
