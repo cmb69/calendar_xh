@@ -28,16 +28,27 @@ class NextEventControllerTest extends TestCase
 {
     public function testIssue51()
     {
+        $subject = $this->makeNextEventController(LocalDateTime::fromIsoString("2021-03-23T12:34"));
+        $response = $subject->defaultAction();
+        Approvals::verifyHtml($response);
+    }
+
+    public function testIssue70()
+    {
+        $subject = $this->makeNextEventController(LocalDateTime::fromIsoString("2021-03-25T12:34"));
+        $response = $subject->defaultAction();
+        Approvals::verifyHtml($response);
+    }
+
+    private function makeNextEventController(LocalDateTime $now): NextEventController
+    {
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $lang = $plugin_tx['calendar'];
         $event = Event::create("1969-03-24", null, "", null, "cmb", "", "", "###");
-        $now = LocalDateTime::fromIsoString("2021-03-23T12:34");
         $eventDataService = $this->createStub(EventDataService::class);
         $eventDataService->method("findNextEvent")->willReturn($event);
         $dateTimeFormatter = new DateTimeFormatter($lang);
         $view = new View("./views/", $lang);
-        $subject = new NextEventController($lang, $now, $eventDataService, $dateTimeFormatter, $view);
-        $response = $subject->defaultAction();
-        Approvals::verifyHtml($response);
+        return new NextEventController($lang, $now, $eventDataService, $dateTimeFormatter, $view);
     }
 }

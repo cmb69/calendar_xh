@@ -132,7 +132,7 @@ class EventDataService
             if ($event->isBirthday()) {
                 $ldt = $event->start->withYear($now->year);
                 if ($ldt->compare($now) < 0) {
-                    continue;
+                    $ldt = $event->start->withYear($now->year + 1);
                 }
             } else {
                 $ldt = $event->start;

@@ -89,7 +89,7 @@ CSV;
             [new LocalDateTime(2021, 4, 4, 13, 36), "multi day"],
             [new LocalDateTime(2021, 4, 21, 1, 0), "instant"],
             [new LocalDateTime(2021, 3, 21, 0, 0), "cmb"],
-            [new LocalDateTime(2021, 4, 24, 0, 0), null],
+            [new LocalDateTime(2021, 4, 24, 0, 0), "cmb"],
         ];
     }
 }

@@ -68,6 +68,9 @@ class NextEventController
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
                 $ldt = $nextevent->start->withYear($this->now->year);
+                if ($ldt->compare($this->now) < 0) {
+                    $ldt = $nextevent->start->withYear($this->now->year + 1);
+                }
                 $age = $this->now->year - $nextevent->start->year;
                 $nexteventtext = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
                 $nexteventtext2 = null;
