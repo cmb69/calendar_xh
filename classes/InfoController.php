@@ -43,7 +43,7 @@ class InfoController
     {
         global $pth;
 
-        $this->view->render('info', [
+        echo $this->view->render('info', [
             'logo' => "{$pth['folder']['plugins']}calendar/calendar.png",
             'version' => Plugin::VERSION,
             'checks' => (new SystemCheckService)->getChecks(),

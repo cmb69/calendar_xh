@@ -105,6 +105,6 @@ class NextEventController
                 'location' => $nextevent->isBirthday() ? $this->lang['birthday_text'] : $nextevent->location,
             ];
         }
-        $this->view->render('nextevent', $data);
+        echo $this->view->render('nextevent', $data);
     }
 }

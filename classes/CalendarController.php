@@ -126,11 +126,11 @@ class CalendarController
             while (ob_get_level()) {
                 ob_end_clean();
             }
-            $this->view->render('calendar', $data);
+            echo $this->view->render('calendar', $data);
             exit;
         } else {
             echo '<div class="calendar_calendar">';
-            $this->view->render('calendar', $data);
+            echo $this->view->render('calendar', $data);
             echo '</div>';
         }
     }

@@ -78,12 +78,13 @@ class View
 
     /**
      * @param array<string,mixed> $_data
-     * @return void
      */
-    public function render(string $_template, array $_data)
+    public function render(string $_template, array $_data): string
     {
         $this->data = $_data;
+        ob_start();
         include "{$this->viewFolder}{$_template}.php";
+        return (string) ob_get_clean();
     }
 
     /**

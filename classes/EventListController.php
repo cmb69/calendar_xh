@@ -120,7 +120,7 @@ class EventListController
         }
         $start = $this->dateTimeFormatter->formatMonthYear($startmonth, $startyear);
         $end = $this->dateTimeFormatter->formatMonthYear($endmonth, $endyear);
-        $this->view->render('eventlist', [
+        echo $this->view->render('eventlist', [
             'showHeading' => (bool) $this->conf['show_period_of_events'],
             'heading' => new HtmlString(sprintf(
                 XH_hsc($this->lang['event_list_heading']),

@@ -76,7 +76,7 @@ class EditEventsController
         global $pth, $su;
 
         $events = $this->eventDataService->readEvents();
-        $this->view->render('event-table', [
+        echo $this->view->render('event-table', [
             'selected' => $su ? $su : 'calendar',
             'showEventTime' => (bool) $this->conf['show_event_time'],
             'showEventLocation' => (bool) $this->conf['show_event_location'],
@@ -139,7 +139,7 @@ class EditEventsController
             $url .= "&event_id=$id";
         }
         $label = $action === "delete" ? "label_delete" : "label_save";
-        $this->view->render('edit-form', [
+        echo $this->view->render('edit-form', [
             'action' => $url,
             'showEventTime' => (bool) $this->conf['show_event_time'],
             'showEventLocation' => (bool) $this->conf['show_event_location'],

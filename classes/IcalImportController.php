@@ -51,7 +51,7 @@ class IcalImportController
     {
         global $sn;
 
-        $this->view->render('import', [
+        echo $this->view->render('import', [
             'url' => $sn . '?&calendar&admin=import&action=import',
             'files' => $this->findIcsFiles(),
         ]);
