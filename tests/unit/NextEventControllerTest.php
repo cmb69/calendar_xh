@@ -21,33 +21,23 @@
 
 namespace Calendar;
 
+use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
 
 class NextEventControllerTest extends TestCase
 {
     public function testIssue51()
     {
-        $text = [
-            'birthday_text' => "Birthday",
-            'age_5' => "%d years",
-        ];
+        $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
+        $lang = $plugin_tx['calendar'];
         $event = Event::create("1969-03-24", null, "", null, "cmb", "", "", "###");
         $now = LocalDateTime::fromIsoString("2021-03-23T12:34");
         $eventDataService = $this->createStub(EventDataService::class);
         $eventDataService->method("findNextEvent")->willReturn($event);
         $dateTimeFormatter = $this->createStub(DateTimeFormatter::class);
-        $view = $this->createMock(View::class);
-        $subject = new NextEventController($text, $now, $eventDataService, $dateTimeFormatter, $view);
-        $view->expects($this->once())
-            ->method("render")
-            ->with(
-                $this->equalTo("nextevent"),
-                $this->callback(function ($data) {
-                    return $data['event']->summary === "cmb"
-                        && (string) $data['event_text'] === "52 years"
-                        && $data['location'] === "Birthday";
-                })
-            );
-        $subject->defaultAction();
+        $view = new View("./views/", $lang);
+        $subject = new NextEventController($lang, $now, $eventDataService, $dateTimeFormatter, $view);
+        $response = $subject->defaultAction();
+        Approvals::verifyHtml($response);
     }
 }
