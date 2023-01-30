@@ -26,6 +26,7 @@ require_once './classes/CalendarController.php';
 require_once './classes/DateTimeFormatter.php';
 require_once './classes/Event.php';
 require_once './classes/EventDataService.php';
+require_once './classes/EventListController.php';
 require_once './classes/HtmlString.php';
 require_once './classes/LocalDateTime.php';
 require_once './classes/ICalendarReader.php';
