@@ -60,10 +60,7 @@ class NextEventController
         $this->view = $view;
     }
 
-    /**
-     * @return void
-     */
-    public function defaultAction()
+    public function defaultAction(): string
     {
         $events = $this->eventDataService->readEvents();
         $nextevent = $this->eventDataService->findNextEvent($events, $this->now);
@@ -105,6 +102,6 @@ class NextEventController
                 'location' => $nextevent->isBirthday() ? $this->lang['birthday_text'] : $nextevent->location,
             ];
         }
-        echo $this->view->render('nextevent', $data);
+        return $this->view->render('nextevent', $data);
     }
 }

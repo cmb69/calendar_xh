@@ -191,7 +191,6 @@ class Plugin
     {
         global $plugin_tx;
 
-        ob_start();
         $controller = new NextEventController(
             $plugin_tx['calendar'],
             self::now(),
@@ -199,8 +198,7 @@ class Plugin
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
         );
-        $controller->defaultAction();
-        return ob_get_clean();
+        return $controller->defaultAction();
     }
 
     public static function editEvents(): string
