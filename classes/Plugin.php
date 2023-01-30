@@ -167,7 +167,6 @@ class Plugin
     {
         global $plugin_cf, $plugin_tx;
 
-        ob_start();
         $controller = new EventListController(
             $plugin_cf['calendar'],
             $plugin_tx['calendar'],
@@ -180,8 +179,7 @@ class Plugin
             $end_month,
             $past_month
         );
-        $controller->defaultAction();
-        return ob_get_clean();
+        return $controller->defaultAction();
     }
 
     public static function nextEvent(): string
