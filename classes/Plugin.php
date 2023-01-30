@@ -129,9 +129,10 @@ class Plugin
 
     private static function iCalendarImport(): string
     {
-        global $action;
+        global $sn, $action;
 
         $controller = new IcalImportController(
+            $sn,
             self::getDataFolder(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::view()

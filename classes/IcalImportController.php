@@ -26,6 +26,9 @@ use DirectoryIterator;
 class IcalImportController
 {
     /** @var string */
+    private $scriptName;
+
+    /** @var string */
     private $dataFolder;
 
     /** @var EventDataService */
@@ -35,10 +38,12 @@ class IcalImportController
     private $view;
 
     public function __construct(
+        string $scriptName,
         string $dataFolder,
         EventDataService $eventDataService,
         View $view
     ) {
+        $this->scriptName = $scriptName;
         $this->view = $view;
         $this->dataFolder = $dataFolder;
         $this->eventDataService = $eventDataService;
@@ -49,10 +54,8 @@ class IcalImportController
      */
     public function defaultAction()
     {
-        global $sn;
-
         echo $this->view->render('import', [
-            'url' => $sn . '?&calendar&admin=import&action=import',
+            'url' => $this->scriptName . '?&calendar&admin=import&action=import',
             'files' => $this->findIcsFiles(),
         ]);
     }
