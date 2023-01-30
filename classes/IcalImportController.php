@@ -49,15 +49,13 @@ class IcalImportController
         $this->eventDataService = $eventDataService;
     }
 
-    /**
-     * @return void
-     */
-    public function defaultAction()
+    public function defaultAction(): Response
     {
-        echo $this->view->render('import', [
+        $output = $this->view->render('import', [
             'url' => $this->scriptName . '?&calendar&admin=import&action=import',
             'files' => $this->findIcsFiles(),
         ]);
+        return new NormalResponse($output);
     }
 
     /**
@@ -74,10 +72,7 @@ class IcalImportController
         return $result;
     }
 
-    /**
-     * @return void
-     */
-    public function importAction()
+    public function importAction(): Response
     {
         assert(is_string($_POST['calendar_ics']));
         $file = $this->dataFolder . '/' . $_POST['calendar_ics'];
@@ -85,7 +80,6 @@ class IcalImportController
         $events = array_merge($this->eventDataService->readEvents(), $reader->read());
         $this->eventDataService->writeEvents($events);
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';
-        header("Location: $url", true, 303);
-        exit;
+        return new RedirectResponse($url);
     }
 }
