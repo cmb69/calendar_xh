@@ -26,13 +26,27 @@
 
 namespace Calendar;
 
+use stdClass;
+
 class InfoController
 {
+    /** @var string */
+    private $pluginFolder;
+
+    /** @var array<string,string> */
+    private $lang;
+
+    /** @var SystemChecker */
+    private $systemChecker;
+
     /** @var View */
     private $view;
 
-    public function __construct(View $view)
+    public function __construct(string $pluginFolder, array $lang, SystemChecker $systemChecker, View $view)
     {
+        $this->pluginFolder = $pluginFolder;
+        $this->lang = $lang;
+        $this->systemChecker = $systemChecker;
         $this->view = $view;
     }
 
@@ -43,7 +57,37 @@ class InfoController
     {
         echo $this->view->render('info', [
             'version' => Plugin::VERSION,
-            'checks' => (new SystemCheckService(new SystemChecker()))->getChecks(),
+            'checks' => [
+                $this->checkPhpVersion('7.0.0'),
+                $this->checkXhVersion('1.7.0'),
+                $this->checkWritability("{$this->pluginFolder}css/"),
+                $this->checkWritability("{$this->pluginFolder}config/"),
+                $this->checkWritability("{$this->pluginFolder}languages/")
+            ],
         ]);
+    }
+
+    private function checkPhpVersion(string $version): stdClass
+    {
+        $state = $this->systemChecker->checkVersion(PHP_VERSION, $version) ? 'success' : 'fail';
+        $label = sprintf($this->lang['syscheck_phpversion'], $version);
+        $stateLabel = $this->lang["syscheck_$state"];
+        return (object) compact('state', 'label', 'stateLabel');
+    }
+
+    private function checkXhVersion(string $version): stdClass
+    {
+        $state = $this->systemChecker->checkVersion(CMSIMPLE_XH_VERSION, "CMSimple_XH $version") ? 'success' : 'fail';
+        $label = sprintf($this->lang['syscheck_xhversion'], $version);
+        $stateLabel = $this->lang["syscheck_$state"];
+        return (object) compact('state', 'label', 'stateLabel');
+    }
+
+    private function checkWritability(string $folder): stdClass
+    {
+        $state = $this->systemChecker->checkWritability($folder) ? 'success' : 'warning';
+        $label = sprintf($this->lang['syscheck_writable'], $folder);
+        $stateLabel = $this->lang["syscheck_$state"];
+        return (object) compact('state', 'label', 'stateLabel');
     }
 }

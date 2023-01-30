@@ -108,8 +108,16 @@ class Plugin
 
     private static function info(): string
     {
+        global $pth, $plugin_tx;
+
         ob_start();
-        (new InfoController(self::view()))->defaultAction();
+        $controller = new InfoController(
+            "{$pth['folder']['plugins']}calendar/",
+            $plugin_tx['calendar'],
+            new SystemChecker(),
+            self::view()
+        );
+        $controller->defaultAction();
         return ob_get_clean();
     }
 
