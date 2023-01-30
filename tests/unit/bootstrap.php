@@ -19,6 +19,7 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+const CMSIMPLE_XH_VERSION = "CMSimple_XH 1.7.5";
 const CMSIMPLE_URL = "http://example.com/";
 
 require_once './vendor/autoload.php';
@@ -31,11 +32,14 @@ require_once './classes/EditEventsController.php';
 require_once './classes/Event.php';
 require_once './classes/EventDataService.php';
 require_once './classes/EventListController.php';
+require_once './classes/InfoController.php';
 require_once './classes/HtmlString.php';
 require_once './classes/LocalDateTime.php';
 require_once './classes/ICalendarReader.php';
 require_once './classes/NextEventController.php';
 require_once './classes/View.php';
+require_once './classes/Plugin.php';
 require_once './classes/Response.php';
 require_once './classes/NormalResponse.php';
 require_once './classes/RedirectResponse.php';
+require_once './classes/SystemChecker.php';
