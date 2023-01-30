@@ -240,9 +240,7 @@ class Plugin
         if (!is_callable([$controller, $action])) {
             $action = 'defaultAction';
         }
-        ob_start();
-        $controller->{$action}();
-        return ob_get_clean();
+        return $controller->{$action}()->trigger();
     }
 
     private static function getDataFolder(): string
