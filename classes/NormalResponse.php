@@ -21,8 +21,23 @@
 
 namespace Calendar;
 
-interface Response
+class NormalResponse implements Response
 {
-    /** @return string|never */
-    public function trigger();
+    /** @var string */
+    private $output;
+
+    public function __construct($output)
+    {
+        $this->output = $output;
+    }
+
+    public function output(): string
+    {
+        return $this->output;
+    }
+
+    public function trigger(): string
+    {
+        return $this->output;
+    }
 }

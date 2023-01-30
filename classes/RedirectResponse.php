@@ -21,8 +21,25 @@
 
 namespace Calendar;
 
-interface Response
+class RedirectResponse implements Response
 {
-    /** @return string|never */
-    public function trigger();
+    /** @var string */
+    private $location;
+
+    public function __construct(string $location)
+    {
+        $this->location = $location;
+    }
+
+    public function location(): string
+    {
+        return $this->location;
+    }
+
+    /** @return never */
+    public function trigger()
+    {
+        header("Location: {$this->location}");
+        exit;
+    }
 }

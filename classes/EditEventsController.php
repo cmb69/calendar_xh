@@ -90,13 +90,13 @@ class EditEventsController
             'hash' => sha1(serialize($events)),
             'jsUrl' => "{$this->pluginFolder}js/overview.min.js",
         ]);
-        return Response::create($output);
+        return new NormalResponse($output);
     }
 
     public function createAction(): Response
     {
         $event = $this->createDefaultEvent();
-        return Response::create($this->renderEditForm($event, null, "create"));
+        return new NormalResponse($this->renderEditForm($event, null, "create"));
     }
 
     public function updateAction(): Response
@@ -108,7 +108,7 @@ class EditEventsController
         }
         $id = $_GET['event_id'];
         $event = $events[$id];
-        return Response::create($this->renderEditForm($event, $id, "update"));
+        return new NormalResponse($this->renderEditForm($event, $id, "update"));
     }
 
     public function deleteAction(): Response
@@ -120,7 +120,7 @@ class EditEventsController
         }
         $id = $_GET['event_id'];
         $event = $events[$id];
-        return Response::create($this->renderEditForm($event, $id, "delete"));
+        return new NormalResponse($this->renderEditForm($event, $id, "delete"));
     }
 
     /**
@@ -200,7 +200,7 @@ class EditEventsController
         } else {
             $output = XH_message('fail', $this->lang['eventfile_not_saved'])
                 . $this->renderEditForm($maybeEvent, $id, $id !== null ? "create" : "update");
-            return Response::create($output);
+            return new NormalResponse($output);
         }
     }
 
@@ -220,7 +220,7 @@ class EditEventsController
         } else {
             $output = XH_message('fail', $this->lang['eventfile_not_saved'])
                 . $this->renderEditForm($event, $id, "delete");
-            return Response::create($output);
+            return new NormalResponse($output);
         }
     }
 
@@ -231,7 +231,7 @@ class EditEventsController
         } else {
             $url = CMSIMPLE_URL . "?{$this->url}";
         }
-        return Response::createRedirect($url);
+        return new RedirectResponse($url);
     }
 
     private function isValidDate(string $date): bool

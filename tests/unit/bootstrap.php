@@ -37,3 +37,5 @@ require_once './classes/ICalendarReader.php';
 require_once './classes/NextEventController.php';
 require_once './classes/View.php';
 require_once './classes/Response.php';
+require_once './classes/NormalResponse.php';
+require_once './classes/RedirectResponse.php';
