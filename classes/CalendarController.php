@@ -99,10 +99,7 @@ class CalendarController
         $this->eventpage = $eventpage;
     }
 
-    /**
-     * @return void
-     */
-    public function defaultAction()
+    public function defaultAction(): Response
     {
         if ($this->eventpage == '') {
             $this->eventpage = $this->lang['event_page'];
@@ -123,16 +120,12 @@ class CalendarController
             'jsUrl' => "{$this->pluginFolder}js/calendar.min.js",
         ];
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-            while (ob_get_level()) {
-                ob_end_clean();
-            }
-            echo $this->view->render('calendar', $data);
-            exit;
-        } else {
-            echo '<div class="calendar_calendar">';
-            echo $this->view->render('calendar', $data);
-            echo '</div>';
+            return new AjaxResponse($this->view->render('calendar', $data));
         }
+        $output = '<div class="calendar_calendar">'
+            . $this->view->render('calendar', $data)
+            . '</div>';
+        return new NormalResponse($output);
     }
 
     /**

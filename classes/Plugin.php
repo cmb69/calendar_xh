@@ -141,11 +141,11 @@ class Plugin
         return ob_get_clean();
     }
 
-    public static function calendar(int $year = 0, int $month = 0, string $eventpage = ''): string
+    /** @return string|never */
+    public static function calendar(int $year = 0, int $month = 0, string $eventpage = '')
     {
         global $pth, $plugin_cf, $plugin_tx, $sn, $su;
 
-        ob_start();
         $controller = new CalendarController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
@@ -159,8 +159,7 @@ class Plugin
             $month,
             $eventpage
         );
-        $controller->defaultAction();
-        return ob_get_clean();
+        return $controller->defaultAction()->trigger();
     }
 
     public static function events(int $month = 0, int $year = 0, int $end_month = 0, int $past_month = 0): string
