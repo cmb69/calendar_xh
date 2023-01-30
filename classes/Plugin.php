@@ -109,7 +109,7 @@ class Plugin
     private static function info(): string
     {
         ob_start();
-        (new InfoController(new View()))->defaultAction();
+        (new InfoController(self::view()))->defaultAction();
         return ob_get_clean();
     }
 
@@ -128,7 +128,7 @@ class Plugin
         $controller = new IcalImportController(
             self::getDataFolder(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            new View()
+            self::view()
         );
         ob_start();
         switch ($action) {
@@ -152,7 +152,7 @@ class Plugin
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
-            new View(),
+            self::view(),
             $year,
             $month,
             $eventpage
@@ -172,7 +172,7 @@ class Plugin
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
-            new View(),
+            self::view(),
             $month,
             $year,
             $end_month,
@@ -192,7 +192,7 @@ class Plugin
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
-            new View()
+            self::view()
         );
         $controller->defaultAction();
         return ob_get_clean();
@@ -233,7 +233,7 @@ class Plugin
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::getCsrfProtector(),
-            new View()
+            self::view()
         );
         if (!is_callable([$controller, $action])) {
             $action = 'defaultAction';
@@ -280,5 +280,12 @@ class Plugin
             $_XH_csrfProtection = new CsrfProtector();
         }
         return $_XH_csrfProtection;
+    }
+
+    private static function view(): View
+    {
+        global $pth, $plugin_tx;
+
+        return new View("{$pth['folder']['plugins']}calendar/views/", $plugin_tx['calendar']);
     }
 }

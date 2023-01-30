@@ -23,10 +23,23 @@ namespace Calendar;
 
 class View
 {
+    /** @var string */
+    private $viewFolder;
+
+    /** @var array<string,string> */
+    private $lang;
+
     /**
      * @var array
      */
     public $data = array();
+
+    /** @param array<string,string> $lang */
+    public function __construct(string $viewFolder, array $lang)
+    {
+        $this->viewFolder = $viewFolder;
+        $this->lang = $lang;
+    }
 
     /**
      * @return mixed
@@ -51,9 +64,7 @@ class View
      */
     protected function text(string $key, ...$args): string
     {
-        global $plugin_tx;
-
-        return $this->escape(sprintf($plugin_tx['calendar'][$key], ...$args));
+        return $this->escape(sprintf($this->lang[$key], ...$args));
     }
 
     /**
@@ -61,10 +72,8 @@ class View
      */
     protected function plural(string $key, int $count, ...$args): string
     {
-        global $plugin_tx;
-
         $key .= XH_numberSuffix($count);
-        return $this->escape(sprintf($plugin_tx['calendar'][$key], $count, ...$args));
+        return $this->escape(sprintf($this->lang[$key], $count, ...$args));
     }
 
     /**
@@ -73,10 +82,8 @@ class View
      */
     public function render(string $_template, array $_data)
     {
-        global $pth;
-
         $this->data = $_data;
-        include "{$pth['folder']['plugins']}calendar/views/{$_template}.php";
+        include "{$this->viewFolder}{$_template}.php";
     }
 
     /**
