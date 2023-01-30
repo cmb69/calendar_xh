@@ -1,12 +1,7 @@
 <?php
 
 /**
- * Copyright 2005-2006 Michael Svarrer
- * Copyright 2007-2008 Tory
- * Copyright 2008      Patrick Varlet
- * Copyright 2011      Holger Irmler
- * Copyright 2011-2013 Frank Ziesing
- * Copyright 2017-2023 Christoph M. Becker
+ * Copyright 2012-2023 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -26,27 +21,15 @@
 
 namespace Calendar;
 
-class InfoController
+class SystemChecker
 {
-    /** @var View */
-    private $view;
-
-    public function __construct(View $view)
+    public function checkVersion(string $actual, string $minimum): bool
     {
-        $this->view = $view;
+        return version_compare($actual, $minimum) >= 0;
     }
 
-    /**
-     * @return void
-     */
-    public function defaultAction()
+    public function checkWritability(string $path): bool
     {
-        global $pth;
-
-        echo $this->view->render('info', [
-            'logo' => "{$pth['folder']['plugins']}calendar/calendar.png",
-            'version' => Plugin::VERSION,
-            'checks' => (new SystemCheckService(new SystemChecker()))->getChecks(),
-        ]);
+        return is_writable($path);
     }
 }
