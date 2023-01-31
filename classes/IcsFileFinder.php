@@ -49,4 +49,10 @@ class IcsFileFinder
         }
         return $result;
     }
+
+    /** @return list<string> */
+    public function read(string $filename): array
+    {
+        return file("{$this->folder}$filename", FILE_IGNORE_NEW_LINES);
+    }
 }
