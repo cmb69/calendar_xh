@@ -21,15 +21,13 @@
 
 namespace Calendar;
 
-use DirectoryIterator;
-
 class IcalImportController
 {
     /** @var string */
     private $scriptName;
 
-    /** @var string */
-    private $dataFolder;
+    /** @var IcsFileFinder */
+    private $icsFileFinder;
 
     /** @var EventDataService */
     private $eventDataService;
@@ -39,53 +37,33 @@ class IcalImportController
 
     public function __construct(
         string $scriptName,
-        string $dataFolder,
+        IcsFileFinder $icsFileFinder,
         EventDataService $eventDataService,
         View $view
     ) {
         $this->scriptName = $scriptName;
         $this->view = $view;
-        $this->dataFolder = $dataFolder;
+        $this->icsFileFinder = $icsFileFinder;
         $this->eventDataService = $eventDataService;
     }
 
-    /**
-     * @return void
-     */
-    public function defaultAction()
+    public function defaultAction(): Response
     {
-        echo $this->view->render('import', [
+        $output = $this->view->render('import', [
             'url' => $this->scriptName . '?&calendar&admin=import&action=import',
-            'files' => $this->findIcsFiles(),
+            'files' => $this->icsFileFinder->all(),
         ]);
+        return new NormalResponse($output);
     }
 
-    /**
-     * @return string[]
-     */
-    private function findIcsFiles(): array
-    {
-        $result = [];
-        foreach (new DirectoryIterator($this->dataFolder) as $file) {
-            if ($file->isFile() && $file->getExtension() === 'ics') {
-                $result[] = $file->getFilename();
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * @return void
-     */
-    public function importAction()
+    public function importAction(): Response
     {
         assert(is_string($_POST['calendar_ics']));
-        $file = $this->dataFolder . '/' . $_POST['calendar_ics'];
-        $reader = new ICalendarReader($file);
-        $events = array_merge($this->eventDataService->readEvents(), $reader->read());
+        $reader = new ICalendarParser();
+        $events = $reader->parse($this->icsFileFinder->read($_POST['calendar_ics']));
+        $events = array_merge($this->eventDataService->readEvents(), $events);
         $this->eventDataService->writeEvents($events);
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';
-        header("Location: $url", true, 303);
-        exit;
+        return new RedirectResponse($url);
     }
 }

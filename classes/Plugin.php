@@ -133,19 +133,16 @@ class Plugin
 
         $controller = new IcalImportController(
             $sn,
-            self::getDataFolder(),
+            new IcsFileFinder(self::getDataFolder()),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::view()
         );
-        ob_start();
         switch ($action) {
             case 'import':
-                $controller->importAction();
-                break;
+                return $controller->importAction()->trigger();
             default:
-                $controller->defaultAction();
+                return $controller->defaultAction()->trigger();
         }
-        return ob_get_clean();
     }
 
     /** @return string|never */

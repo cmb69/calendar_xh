@@ -23,12 +23,13 @@ namespace Calendar;
 
 use PHPUnit\Framework\TestCase;
 
-class ICalendarReaderTest extends TestCase
+class ICalendarParserTest extends TestCase
 {
     public function testRead()
     {
-        $subject = new ICalendarReader(__DIR__ . '/basic.ics', '-');
-        $actual = $subject->read();
+        $lines = file(__DIR__ . '/ics/basic.ics', FILE_IGNORE_NEW_LINES);
+        $subject = new ICalendarParser();
+        $actual = $subject->parse($lines);
         $this->assertContainsOnlyInstancesOf(Event::class, $actual);
         $this->assertCount(2, $actual);
 
