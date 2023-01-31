@@ -23,7 +23,7 @@ namespace Calendar;
 
 use PHPUnit\Framework\TestCase;
 
-class ICalendarReaderTest extends TestCase
+class ICalendarParserTest extends TestCase
 {
     public function testRead()
     {
