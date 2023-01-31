@@ -47,7 +47,6 @@ class CalendarControllerTest extends TestCase
             "/?page"
         );
         $response = $sut->defaultAction();
-        assert($response instanceof NormalResponse);
         Approvals::verifyHtml($response->output());
     }
 }

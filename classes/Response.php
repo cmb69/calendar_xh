@@ -21,8 +21,67 @@
 
 namespace Calendar;
 
-interface Response
+class Response
 {
+    const NORMAL = 1;
+    const REDIRECT = 2;
+    const AJAX = 3;
+
+    public static function create(string $output): self
+    {
+        return new Response(self::NORMAL, $output);
+    }
+
+    public static function createRedirect(string $location): self
+    {
+        return new Response(self::REDIRECT, $location);
+    }
+
+    public static function createAjax(string $output): self
+    {
+        return new Response(self::AJAX, $output);
+    }
+
+    /** @var int */
+    private $type;
+
+    /** @var string */
+    private $contents;
+
+    private function __construct(int $type, string $contents)
+    {
+        $this->type = $type;
+        $this->contents = $contents;
+    }
+
+    public function output(): string
+    {
+        assert($this->type === self::NORMAL || $this->type === self::AJAX);
+        return $this->contents;
+    }
+
+    public function location(): string
+    {
+        assert($this->type === self::REDIRECT);
+        return $this->contents;
+    }
+
     /** @return string|never */
-    public function trigger();
+    public function trigger()
+    {
+        switch ($this->type) {
+            case self::NORMAL:
+                return $this->contents;
+            case self::REDIRECT:
+                header("Location: {$this->contents}");
+                exit;
+            case self::AJAX:
+                while (ob_get_level()) {
+                    ob_end_clean();
+                }
+                echo $this->contents;
+                exit;
+        }
+        return ""; // make PHPStan happy
+    }
 }

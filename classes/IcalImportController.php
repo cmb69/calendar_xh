@@ -53,7 +53,7 @@ class IcalImportController
             'url' => $this->scriptName . '?&calendar&admin=import&action=import',
             'files' => $this->icsFileFinder->all(),
         ]);
-        return new NormalResponse($output);
+        return Response::create($output);
     }
 
     public function importAction(): Response
@@ -64,6 +64,6 @@ class IcalImportController
         $events = array_merge($this->eventDataService->readEvents(), $events);
         $this->eventDataService->writeEvents($events);
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';
-        return new RedirectResponse($url);
+        return Response::createRedirect($url);
     }
 }

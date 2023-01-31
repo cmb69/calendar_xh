@@ -46,14 +46,12 @@ class EditEventsControllerTest extends TestCase
     public function testDefaultActionRendersHtml()
     {
         $response = $this->sut->defaultAction();
-        assert($response instanceof NormalResponse);
         Approvals::verifyHtml($response->output());
     }
 
     public function testCreateActionRendersHtml()
     {
         $response = $this->sut->createAction();
-        assert($response instanceof NormalResponse);
         Approvals::verifyHtml($response->output());
     }
 
@@ -61,7 +59,6 @@ class EditEventsControllerTest extends TestCase
     {
         $_GET = ["event_id" => "invalid id"];
         $response = $this->sut->updateAction();
-        assert($response instanceof RedirectResponse);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -69,14 +66,12 @@ class EditEventsControllerTest extends TestCase
     {
         $_GET = ["event_id" => "invalid id"];
         $response = $this->sut->deleteAction();
-        assert($response instanceof RedirectResponse);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoCreateActionRedirects()
     {
         $response = $this->sut->doCreateAction();
-        assert($response instanceof RedirectResponse);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -84,7 +79,6 @@ class EditEventsControllerTest extends TestCase
     {
         $_GET = ["event_id" => "invalid id"];
         $response = $this->sut->doUpdateAction();
-        assert($response instanceof RedirectResponse);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -92,7 +86,6 @@ class EditEventsControllerTest extends TestCase
     {
         $_GET = ["event_id" => "invalid id"];
         $response = $this->sut->doDeleteAction();
-        assert($response instanceof RedirectResponse);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 }

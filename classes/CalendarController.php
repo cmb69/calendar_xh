@@ -120,12 +120,12 @@ class CalendarController
             'jsUrl' => "{$this->pluginFolder}js/calendar.min.js",
         ];
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-            return new AjaxResponse($this->view->render('calendar', $data));
+            return Response::createAjax($this->view->render('calendar', $data));
         }
         $output = '<div class="calendar_calendar">'
             . $this->view->render('calendar', $data)
             . '</div>';
-        return new NormalResponse($output);
+        return Response::create($output);
     }
 
     /**

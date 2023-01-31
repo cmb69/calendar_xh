@@ -35,7 +35,6 @@ class IcalImportControllerTest extends TestCase
         $view = new View("./views/", $plugin_tx['calendar']);
         $sut = new IcalImportController("/", $icsFileFinder, $eventDataService, $view);
         $response = $sut->defaultAction();
-        assert($response instanceof NormalResponse);
         Approvals::verifyHtml($response->output());
     }
 
@@ -49,7 +48,6 @@ class IcalImportControllerTest extends TestCase
         $view = new View("./views/", $plugin_tx['calendar']);
         $sut = new IcalImportController("/", $icsFileFinder, $eventDataService, $view);
         $response = $sut->importAction();
-        assert($response instanceof RedirectResponse);
         $this->assertEquals(
             "http://example.com/?&calendar&admin=plugin_main&action=plugin_text",
             $response->location()
