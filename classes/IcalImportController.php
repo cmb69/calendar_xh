@@ -21,15 +21,13 @@
 
 namespace Calendar;
 
-use DirectoryIterator;
-
 class IcalImportController
 {
     /** @var string */
     private $scriptName;
 
-    /** @var string */
-    private $dataFolder;
+    /** @var IcsFileFinder */
+    private $icsFileFinder;
 
     /** @var EventDataService */
     private $eventDataService;
@@ -39,13 +37,13 @@ class IcalImportController
 
     public function __construct(
         string $scriptName,
-        string $dataFolder,
+        IcsFileFinder $icsFileFinder,
         EventDataService $eventDataService,
         View $view
     ) {
         $this->scriptName = $scriptName;
         $this->view = $view;
-        $this->dataFolder = $dataFolder;
+        $this->icsFileFinder = $icsFileFinder;
         $this->eventDataService = $eventDataService;
     }
 
@@ -53,29 +51,15 @@ class IcalImportController
     {
         $output = $this->view->render('import', [
             'url' => $this->scriptName . '?&calendar&admin=import&action=import',
-            'files' => $this->findIcsFiles(),
+            'files' => $this->icsFileFinder->all(),
         ]);
         return new NormalResponse($output);
-    }
-
-    /**
-     * @return string[]
-     */
-    private function findIcsFiles(): array
-    {
-        $result = [];
-        foreach (new DirectoryIterator($this->dataFolder) as $file) {
-            if ($file->isFile() && $file->getExtension() === 'ics') {
-                $result[] = $file->getFilename();
-            }
-        }
-        return $result;
     }
 
     public function importAction(): Response
     {
         assert(is_string($_POST['calendar_ics']));
-        $file = $this->dataFolder . '/' . $_POST['calendar_ics'];
+        $file = $this->icsFileFinder->folder() . '/' . $_POST['calendar_ics'];
         $reader = new ICalendarReader($file);
         $events = array_merge($this->eventDataService->readEvents(), $reader->read());
         $this->eventDataService->writeEvents($events);

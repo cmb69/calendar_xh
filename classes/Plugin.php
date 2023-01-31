@@ -133,7 +133,7 @@ class Plugin
 
         $controller = new IcalImportController(
             $sn,
-            self::getDataFolder(),
+            new IcsFileFinder(self::getDataFolder()),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::view()
         );
