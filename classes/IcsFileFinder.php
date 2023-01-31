@@ -33,11 +33,6 @@ class IcsFileFinder
         $this->folder = $folder;
     }
 
-    public function folder(): string
-    {
-        return $this->folder;
-    }
-
     /** @return string[] */
     public function all(): array
     {
