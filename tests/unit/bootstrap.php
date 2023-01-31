@@ -32,6 +32,8 @@ require_once './classes/EditEventsController.php';
 require_once './classes/Event.php';
 require_once './classes/EventDataService.php';
 require_once './classes/EventListController.php';
+require_once './classes/IcalImportController.php';
+require_once './classes/IcsFileFinder.php';
 require_once './classes/InfoController.php';
 require_once './classes/HtmlString.php';
 require_once './classes/LocalDateTime.php';
