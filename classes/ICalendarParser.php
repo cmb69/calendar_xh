@@ -26,13 +26,8 @@ namespace Calendar;
  *
  * @see <https://tools.ietf.org/html/rfc2445>
  */
-class ICalendarReader
+class ICalendarParser
 {
-    /**
-     * @var string
-     */
-    private $filename;
-
     /**
      * @var string[]
      */
@@ -49,19 +44,15 @@ class ICalendarReader
     /** @var array<string,string> */
     private $currentEvent = [];
 
-    public function __construct(string $filename)
-    {
-        $this->filename = $filename;
-    }
-
     /**
+     * @param list<string> $lines
      * @return Event[]
      */
-    public function read(): array
+    public function parse(array $lines): array
     {
-        $this->lines = file($this->filename, FILE_IGNORE_NEW_LINES);
+        $this->lines = $lines;
         $this->unfold();
-        $this->parse();
+        $this->doParse();
         return $this->events;
     }
 
@@ -81,7 +72,7 @@ class ICalendarReader
     /**
      * @return void
      */
-    private function parse()
+    private function doParse()
     {
         $this->currentEvent = [];
         $isInEvent = false;

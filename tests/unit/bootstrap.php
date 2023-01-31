@@ -37,7 +37,7 @@ require_once './classes/IcsFileFinder.php';
 require_once './classes/InfoController.php';
 require_once './classes/HtmlString.php';
 require_once './classes/LocalDateTime.php';
-require_once './classes/ICalendarReader.php';
+require_once './classes/ICalendarParser.php';
 require_once './classes/NextEventController.php';
 require_once './classes/View.php';
 require_once './classes/Plugin.php';

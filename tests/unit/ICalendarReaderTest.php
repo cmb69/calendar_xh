@@ -27,8 +27,9 @@ class ICalendarReaderTest extends TestCase
 {
     public function testRead()
     {
-        $subject = new ICalendarReader(__DIR__ . '/basic.ics', '-');
-        $actual = $subject->read();
+        $lines = file(__DIR__ . '/basic.ics', FILE_IGNORE_NEW_LINES);
+        $subject = new ICalendarParser();
+        $actual = $subject->parse($lines);
         $this->assertContainsOnlyInstancesOf(Event::class, $actual);
         $this->assertCount(2, $actual);
 

@@ -60,8 +60,9 @@ class IcalImportController
     {
         assert(is_string($_POST['calendar_ics']));
         $file = $this->icsFileFinder->folder() . '/' . $_POST['calendar_ics'];
-        $reader = new ICalendarReader($file);
-        $events = array_merge($this->eventDataService->readEvents(), $reader->read());
+        $reader = new ICalendarParser();
+        $events = $reader->parse(file($file, FILE_IGNORE_NEW_LINES));
+        $events = array_merge($this->eventDataService->readEvents(), $events);
         $this->eventDataService->writeEvents($events);
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';
         return new RedirectResponse($url);
