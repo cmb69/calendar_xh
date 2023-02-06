@@ -30,7 +30,7 @@ class View
     private $lang;
 
     /**
-     * @var array
+     * @var array<string,mixed>
      */
     public $data = array();
 
@@ -54,6 +54,7 @@ class View
         return isset($this->data[$name]);
     }
 
+    /** @param list<mixed> $args */
     public function __call(string $name, array $args): string
     {
         return $this->escape($this->data[$name]);

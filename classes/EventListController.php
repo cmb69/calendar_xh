@@ -211,6 +211,7 @@ class EventListController
 
     /**
      * @param Event[] $events
+     * @return array<string,array<string,mixed>>
      */
     private function getMonthEvents(array $events, int $tablecols): array
     {
@@ -228,6 +229,7 @@ class EventListController
         return $result;
     }
 
+    /** @return array<string,mixed> */
     private function getBirthdayRowView(Event $event): array
     {
         return [
@@ -242,6 +244,7 @@ class EventListController
         ];
     }
 
+    /** @return array<string,mixed> */
     private function getEventRowView(Event $event): array
     {
         if ($event->isFullDay()) {
@@ -297,6 +300,7 @@ class EventListController
         }
     }
 
+    /** @return array<string,mixed> */
     private function getHeadline(int $tablecols): array
     {
         return [

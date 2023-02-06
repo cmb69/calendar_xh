@@ -42,6 +42,7 @@ class InfoController
     /** @var View */
     private $view;
 
+    /** @param array<string,string> $lang */
     public function __construct(string $pluginFolder, array $lang, SystemChecker $systemChecker, View $view)
     {
         $this->pluginFolder = $pluginFolder;
