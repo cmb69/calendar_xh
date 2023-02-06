@@ -119,7 +119,7 @@ class CalendarController
             'rows' => $rows,
             'jsUrl' => "{$this->pluginFolder}js/calendar.min.js",
         ];
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+        if (isset($_GET['calendar_ajax'])) {
             return Response::createAjax($this->view->render('calendar', $data));
         }
         $output = '<div class="calendar_calendar">'
