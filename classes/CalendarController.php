@@ -55,21 +55,6 @@ class CalendarController
     private $url;
 
     /**
-     * @var int
-     */
-    private $year;
-
-    /**
-     * @var int
-     */
-    private $month;
-
-    /**
-     * @var string
-     */
-    private $eventpage;
-
-    /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
      */
@@ -81,10 +66,7 @@ class CalendarController
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
         View $view,
-        string $url,
-        int $year = 0,
-        int $month = 0,
-        string $eventpage = ''
+        string $url
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
@@ -94,27 +76,24 @@ class CalendarController
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
         $this->url = $url;
-        $this->year = $year;
-        $this->month = $month;
-        $this->eventpage = $eventpage;
     }
 
-    public function defaultAction(): Response
+    public function defaultAction(int $year, int $month, string $eventpage): Response
     {
-        if ($this->eventpage == '') {
-            $this->eventpage = $this->lang['event_page'];
+        if ($eventpage == '') {
+            $eventpage = $this->lang['event_page'];
         }
-        $this->determineYearAndMonth();
+        $this->determineYearAndMonth($year, $month);
         $calendar = new Calendar((bool) $this->conf['week_starts_mon']);
         $rows = [];
-        foreach ($calendar->getMonthMatrix($this->year, $this->month) as $columns) {
-            $rows[] = $this->getRowData($columns);
+        foreach ($calendar->getMonthMatrix($year, $month) as $columns) {
+            $rows[] = $this->getRowData($columns, $year, $month, $eventpage);
         }
         $data = [
-            'caption' => $this->dateTimeFormatter->formatMonthYear($this->month, $this->year),
+            'caption' => $this->dateTimeFormatter->formatMonthYear($month, $year),
             'hasPrevNextButtons' => $this->conf['prev_next_button'],
-            'prevUrl' => $this->getPrevUrl(),
-            'nextUrl' => $this->getNextUrl(),
+            'prevUrl' => $this->getPrevUrl($year, $month),
+            'nextUrl' => $this->getNextUrl($year, $month),
             'headRow' => $this->getDaynamesRow(),
             'rows' => $rows,
             'jsUrl' => "{$this->pluginFolder}js/calendar.min.js",
@@ -128,16 +107,14 @@ class CalendarController
         return Response::create($output);
     }
 
-    /**
-     * @return void
-     */
-    private function determineYearAndMonth()
+    /** @return void */
+    private function determineYearAndMonth(int &$year, int &$month)
     {
-        if ($this->month === 0) {
-            $this->month = isset($_GET['month']) ? max(1, min(12, (int) $_GET['month'])) : $this->now->month;
+        if ($month === 0) {
+            $month = isset($_GET['month']) ? max(1, min(12, (int) $_GET['month'])) : $this->now->month;
         }
-        if ($this->year === 0) {
-            $this->year = isset($_GET['year']) ? max(1, min(9000, (int) $_GET['year'])) : $this->now->year;
+        if ($year === 0) {
+            $year = isset($_GET['year']) ? max(1, min(9000, (int) $_GET['year'])) : $this->now->year;
         }
     }
 
@@ -145,10 +122,10 @@ class CalendarController
      * @param (int|null)[] $columns
      * @return stdClass[]
      */
-    private function getRowData(array $columns): array
+    private function getRowData(array $columns, int $year, int $month, string $eventpage): array
     {
         $events = $this->eventDataService->readEvents();
-        $today = ($this->month === $this->now->month && $this->year === $this->now->year)
+        $today = ($month === $this->now->month && $year === $this->now->year)
             ? $this->now->day
             : 32;
         $row = [];
@@ -157,15 +134,15 @@ class CalendarController
                 $row[] = (object) ['classname' => 'calendar_noday', 'content' => ''];
                 continue;
             }
-            $dayEvents = $this->filterEventsByDay($events, $day);
+            $dayEvents = $this->filterEventsByDay($events, $year, $month, $day);
             $field = [];
             $classes = [];
             $field['content'] = $day;
             if (!empty($dayEvents)) {
-                $field['href'] = "?{$this->eventpage}&month={$this->month}&year={$this->year}";
-                $field['title'] = $this->getEventsTitle($dayEvents);
+                $field['href'] = "?{$eventpage}&month={$month}&year={$year}";
+                $field['title'] = $this->getEventsTitle($dayEvents, $year);
                 $classes[] = "calendar_eventday";
-                $currentDay = new LocalDateTime($this->year, $this->month, $day, 0, 0);
+                $currentDay = new LocalDateTime($year, $month, $day, 0, 0);
                 foreach ($dayEvents as $dayEvent) {
                     if (
                         $dayEvent->start->compareDate($currentDay) === 0
@@ -203,25 +180,25 @@ class CalendarController
      * @param Event[] $events
      * @return Event[]
      */
-    private function filterEventsByDay(array $events, int $day): array
+    private function filterEventsByDay(array $events, int $year, int $month, int $day): array
     {
         $result = [];
         foreach ($events as $event) {
-            if ($this->isEventOn($event, $day)) {
+            if ($this->isEventOn($event, $year, $month, $day)) {
                 $result[] = $event;
-            } elseif ($this->isBirthdayOn($event, $day)) {
+            } elseif ($this->isBirthdayOn($event, $month, $day)) {
                 $result[] = $event;
             }
         }
         return $result;
     }
 
-    private function isEventOn(Event $event, int $day): bool
+    private function isEventOn(Event $event, int $year, int $month, int $day): bool
     {
         if ($event->isBirthday()) {
             return false;
         }
-        $today = new LocalDateTime($this->year, $this->month, $day, 0, 0);
+        $today = new LocalDateTime($year, $month, $day, 0, 0);
         if (!$event->isMultiDay()) {
             return $event->start->compareDate($today) === 0;
         }
@@ -233,16 +210,16 @@ class CalendarController
             || $event->end->compareDate($today) === 0;
     }
 
-    private function isBirthdayOn(Event $event, int $day): bool
+    private function isBirthdayOn(Event $event, int $month, int $day): bool
     {
         $date = $event->start;
-        return $event->isBirthday() && $date->month == $this->month && $date->day == $day;
+        return $event->isBirthday() && $date->month == $month && $date->day == $day;
     }
 
     /**
      * @param Event[] $events
      */
-    private function getEventsTitle(array $events): string
+    private function getEventsTitle(array $events, int $year): string
     {
         $titles = [];
         foreach ($events as $event) {
@@ -259,7 +236,7 @@ class CalendarController
             if (!$event->isBirthday()) {
                 $titles[] = $this->dateTimeFormatter->formatTime($event->start) . " " . $text;
             } else {
-                $age = $this->year - $event->start->year;
+                $age = $year - $event->start->year;
                 $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
                 $titles[] = "{$text} {$age}";
             }
@@ -297,26 +274,26 @@ class CalendarController
         return $row;
     }
 
-    private function getPrevUrl(): string
+    private function getPrevUrl(int $year, int $month): string
     {
-        if ($this->month <= 1) {
+        if ($month <= 1) {
             $month_prev = 12;
-            $year_prev = $this->year - 1;
+            $year_prev = $year - 1;
         } else {
-            $month_prev = $this->month - 1;
-            $year_prev = $this->year;
+            $month_prev = $month - 1;
+            $year_prev = $year;
         }
         return "{$this->url}&month=$month_prev&year=$year_prev";
     }
 
-    private function getNextUrl(): string
+    private function getNextUrl(int $year, int $month): string
     {
-        if ($this->month >= 12) {
+        if ($month >= 12) {
             $month_next = 1;
-            $year_next = $this->year + 1;
+            $year_next = $year + 1;
         } else {
-            $month_next = $this->month + 1;
-            $year_next = $this->year;
+            $month_next = $month + 1;
+            $year_next = $year;
         }
         return "{$this->url}&month=$month_next&year=$year_next";
     }

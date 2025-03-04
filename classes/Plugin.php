@@ -145,12 +145,9 @@ class Plugin
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view(),
-            "$sn?$su",
-            $year,
-            $month,
-            $eventpage
+            "$sn?$su"
         );
-        return $controller->defaultAction()->trigger();
+        return $controller->defaultAction($year, $month, $eventpage)->trigger();
     }
 
     public static function events(int $month = 0, int $year = 0, int $end_month = 0, int $past_month = 0): string
@@ -163,13 +160,9 @@ class Plugin
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
-            self::view(),
-            $month,
-            $year,
-            $end_month,
-            $past_month
+            self::view()
         );
-        return $controller->defaultAction();
+        return $controller->defaultAction($month, $year, $end_month, $past_month);
     }
 
     public static function nextEvent(): string

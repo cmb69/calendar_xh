@@ -46,18 +46,6 @@ class EventListController
     /** @var View */
     private $view;
 
-    /** @var int */
-    private $month;
-
-    /** @var int */
-    private $year;
-
-    /** @var int */
-    private $endMonth;
-
-    /** @var int */
-    private $pastMonth;
-
     /**
      * @param array<string,string> $conf
      * @param array<string,string> $lang
@@ -68,11 +56,7 @@ class EventListController
         LocalDateTime $now,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
-        View $view,
-        int $month,
-        int $year,
-        int $end_month,
-        int $past_month
+        View $view
     ) {
         $this->conf = $conf;
         $this->lang = $lang;
@@ -80,22 +64,18 @@ class EventListController
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
-        $this->month = $month;
-        $this->year = $year;
-        $this->endMonth = $end_month;
-        $this->pastMonth = $past_month;
     }
 
-    public function defaultAction(): string
+    public function defaultAction(int $month, int $year, int $endMonth, int $pastMonth): string
     {
-        $this->determineYearAndMonth();
-        $this->determineEndMonth();
-        $this->endMonth = $this->endMonth + $this->pastMonth;
+        $this->determineYearAndMonth($year, $month, $pastMonth);
+        $this->determineEndMonth($endMonth);
+        $endMonth = $endMonth + $pastMonth;
 
         $events = $this->eventDataService->readEvents();
 
-        $endmonth = $this->month + $this->endMonth;
-        $endyear = $this->year;
+        $endmonth = $month + $endMonth;
+        $endyear = $year;
         while ($endmonth > 12) {
             $endyear++;
             $endmonth -= 12;
@@ -103,17 +83,17 @@ class EventListController
 
         $tablecols = $this->calcTablecols();
 
-        $startmonth = $this->month;
-        $startyear = $this->year;
+        $startmonth = $month;
+        $startyear = $year;
         $monthEvents = [];
         $x = 0;
-        while ($x <= $this->endMonth) {
-            $filteredEvents = $this->eventDataService->filterByMonth($events, $this->year, $this->month);
-            if (($oneMonthEvents = $this->getMonthEvents($filteredEvents, $tablecols))) {
+        while ($x <= $endMonth) {
+            $filteredEvents = $this->eventDataService->filterByMonth($events, $year, $month);
+            if (($oneMonthEvents = $this->getMonthEvents($filteredEvents, $tablecols, $year, $month))) {
                 $monthEvents[] = $oneMonthEvents;
             }
             $x++;
-            $this->advanceMonth();
+            $this->advanceMonth($year, $month);
         }
         $start = $this->dateTimeFormatter->formatMonthYear($startmonth, $startyear);
         $end = $this->dateTimeFormatter->formatMonthYear($endmonth, $endyear);
@@ -131,49 +111,50 @@ class EventListController
     /**
      * @return void
      */
-    private function determineYearAndMonth()
+    private function determineYearAndMonth(int &$year, int &$month, int &$pastMonth)
     {
         assert(!isset($_GET['month']) || is_string($_GET['month']));
         $month_input = isset($_GET['month']) ? max(1, min(12, (int) $_GET['month'])) : 0;
 
-        if ($this->month) {
+        if ($month) {
             if ($month_input) {
-                if ($this->month >= $month_input) {
-                    $this->month = $month_input;
+                if ($month >= $month_input) {
+                    $month = $month_input;
                 }
             }
         } else {
-            $this->month = $month_input;
+            $month = $month_input;
         }
 
         assert(!isset($_GET['year']) || is_string($_GET['year']));
-        $this->year = isset($_GET['year']) ? max(1, min(9000, (int) $_GET['year'])) : $this->now->year;
+        $year = isset($_GET['year']) ? max(1, min(9000, (int) $_GET['year'])) : $this->now->year;
 
-        if ($this->month === 0) {
-            $this->month = $this->now->month;
+        if ($month === 0) {
+            $month = $this->now->month;
         }
 
-        if (!$this->pastMonth) {
-            $this->pastMonth = (int) $this->conf['show_number_of_previous_months'];
+        if (!$pastMonth) {
+            $pastMonth = (int) $this->conf['show_number_of_previous_months'];
         }
 
-        $this->month = $this->month - $this->pastMonth;
-        if ($this->month < 1) {
-            $this->year = $this->year - 1;
-            $this->month = 12 + $this->month;
+        $month = $month - $pastMonth;
+        if ($month < 1) {
+            $year = $year - 1;
+            $month = 12 + $month;
         }
     }
 
     /**
+     * @param-out int $endMonth
      * @return void
      */
-    private function determineEndMonth()
+    private function determineEndMonth(int &$endMonth)
     {
-        if ($this->endMonth === 0) {
+        if ($endMonth === 0) {
             if ($this->conf['show_number_of_future_months']) {
-                $this->endMonth = (int) $this->conf['show_number_of_future_months'];
+                $endMonth = (int) $this->conf['show_number_of_future_months'];
             } else {
-                $this->endMonth = 1;
+                $endMonth = 1;
             }
         }
     }
@@ -181,13 +162,13 @@ class EventListController
     /**
      * @return void
      */
-    private function advanceMonth()
+    private function advanceMonth(int &$year, int &$month)
     {
-        if ($this->month == 12) {
-            $this->year++;
-            $this->month = 1;
+        if ($month == 12) {
+            $year++;
+            $month = 1;
         } else {
-            $this->month++;
+            $month++;
         }
     }
 
@@ -213,15 +194,15 @@ class EventListController
      * @param Event[] $events
      * @return array<string,array<string,mixed>|list<array<string,mixed>>>
      */
-    private function getMonthEvents(array $events, int $tablecols): array
+    private function getMonthEvents(array $events, int $tablecols, int $year, int $month): array
     {
         if (empty($events)) {
             return [];
         }
-        $result = ['headline' => $this->getHeadline($tablecols), 'rows' => []];
+        $result = ['headline' => $this->getHeadline($tablecols, $year, $month), 'rows' => []];
         foreach ($events as $event) {
             if ($event->isBirthday()) {
-                $result['rows'][] = $this->getBirthdayRowView($event);
+                $result['rows'][] = $this->getBirthdayRowView($event, $year);
             } else {
                 $result['rows'][] = $this->getEventRowView($event);
             }
@@ -230,13 +211,13 @@ class EventListController
     }
 
     /** @return array<string,mixed> */
-    private function getBirthdayRowView(Event $event): array
+    private function getBirthdayRowView(Event $event, int $year): array
     {
         return [
             'is_birthday' => true,
-            'age' => $this->year - $event->start->year,
+            'age' => $year - $event->start->year,
             'event' => $event,
-            'date' => $this->dateTimeFormatter->formatDate($event->start->withYear($this->year)),
+            'date' => $this->dateTimeFormatter->formatDate($event->start->withYear($year)),
             'showTime' => $this->conf['show_event_time'],
             'showLocation' => $this->conf['show_event_location'],
             'showLink' => $this->conf['show_event_link'],
@@ -301,11 +282,11 @@ class EventListController
     }
 
     /** @return array<string,mixed> */
-    private function getHeadline(int $tablecols): array
+    private function getHeadline(int $tablecols, int $year, int $month): array
     {
         return [
             'tablecols' => $tablecols,
-            'monthYear' => $this->dateTimeFormatter->formatMonthYear($this->month, $this->year),
+            'monthYear' => $this->dateTimeFormatter->formatMonthYear($month, $year),
             'showTime' => $this->conf['show_event_time'],
             'showLocation' => $this->conf['show_event_location'],
             'showLink' => $this->conf['show_event_link'],

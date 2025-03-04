@@ -42,12 +42,8 @@ class EventListControllerTest extends TestCase
             $dateTime,
             $eventDataService,
             $dateTimeFormatter,
-            $view,
-            0,
-            0,
-            0,
-            0
+            $view
         );
-        Approvals::verifyHtml($sut->defaultAction());
+        Approvals::verifyHtml($sut->defaultAction(0, 0, 0, 0));
     }
 }

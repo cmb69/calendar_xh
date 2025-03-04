@@ -46,7 +46,7 @@ class CalendarControllerTest extends TestCase
             $view,
             "/?page"
         );
-        $response = $sut->defaultAction();
+        $response = $sut->defaultAction(0, 0, "");
         Approvals::verifyHtml($response->output());
     }
 }
