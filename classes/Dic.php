@@ -26,8 +26,40 @@
 
 namespace Calendar;
 
+use XH\CSRFProtection as CsrfProtector;
+
 class Dic
 {
+    public static function makeCalendarController(): CalendarController
+    {
+        global $pth, $plugin_cf, $plugin_tx, $sn, $su;
+
+        return new CalendarController(
+            "{$pth['folder']['plugins']}calendar/",
+            $plugin_cf['calendar'],
+            $plugin_tx['calendar'],
+            self::now(),
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new DateTimeFormatter($plugin_tx['calendar']),
+            self::makeView(),
+            "$sn?$su"
+        );
+    }
+
+    public static function makeEventListController(): EventListController
+    {
+        global $plugin_cf, $plugin_tx;
+
+        return new EventListController(
+            $plugin_cf['calendar'],
+            $plugin_tx['calendar'],
+            self::now(),
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new DateTimeFormatter($plugin_tx['calendar']),
+            self::makeView()
+        );
+    }
+
     public static function makeNextEventController(): NextEventController
     {
         global $plugin_tx;
@@ -41,6 +73,22 @@ class Dic
         );
     }
 
+    public static function makeEditEventController(): EditEventsController
+    {
+        global $pth, $plugin_cf, $plugin_tx, $su;
+
+        return new EditEventsController(
+            "{$pth['folder']['plugins']}calendar/",
+            $plugin_cf['calendar'],
+            $plugin_tx['calendar'],
+            self::now(),
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            self::getCsrfProtector(),
+            self::makeView(),
+            $su
+        );
+    }
+
     public static function makeInfoController(): InfoController
     {
         global $pth, $plugin_tx;
@@ -49,6 +97,18 @@ class Dic
             "{$pth['folder']['plugins']}calendar/",
             $plugin_tx['calendar'],
             new SystemChecker(),
+            self::makeView()
+        );
+    }
+
+    public static function makeIcalImportController(): IcalImportController
+    {
+        global $sn;
+
+        return new IcalImportController(
+            $sn,
+            new IcsFileFinder(self::getDataFolder()),
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::makeView()
         );
     }
@@ -81,6 +141,16 @@ class Dic
             $sep = '.';
         }
         return $sep;
+    }
+
+    private static function getCsrfProtector(): CsrfProtector
+    {
+        global $_XH_csrfProtection;
+
+        if ($_XH_csrfProtection === null) {
+            $_XH_csrfProtection = new CsrfProtector();
+        }
+        return $_XH_csrfProtection;
     }
 
     private static function makeView(): View

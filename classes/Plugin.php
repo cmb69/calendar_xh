@@ -116,53 +116,25 @@ class Plugin
 
     private static function iCalendarImport(): string
     {
-        global $sn, $action;
+        global $action;
 
-        $controller = new IcalImportController(
-            $sn,
-            new IcsFileFinder(self::getDataFolder()),
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            self::view()
-        );
         switch ($action) {
             case 'import':
-                return $controller->importAction()->trigger();
+                return Dic::makeIcalImportController()->importAction()->trigger();
             default:
-                return $controller->defaultAction()->trigger();
+                return Dic::makeIcalImportController()->defaultAction()->trigger();
         }
     }
 
     /** @return string|never */
     public static function calendar(int $year = 0, int $month = 0, string $eventpage = '')
     {
-        global $pth, $plugin_cf, $plugin_tx, $sn, $su;
-
-        $controller = new CalendarController(
-            "{$pth['folder']['plugins']}calendar/",
-            $plugin_cf['calendar'],
-            $plugin_tx['calendar'],
-            self::now(),
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            new DateTimeFormatter($plugin_tx['calendar']),
-            self::view(),
-            "$sn?$su"
-        );
-        return $controller->defaultAction($year, $month, $eventpage)->trigger();
+        return Dic::makeCalendarController()->defaultAction($year, $month, $eventpage)->trigger();
     }
 
     public static function events(int $month = 0, int $year = 0, int $end_month = 0, int $past_month = 0): string
     {
-        global $plugin_cf, $plugin_tx;
-
-        $controller = new EventListController(
-            $plugin_cf['calendar'],
-            $plugin_tx['calendar'],
-            self::now(),
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            new DateTimeFormatter($plugin_tx['calendar']),
-            self::view()
-        );
-        return $controller->defaultAction($month, $year, $end_month, $past_month);
+        return Dic::makeEventListController()->defaultAction($month, $year, $end_month, $past_month);
     }
 
     public static function nextEvent(): string
@@ -172,8 +144,6 @@ class Plugin
 
     public static function editEvents(): string
     {
-        global $pth, $plugin_cf, $plugin_tx, $su;
-
         if (isset($_POST['action'])) {
             assert(is_string($_POST['action']));
             $action = $_POST['action'];
@@ -199,43 +169,11 @@ class Plugin
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $action = "do" . ucfirst($action);
         }
-        $controller = new EditEventsController(
-            "{$pth['folder']['plugins']}calendar/",
-            $plugin_cf['calendar'],
-            $plugin_tx['calendar'],
-            self::now(),
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            self::getCsrfProtector(),
-            self::view(),
-            $su
-        );
+        $controller = Dic::makeEditEventController();
         if (!is_callable([$controller, $action])) {
             $action = 'defaultAction';
         }
         return $controller->{$action}()->trigger();
-    }
-
-    private static function getDataFolder(): string
-    {
-        global $pth, $sl, $cf, $plugin_cf;
-
-        $dataFolder = $pth['folder']['content'];
-        if ($plugin_cf['calendar']['same-event-calendar_for_all_languages'] && $sl !== $cf['language']['default']) {
-            $dataFolder = dirname($dataFolder) . '/';
-        }
-        return $dataFolder;
-    }
-
-    /** @return non-empty-string */
-    private static function getDpSeparator(): string
-    {
-        global $plugin_cf;
-
-        $sep = $plugin_cf['calendar']['date_delimiter'];
-        if (!in_array($sep, ['.', '/', '-'], true)) {
-            $sep = '.';
-        }
-        return $sep;
     }
 
     public static function now(): LocalDateTime
@@ -243,22 +181,5 @@ class Plugin
         $result = LocalDateTime::fromIsoString(date('Y-m-d\TH:i'));
         assert($result !== null);
         return $result;
-    }
-
-    private static function getCsrfProtector(): CsrfProtector
-    {
-        global $_XH_csrfProtection;
-
-        if ($_XH_csrfProtection === null) {
-            $_XH_csrfProtection = new CsrfProtector();
-        }
-        return $_XH_csrfProtection;
-    }
-
-    private static function view(): View
-    {
-        global $pth, $plugin_tx;
-
-        return new View("{$pth['folder']['plugins']}calendar/views/", $plugin_tx['calendar']);
     }
 }

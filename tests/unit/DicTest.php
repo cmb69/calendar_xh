@@ -22,16 +22,30 @@
 namespace Calendar;
 
 use PHPUnit\Framework\TestCase;
+use XH\CSRFProtection;
 
 class DicTest extends TestCase
 {
     public function setUp(): void
     {
-        global $pth, $plugin_cf, $plugin_tx;
+        global $pth, $plugin_cf, $plugin_tx, $sn, $su, $_XH_csrfProtection;
 
         $pth = ["folder" => ["content" => "", "plugins" => ""]];
         $plugin_cf = ["calendar" => ["date_delimiter" => "", "same-event-calendar_for_all_languages" => ""]];
         $plugin_tx = ["calendar" => ["monthnames_array" => ""]];
+        $sn = "/";
+        $su = "";
+        $_XH_csrfProtection = $this->createStub(CSRFProtection::class);
+    }
+
+    public function testMakeCalendarController(): void
+    {
+        $this->assertInstanceOf(CalendarController::class, Dic::makeCalendarController());
+    }
+
+    public function testMakeEventListController(): void
+    {
+        $this->assertInstanceOf(EventListController::class, Dic::makeEventListController());
     }
 
     public function testMakeNextEventController(): void
@@ -39,8 +53,18 @@ class DicTest extends TestCase
         $this->assertInstanceOf(NextEventController::class, Dic::makeNextEventController());
     }
 
+    public function testMakeEditEventsController(): void
+    {
+        $this->assertInstanceOf(EditEventsController::class, Dic::makeEditEventController());
+    }
+
     public function testMakeInfoController(): void
     {
         $this->assertInstanceOf(InfoController::class, Dic::makeInfoController());
+    }
+
+    public function testMakeIcalImportController(): void
+    {
+        $this->assertInstanceOf(IcalImportController::class, Dic::makeIcalImportController());
     }
 }
