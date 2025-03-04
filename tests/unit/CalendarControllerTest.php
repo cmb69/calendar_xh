@@ -34,6 +34,7 @@ class CalendarControllerTest extends TestCase
         $lang = $plugin_tx['calendar'];
         $dateTime = LocalDateTime::fromIsoString("2023-01-30T14:27");
         $eventDataService = $this->createStub(EventDataService::class);
+        $eventDataService->method("readEvents")->wilLReturn([$this->lunchBreak(), $this->weekend(), $this->birthday()]);
         $dateTimeFormatter = $this->createStub(DateTimeFormatter::class);
         $view = new View("./views/", $lang);
         $sut = new CalendarController(
@@ -48,5 +49,47 @@ class CalendarControllerTest extends TestCase
         );
         $response = $sut->defaultAction(0, 0, "");
         Approvals::verifyHtml($response->output());
+    }
+
+    private function lunchBreak(): Event
+    {
+        return Event::create(
+            "2023-01-04",
+            "2023-01-04",
+            "12:00",
+            "13:00",
+            "Lunch break",
+            "http://example.com/lunchbreak",
+            "Tips for lunch breaks",
+            "whereever I am"
+        );
+    }
+
+    private function weekend(): Event
+    {
+        return Event::create(
+            "2023-01-07",
+            "2023-01-08",
+            "",
+            "",
+            "Weekend",
+            "",
+            "",
+            ""
+        );
+    }
+
+    private function birthday(): Event
+    {
+        return Event::create(
+            "2000-01-01",
+            "",
+            "",
+            "",
+            "Millenium",
+            "",
+            "",
+            "###"
+        );
     }
 }
