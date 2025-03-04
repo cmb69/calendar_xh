@@ -96,7 +96,7 @@ class Plugin
     {
         switch ($admin) {
             case '':
-                return self::info();
+                return Dic::makeInfoController()->defaultAction();
             case 'plugin_main':
                 return self::mainAdministration();
             case 'import':
@@ -104,19 +104,6 @@ class Plugin
             default:
                 return plugin_admin_common();
         }
-    }
-
-    private static function info(): string
-    {
-        global $pth, $plugin_tx;
-
-        $controller = new InfoController(
-            "{$pth['folder']['plugins']}calendar/",
-            $plugin_tx['calendar'],
-            new SystemChecker(),
-            self::view()
-        );
-        return $controller->defaultAction();
     }
 
     private static function mainAdministration(): string
@@ -187,16 +174,7 @@ class Plugin
 
     public static function nextEvent(): string
     {
-        global $plugin_tx;
-
-        $controller = new NextEventController(
-            $plugin_tx['calendar'],
-            self::now(),
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            new DateTimeFormatter($plugin_tx['calendar']),
-            self::view()
-        );
-        return $controller->defaultAction();
+        return Dic::makeNextEventController()->defaultAction();
     }
 
     public static function editEvents(): string

@@ -29,6 +29,7 @@ require_once '../../cmsimple/functions.php';
 require_once './classes/Calendar.php';
 require_once './classes/CalendarController.php';
 require_once './classes/DateTimeFormatter.php';
+require_once './classes/Dic.php';
 require_once './classes/EditEventsController.php';
 require_once './classes/Event.php';
 require_once './classes/EventDataService.php';
