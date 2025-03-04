@@ -33,6 +33,9 @@ class EditEventsControllerTest extends TestCase
     /** @var EventDataService&MockObject */
     private $eventDataService;
 
+    /** @var CsrfProtector&MockObject */
+    private $csrfProtector;
+
     public function setUp(): void
     {
         $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
@@ -42,9 +45,18 @@ class EditEventsControllerTest extends TestCase
         $dateTime = LocalDateTime::fromIsoString("2023-01-30T14:27");
         $this->eventDataService = $this->createMock(EventDataService::class);
         $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
-        $csrfProtector = $this->createStub(CsrfProtector::class);
+        $this->csrfProtector = $this->createStub(CsrfProtector::class);
         $view = new View("./views/", $lang);
-        $this->sut = new EditEventsController("./", $conf, $lang, $dateTime, $this->eventDataService, $csrfProtector, $view, "");
+        $this->sut = new EditEventsController(
+            "./",
+            $conf,
+            $lang,
+            $dateTime,
+            $this->eventDataService,
+            $this->csrfProtector,
+            $view,
+            ""
+        );
     }
 
     public function testDefaultActionRendersHtml()
@@ -89,6 +101,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoCreateActionRedirects()
     {
+        $this->csrfProtector->expects($this->once())->method("check");
         $response = $this->sut->doCreateAction();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
@@ -96,6 +109,7 @@ class EditEventsControllerTest extends TestCase
     public function testDoUpdateActionRedirectsOnInvalidEvent()
     {
         $_GET = ["event_id" => "invalid id"];
+        $this->csrfProtector->expects($this->once())->method("check");
         $response = $this->sut->doUpdateAction();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
@@ -113,6 +127,7 @@ class EditEventsControllerTest extends TestCase
             "linktxt" => "Tips for lunch breaks",
             "location" => "whereever I am",
         ];
+        $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
             ->willReturn(true);
         $response = $this->sut->doUpdateAction();
@@ -132,6 +147,7 @@ class EditEventsControllerTest extends TestCase
             "linktxt" => "Tips for lunch breaks",
             "location" => "whereever I am",
         ];
+        $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
             ->willReturn(false);
         $response = $this->sut->doUpdateAction();
@@ -141,6 +157,7 @@ class EditEventsControllerTest extends TestCase
     public function testDoDeleteActionRedirectsOnUnknowEvent()
     {
         $_GET = ["event_id" => "invalid id"];
+        $this->csrfProtector->expects($this->once())->method("check");
         $response = $this->sut->doDeleteAction();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
@@ -148,6 +165,7 @@ class EditEventsControllerTest extends TestCase
     public function testDoDeleteActionDeletesEventAndRedirectsOnSuccess()
     {
         $_GET = ["event_id" => "111"];
+        $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(true);
         $response = $this->sut->doDeleteAction();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -156,6 +174,7 @@ class EditEventsControllerTest extends TestCase
     public function testDoDeleteActionShowsErrorOnFailureToDeleteEvent()
     {
         $_GET = ["event_id" => "111"];
+        $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(false);
         $response = $this->sut->doDeleteAction();
         Approvals::verifyHtml($response->output());
