@@ -47,7 +47,17 @@ class IcalImportController
         $this->eventDataService = $eventDataService;
     }
 
-    public function defaultAction(): Response
+    public function __invoke(string $action): Response
+    {
+        switch ($action) {
+            case 'import':
+                return $this->importAction();
+            default:
+                return $this->defaultAction();
+        }
+    }
+
+    private function defaultAction(): Response
     {
         $output = $this->view->render('import', [
             'url' => $this->scriptName . '?&calendar&admin=import&action=import',
@@ -56,7 +66,7 @@ class IcalImportController
         return Response::create($output);
     }
 
-    public function importAction(): Response
+    private function importAction(): Response
     {
         assert(is_string($_POST['calendar_ics']));
         $reader = new ICalendarParser();

@@ -94,13 +94,15 @@ class Plugin
 
     private static function admin(string $admin): string
     {
+        global $action;
+
         switch ($admin) {
             case '':
                 return Dic::makeInfoController()->defaultAction();
             case 'plugin_main':
                 return self::mainAdministration();
             case 'import':
-                return self::iCalendarImport();
+                return Dic::makeIcalImportController()($action)->trigger();
             default:
                 return plugin_admin_common();
         }
@@ -112,18 +114,6 @@ class Plugin
 
         return sprintf('<h1>Calendar – %s</h1>', XH_hsc($plugin_tx['calendar']['menu_main']))
             . self::editEvents();
-    }
-
-    private static function iCalendarImport(): string
-    {
-        global $action;
-
-        switch ($action) {
-            case 'import':
-                return Dic::makeIcalImportController()->importAction()->trigger();
-            default:
-                return Dic::makeIcalImportController()->defaultAction()->trigger();
-        }
     }
 
     /** @return string|never */
@@ -142,38 +132,10 @@ class Plugin
         return Dic::makeNextEventController()->defaultAction();
     }
 
-    public static function editEvents(): string
+    /** @return string|never */
+    public static function editEvents()
     {
-        if (isset($_POST['action'])) {
-            assert(is_string($_POST['action']));
-            $action = $_POST['action'];
-        } elseif (isset($_GET['action'])) {
-            assert(is_string($_GET['action']));
-            $action = $_GET['action'];
-        } else {
-            $action = 'editevents';
-        }
-        switch ($action) {
-            case 'create':
-                $action = 'createAction';
-                break;
-            case 'update':
-                $action = 'updateAction';
-                break;
-            case 'delete':
-                $action = 'deleteAction';
-                break;
-            default:
-                $action = 'defaultAction';
-        }
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $action = "do" . ucfirst($action);
-        }
-        $controller = Dic::makeEditEventController();
-        if (!is_callable([$controller, $action])) {
-            $action = 'defaultAction';
-        }
-        return $controller->{$action}()->trigger();
+        return Dic::makeEditEventController()()->trigger();
     }
 
     public static function now(): LocalDateTime

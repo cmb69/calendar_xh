@@ -78,6 +78,39 @@ class EditEventsController
         $this->url = $url;
     }
 
+    public function __invoke(): Response
+    {
+        if (isset($_POST['action'])) {
+            assert(is_string($_POST['action']));
+            $action = $_POST['action'];
+        } elseif (isset($_GET['action'])) {
+            assert(is_string($_GET['action']));
+            $action = $_GET['action'];
+        } else {
+            $action = 'editevents';
+        }
+        switch ($action) {
+            case 'create':
+                $action = 'createAction';
+                break;
+            case 'update':
+                $action = 'updateAction';
+                break;
+            case 'delete':
+                $action = 'deleteAction';
+                break;
+            default:
+                $action = 'defaultAction';
+        }
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $action = "do" . ucfirst($action);
+        }
+        if (!is_callable([$this, $action])) {
+            $action = 'defaultAction';
+        }
+        return $this->{$action}();
+    }
+
     public function defaultAction(): Response
     {
         $events = $this->eventDataService->readEvents();

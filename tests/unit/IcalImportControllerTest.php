@@ -34,7 +34,7 @@ class IcalImportControllerTest extends TestCase
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $view = new View("./views/", $plugin_tx['calendar']);
         $sut = new IcalImportController("/", $icsFileFinder, $eventDataService, $view);
-        $response = $sut->defaultAction();
+        $response = $sut("");
         Approvals::verifyHtml($response->output());
     }
 
@@ -47,7 +47,7 @@ class IcalImportControllerTest extends TestCase
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $view = new View("./views/", $plugin_tx['calendar']);
         $sut = new IcalImportController("/", $icsFileFinder, $eventDataService, $view);
-        $response = $sut->importAction();
+        $response = $sut("import");
         $this->assertEquals(
             "http://example.com/?&calendar&admin=plugin_main&action=plugin_text",
             $response->location()
