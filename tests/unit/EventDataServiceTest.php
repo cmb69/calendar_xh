@@ -21,6 +21,7 @@
 
 namespace Calendar;
 
+use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream;
 
@@ -91,5 +92,18 @@ CSV;
             [new LocalDateTime(2021, 3, 21, 0, 0), "cmb"],
             [new LocalDateTime(2021, 4, 24, 0, 0), "cmb"],
         ];
+    }
+
+    public function testReadingOfLegacyDataFiles(): void
+    {
+        $csv = <<<CSV
+04.03.2025,04.03.2025,13:00;Lunch Break;here;http://example.com/;12:00
+CSV;
+        vfsStream::setup("root");
+        file_put_contents(vfsStream::url("root/calendar.txt"), $csv);
+        $subject = new EventDataService(vfsStream::url("root/"), ".");
+        $subject->readEvents();
+        $actual = file_get_contents(vfsStream::url("root/calendar.txt"));
+        Approvals::verifyStringWithFileExtension($actual, "csv");
     }
 }
