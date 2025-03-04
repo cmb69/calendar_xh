@@ -34,6 +34,17 @@ class EventListControllerTest extends TestCase
         $lang = $plugin_tx['calendar'];
         $dateTime = LocalDateTime::fromIsoString("2023-01-30T14:27");
         $eventDataService = $this->createStub(EventDataService::class);
+        $eventDataService->method("readEvents")->willReturn([$this->lunchBreak(), $this->easter(), $this->birthday()]);
+        $eventDataService->method("filterByMonth")->willReturnCallback(function (array $events, int $year, int $month) {
+            if ($month === 1) {
+                return [$this->lunchBreak()];
+            } elseif ($month === 3) {
+                return [$this->birthday()];
+            } elseif ($month === 4) {
+                return [$this->easter()];
+            }
+            return [];
+        });
         $dateTimeFormatter = $this->createStub(DateTimeFormatter::class);
         $view = new View("./views/", $lang);
         $sut = new EventListController(
@@ -45,5 +56,47 @@ class EventListControllerTest extends TestCase
             $view
         );
         Approvals::verifyHtml($sut->defaultAction(0, 0, 0, 0));
+    }
+
+    private function lunchBreak(): Event
+    {
+        return Event::create(
+            "2023-01-04",
+            "2023-01-04",
+            "12:00",
+            "13:00",
+            "Lunch break",
+            "http://example.com/lunchbreak",
+            "Tips for lunch breaks",
+            "whereever I am"
+        );
+    }
+
+    private function easter(): Event
+    {
+        return Event::create(
+            "2023-04-09",
+            "2023-04-10",
+            "",
+            "",
+            "Easter",
+            "",
+            "",
+            "almost everywhere"
+        );
+    }
+
+    private function birthday(): Event
+    {
+        return Event::create(
+            "1969-03-24",
+            "",
+            "",
+            "",
+            "Christoph M. Becker",
+            "",
+            "",
+            "###"
+        );
     }
 }
