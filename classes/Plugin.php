@@ -26,10 +26,6 @@
 
 namespace Calendar;
 
-use ReflectionClass;
-use ReflectionMethod;
-use XH\CSRFProtection as CsrfProtector;
-
 class Plugin
 {
     const VERSION = '2.4-dev';
@@ -85,12 +81,5 @@ class Plugin
 
         return sprintf('<h1>Calendar – %s</h1>', XH_hsc($plugin_tx['calendar']['menu_main']))
             . Dic::makeEditEventController()()->trigger();
-    }
-
-    public static function now(): LocalDateTime
-    {
-        $result = LocalDateTime::fromIsoString(date('Y-m-d\TH:i'));
-        assert($result !== null);
-        return $result;
     }
 }
