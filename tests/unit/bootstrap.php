@@ -21,7 +21,7 @@
 
 const CMSIMPLE_XH_VERSION = "CMSimple_XH 1.7.5";
 const CMSIMPLE_URL = "http://example.com/";
-const XH_ADM = false;
+const CALENDAR_VERSION = "2.4-dev";
 
 require_once './vendor/autoload.php';
 require_once '../../cmsimple/classes/CSRFProtection.php';
@@ -42,6 +42,5 @@ require_once './classes/LocalDateTime.php';
 require_once './classes/ICalendarParser.php';
 require_once './classes/NextEventController.php';
 require_once './classes/View.php';
-require_once './classes/Plugin.php';
 require_once './classes/Response.php';
 require_once './classes/SystemChecker.php';

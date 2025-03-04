@@ -54,7 +54,7 @@ class InfoController
     public function defaultAction(): string
     {
         return $this->view->render('info', [
-            'version' => Plugin::VERSION,
+            'version' => CALENDAR_VERSION,
             'checks' => [
                 $this->checkPhpVersion('7.0.0'),
                 $this->checkXhVersion('1.7.0'),
