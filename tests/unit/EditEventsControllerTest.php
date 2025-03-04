@@ -30,6 +30,9 @@ class EditEventsControllerTest extends TestCase
     /** @var EditEventsController */
     private $sut;
 
+    /** @var EventDataService&MockObject */
+    private $eventDataService;
+
     public function setUp(): void
     {
         $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
@@ -37,10 +40,11 @@ class EditEventsControllerTest extends TestCase
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $lang = $plugin_tx['calendar'];
         $dateTime = LocalDateTime::fromIsoString("2023-01-30T14:27");
-        $eventDataService = $this->createStub(EventDataService::class);
+        $this->eventDataService = $this->createMock(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
         $csrfProtector = $this->createStub(CsrfProtector::class);
         $view = new View("./views/", $lang);
-        $this->sut = new EditEventsController("./", $conf, $lang, $dateTime, $eventDataService, $csrfProtector, $view, "");
+        $this->sut = new EditEventsController("./", $conf, $lang, $dateTime, $this->eventDataService, $csrfProtector, $view, "");
     }
 
     public function testDefaultActionRendersHtml()
@@ -62,11 +66,25 @@ class EditEventsControllerTest extends TestCase
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
+    public function testUpdateActionRendersEditFormOnKnownEvent()
+    {
+        $_GET = ["event_id" => "111"];
+        $response = $this->sut->updateAction();
+        Approvals::verifyHtml($response->output());
+    }
+
     public function testDeleteActionRedirectsOnUnknowEvent()
     {
         $_GET = ["event_id" => "invalid id"];
         $response = $this->sut->deleteAction();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testDeleteActionRendersEditFormOnKnownEvent()
+    {
+        $_GET = ["event_id" => "111"];
+        $response = $this->sut->deleteAction();
+        Approvals::verifyHtml($response->output());
     }
 
     public function testDoCreateActionRedirects()
@@ -75,11 +93,49 @@ class EditEventsControllerTest extends TestCase
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
-    public function testDoUpdateActionRedirects()
+    public function testDoUpdateActionRedirectsOnInvalidEvent()
     {
         $_GET = ["event_id" => "invalid id"];
         $response = $this->sut->doUpdateAction();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testDoUpdateActionSavesEventAndRedirectsOnSuccess()
+    {
+        $_GET = ["event_id" => "111"];
+        $_POST = [
+            "datestart" => "2023-01-04",
+            "dateend" => "2023-01-04",
+            "starttime" => "12:00",
+            "endtime" => "13:00",
+            "event" => "Lunch break",
+            "linkadr" => "http://example.com/lunchbreak",
+            "linktxt" => "Tips for lunch breaks",
+            "location" => "whereever I am",
+        ];
+        $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
+            ->willReturn(true);
+        $response = $this->sut->doUpdateAction();
+        $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testDoUpdateActionShowsErrorOnFailureToUpdateEvent()
+    {
+        $_GET = ["event_id" => "111"];
+        $_POST = [
+            "datestart" => "2023-01-04",
+            "dateend" => "2023-01-04",
+            "starttime" => "12:00",
+            "endtime" => "13:00",
+            "event" => "Lunch break",
+            "linkadr" => "http://example.com/lunchbreak",
+            "linktxt" => "Tips for lunch breaks",
+            "location" => "whereever I am",
+        ];
+        $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
+            ->willReturn(false);
+        $response = $this->sut->doUpdateAction();
+        Approvals::verifyHtml($response->output());
     }
 
     public function testDoDeleteActionRedirectsOnUnknowEvent()
@@ -87,5 +143,35 @@ class EditEventsControllerTest extends TestCase
         $_GET = ["event_id" => "invalid id"];
         $response = $this->sut->doDeleteAction();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testDoDeleteActionDeletesEventAndRedirectsOnSuccess()
+    {
+        $_GET = ["event_id" => "111"];
+        $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(true);
+        $response = $this->sut->doDeleteAction();
+        $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testDoDeleteActionShowsErrorOnFailureToDeleteEvent()
+    {
+        $_GET = ["event_id" => "111"];
+        $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(false);
+        $response = $this->sut->doDeleteAction();
+        Approvals::verifyHtml($response->output());
+    }
+
+    private function lunchBreak(): Event
+    {
+        return Event::create(
+            "2023-01-04",
+            "2023-01-04",
+            "12:00",
+            "13:00",
+            "Lunch break",
+            "http://example.com/lunchbreak",
+            "Tips for lunch breaks",
+            "whereever I am"
+        );
     }
 }
