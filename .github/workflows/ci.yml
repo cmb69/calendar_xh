@@ -28,7 +28,7 @@ jobs:
           key: tools-${{hashFiles('cmsimplexh/plugins/calendar/.phive')}}
       - if: ${{steps.cache-tools.outputs.cache-hit != 'true'}}
         name: phive install
-        run: cd cmsimplexh/plugins/calendar && phive --no-progress install --copy --force-accept-unsigned --trust-gpg-keys D5F0CB76E2DD74F8
+        run: cd cmsimplexh/plugins/calendar && phive --no-progress install --copy --force-accept-unsigned --trust-gpg-keys A978220305CD5C32,D5F0CB76E2DD74F8
       - name: composer install
         run: cd cmsimplexh/plugins/calendar && composer install
       - name: phing sniff
