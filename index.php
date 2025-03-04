@@ -25,7 +25,6 @@
  */
 
 use Calendar\Dic;
-use Calendar\Plugin;
 
 if (!defined("CMSIMPLE_XH_VERSION")) {
     header("404 Not found");
@@ -53,5 +52,3 @@ function editevents()
 {
     return Dic::makeEditEventController()()->trigger();
 }
-
-Plugin::run();
