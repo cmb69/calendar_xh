@@ -226,7 +226,7 @@ class EventDataService
         if (is_file($eventfile)) {
             rename($eventfile, "{$eventfile}.bak");
         }
-    
+
         $fp = fopen($eventfile, "c");
         if ($fp === false) {
             return false;

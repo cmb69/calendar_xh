@@ -173,7 +173,7 @@ class EventListController
             if ($this->conf['show_number_of_future_months']) {
                 $this->endMonth = (int) $this->conf['show_number_of_future_months'];
             } else {
-                $this->endMonth= 1;
+                $this->endMonth = 1;
             }
         }
     }

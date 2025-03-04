@@ -96,7 +96,8 @@ class LocalDateTime
     {
         $localDateTime = clone $this;
         $localDateTime->year = $year;
-        if ($localDateTime->month === 2 && $localDateTime->day === 29
+        if (
+            $localDateTime->month === 2 && $localDateTime->day === 29
             && !checkdate($localDateTime->month, $localDateTime->day, $localDateTime->year)
         ) {
             $localDateTime->month = 3;

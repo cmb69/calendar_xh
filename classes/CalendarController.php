@@ -167,15 +167,19 @@ class CalendarController
                 $classes[] = "calendar_eventday";
                 $currentDay = new LocalDateTime($this->year, $this->month, $day, 0, 0);
                 foreach ($dayEvents as $dayEvent) {
-                    if ($dayEvent->start->compareDate($currentDay) === 0 &&
-                            $dayEvent->end->compareDate($currentDay) !== 0) {
+                    if (
+                        $dayEvent->start->compareDate($currentDay) === 0
+                        && $dayEvent->end->compareDate($currentDay) !== 0
+                    ) {
                         $classes[] = "calendar_eventstart";
                         break;
                     }
                 }
                 foreach ($dayEvents as $dayEvent) {
-                    if ($dayEvent->end->compareDate($currentDay) === 0 &&
-                            $dayEvent->start->compareDate($currentDay) !== 0) {
+                    if (
+                        $dayEvent->end->compareDate($currentDay) === 0
+                        && tdayEvent->start->compareDate($currentDay) !== 0
+                    ) {
                         $classes[] = "calendar_eventend";
                         break;
                     }
