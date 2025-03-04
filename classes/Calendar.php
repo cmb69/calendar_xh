@@ -38,7 +38,7 @@ class Calendar
     {
         $result = [];
         $row = [];
-        $days = (int) date('t', mktime(1, 1, 1, $month, 1, $year));
+        $days = (int) date('t', (int) mktime(1, 1, 1, $month, 1, $year));
         for ($day = 1; $day <= $days; $day++) {
             $dayofweek = $this->getDayOfWeek($year, $month, $day);
             if ($day === 1) {
@@ -62,7 +62,7 @@ class Calendar
 
     private function getDayOfWeek(int $year, int $month, int $day): int
     {
-        $dayofweek = (int) date('w', mktime(1, 1, 1, $month, $day, $year));
+        $dayofweek = (int) date('w', (int) mktime(1, 1, 1, $month, $day, $year));
         if ($this->weekStartsMonday) {
             $dayofweek = ($dayofweek + 6) % 7;
         }
