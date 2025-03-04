@@ -25,6 +25,7 @@
  */
 
 use Calendar\Dic;
+use XH\ClassicPluginMenu;
 
 if (!defined("CMSIMPLE_XH_VERSION")) {
     http_response_code(403);
@@ -37,15 +38,16 @@ if (!defined("CMSIMPLE_XH_VERSION")) {
  * @var string $o
  * @var array<string,array<string,string>> $plugin_tx
  * @var string $sn
+ * @var ClassicPluginMenu $_XH_pluginMenu
  */
 
 XH_registerStandardPluginMenuItems(true);
 XH_registerPluginMenuItem("calendar", $plugin_tx["calendar"]["label_import"], $sn . "?&calendar&admin=import&normal");
 if (XH_wantsPluginAdministration("calendar")) {
     $o .= print_plugin_admin("on");
-    pluginMenu("ROW");
-    pluginMenu("TAB", "$sn?&calendar&admin=import&normal", "", $plugin_tx["calendar"]["label_import"]);
-    $o .= (string) pluginMenu("SHOW");
+    $_XH_pluginMenu->makeRow();
+    $_XH_pluginMenu->makeTab("$sn?&calendar&admin=import&normal", "", $plugin_tx["calendar"]["label_import"]);
+    $o .= $_XH_pluginMenu->show();
     switch ($admin) {
         case '':
             $o .= Dic::makeInfoController()->defaultAction();
