@@ -26,25 +26,25 @@
 
 use Calendar\Dic;
 
- XH_registerStandardPluginMenuItems(true);
- XH_registerPluginMenuItem("calendar", $plugin_tx["calendar"]["label_import"], $sn . "?&calendar&admin=import&normal");
- if (XH_wantsPluginAdministration("calendar")) {
-     $o .= print_plugin_admin("on");
-     pluginMenu("ROW");
-     pluginMenu("TAB", "$sn?&calendar&admin=import&normal", "", $plugin_tx["calendar"]["label_import"]);
-     $o .= (string) pluginMenu("SHOW");
-     switch ($admin) {
-        case '':
-            $o .= Dic::makeInfoController()->defaultAction();
-            break;
-        case 'plugin_main':
-            $o .= sprintf("<h1>Calendar – %s</h1>", XH_hsc($plugin_tx["calendar"]["menu_main"]))
-                . Dic::makeEditEventController()()->trigger();
-            break;
-        case 'import':
-            $o .= Dic::makeIcalImportController()($action)->trigger();
-            break;
-        default:
-            $o .= plugin_admin_common();
+XH_registerStandardPluginMenuItems(true);
+XH_registerPluginMenuItem("calendar", $plugin_tx["calendar"]["label_import"], $sn . "?&calendar&admin=import&normal");
+if (XH_wantsPluginAdministration("calendar")) {
+    $o .= print_plugin_admin("on");
+    pluginMenu("ROW");
+    pluginMenu("TAB", "$sn?&calendar&admin=import&normal", "", $plugin_tx["calendar"]["label_import"]);
+    $o .= (string) pluginMenu("SHOW");
+    switch ($admin) {
+    case '':
+        $o .= Dic::makeInfoController()->defaultAction();
+        break;
+    case 'plugin_main':
+        $o .= sprintf("<h1>Calendar – %s</h1>", XH_hsc($plugin_tx["calendar"]["menu_main"]))
+            . Dic::makeEditEventController()()->trigger();
+        break;
+    case 'import':
+        $o .= Dic::makeIcalImportController()($action)->trigger();
+        break;
+    default:
+        $o .= plugin_admin_common();
     }
 }
