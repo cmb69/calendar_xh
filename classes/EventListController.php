@@ -211,7 +211,7 @@ class EventListController
 
     /**
      * @param Event[] $events
-     * @return array<string,array<string,mixed>>
+     * @return array<string,array<string,mixed>|list<array<string,mixed>>>
      */
     private function getMonthEvents(array $events, int $tablecols): array
     {

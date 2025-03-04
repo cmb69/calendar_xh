@@ -28,12 +28,13 @@ namespace Calendar;
 
 class EventDataService
 {
-    /** @var string */
+    /** @var non-empty-string */
     private $separator;
 
     /** @var string */
     private $eventfile;
 
+    /** @param non-empty-string $separator */
     public function __construct(string $dataFolder, string $separator)
     {
         $this->separator = $separator;

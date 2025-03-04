@@ -48,6 +48,10 @@ class IcsFileFinder
     /** @return list<string> */
     public function read(string $filename): array
     {
-        return file("{$this->folder}$filename", FILE_IGNORE_NEW_LINES);
+        $lines = file("{$this->folder}$filename", FILE_IGNORE_NEW_LINES);
+        if ($lines === false) {
+            return [];
+        }
+        return $lines;
     }
 }

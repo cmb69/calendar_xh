@@ -255,6 +255,7 @@ class Plugin
         return $dataFolder;
     }
 
+    /** @return non-empty-string */
     private static function getDpSeparator(): string
     {
         global $plugin_cf;
