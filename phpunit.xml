@@ -3,6 +3,8 @@
   <coverage processUncoveredFiles="true">
     <include>
       <directory suffix=".php">classes</directory>
+      <directory suffix=".php">views</directory>
+      <file>index.php</file>
     </include>
   </coverage>
   <testsuites>
