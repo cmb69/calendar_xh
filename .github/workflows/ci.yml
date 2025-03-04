@@ -34,8 +34,8 @@ jobs:
       - name: phing sniff
         run: cd cmsimplexh/plugins/calendar && PATH=tools:vendor/bin:$PATH phing sniff
       - name: phing mess
-        run: cd cmsimplexh/plugins/calendar && PATH==tools:vendor/bin:$PATH phing mess
+        run: cd cmsimplexh/plugins/calendar && PATH=tools:vendor/bin:$PATH phing mess
       - name: phing stan
-        run: cd cmsimplexh/plugins/calendar && PATH==tools:vendor/bin:$PATH phing stan
+        run: cd cmsimplexh/plugins/calendar && PATH=tools:vendor/bin:$PATH phing stan
       - name: phing unit-tests
-        run: cd cmsimplexh/plugins/calendar && PATH==tools:vendor/bin:$PATH phing unit-tests
+        run: cd cmsimplexh/plugins/calendar && PATH=tools:vendor/bin:$PATH phing unit-tests
