@@ -26,6 +26,11 @@
 
 use Calendar\Dic;
 
+if (!defined("CMSIMPLE_XH_VERSION")) {
+    http_response_code(403);
+    exit;
+}
+
 /**
  * @var string $action
  * @var string $admin

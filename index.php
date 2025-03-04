@@ -26,11 +26,6 @@
 
 use Calendar\Dic;
 
-if (!defined("CMSIMPLE_XH_VERSION")) {
-    header("404 Not found");
-    exit;
-}
-
 const CALENDAR_VERSION = "2.4-dev";
 
 /** @return string|never */
