@@ -66,7 +66,9 @@ class EventDataService
         if ($stream = fopen($this->eventfile, 'r')) {
             flock($stream, LOCK_SH);
             while (($record = fgetcsv($stream, 0, ';', '"', "\0")) !== false) {
-                assert(is_array($record));
+                if (!$this->validateRecord($record)) {
+                    continue;
+                }
                 $id = md5(serialize($record));
                 list($datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt)
                     = $record;
@@ -96,6 +98,23 @@ class EventDataService
             fclose($stream);
         }
         return $result;
+    }
+
+    /**
+     * @param ?list<string|null> $record
+     * @phpstan-assert-if-true list<string> $record
+     */
+    private function validateRecord(?array $record): bool
+    {
+        if ($record === null) {
+            return false;
+        }
+        foreach ($record as $field) {
+            if (!is_string($field)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
