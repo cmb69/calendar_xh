@@ -41,7 +41,6 @@ class Plugin
     {
         global $sn, $plugin_tx, $admin, $o;
 
-        self::registerUserFunctions();
         if (XH_ADM) { // @phpstan-ignore-line
             XH_registerStandardPluginMenuItems(true);
             XH_registerPluginMenuItem(
@@ -60,34 +59,6 @@ class Plugin
                 );
                 $o .= (string) pluginMenu("SHOW");
                 $o .= self::admin($admin);
-            }
-        }
-    }
-
-    /** @return void */
-    private static function registerUserFunctions()
-    {
-        $rc = new ReflectionClass(self::class);
-        foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $rm) {
-            if (strcmp($rm->getName(), "run") !== 0) {
-                $name = $rm->getName();
-                $lcname = strtolower($name);
-                $params = $args = [];
-                foreach ($rm->getParameters() as $rp) {
-                    $param = $arg = "\${$rp->getName()}";
-                    if ($rp->isOptional()) {
-                        $default = var_export($rp->getDefaultValue(), true);
-                        assert($default !== null);
-                        $param .= " = " . $default;
-                    }
-                    $params[] = $param;
-                    $args[] = $arg;
-                }
-                $parameters = implode(", ", $params);
-                $arguments = implode(", ", $args);
-                $body = "return \\Calendar\\Plugin::$name($arguments);";
-                $code = "function $lcname($parameters) {\n\t$body\n}";
-                eval($code);
             }
         }
     }
@@ -113,29 +84,7 @@ class Plugin
         global $plugin_tx;
 
         return sprintf('<h1>Calendar – %s</h1>', XH_hsc($plugin_tx['calendar']['menu_main']))
-            . self::editEvents();
-    }
-
-    /** @return string|never */
-    public static function calendar(int $year = 0, int $month = 0, string $eventpage = '')
-    {
-        return Dic::makeCalendarController()->defaultAction($year, $month, $eventpage)->trigger();
-    }
-
-    public static function events(int $month = 0, int $year = 0, int $end_month = 0, int $past_month = 0): string
-    {
-        return Dic::makeEventListController()->defaultAction($month, $year, $end_month, $past_month);
-    }
-
-    public static function nextEvent(): string
-    {
-        return Dic::makeNextEventController()->defaultAction();
-    }
-
-    /** @return string|never */
-    public static function editEvents()
-    {
-        return Dic::makeEditEventController()()->trigger();
+            . Dic::makeEditEventController()()->trigger();
     }
 
     public static function now(): LocalDateTime

@@ -24,11 +24,34 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Calendar\Dic;
 use Calendar\Plugin;
 
 if (!defined("CMSIMPLE_XH_VERSION")) {
     header("404 Not found");
     exit;
+}
+
+/** @return string|never */
+function calendar(int $year = 0, int $month = 0, string $eventpage = '')
+{
+    return Dic::makeCalendarController()->defaultAction($year, $month, $eventpage)->trigger();
+}
+
+function events(int $month = 0, int $year = 0, int $end_month = 0, int $past_month = 0): string
+{
+    return Dic::makeEventListController()->defaultAction($month, $year, $end_month, $past_month);
+}
+
+function nextEvent(): string
+{
+    return Dic::makeNextEventController()->defaultAction();
+}
+
+/** @return string|never */
+function editevents()
+{
+    return Dic::makeEditEventController()()->trigger();
 }
 
 Plugin::run();
