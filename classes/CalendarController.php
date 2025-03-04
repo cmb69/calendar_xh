@@ -178,7 +178,7 @@ class CalendarController
                 foreach ($dayEvents as $dayEvent) {
                     if (
                         $dayEvent->end->compareDate($currentDay) === 0
-                        && tdayEvent->start->compareDate($currentDay) !== 0
+                        && $dayEvent->start->compareDate($currentDay) !== 0
                     ) {
                         $classes[] = "calendar_eventend";
                         break;
