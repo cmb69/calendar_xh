@@ -1,29 +1,29 @@
 <?php if (!isset($this)) {header("404 Not found"); exit;}?>
 
-<script type="module" src="<?=$this->jsUrl()?>"></script>
+<script type="module" src="<?=$jsUrl?>"></script>
 <table class="calendar_main">
   <caption class="calendar_monthyear">
-  <?php if ($this->hasPrevNextButtons):?>
-    <a href="<?=$this->prevUrl()?>" rel="nofollow" title="<?=$this->text('prev_button_title')?>"><?=$this->text('prev_button_text')?></a>
+  <?php if ($hasPrevNextButtons):?>
+    <a href="<?=$prevUrl?>" rel="nofollow" title="<?=$this->text('prev_button_title')?>"><?=$this->text('prev_button_text')?></a>
   <?php endif?>
-    <?=$this->caption()?>
-  <?php if ($this->hasPrevNextButtons):?>
-    <a href="<?=$this->nextUrl()?>" rel="nofollow" title="<?=$this->text('next_button_title')?>"><?=$this->text('next_button_text')?></a>
+    <?=$caption?>
+  <?php if ($hasPrevNextButtons):?>
+    <a href="<?=$nextUrl?>" rel="nofollow" title="<?=$this->text('next_button_title')?>"><?=$this->text('next_button_text')?></a>
   <?php endif?>
   </caption>
   <tr>
-<?php foreach ($this->headRow as $cell):?>
-    <th class="<?=$this->escape($cell['classname'])?>"><?=$this->escape($cell['content'])?></th>
+<?php foreach ($headRow as $cell):?>
+    <th class="<?=$cell['classname']?>"><?=$cell['content']?></th>
 <?php endforeach?>
   <tr>
-<?php foreach ($this->rows as $row):?>
+<?php foreach ($rows as $row):?>
   <tr>
 <?php   foreach ($row as $cell):?>
-    <td class="<?=$this->escape($cell['classname'])?>">
+    <td class="<?=$cell['classname']?>">
 <?php       if (isset($cell['href'])):?>
-      <a href="<?=$this->escape($cell['href'])?>" title="<?=$this->escape($cell['title'])?>">
+      <a href="<?=$cell['href']?>" title="<?=$cell['title']?>">
 <?php       endif?>
-        <?=$this->escape($cell['content'])?>
+        <?=$cell['content']?>
 <?php       if (isset($cell['href'])):?>
       </a>
 <?php       endif?>
