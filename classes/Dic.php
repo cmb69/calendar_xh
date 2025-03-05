@@ -128,7 +128,7 @@ class Dic
         if ($plugin_cf['calendar']['same-event-calendar_for_all_languages'] && $sl !== $cf['language']['default']) {
             $dataFolder = dirname($dataFolder) . '/';
         }
-        return $dataFolder;
+        return $dataFolder . "calendar/";
     }
 
     /** @return non-empty-string */

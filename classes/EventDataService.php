@@ -28,6 +28,9 @@ namespace Calendar;
 
 class EventDataService
 {
+    /** @var string */
+    private $dataFolder;
+
     /** @var non-empty-string */
     private $separator;
 
@@ -37,6 +40,7 @@ class EventDataService
     /** @param non-empty-string $separator */
     public function __construct(string $dataFolder, string $separator)
     {
+        $this->dataFolder = $dataFolder;
         $this->separator = $separator;
         $this->eventfile = "{$dataFolder}calendar.csv";
     }
@@ -59,6 +63,9 @@ class EventDataService
                 $this->eventfile = "{$eventfile}.csv";
                 $this->writeEvents($events);
             } else {
+                if (!is_dir($this->dataFolder) && mkdir($this->dataFolder, 0777)) {
+                    chmod($this->dataFolder, 0777);
+                }
                 touch("{$eventfile}.csv");
             }
         }
