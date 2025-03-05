@@ -82,8 +82,7 @@ class EditEventsController
     {
         switch ($_GET["action"] ?? "") {
             case "create":
-                return empty($_POST)
-                    ? $this->createAction() : $this->doCreateAction();
+                return empty($_POST) ? $this->createAction() : $this->doCreateAction();
             case "update":
                 return empty($_POST) ? $this->updateAction() : $this->doUpdateAction();
             case "delete":
