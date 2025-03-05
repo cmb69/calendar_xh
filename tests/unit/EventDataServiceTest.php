@@ -97,13 +97,15 @@ CSV;
     public function testReadingOfLegacyDataFiles(): void
     {
         $csv = <<<CSV
-04.03.2025,04.03.2025,13:00;Lunch Break;here;http://example.com/;12:00
+04.03.2025,04.03.2025,13:00;Lunch Break;here;http://example.com/,Lunch break tips;12:00
+05.03.2025;Calendar_XH Release;Wonderland;int:Start;
+06.03.1950;Schorsch;###;ext:example.com/Schorsch;
 CSV;
         vfsStream::setup("root");
         file_put_contents(vfsStream::url("root/calendar.txt"), $csv);
         $subject = new EventDataService(vfsStream::url("root/"), ".");
         $subject->readEvents();
         $actual = file_get_contents(vfsStream::url("root/calendar.txt"));
-        Approvals::verifyStringWithFileExtension($actual, "csv");
+        Approvals::verifyStringWithFileExtension($actual, "txt");
     }
 }
