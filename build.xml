@@ -43,7 +43,7 @@
         </exec>
     </target>
 
-    <target name="ts-check" description="">
+    <target name="tsc" description="runs tsc">
         <exec executable="tsc" passthru="true" checkreturn="true">
             <arg line="--allowJs --lib es6,dom --noEmit --noImplicitAny"/>
             <arg file="js/calendar.min.js"/>
@@ -83,6 +83,7 @@
         <move todir="dist">
             <fileset dir="export">
                 <exclude name=".github/**"/>
+                <exclude name=".phive/**"/>
                 <exclude name="help/template.htm"/>
                 <exclude name="tests/**"/>
                 <exclude name="README*.md"/>
