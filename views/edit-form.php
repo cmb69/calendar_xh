@@ -1,4 +1,17 @@
-<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+<?php
+
+if (!isset($this)) {header("404 Not found"); exit;}
+
+/**
+ * @var string $action
+ * @var bool $showEventTime
+ * @var bool $showEventLocation
+ * @var bool $showEventLink
+ * @var array{start_date:string,start_time:string,end_date:string,end_time:string,summary:string,linkadr:string,linktxt:string,location:string} $event
+ * @var string $button_label
+ * @var string $csrf_token
+ */
+?>
 
 <form method="post" action="<?=$action?>" class="calendar_input">
   <div>

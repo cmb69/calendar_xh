@@ -1,4 +1,13 @@
-<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+<?php
+
+if (!isset($this)) {header("404 Not found"); exit;}
+
+/**
+ * @var string $selected
+ * @var list<array{start_date:string,end_date:string,summary:string}> $events
+ * @var string $jsUrl
+ */
+?>
 
 <script type="module" src="<?=$jsUrl?>"></script>
 <form method="get" class="calendar_overview">

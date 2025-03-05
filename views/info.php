@@ -1,4 +1,12 @@
-<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+<?php
+
+if (!isset($this)) {header("404 Not found"); exit;}
+
+/**
+ * @var string $version
+ * @var list<array{state:string,label:string,stateLabel:string}> $checks
+ */
+?>
 
 <h1>Calendar <?=$version?></h1>
 <div class="calendar_syscheck">

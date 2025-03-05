@@ -1,4 +1,13 @@
-<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+<?php
+
+if (!isset($this)) {header("404 Not found"); exit;}
+
+/**
+ * @var string $date
+ * @var string $event_text
+ * @var string $location
+ */
+?>
 
 <div class="nextevent_date">
 <?if (isset($summary)):?>

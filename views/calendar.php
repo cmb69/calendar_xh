@@ -1,4 +1,17 @@
-<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+<?php
+
+if (!isset($this)) {header("404 Not found"); exit;}
+
+/**
+ * @var string $caption
+ * @var bool $hasPrevNextButtons
+ * @var string $prevUrl
+ * @var string $nextUrl
+ * @var list<array{classname:string,content:string}> $headRow
+ * @var list<list<array{classname:string,content:string,href?:string,title?:string}>> $rows
+ * @var string $jsUrl
+ */
+?>
 
 <script type="module" src="<?=$jsUrl?>"></script>
 <table class="calendar_main">
@@ -20,7 +33,7 @@
   <tr>
 <?  foreach ($row as $cell):?>
     <td class="<?=$cell['classname']?>">
-<?    if (isset($cell['href'])):?>
+<?    if (isset($cell['href'], $cell['title'])):?>
       <a href="<?=$cell['href']?>" title="<?=$cell['title']?>">
 <?    endif?>
         <?=$cell['content']?>

@@ -1,4 +1,13 @@
-<?php if (!isset($this)) {header("404 Not found"); exit;}?>
+<?php
+
+if (!isset($this)) {header("404 Not found"); exit;}
+
+/**
+ * @var bool $showHeading
+ * @var string $heading
+ * @var list<array{headline:array{tablecols:int,monthYear:string,showTime:string,showLocation:string,showLink:string},rows:list<array{is_birthday:bool,age?:int,summary:string,location:string,past_event_class?:string,date:string,showTime:string,showLocation:string,showLink:string,link:string,time?:string }>}> $monthEvents
+ */
+?>
 
 <table class="calendar_eventlist">
 <?if ($showHeading):?>
@@ -23,6 +32,7 @@
   </tr>
 <?  foreach ($monthEvent['rows'] as $row):?>
 <?    if ($row['is_birthday']):?>
+<?      assert(isset($row['age']))?>
   <tr class="birthday_data_row">
     <td class="event_data event_date"><?=$row['date']?></td>
 <?       if ($row['showTime']):?>
@@ -37,6 +47,7 @@
 <?      endif?>
   </tr>
 <?    else:?>
+<?      assert(isset($row['past_event_class'], $row['time']))?>
   <tr class="event_data_row <?=$row['past_event_class']?>">
     <td class="event_data event_date"><?=$row['date']?></td>
 <?      if ($row['showTime']):?>

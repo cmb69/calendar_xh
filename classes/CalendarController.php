@@ -89,7 +89,7 @@ class CalendarController
         }
         $data = [
             'caption' => $this->dateTimeFormatter->formatMonthYear($month, $year),
-            'hasPrevNextButtons' => $this->conf['prev_next_button'],
+            'hasPrevNextButtons' => (bool) $this->conf['prev_next_button'],
             'prevUrl' => $this->getPrevUrl($year, $month),
             'nextUrl' => $this->getNextUrl($year, $month),
             'headRow' => $this->getDaynamesRow(),
