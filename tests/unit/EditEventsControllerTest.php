@@ -46,6 +46,9 @@ class EditEventsControllerTest extends TestCase
         $this->eventDataService = $this->createMock(EventDataService::class);
         $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
+        $this->csrfProtector->method("tokenInput")->willReturn(
+            "<input type=\"hidden\" name=\"xh_csrf_token\" value=\"42881056d048537da0e061f7f672854b\">"
+        );
         $view = new View("./views/", $lang);
         $this->sut = new EditEventsController(
             "./",

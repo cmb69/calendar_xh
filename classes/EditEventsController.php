@@ -170,7 +170,7 @@ class EditEventsController
                 "location" => $event->location,
             ],
             'button_label' => $this->lang[$label],
-            'csrf_token' => $this->csrfProtector->tokenInput(),
+            'csrf_token' => new HtmlString($this->csrfProtector->tokenInput()),
         ]);
     }
 
