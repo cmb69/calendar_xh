@@ -61,62 +61,66 @@ class EditEventsControllerTest extends TestCase
 
     public function testDefaultActionRendersHtml()
     {
-        $response = $this->sut->defaultAction();
+        $response = ($this->sut)();
         Approvals::verifyHtml($response->output());
     }
 
     public function testCreateActionRendersHtml()
     {
-        $response = $this->sut->createAction();
+        $_GET = ["action" => "create"];
+        $response = ($this->sut)();
         Approvals::verifyHtml($response->output());
     }
 
     public function testUpdateActionRedirectsOnUnknowEvent()
     {
-        $_GET = ["event_id" => "invalid id"];
-        $response = $this->sut->updateAction();
+        $_GET = ["action" => "update", "event_id" => "invalid id"];
+        $response = ($this->sut)();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testUpdateActionRendersEditFormOnKnownEvent()
     {
-        $_GET = ["event_id" => "111"];
-        $response = $this->sut->updateAction();
+        $_GET = ["action" => "update", "event_id" => "111"];
+        $response = ($this->sut)();
         Approvals::verifyHtml($response->output());
     }
 
     public function testDeleteActionRedirectsOnUnknowEvent()
     {
-        $_GET = ["event_id" => "invalid id"];
-        $response = $this->sut->deleteAction();
+        $_GET = ["action" => "delete", "event_id" => "invalid id"];
+        $response = ($this->sut)();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDeleteActionRendersEditFormOnKnownEvent()
     {
-        $_GET = ["event_id" => "111"];
-        $response = $this->sut->deleteAction();
+        $_GET = ["action" => "delete", "event_id" => "111"];
+        $response = ($this->sut)();
         Approvals::verifyHtml($response->output());
     }
 
     public function testDoCreateActionRedirects()
     {
+        $_GET = ["action" => "create"];
+        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
-        $response = $this->sut->doCreateAction();
+        $response = ($this->sut)();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoUpdateActionRedirectsOnInvalidEvent()
     {
-        $_GET = ["event_id" => "invalid id"];
+        $_GET = ["action" => "update", "event_id" => "invalid id"];
+        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
-        $response = $this->sut->doUpdateAction();
+        $response = ($this->sut)();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoUpdateActionSavesEventAndRedirectsOnSuccess()
     {
-        $_GET = ["event_id" => "111"];
+        $_GET = ["action" => "update", "event_id" => "111"];
         $_POST = [
             "datestart" => "2023-01-04",
             "dateend" => "2023-01-04",
@@ -130,13 +134,13 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
             ->willReturn(true);
-        $response = $this->sut->doUpdateAction();
+        $response = ($this->sut)();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoUpdateActionShowsErrorOnFailureToUpdateEvent()
     {
-        $_GET = ["event_id" => "111"];
+        $_GET = ["action" => "update", "event_id" => "111"];
         $_POST = [
             "datestart" => "2023-01-04",
             "dateend" => "2023-01-04",
@@ -150,33 +154,36 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
             ->willReturn(false);
-        $response = $this->sut->doUpdateAction();
+        $response = ($this->sut)();
         Approvals::verifyHtml($response->output());
     }
 
     public function testDoDeleteActionRedirectsOnUnknowEvent()
     {
-        $_GET = ["event_id" => "invalid id"];
+        $_GET = ["action" => "delete", "event_id" => "invalid id"];
+        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
-        $response = $this->sut->doDeleteAction();
+        $response = ($this->sut)();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoDeleteActionDeletesEventAndRedirectsOnSuccess()
     {
-        $_GET = ["event_id" => "111"];
+        $_GET = ["action" => "delete", "event_id" => "111"];
+        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(true);
-        $response = $this->sut->doDeleteAction();
+        $response = ($this->sut)();
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoDeleteActionShowsErrorOnFailureToDeleteEvent()
     {
-        $_GET = ["event_id" => "111"];
+        $_GET = ["action" => "delete", "event_id" => "111"];
+        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(false);
-        $response = $this->sut->doDeleteAction();
+        $response = ($this->sut)();
         Approvals::verifyHtml($response->output());
     }
 

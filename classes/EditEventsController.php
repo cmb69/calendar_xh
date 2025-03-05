@@ -80,38 +80,20 @@ class EditEventsController
 
     public function __invoke(): Response
     {
-        if (isset($_POST['action'])) {
-            assert(is_string($_POST['action']));
-            $action = $_POST['action'];
-        } elseif (isset($_GET['action'])) {
-            assert(is_string($_GET['action']));
-            $action = $_GET['action'];
-        } else {
-            $action = 'editevents';
-        }
-        switch ($action) {
-            case 'create':
-                $action = 'createAction';
-                break;
-            case 'update':
-                $action = 'updateAction';
-                break;
-            case 'delete':
-                $action = 'deleteAction';
-                break;
+        switch ($_GET["action"] ?? "") {
+            case "create":
+                return empty($_POST)
+                    ? $this->createAction() : $this->doCreateAction();
+            case "update":
+                return empty($_POST) ? $this->updateAction() : $this->doUpdateAction();
+            case "delete":
+                return empty($_POST) ? $this->deleteAction() : $this->doDeleteAction();
             default:
-                $action = 'defaultAction';
+                return $this->defaultAction();
         }
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $action = "do" . ucfirst($action);
-        }
-        if (!is_callable([$this, $action])) {
-            $action = 'defaultAction';
-        }
-        return $this->{$action}();
     }
 
-    public function defaultAction(): Response
+    private function defaultAction(): Response
     {
         $events = $this->eventDataService->readEvents();
         $output = $this->view->render('event-table', [
@@ -126,13 +108,13 @@ class EditEventsController
         return Response::create($output);
     }
 
-    public function createAction(): Response
+    private function createAction(): Response
     {
         $event = $this->createDefaultEvent();
         return Response::create($this->renderEditForm($event, null, "create"));
     }
 
-    public function updateAction(): Response
+    private function updateAction(): Response
     {
         $events = $this->eventDataService->readEvents();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
@@ -144,7 +126,7 @@ class EditEventsController
         return Response::create($this->renderEditForm($event, $id, "update"));
     }
 
-    public function deleteAction(): Response
+    private function deleteAction(): Response
     {
         $events = $this->eventDataService->readEvents();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
@@ -177,14 +159,14 @@ class EditEventsController
         ]);
     }
 
-    public function doCreateAction(): Response
+    private function doCreateAction(): Response
     {
         $this->csrfProtector->check();
         $events = $this->eventDataService->readEvents();
         return $this->upsert($events, null);
     }
 
-    public function doUpdateAction(): Response
+    private function doUpdateAction(): Response
     {
         $this->csrfProtector->check();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
@@ -237,7 +219,7 @@ class EditEventsController
         }
     }
 
-    public function doDeleteAction(): Response
+    private function doDeleteAction(): Response
     {
         $this->csrfProtector->check();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
