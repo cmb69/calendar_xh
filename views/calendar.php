@@ -3,32 +3,32 @@
 <script type="module" src="<?=$jsUrl?>"></script>
 <table class="calendar_main">
   <caption class="calendar_monthyear">
-  <?php if ($hasPrevNextButtons):?>
+<?if ($hasPrevNextButtons):?>
     <a href="<?=$prevUrl?>" rel="nofollow" title="<?=$this->text('prev_button_title')?>"><?=$this->text('prev_button_text')?></a>
-  <?php endif?>
+<?endif?>
     <?=$caption?>
-  <?php if ($hasPrevNextButtons):?>
+<?if ($hasPrevNextButtons):?>
     <a href="<?=$nextUrl?>" rel="nofollow" title="<?=$this->text('next_button_title')?>"><?=$this->text('next_button_text')?></a>
-  <?php endif?>
+<?endif?>
   </caption>
   <tr>
-<?php foreach ($headRow as $cell):?>
+<?foreach ($headRow as $cell):?>
     <th class="<?=$cell['classname']?>"><?=$cell['content']?></th>
-<?php endforeach?>
+<?endforeach?>
   <tr>
-<?php foreach ($rows as $row):?>
+<?foreach ($rows as $row):?>
   <tr>
-<?php   foreach ($row as $cell):?>
+<?  foreach ($row as $cell):?>
     <td class="<?=$cell['classname']?>">
-<?php       if (isset($cell['href'])):?>
+<?    if (isset($cell['href'])):?>
       <a href="<?=$cell['href']?>" title="<?=$cell['title']?>">
-<?php       endif?>
+<?    endif?>
         <?=$cell['content']?>
-<?php       if (isset($cell['href'])):?>
+<?    if (isset($cell['href'])):?>
       </a>
-<?php       endif?>
+<?    endif?>
     </td>
-<?php   endforeach?>
+<?  endforeach?>
   </tr>
-<?php endforeach?>
+<?endforeach?>
 </table>
