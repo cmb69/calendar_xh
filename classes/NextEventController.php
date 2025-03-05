@@ -98,7 +98,7 @@ class NextEventController
                 $date = $this->dateTimeFormatter->formatDateTime($ldt);
             }
             $data = [
-                'event' => $nextevent,
+                'summary' => $nextevent->summary,
                 'event_text' => $nexteventtext,
                 'event_text_2' => $nexteventtext2,
                 'date' => $date,

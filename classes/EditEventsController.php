@@ -95,6 +95,13 @@ class EditEventsController
     private function defaultAction(): Response
     {
         $events = $this->eventDataService->readEvents();
+        $events = array_map(function (Event $event): array {
+            return [
+                "start_date" => $event->getIsoStartDate(),
+                "end_date" => $event->getIsoEndDate(),
+                "summary" => $event->summary,
+            ];
+        }, $events);
         $output = $this->view->render('event-table', [
             'selected' => $this->url ? $this->url : 'calendar',
             'showEventTime' => (bool) $this->conf['show_event_time'],
@@ -152,7 +159,16 @@ class EditEventsController
             'showEventTime' => (bool) $this->conf['show_event_time'],
             'showEventLocation' => (bool) $this->conf['show_event_location'],
             'showEventLink' => (bool) $this->conf['show_event_link'],
-            'event' => $event,
+            'event' => [
+                "start_date" => $event->getIsoStartDate(),
+                "start_time" => $event->getIsoStartTime(),
+                "end_date" => $event->getIsoEndDate(),
+                "end_time" => $event->getIsoEndTime(),
+                "summary" => $event->summary,
+                "linkadr" => $event->linkadr,
+                "linktxt" => $event->linktxt,
+                "location" => $event->location,
+            ],
             'button_label' => $this->lang[$label],
             'csrf_token' => $this->csrfProtector->tokenInput(),
         ]);

@@ -28,7 +28,7 @@
 <?php           if ($row['showTime']):?>
     <td class="event_data event_time"></td>
 <?php           endif?>
-    <td class="event_data event_summary"><?=$this->escape($row['event']->summary)?> <?=$this->plural('age', $row['age'])?></td>
+    <td class="event_data event_summary"><?=$this->escape($row['summary'])?> <?=$this->plural('age', $row['age'])?></td>
 <?php           if ($row['showLocation']):?>
     <td class="event_data event_location"><?=$this->text('birthday_text')?></td>
 <?php           endif?>
@@ -42,9 +42,9 @@
 <?php           if ($row['showTime']):?>
     <td class="event_data event_time"><?=$this->escape($row['time'])?></td>
 <?php           endif?>
-    <td class="event_data event_summary"><?=$this->escape($row['event']->summary)?></td>
+    <td class="event_data event_summary"><?=$this->escape($row['summary'])?></td>
 <?php           if ($row['showLocation']):?>
-    <td class="event_data event_location"><?=$this->escape($row['event']->location)?></td>
+    <td class="event_data event_location"><?=$this->escape($row['location'])?></td>
 <?php           endif?>
 <?php           if ($row['showLink']):?>
     <td class="event_data event_link"><?=$this->escape($row['link'])?></td>

@@ -1,12 +1,12 @@
 <?php if (!isset($this)) {header("404 Not found"); exit;}?>
 
 <div class="nextevent_date">
-<?php if (isset($this->event)):?>
+<?php if (isset($this->summary)):?>
   <?=$this->date()?>
 </div>
 <div class="calendar_marquee_outer">
   <div class="calendar_marquee">
-    <div class="nextevent_event"><?=$this->escape($this->event->summary)?></div>
+    <div class="nextevent_event"><?=$this->escape($this->summary)?></div>
     <div class="nextevent_date"><?=$this->escape($this->event_text)?></div>
 <?php   if (isset($this->event_text_2)):?>
     <div class="nextevent_date"><?=$this->escape($this->event_text_2)?></div>

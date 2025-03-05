@@ -13,18 +13,18 @@
   </caption>
   <tr>
 <?php foreach ($this->headRow as $cell):?>
-    <th class="<?=$this->escape($cell->classname)?>"><?=$this->escape($cell->content)?></th>
+    <th class="<?=$this->escape($cell['classname'])?>"><?=$this->escape($cell['content'])?></th>
 <?php endforeach?>
   <tr>
 <?php foreach ($this->rows as $row):?>
   <tr>
 <?php   foreach ($row as $cell):?>
-    <td class="<?=$this->escape($cell->classname)?>">
-<?php       if (isset($cell->href)):?>
-      <a href="<?=$this->escape($cell->href)?>" title="<?=$this->escape($cell->title)?>">
+    <td class="<?=$this->escape($cell['classname'])?>">
+<?php       if (isset($cell['href'])):?>
+      <a href="<?=$this->escape($cell['href'])?>" title="<?=$this->escape($cell['title'])?>">
 <?php       endif?>
-        <?=$this->escape($cell->content)?>
-<?php       if (isset($cell->href)):?>
+        <?=$this->escape($cell['content'])?>
+<?php       if (isset($cell['href'])):?>
       </a>
 <?php       endif?>
     </td>

@@ -26,8 +26,6 @@
 
 namespace Calendar;
 
-use stdClass;
-
 class InfoController
 {
     /** @var string */
@@ -65,27 +63,30 @@ class InfoController
         ]);
     }
 
-    private function checkPhpVersion(string $version): stdClass
+    /** @return array{state:string,label:string,stateLabel:string} */
+    private function checkPhpVersion(string $version): array
     {
         $state = $this->systemChecker->checkVersion(PHP_VERSION, $version) ? 'success' : 'fail';
         $label = sprintf($this->lang['syscheck_phpversion'], $version);
         $stateLabel = $this->lang["syscheck_$state"];
-        return (object) compact('state', 'label', 'stateLabel');
+        return compact('state', 'label', 'stateLabel');
     }
 
-    private function checkXhVersion(string $version): stdClass
+    /** @return array{state:string,label:string,stateLabel:string} */
+    private function checkXhVersion(string $version): array
     {
         $state = $this->systemChecker->checkVersion(CMSIMPLE_XH_VERSION, "CMSimple_XH $version") ? 'success' : 'fail';
         $label = sprintf($this->lang['syscheck_xhversion'], $version);
         $stateLabel = $this->lang["syscheck_$state"];
-        return (object) compact('state', 'label', 'stateLabel');
+        return compact('state', 'label', 'stateLabel');
     }
 
-    private function checkWritability(string $folder): stdClass
+    /** @return array{state:string,label:string,stateLabel:string} */
+    private function checkWritability(string $folder): array
     {
         $state = $this->systemChecker->checkWritability($folder) ? 'success' : 'warning';
         $label = sprintf($this->lang['syscheck_writable'], $folder);
         $stateLabel = $this->lang["syscheck_$state"];
-        return (object) compact('state', 'label', 'stateLabel');
+        return compact('state', 'label', 'stateLabel');
     }
 }

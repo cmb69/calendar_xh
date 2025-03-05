@@ -26,8 +26,6 @@
 
 namespace Calendar;
 
-use stdClass;
-
 class CalendarController
 {
     /** @var string */
@@ -120,7 +118,7 @@ class CalendarController
 
     /**
      * @param (int|null)[] $columns
-     * @return stdClass[]
+     * @return list<array{classname:string,content:string,href?:string,title?:string}>
      */
     private function getRowData(array $columns, int $year, int $month, string $eventpage): array
     {
@@ -131,13 +129,13 @@ class CalendarController
         $row = [];
         foreach ($columns as $day) {
             if ($day === null) {
-                $row[] = (object) ['classname' => 'calendar_noday', 'content' => ''];
+                $row[] = ['classname' => 'calendar_noday', 'content' => ''];
                 continue;
             }
             $dayEvents = $this->filterEventsByDay($events, $year, $month, $day);
             $field = [];
             $classes = [];
-            $field['content'] = $day;
+            $field['content'] = (string) $day;
             if (!empty($dayEvents)) {
                 $field['href'] = "?{$eventpage}&month={$month}&year={$year}";
                 $field['title'] = $this->getEventsTitle($dayEvents, $year);
@@ -171,7 +169,7 @@ class CalendarController
                 $classes[] = "calendar_day";
             }
             $field['classname'] = implode(" ", $classes);
-            $row[] = (object) $field;
+            $row[] = $field;
         }
         return $row;
     }
@@ -251,7 +249,7 @@ class CalendarController
     }
 
     /**
-     * @return stdClass[]
+     * @return list<array{classname:string,content:string}>
      */
     private function getDaynamesRow(): array
     {
@@ -266,7 +264,7 @@ class CalendarController
             if ($j == 7) {
                 $j = 0;
             }
-            $row[] = (object) [
+            $row[] = [
                 'classname' => 'calendar_daynames ' . ($this->isWeekEnd($i) ? 'calendar_we' : 'calendar_day'),
                 'content' => $dayarray[$j],
             ];

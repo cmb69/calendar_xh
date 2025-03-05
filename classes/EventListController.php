@@ -216,7 +216,8 @@ class EventListController
         return [
             'is_birthday' => true,
             'age' => $year - $event->start->year,
-            'event' => $event,
+            'summary' => $event->summary,
+            'location' => $event->location,
             'date' => $this->dateTimeFormatter->formatDate($event->start->withYear($year)),
             'showTime' => $this->conf['show_event_time'],
             'showLocation' => $this->conf['show_event_location'],
@@ -243,7 +244,8 @@ class EventListController
         }
         return [
             'is_birthday' => false,
-            'event' => $event,
+            'summary' => $event->summary,
+            'location' => $event->location,
             'past_event_class' => $event->end->compare($this->now) < 0 ? "past_event" : "",
             'date' => $this->renderDate($event),
             'showTime' => $this->conf['show_event_time'],
