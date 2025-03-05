@@ -45,7 +45,7 @@ class ICalendarParserTest extends TestCase
         $this->assertSame(0, (new LocalDateTime(1969, 3, 24, 0, 0))->compare($second->start));
         $this->assertSame(0, (new LocalDateTime(1969, 3, 24, 23, 59))->compare($second->end));
         $this->assertSame("cmb", $second->summary);
-        $this->assertSame("", $second->linkadr);
+        $this->assertSame("https://3-magi.net/", $second->linkadr);
         $this->assertSame("", $second->linktxt);
         $this->assertSame("a\\\\b;c,d\ne\nf", $second->location);
     }

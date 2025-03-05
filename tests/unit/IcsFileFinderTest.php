@@ -54,6 +54,7 @@ class IcsFileFinderTest extends TestCase
             'DTSTART;VALUE=DATE:19690324',
             'SUMMARY:cmb',
             'LOCATION:a\\\\\\\\b\;c\,d\Ne\nf',
+            'URL:https://3-magi.net/',
             'END:VEVENT',
             'END:VCALENDAR',
         ];

@@ -86,7 +86,7 @@ class ICalendarParser
                         $this->currentEvent['starttime'] ?? "", // @phpstan-ignore-line
                         $this->currentEvent['endtime'] ?? "", // @phpstan-ignore-line
                         $this->currentEvent['event'] ?? "", // @phpstan-ignore-line
-                        '',
+                        $this->currentEvent['linkadr'] ?? "", // @phpstan-ignore-line
                         '',
                         $this->currentEvent['location'] ?? "" // @phpstan-ignore-line
                     );
@@ -119,6 +119,9 @@ class ICalendarParser
                 return;
             case 'LOCATION':
                 $this->currentEvent['location'] = $value;
+                return;
+            case 'URL':
+                $this->currentEvent['linkadr'] = $value;
                 return;
             case 'DTSTART':
                 $this->processDtStart($param, $value);
@@ -170,7 +173,7 @@ class ICalendarParser
      */
     private function parseLine(): array
     {
-        list($property, $value) = explode(':', $this->currentLine);
+        list($property, $value) = explode(':', $this->currentLine, 2);
         $parts = explode(';', $property);
         $property = $parts[0];
         if (count($parts) > 1) {
