@@ -178,7 +178,8 @@ class ICalendarParser
         } else {
             $param = null;
         }
-        $value = preg_replace('/\\\\(?!\\\\)/', '', $value);
+        $value = str_replace(["\\\\", "\\;", "\\,", "\\N", "\\n"], ["\\", ";", ",", "\n", "\n"], $value);
+        // $value = preg_replace('/\\\\(?!\\\\)/', '', $value);
         return [$property, $param, $value];
     }
 

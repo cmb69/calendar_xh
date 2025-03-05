@@ -53,6 +53,7 @@ class IcsFileFinderTest extends TestCase
             'BEGIN:VEVENT',
             'DTSTART;VALUE=DATE:19690324',
             'SUMMARY:cmb',
+            'LOCATION:a\\\\\\\\b\;c\,d\Ne\nf',
             'END:VEVENT',
             'END:VCALENDAR',
         ];

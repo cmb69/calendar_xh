@@ -47,6 +47,6 @@ class ICalendarParserTest extends TestCase
         $this->assertSame("cmb", $second->summary);
         $this->assertSame("", $second->linkadr);
         $this->assertSame("", $second->linktxt);
-        $this->assertSame("", $second->location);
+        $this->assertSame("a\\\\b;c,d\ne\nf", $second->location);
     }
 }
