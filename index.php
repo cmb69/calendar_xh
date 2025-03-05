@@ -26,7 +26,7 @@
 
 use Calendar\Dic;
 
-const CALENDAR_VERSION = "2.4";
+const CALENDAR_VERSION = "2.5-dev";
 
 /** @return string|never */
 function calendar(int $year = 0, int $month = 0, string $eventpage = '')
