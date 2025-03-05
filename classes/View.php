@@ -61,6 +61,8 @@ class View
         array_walk_recursive($_data, function (&$value) {
             if (is_string($value)) {
                 $value = XH_hsc($value);
+            } elseif ($value instanceof HtmlString) {
+                $value = $value->string();
             }
         });
         extract($_data);
