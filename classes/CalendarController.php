@@ -38,9 +38,6 @@ class CalendarController
     /** @var array<string,string> */
     private $conf;
 
-    /** @var LocalDateTime */
-    private $now;
-
     /** @var EventDataService */
     private $eventDataService;
 
@@ -54,14 +51,12 @@ class CalendarController
     public function __construct(
         string $pluginFolder,
         array $conf,
-        LocalDateTime $now,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
         View $view
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
-        $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
@@ -76,7 +71,7 @@ class CalendarController
         $calendar = new Calendar((bool) $this->conf['week_starts_mon']);
         $rows = [];
         foreach ($calendar->getMonthMatrix($year, $month) as $columns) {
-            $rows[] = $this->getRowData($columns, $year, $month, $eventpage);
+            $rows[] = $this->getRowData($request, $columns, $year, $month, $eventpage);
         }
         $js = $this->pluginFolder . "js/calendar.min.js";
         if (!is_file($js)) {
@@ -106,12 +101,12 @@ class CalendarController
         if ($month === 0) {
             $month = $request->get("month") !== null
                 ? max(1, min(12, (int) $request->get("month")))
-                : $this->now->month;
+                : idate("n", $request->time());
         }
         if ($year === 0) {
             $year = $request->get("year") !== null
                 ? max(1, min(9000, (int) $request->get("year")))
-                : $this->now->year;
+                : idate("Y", $request->time());
         }
     }
 
@@ -119,11 +114,11 @@ class CalendarController
      * @param (int|null)[] $columns
      * @return list<array{classname:string,content:string,href?:string,title?:string}>
      */
-    private function getRowData(array $columns, int $year, int $month, string $eventpage): array
+    private function getRowData(Request $request, array $columns, int $year, int $month, string $eventpage): array
     {
         $events = $this->eventDataService->readEvents();
-        $today = ($month === $this->now->month && $year === $this->now->year)
-            ? $this->now->day
+        $today = ($month === idate("n", $request->time()) && $year === idate("Y", $request->time()))
+            ? idate("j", $request->time())
             : 32;
         $row = [];
         foreach ($columns as $day) {

@@ -24,7 +24,6 @@ namespace Calendar;
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
-use Plib\Response;
 use Plib\View;
 
 class CalendarControllerTest extends TestCase
@@ -33,7 +32,6 @@ class CalendarControllerTest extends TestCase
     {
         $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
         $conf = $plugin_cf['calendar'];
-        $dateTime = LocalDateTime::fromIsoString("2023-01-30T14:27");
         $eventDataService = $this->createStub(EventDataService::class);
         $eventDataService->method("readEvents")->wilLReturn([$this->lunchBreak(), $this->weekend(), $this->birthday()]);
         $dateTimeFormatter = $this->createStub(DateTimeFormatter::class);
@@ -41,12 +39,15 @@ class CalendarControllerTest extends TestCase
         $sut = new CalendarController(
             "./",
             $conf,
-            $dateTime,
             $eventDataService,
             $dateTimeFormatter,
             $view
         );
-        $response = $sut->defaultAction(0, 0, "", new FakeRequest(["url" => "http://example.com/?page"]));
+        $request = new FakeRequest([
+            "url" => "http://example.com/?page",
+            "time" => 1675088820,
+        ]);
+        $response = $sut->defaultAction(0, 0, "", $request);
         Approvals::verifyHtml($response->output());
     }
 

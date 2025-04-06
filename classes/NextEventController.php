@@ -26,15 +26,13 @@
 
 namespace Calendar;
 
+use Plib\Request;
 use Plib\View;
 
 class NextEventController
 {
     /** @var array<string,string> */
     private $lang;
-
-    /** @var LocalDateTime */
-    private $now;
 
     /** @var EventDataService */
     private $eventDataService;
@@ -50,33 +48,33 @@ class NextEventController
      */
     public function __construct(
         array $lang,
-        LocalDateTime $now,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
         View $view
     ) {
         $this->lang = $lang;
-        $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
     }
 
-    public function defaultAction(): string
+    public function defaultAction(Request $request): string
     {
+        $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
+        assert($now !== null);
         $events = $this->eventDataService->readEvents();
-        $nextevent = $this->eventDataService->findNextEvent($events, $this->now);
+        $nextevent = $this->eventDataService->findNextEvent($events, $now);
         $data = [];
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
-                $ldt = $nextevent->start->withYear($this->now->year);
-                if ($ldt->compare($this->now) < 0) {
-                    $ldt = $nextevent->start->withYear($this->now->year + 1);
+                $ldt = $nextevent->start->withYear($now->year);
+                if ($ldt->compare($now) < 0) {
+                    $ldt = $nextevent->start->withYear($now->year + 1);
                 }
-                $age = $this->now->year - $nextevent->start->year;
+                $age = $now->year - $nextevent->start->year;
                 $nexteventtext = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
                 $nexteventtext2 = null;
-            } elseif ($nextevent->start->compare($this->now) >= 0) {
+            } elseif ($nextevent->start->compare($now) >= 0) {
                 $ldt = $nextevent->start;
                 if ($nextevent->isMultiDay()) {
                     $nexteventtext = $this->lang['event_date_till_date'];

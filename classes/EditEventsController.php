@@ -39,9 +39,6 @@ class EditEventsController
     /** @var array<string,string> */
     private $conf;
 
-    /** @var LocalDateTime */
-    private $now;
-
     /** @var EventDataService */
     private $eventDataService;
 
@@ -55,14 +52,12 @@ class EditEventsController
     public function __construct(
         string $pluginFolder,
         array $conf,
-        LocalDateTime $now,
         EventDataService $eventDataService,
         CSRFProtector $csrfProtector,
         View $view
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
-        $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->csrfProtector = $csrfProtector;
         $this->view = $view;
@@ -110,7 +105,7 @@ class EditEventsController
 
     private function createAction(Request $request): Response
     {
-        $event = $this->createDefaultEvent();
+        $event = $this->createDefaultEvent($request);
         return Response::create($this->renderEditForm($request, $event, null, "create"));
     }
 
@@ -258,10 +253,10 @@ class EditEventsController
         return (bool) preg_match('/^\d{4}-\d\d-(?:\d\d|\?{1-2}|\-{1-2})$/', $date);
     }
 
-    private function createDefaultEvent(): Event
+    private function createDefaultEvent(Request $request): Event
     {
         $event = Event::create(
-            $this->now->getIsoDate(),
+            date("Y-m-d", $request->time()),
             '',
             '',
             '',

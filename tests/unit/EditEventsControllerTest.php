@@ -24,6 +24,7 @@ namespace Calendar;
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
+use Plib\Request;
 use Plib\View;
 use XH\CSRFProtection as CsrfProtector;
 
@@ -42,7 +43,6 @@ class EditEventsControllerTest extends TestCase
     {
         $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
         $conf = $plugin_cf['calendar'];
-        $dateTime = LocalDateTime::fromIsoString("2023-01-30T14:27");
         $this->eventDataService = $this->createMock(EventDataService::class);
         $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
@@ -53,7 +53,6 @@ class EditEventsControllerTest extends TestCase
         $this->sut = new EditEventsController(
             "./",
             $conf,
-            $dateTime,
             $this->eventDataService,
             $this->csrfProtector,
             $view,
@@ -63,7 +62,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testDefaultActionRendersHtml()
     {
-        $response = ($this->sut)(new FakeRequest());
+        $response = ($this->sut)(new FakeRequest(["time" => 1675088820]));
         Approvals::verifyHtml($response->output());
     }
 
@@ -71,6 +70,7 @@ class EditEventsControllerTest extends TestCase
     {
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=create",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         Approvals::verifyHtml($response->output());
@@ -80,6 +80,7 @@ class EditEventsControllerTest extends TestCase
     {
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=update&event_id=invalid%20id",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -89,6 +90,7 @@ class EditEventsControllerTest extends TestCase
     {
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=update&event_id=111",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         Approvals::verifyHtml($response->output());
@@ -98,6 +100,7 @@ class EditEventsControllerTest extends TestCase
     {
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=delete&event_id=invalid%20id",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -107,6 +110,7 @@ class EditEventsControllerTest extends TestCase
     {
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=delete&event_id=111",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         Approvals::verifyHtml($response->output());
@@ -118,6 +122,7 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->expects($this->once())->method("check");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=create",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -129,6 +134,7 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->expects($this->once())->method("check");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=update&event_id=invalid%20id",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -151,6 +157,7 @@ class EditEventsControllerTest extends TestCase
             ->willReturn(true);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=update&event_id=111",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -173,6 +180,7 @@ class EditEventsControllerTest extends TestCase
             ->willReturn(false);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=update&event_id=111",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         Approvals::verifyHtml($response->output());
@@ -184,6 +192,7 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->expects($this->once())->method("check");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=delete&event_id=invalid%20id",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -196,6 +205,7 @@ class EditEventsControllerTest extends TestCase
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(true);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=delete&event_id=111",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -208,6 +218,7 @@ class EditEventsControllerTest extends TestCase
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(false);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=delete&event_id=111",
+            "time" => 1675088820,
         ]);
         $response = ($this->sut)($request);
         Approvals::verifyHtml($response->output());

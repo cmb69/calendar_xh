@@ -34,9 +34,6 @@ class EventListController
     /** @var array<string,string> */
     private $conf;
 
-    /** @var LocalDateTime */
-    private $now;
-
     /** @var EventDataService */
     private $eventDataService;
 
@@ -49,13 +46,11 @@ class EventListController
     /** @param array<string,string> $conf */
     public function __construct(
         array $conf,
-        LocalDateTime $now,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
         View $view
     ) {
         $this->conf = $conf;
-        $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
@@ -84,7 +79,7 @@ class EventListController
         $x = 0;
         while ($x <= $endMonth) {
             $filteredEvents = $this->eventDataService->filterByMonth($events, $year, $month);
-            if (($oneMonthEvents = $this->getMonthEvents($filteredEvents, $tablecols, $year, $month))) {
+            if (($oneMonthEvents = $this->getMonthEvents($request, $filteredEvents, $tablecols, $year, $month))) {
                 $monthEvents[] = $oneMonthEvents;
             }
             $x++;
@@ -120,10 +115,12 @@ class EventListController
             $month = $month_input;
         }
 
-        $year = $request->get("year") !== null ? max(1, min(9000, (int) $request->get("year"))) : $this->now->year;
+        $year = $request->get("year") !== null
+            ? max(1, min(9000, (int) $request->get("year")))
+            : idate("Y", $request->time());
 
         if ($month === 0) {
-            $month = $this->now->month;
+            $month = idate("n", $request->time());
         }
 
         if (!$pastMonth) {
@@ -187,7 +184,7 @@ class EventListController
      * @param Event[] $events
      * @return ?array{headline:array{tablecols:int,monthYear:string,showTime:bool,showLocation:bool,showLink:bool},rows:list<array{is_birthday:bool,age?:int,summary:string,location:string,past_event_class?:string,date:string,showTime:bool,showLocation:bool,showLink:bool,link:string,time?:string}>}
      */
-    private function getMonthEvents(array $events, int $tablecols, int $year, int $month)
+    private function getMonthEvents(Request $request, array $events, int $tablecols, int $year, int $month)
     {
         if (empty($events)) {
             return null;
@@ -197,7 +194,7 @@ class EventListController
             if ($event->isBirthday()) {
                 $result['rows'][] = $this->getBirthdayRowView($event, $year);
             } else {
-                $result['rows'][] = $this->getEventRowView($event);
+                $result['rows'][] = $this->getEventRowView($request, $event);
             }
         }
         return $result;
@@ -220,7 +217,7 @@ class EventListController
     }
 
     /** @return array{is_birthday:bool,summary:string,location:string,past_event_class:string,date:string,showTime:bool,showLocation:bool,showLink:bool,link:string,time:string} */
-    private function getEventRowView(Event $event): array
+    private function getEventRowView(Request $request, Event $event): array
     {
         if ($event->isFullDay()) {
             $time = "";
@@ -235,11 +232,13 @@ class EventListController
                 $time = $this->dateTimeFormatter->formatTime($event->start);
             }
         }
+        $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
+        assert($now !== null);
         return [
             'is_birthday' => false,
             'summary' => $event->summary,
             'location' => $event->location,
-            'past_event_class' => $event->end->compare($this->now) < 0 ? "past_event" : "",
+            'past_event_class' => $event->end->compare($now) < 0 ? "past_event" : "",
             'date' => $this->renderDate($event),
             'showTime' => (bool) $this->conf['show_event_time'],
             'showLocation' => (bool) $this->conf['show_event_location'],

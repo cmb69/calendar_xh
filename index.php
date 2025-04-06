@@ -42,7 +42,7 @@ function events(int $month = 0, int $year = 0, int $end_month = 0, int $past_mon
 
 function nextEvent(): string
 {
-    return Dic::makeNextEventController()->defaultAction();
+    return Dic::makeNextEventController()->defaultAction(Request::current());
 }
 
 /** @return string|never */

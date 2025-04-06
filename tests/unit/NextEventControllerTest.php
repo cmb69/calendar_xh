@@ -23,25 +23,28 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\FakeRequest;
 use Plib\View;
 
 class NextEventControllerTest extends TestCase
 {
     public function testIssue51()
     {
-        $subject = $this->makeNextEventController(LocalDateTime::fromIsoString("2021-03-23T12:34"));
-        $response = $subject->defaultAction();
+        $subject = $this->makeNextEventController();
+        $request = new FakeRequest(["time" => 1616502840]);
+        $response = $subject->defaultAction($request);
         Approvals::verifyHtml($response);
     }
 
     public function testIssue70()
     {
-        $subject = $this->makeNextEventController(LocalDateTime::fromIsoString("2021-03-25T12:34"));
-        $response = $subject->defaultAction();
+        $subject = $this->makeNextEventController();
+        $request = new FakeRequest(["time" => 1616675640]);
+        $response = $subject->defaultAction($request);
         Approvals::verifyHtml($response);
     }
 
-    private function makeNextEventController(LocalDateTime $now): NextEventController
+    private function makeNextEventController(): NextEventController
     {
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $lang = $plugin_tx['calendar'];
@@ -50,6 +53,6 @@ class NextEventControllerTest extends TestCase
         $eventDataService->method("findNextEvent")->willReturn($event);
         $dateTimeFormatter = new DateTimeFormatter($lang);
         $view = new View("./views/", $lang);
-        return new NextEventController($lang, $now, $eventDataService, $dateTimeFormatter, $view);
+        return new NextEventController($lang, $eventDataService, $dateTimeFormatter, $view);
     }
 }

@@ -39,7 +39,6 @@ class Dic
         return new CalendarController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
-            self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
@@ -52,7 +51,6 @@ class Dic
 
         return new EventListController(
             $plugin_cf['calendar'],
-            self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
@@ -65,7 +63,6 @@ class Dic
 
         return new NextEventController(
             $plugin_tx['calendar'],
-            self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
@@ -79,7 +76,6 @@ class Dic
         return new EditEventsController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
-            self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::getCsrfProtector(),
             self::view()
@@ -104,13 +100,6 @@ class Dic
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::view()
         );
-    }
-
-    private static function now(): LocalDateTime
-    {
-        $result = LocalDateTime::fromIsoString(date('Y-m-d\TH:i'));
-        assert($result !== null);
-        return $result;
     }
 
     private static function getDataFolder(): string
