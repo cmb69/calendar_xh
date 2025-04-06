@@ -26,10 +26,10 @@
 
 namespace Calendar;
 
+use Plib\CsrfProtector;
 use Plib\Request;
 use Plib\Response;
 use Plib\View;
-use XH\CSRFProtection as CsrfProtector;
 
 class EditEventsController
 {
@@ -53,7 +53,7 @@ class EditEventsController
         string $pluginFolder,
         array $conf,
         EventDataService $eventDataService,
-        CSRFProtector $csrfProtector,
+        CsrfProtector $csrfProtector,
         View $view
     ) {
         $this->pluginFolder = $pluginFolder;
@@ -156,20 +156,24 @@ class EditEventsController
                 "location" => $event->location,
             ],
             'button_label' => $action === "delete" ? "label_delete" : "label_save",
-            'csrf_token' => $this->csrfProtector->tokenInput(),
+            'csrf_token' => $this->csrfProtector->token(),
         ]);
     }
 
     private function doCreateAction(Request $request): Response
     {
-        $this->csrfProtector->check();
+        if (!$this->csrfProtector->check($request->post("calendar_token"))) {
+            return Response::create($this->view->message("fail", "error_unauthorized"));
+        }
         $events = $this->eventDataService->readEvents();
         return $this->upsert($request, $events, null);
     }
 
     private function doUpdateAction(Request $request): Response
     {
-        $this->csrfProtector->check();
+        if (!$this->csrfProtector->check($request->post("calendar_token"))) {
+            return Response::create($this->view->message("fail", "error_unauthorized"));
+        }
         $id = $request->get("event_id");
         assert($id !== null); // TODO invalid assertion
         $events = $this->eventDataService->readEvents();
@@ -221,7 +225,9 @@ class EditEventsController
 
     private function doDeleteAction(Request $request): Response
     {
-        $this->csrfProtector->check();
+        if (!$this->csrfProtector->check($request->post("calendar_token"))) {
+            return Response::create($this->view->message("fail", "error_unauthorized"));
+        }
         $id = $request->get("event_id");
         assert($id !== null); // TODO invalid assertion
         $events = $this->eventDataService->readEvents();

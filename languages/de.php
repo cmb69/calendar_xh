@@ -48,6 +48,8 @@ $plugin_tx['calendar']['label_save']="Speichern";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_import_button']="Importiere %s";
 
+$plugin_tx['calendar']['error_unauthorized']="Sie sind nicht befugt diese Aktion auszuführen!";
+
 $plugin_tx['calendar']['alt_logo']="Kalender";
 
 $plugin_tx['calendar']['syscheck_extension']="die PHP-Erweiterung '%s' geladen ist";

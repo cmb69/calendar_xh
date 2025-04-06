@@ -26,9 +26,9 @@
 
 namespace Calendar;
 
+use Plib\CsrfProtector;
 use Plib\SystemChecker;
 use Plib\View;
-use XH\CSRFProtection as CsrfProtector;
 
 class Dic
 {
@@ -77,7 +77,7 @@ class Dic
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            self::getCsrfProtector(),
+            new CsrfProtector(),
             self::view()
         );
     }
@@ -123,16 +123,6 @@ class Dic
             $sep = '.';
         }
         return $sep;
-    }
-
-    private static function getCsrfProtector(): CsrfProtector
-    {
-        global $_XH_csrfProtection;
-
-        if ($_XH_csrfProtection === null) {
-            $_XH_csrfProtection = new CsrfProtector();
-        }
-        return $_XH_csrfProtection;
     }
 
     private static function view(): View

@@ -68,5 +68,5 @@ if (!isset($this)) {header("404 Not found"); exit;}
   <p>
     <button><?=$this->text($button_label)?></button>
   </p>
-  <?=$this->raw($csrf_token)?>
+  <input type="hidden" name="calendar_token" value="<?=$this->raw($csrf_token)?>">
 </form>

@@ -25,9 +25,9 @@ const CALENDAR_VERSION = "3.0-dev";
 
 require_once './vendor/autoload.php';
 
-require_once '../../cmsimple/classes/CSRFProtection.php';
 require_once '../../cmsimple/functions.php';
 
+require_once "../plib/classes/CsrfProtector.php";
 require_once "../plib/classes/Request.php";
 require_once "../plib/classes/Response.php";
 require_once "../plib/classes/SystemChecker.php";

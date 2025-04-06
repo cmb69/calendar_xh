@@ -23,10 +23,9 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\CsrfProtector;
 use Plib\FakeRequest;
-use Plib\Request;
 use Plib\View;
-use XH\CSRFProtection as CsrfProtector;
 
 class EditEventsControllerTest extends TestCase
 {
@@ -46,9 +45,8 @@ class EditEventsControllerTest extends TestCase
         $this->eventDataService = $this->createMock(EventDataService::class);
         $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
-        $this->csrfProtector->method("tokenInput")->willReturn(
-            "<input type=\"hidden\" name=\"xh_csrf_token\" value=\"42881056d048537da0e061f7f672854b\">"
-        );
+        $this->csrfProtector->method("token")->willReturn("42881056d048537da0e061f7f672854b");
+        $this->csrfProtector->method("check")->willReturn(true);
         $view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
         $this->sut = new EditEventsController(
             "./",

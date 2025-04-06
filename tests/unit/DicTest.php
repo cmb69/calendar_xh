@@ -22,20 +22,16 @@
 namespace Calendar;
 
 use PHPUnit\Framework\TestCase;
-use XH\CSRFProtection;
 
 class DicTest extends TestCase
 {
     public function setUp(): void
     {
-        global $pth, $plugin_cf, $plugin_tx, $sn, $su, $_XH_csrfProtection;
+        global $pth, $plugin_cf, $plugin_tx;
 
         $pth = ["folder" => ["content" => "", "plugins" => ""]];
         $plugin_cf = ["calendar" => ["date_delimiter" => "", "same-event-calendar_for_all_languages" => ""]];
         $plugin_tx = ["calendar" => ["monthnames_array" => ""]];
-        $sn = "/";
-        $su = "";
-        $_XH_csrfProtection = $this->createStub(CSRFProtection::class);
     }
 
     public function testMakeCalendarController(): void
