@@ -162,4 +162,11 @@ class Event
     {
         return trim($this->location) === '###';
     }
+
+    public function occursDuring(int $year, int $month): bool
+    {
+        return ($this->start->month() === $month)
+            && ($this->start->year() === $year
+            || $this->isBirthday() && $this->start->year() < $year);
+    }
 }
