@@ -58,7 +58,7 @@ if (XH_wantsPluginAdministration("calendar")) {
                 . Dic::makeEditEventController()(Request::current())();
             break;
         case 'import':
-            $o .= Dic::makeIcalImportController()(Request::current(), $action)();
+            $o .= Dic::makeIcalImportController()(Request::current())();
             break;
         default:
             $o .= plugin_admin_common();

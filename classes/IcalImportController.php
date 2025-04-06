@@ -46,10 +46,10 @@ class IcalImportController
         $this->eventDataService = $eventDataService;
     }
 
-    public function __invoke(Request $request, string $action): Response
+    public function __invoke(Request $request): Response
     {
-        switch ($action) {
-            case 'import':
+        switch ($request->get("action")) {
+            case "import":
                 return $this->importAction();
             default:
                 return $this->defaultAction($request);
