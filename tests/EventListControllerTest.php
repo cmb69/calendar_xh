@@ -22,6 +22,7 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
@@ -34,17 +35,9 @@ class EventListControllerTest extends TestCase
         $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
         $conf = $plugin_cf['calendar'];
         $eventDataService = $this->createStub(EventDataService::class);
-        $eventDataService->method("readEvents")->willReturn([$this->lunchBreak(), $this->easter(), $this->birthday()]);
-        $eventDataService->method("filterByMonth")->willReturnCallback(function (array $events, int $year, int $month) {
-            if ($month === 1) {
-                return [$this->lunchBreak()];
-            } elseif ($month === 3) {
-                return [$this->birthday()];
-            } elseif ($month === 4) {
-                return [$this->easter()];
-            }
-            return [];
-        });
+        $eventDataService->method("readEvents")->willReturn(
+            new Calendar([$this->lunchBreak(), $this->easter(), $this->birthday()])
+        );
         $dateTimeFormatter = $this->createStub(DateTimeFormatter::class);
         $view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
         $sut = new EventListController(

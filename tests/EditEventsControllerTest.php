@@ -22,6 +22,7 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use PHPUnit\Framework\TestCase;
 use Plib\CsrfProtector;
@@ -44,7 +45,7 @@ class EditEventsControllerTest extends TestCase
         $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
         $conf = $plugin_cf['calendar'];
         $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["111" => $this->lunchBreak()]));
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
         $this->csrfProtector->method("token")->willReturn("42881056d048537da0e061f7f672854b");
         $this->csrfProtector->method("check")->willReturn(true);

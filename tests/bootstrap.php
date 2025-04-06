@@ -36,6 +36,7 @@ require_once "../plib/classes/View.php";
 require_once "../plib/classes/FakeRequest.php";
 require_once "../plib/classes/FakeSystemChecker.php";
 
+require_once "./classes/model/Calendar.php";
 require_once './classes/model/Event.php';
 require_once './classes/model/LocalDateTime.php';
 require_once './classes/CalendarController.php';

@@ -22,6 +22,7 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
@@ -52,6 +53,7 @@ class NextEventControllerTest extends TestCase
         $event = Event::create("1969-03-24", null, "", null, "cmb", "", "", "###");
         $eventDataService = $this->createStub(EventDataService::class);
         $eventDataService->method("findNextEvent")->willReturn($event);
+        $eventDataService->method("readEvents")->willReturn(new Calendar([]));
         $dateTimeFormatter = new DateTimeFormatter($lang);
         $view = new View("./views/", $lang);
         return new NextEventController($eventDataService, $dateTimeFormatter, $view);

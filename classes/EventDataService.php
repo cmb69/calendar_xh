@@ -125,28 +125,6 @@ class EventDataService
         return true;
     }
 
-    /**
-     * @param array<string,Event> $events
-     * @return list<Event>
-     */
-    public function filterByMonth(array $events, int $year, int $month): array
-    {
-        $result = [];
-        foreach ($events as $event) {
-            if ($event->start()->month() === $month) {
-                if ($event->start()->year() === $year || ($event->isBirthday() && $event->start()->year() < $year)) {
-                    $result[] = $event;
-                }
-            }
-        }
-        uasort($result, function (Event $a, Event $b) use ($year): int {
-            $dt1 = $a->isBirthday() ? $a->start()->withYear($year) : $a->start();
-            $dt2 = $b->isBirthday() ? $b->start()->withYear($year) : $b->start();
-            return $dt1->compare($dt2);
-        });
-        return $result;
-    }
-
     /** @param array<string,Event> $events */
     public function findNextEvent(array $events, LocalDateTime $now): ?Event
     {

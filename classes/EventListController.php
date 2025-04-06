@@ -80,7 +80,7 @@ class EventListController
         $monthEvents = [];
         $x = 0;
         while ($x <= $endMonth) {
-            $filteredEvents = $this->eventDataService->filterByMonth($calendar->events(), $year, $month);
+            $filteredEvents = $calendar->eventsDuring($year, $month);
             if (($oneMonthEvents = $this->getMonthEvents($request, $filteredEvents, $tablecols, $year, $month))) {
                 $monthEvents[] = $oneMonthEvents;
             }

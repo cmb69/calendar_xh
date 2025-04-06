@@ -43,7 +43,7 @@ class EventDataServiceTest extends TestCase
         vfsStream::setup("root");
         vfsStream::newFile("root/calendar.csv");
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $events = $subject->readEvents();
+        $events = $subject->readEvents()->events();
         $this->assertIsArray($events);
         $this->assertEmpty($events);
     }
@@ -57,7 +57,7 @@ CSV;
         vfsStream::setup("root");
         file_put_contents(vfsStream::url("root/calendar.csv"), $csv);
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $events = array_values($subject->filterByMonth($subject->readEvents(), 2021, 4));
+        $events = array_values($subject->readEvents()->eventsDuring(2021, 4));
         $this->assertCount(2, $events);
         $this->assertSame("markus", $events[0]->summary());
         $this->assertSame("martin", $events[1]->summary());
@@ -77,7 +77,7 @@ CSV;
         vfsStream::setup("root");
         file_put_contents(vfsStream::url("root/calendar.csv"), $csv);
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $nextevent = $subject->findNextEvent($subject->readEvents(), $now);
+        $nextevent = $subject->findNextEvent($subject->readEvents()->events(), $now);
         if ($expected !== null) {
             $this->assertInstanceOf(Event::class, $nextevent);
             $this->assertSame($expected, $nextevent->summary());

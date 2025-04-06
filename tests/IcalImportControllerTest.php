@@ -22,6 +22,7 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use Calendar\Model\Calendar;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
 use Plib\View;
@@ -45,6 +46,7 @@ class IcalImportControllerTest extends TestCase
         $icsFileFinder = $this->createStub(IcsFileFinder::class);
         $icsFileFinder->method('read')->willReturn([]);
         $eventDataService = $this->createStub(EventDataService::class);
+        $eventDataService->method("readEvents")->willReturn(new Calendar([]));
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $view = new View("./views/", $plugin_tx['calendar']);
         $sut = new IcalImportController($icsFileFinder, $eventDataService, $view);

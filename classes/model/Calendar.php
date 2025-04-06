@@ -43,6 +43,25 @@ class Calendar
         return $this->events[$id] ?? null;
     }
 
+    /** @return list<Event> */
+    public function eventsDuring(int $year, int $month): array
+    {
+        $result = [];
+        foreach ($this->events as $event) {
+            if ($event->start()->month() === $month) {
+                if ($event->start()->year() === $year || ($event->isBirthday() && $event->start()->year() < $year)) {
+                    $result[] = $event;
+                }
+            }
+        }
+        uasort($result, function (Event $a, Event $b) use ($year): int {
+            $dt1 = $a->isBirthday() ? $a->start()->withYear($year) : $a->start();
+            $dt2 = $b->isBirthday() ? $b->start()->withYear($year) : $b->start();
+            return $dt1->compare($dt2);
+        });
+        return $result;
+    }
+
     public function delete(string $id): void
     {
         assert(array_key_exists($id, $this->events));
