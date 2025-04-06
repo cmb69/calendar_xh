@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Calendar\Model\Event;
 use Plib\CsrfProtector;
 use Plib\Request;
 use Plib\Response;

@@ -21,6 +21,7 @@
 
 namespace Calendar;
 
+use Calendar\Model\LocalDateTime;
 use PHPUnit\Framework\TestCase;
 
 class DateTimeFormatterTest extends TestCase

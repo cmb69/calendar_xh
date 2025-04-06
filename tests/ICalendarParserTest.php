@@ -21,6 +21,8 @@
 
 namespace Calendar;
 
+use Calendar\Model\Event;
+use Calendar\Model\LocalDateTime;
 use PHPUnit\Framework\TestCase;
 
 class ICalendarParserTest extends TestCase

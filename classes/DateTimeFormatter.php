@@ -26,6 +26,8 @@
 
 namespace Calendar;
 
+use Calendar\Model\LocalDateTime;
+
 class DateTimeFormatter
 {
     /** @var array<string,string> */

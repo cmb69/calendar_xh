@@ -22,6 +22,7 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use Calendar\Model\Event;
 use PHPUnit\Framework\TestCase;
 use Plib\CsrfProtector;
 use Plib\FakeRequest;

@@ -21,6 +21,8 @@
 
 namespace Calendar;
 
+use Calendar\Model\Event;
+
 /**
  * Read all events from an iCalendar file
  *

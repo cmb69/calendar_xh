@@ -26,6 +26,9 @@
 
 namespace Calendar;
 
+use Calendar\Model\Event;
+use Calendar\Model\LocalDateTime;
+
 class EventDataService
 {
     /** @var string */

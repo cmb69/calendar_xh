@@ -22,8 +22,10 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
-use PHPUnit\Framework\TestCase;
+use Calendar\Model\Event;
+use Calendar\Model\LocalDateTime;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
 
 class EventDataServiceTest extends TestCase
 {
