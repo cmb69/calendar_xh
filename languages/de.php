@@ -50,8 +50,6 @@ $plugin_tx['calendar']['label_import_button']="Importiere %s";
 
 $plugin_tx['calendar']['error_unauthorized']="Sie sind nicht befugt diese Aktion auszuführen!";
 
-$plugin_tx['calendar']['alt_logo']="Kalender";
-
 $plugin_tx['calendar']['syscheck_extension']="die PHP-Erweiterung '%s' geladen ist";
 $plugin_tx['calendar']['syscheck_fail']="Fehler";
 $plugin_tx['calendar']['syscheck_message']="Prüfe, dass %1\$s … %2\$s";
