@@ -131,10 +131,7 @@ class EditEventsController
         return Response::create($this->renderEditForm($request, $event, $id, "delete"));
     }
 
-    /**
-     * @param string|null $id
-     */
-    private function renderEditForm(Request $request, Event $event, $id, string $action): string
+    private function renderEditForm(Request $request, Event $event, ?string $id, string $action): string
     {
         $url = $request->url()->with("admin", "plugin_main")->with("action", $action);
         if ($id !== null) {
@@ -180,11 +177,8 @@ class EditEventsController
         return $this->upsert($request, $events, array_key_exists($id, $events) ? $id : null);
     }
 
-    /**
-     * @param Event[] $events
-     * @param string|null $id
-     */
-    private function upsert(Request $request, array $events, $id): Response
+    /** @param array<string,Event> $events */
+    private function upsert(Request $request, array $events, ?string $id): Response
     {
         $varnames = array(
             'datestart', 'dateend', 'starttime', 'endtime', 'event', 'linkadr', 'linktxt', 'location'
@@ -211,10 +205,9 @@ class EditEventsController
         }
 
         // sorting new event inputs, idea of manu, forum-message
-        uasort($events, /** @return int */ function (Event $a, Event $b) {
+        uasort($events, function (Event $a, Event $b): int {
             return $a->start->compare($b->start);
         });
-        /** @var Event[] $events */
         if ($this->eventDataService->writeEvents($events)) {
             return $this->redirectToOverviewResponse($request);
         } else {

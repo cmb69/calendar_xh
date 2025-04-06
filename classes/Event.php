@@ -64,21 +64,16 @@ class Event
      */
     public $location;
 
-    /**
-     * @param string|null $dateend
-     * @param string|null $endtime
-     * @return self|null
-     */
     public static function create(
         string $datestart,
-        $dateend,
+        ?string $dateend,
         string $starttime,
-        $endtime,
+        ?string $endtime,
         string $summary,
         string $linkadr,
         string $linktxt,
         string $location
-    ) {
+    ): ?self {
         if (!$dateend) {
             if ($endtime) {
                 return null;

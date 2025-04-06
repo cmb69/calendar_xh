@@ -50,9 +50,7 @@ class EventDataService
         return $this->eventfile;
     }
 
-    /**
-     * @return Event[]
-     */
+    /** @return array<string,Event> */
     public function readEvents(): array
     {
         $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".csv");
@@ -108,7 +106,7 @@ class EventDataService
     }
 
     /**
-     * @param ?list<string|null> $record
+     * @param ?list<?string> $record
      * @phpstan-assert-if-true list<string> $record
      */
     private function validateRecord(?array $record): bool
@@ -125,8 +123,8 @@ class EventDataService
     }
 
     /**
-     * @param Event[] $events
-     * @return Event[]
+     * @param array<string,Event> $events
+     * @return list<Event>
      */
     public function filterByMonth(array $events, int $year, int $month): array
     {
@@ -138,20 +136,16 @@ class EventDataService
                 }
             }
         }
-        uasort($result, /** @return int */ function (Event $a, Event $b) use ($year) {
+        uasort($result, function (Event $a, Event $b) use ($year): int {
             $dt1 = $a->isBirthday() ? $a->start->withYear($year) : $a->start;
             $dt2 = $b->isBirthday() ? $b->start->withYear($year) : $b->start;
             return $dt1->compare($dt2);
         });
-        /** @var Event[] $result */
         return $result;
     }
 
-    /**
-     * @param Event[] $events
-     * @return Event|null
-     */
-    public function findNextEvent(array $events, LocalDateTime $now)
+    /** @param array<string,Event> $events */
+    public function findNextEvent(array $events, LocalDateTime $now): ?Event
     {
         $nextevent = null;
         $nextldt = null;
@@ -178,9 +172,7 @@ class EventDataService
         return $nextevent;
     }
 
-    /**
-     * @return Event[]
-     */
+    /** @return list<Event> */
     private function readOldEvents(): array
     {
         $result = array();
@@ -238,9 +230,7 @@ class EventDataService
         return $result;
     }
 
-    /**
-     * @param Event[] $events
-     */
+    /** @param array<Event> $events */
     public function writeEvents(array $events): bool
     {
         $eventfile = $this->eventfile;
@@ -271,9 +261,7 @@ class EventDataService
         return true;
     }
 
-    /**
-     * @param resource $fp
-     */
+    /** @param resource $fp */
     private function writeEventLine($fp, Event $event): bool
     {
         $record = [

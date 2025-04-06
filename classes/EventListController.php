@@ -98,10 +98,7 @@ class EventListController
         ]);
     }
 
-    /**
-     * @return void
-     */
-    private function determineYearAndMonth(Request $request, int &$year, int &$month, int &$pastMonth)
+    private function determineYearAndMonth(Request $request, int &$year, int &$month, int &$pastMonth): void
     {
         $month_input = $request->get("month") !== null ? max(1, min(12, (int) $request->get("month"))) : 0;
 
@@ -134,11 +131,8 @@ class EventListController
         }
     }
 
-    /**
-     * @param-out int $endMonth
-     * @return void
-     */
-    private function determineEndMonth(int &$endMonth)
+    /** @param-out int $endMonth */
+    private function determineEndMonth(int &$endMonth): void
     {
         if ($endMonth === 0) {
             if ($this->conf['show_number_of_future_months']) {
@@ -149,10 +143,7 @@ class EventListController
         }
     }
 
-    /**
-     * @return void
-     */
-    private function advanceMonth(int &$year, int &$month)
+    private function advanceMonth(int &$year, int &$month): void
     {
         if ($month == 12) {
             $year++;
@@ -181,10 +172,10 @@ class EventListController
     }
 
     /**
-     * @param Event[] $events
+     * @param array<Event> $events
      * @return ?array{headline:array{tablecols:int,monthYear:string,showTime:bool,showLocation:bool,showLink:bool},rows:list<array{is_birthday:bool,age?:int,summary:string,location:string,past_event_class?:string,date:string,showTime:bool,showLocation:bool,showLink:bool,link:string,time?:string}>}
      */
-    private function getMonthEvents(Request $request, array $events, int $tablecols, int $year, int $month)
+    private function getMonthEvents(Request $request, array $events, int $tablecols, int $year, int $month): ?array
     {
         if (empty($events)) {
             return null;

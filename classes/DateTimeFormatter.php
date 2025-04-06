@@ -28,17 +28,13 @@ namespace Calendar;
 
 class DateTimeFormatter
 {
-    /**
-     * @var array<string,string>
-     */
+    /** @var array<string,string> */
     private $lang;
 
     /** @var array<int,string> */
     private $monthnames;
 
-    /**
-     * @param array<string,string> $lang
-     */
+    /** @param array<string,string> $lang */
     public function __construct(array $lang)
     {
         $this->lang = $lang;

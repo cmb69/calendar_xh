@@ -31,9 +31,7 @@ class Calendar
         $this->weekStartsMonday = $weekStartsMonday;
     }
 
-    /**
-     * @return array<int,array<int,(int|null)>>
-     */
+    /** @return array<int,array<int,(int|null)>> */
     public function getMonthMatrix(int $year, int $month): array
     {
         $result = [];

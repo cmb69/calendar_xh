@@ -55,10 +55,7 @@ class LocalDateTime
      */
     public $minute;
 
-    /**
-     * @return LocalDateTime|null
-     */
-    public static function fromIsoString(string $string)
+    public static function fromIsoString(string $string): ?LocalDateTime
     {
         $pattern = '/^(\d{4})(?:-)(\d{2})(?:-)(\d{2})(?:T)(\d{2})(?::)(\d{2})$/';
         if (!preg_match($pattern, $string, $matches)) {

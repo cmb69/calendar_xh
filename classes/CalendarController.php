@@ -95,8 +95,7 @@ class CalendarController
         return Response::create($output);
     }
 
-    /** @return void */
-    private function determineYearAndMonth(Request $request, int &$year, int &$month)
+    private function determineYearAndMonth(Request $request, int &$year, int &$month): void
     {
         if ($month === 0) {
             $month = $request->get("month") !== null
@@ -111,7 +110,7 @@ class CalendarController
     }
 
     /**
-     * @param (int|null)[] $columns
+     * @param array<int|null> $columns
      * @return list<array{classname:string,content:string,href?:string,title?:string}>
      */
     private function getRowData(Request $request, array $columns, int $year, int $month, string $eventpage): array
@@ -169,8 +168,8 @@ class CalendarController
     }
 
     /**
-     * @param Event[] $events
-     * @return Event[]
+     * @param array<string,Event> $events
+     * @return list<Event>
      */
     private function filterEventsByDay(array $events, int $year, int $month, int $day): array
     {

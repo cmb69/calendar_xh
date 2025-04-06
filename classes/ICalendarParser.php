@@ -28,17 +28,13 @@ namespace Calendar;
  */
 class ICalendarParser
 {
-    /**
-     * @var string[]
-     */
+    /** @var list<string> */
     private $lines = [];
 
     /** @var string */
     private $currentLine = "";
 
-    /**
-     * @var Event[]
-     */
+    /** @var array<Event> */
     private $events = [];
 
     /** @var array<string,string> */
@@ -46,7 +42,7 @@ class ICalendarParser
 
     /**
      * @param list<string> $lines
-     * @return Event[]
+     * @return array<Event>
      */
     public function parse(array $lines): array
     {
@@ -56,10 +52,7 @@ class ICalendarParser
         return $this->events;
     }
 
-    /**
-     * @return void
-     */
-    private function unfold()
+    private function unfold(): void
     {
         for ($i = count($this->lines) - 1; $i > 0; $i--) {
             if (in_array(substr($this->lines[$i], 0, 1), [' ', "\t"])) {
@@ -69,10 +62,7 @@ class ICalendarParser
         }
     }
 
-    /**
-     * @return void
-     */
-    private function doParse()
+    private function doParse(): void
     {
         $this->currentEvent = [];
         $isInEvent = false;
@@ -105,10 +95,7 @@ class ICalendarParser
         }
     }
 
-    /**
-     * @return void
-     */
-    private function processPropertyLine()
+    private function processPropertyLine(): void
     {
         list($property, $param, $value) = $this->parseLine();
         assert($property !== null);
@@ -132,11 +119,7 @@ class ICalendarParser
         }
     }
 
-    /**
-     * @param string|null $param
-     * @return void
-     */
-    private function processDtStart($param, string $value)
+    private function processDtStart(?string $param, string $value): void
     {
         if ($param === null) {
             if (($datetime = $this->parseDateTime($value))) {
@@ -149,11 +132,7 @@ class ICalendarParser
         }
     }
 
-    /**
-     * @param string|null $param
-     * @return void
-     */
-    private function processDtEnd($param, string $value)
+    private function processDtEnd(?string $param, string $value): void
     {
         if ($param === null) {
             if (($datetime = $this->parseDateTime($value))) {
@@ -169,7 +148,7 @@ class ICalendarParser
     /**
      * ignores property parameters
      *
-     * @return (string|null)[]
+     * @return array<?string>
      */
     private function parseLine(): array
     {
@@ -189,26 +168,24 @@ class ICalendarParser
     /**
      * ignores the timezone
      *
-     * @return string[]|false
+     * @return ?array{string,string}
      */
-    private function parseDateTime(string $value)
+    private function parseDateTime(string $value): ?array
     {
         if (preg_match('/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/', $value, $matches)) {
             return ["$matches[1]-$matches[2]-$matches[3]", "$matches[4]:$matches[5]"];
         }
-        return false;
+        return null;
     }
 
     /**
      * ignores the timezone
-     *
-     * @return string|false
      */
-    private function parseDate(string $value)
+    private function parseDate(string $value): ?string
     {
         if (preg_match('/^(\d{4})(\d{2})(\d{2})/', $value, $matches)) {
             return "$matches[1]-$matches[2]-$matches[3]";
         }
-        return false;
+        return null;
     }
 }
