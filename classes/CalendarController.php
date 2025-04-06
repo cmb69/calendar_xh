@@ -72,7 +72,7 @@ class CalendarController
         if ($eventpage == '') {
             $eventpage = $this->view->plain("event_page");
         }
-        $this->determineYearAndMonth($year, $month);
+        $this->determineYearAndMonth($request, $year, $month);
         $calendar = new Calendar((bool) $this->conf['week_starts_mon']);
         $rows = [];
         foreach ($calendar->getMonthMatrix($year, $month) as $columns) {
@@ -97,13 +97,17 @@ class CalendarController
     }
 
     /** @return void */
-    private function determineYearAndMonth(int &$year, int &$month)
+    private function determineYearAndMonth(Request $request, int &$year, int &$month)
     {
         if ($month === 0) {
-            $month = isset($_GET['month']) ? max(1, min(12, (int) $_GET['month'])) : $this->now->month;
+            $month = $request->get("month") !== null
+                ? max(1, min(12, (int) $request->get("month")))
+                : $this->now->month;
         }
         if ($year === 0) {
-            $year = isset($_GET['year']) ? max(1, min(9000, (int) $_GET['year'])) : $this->now->year;
+            $year = $request->get("year") !== null
+                ? max(1, min(9000, (int) $request->get("year")))
+                : $this->now->year;
         }
     }
 

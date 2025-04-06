@@ -23,6 +23,7 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\FakeRequest;
 use Plib\View;
 
 class EventListControllerTest extends TestCase
@@ -53,7 +54,7 @@ class EventListControllerTest extends TestCase
             $dateTimeFormatter,
             $view
         );
-        Approvals::verifyHtml($sut->defaultAction(0, 0, 0, 0));
+        Approvals::verifyHtml($sut->defaultAction(0, 0, 0, 0, new FakeRequest()));
     }
 
     private function lunchBreak(): Event

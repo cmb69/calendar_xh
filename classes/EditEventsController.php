@@ -70,7 +70,7 @@ class EditEventsController
 
     public function __invoke(Request $request): Response
     {
-        switch ($_GET["action"] ?? "") {
+        switch ($request->get("action") ?? "") {
             case "create":
                 return empty($_POST) ? $this->createAction($request) : $this->doCreateAction($request);
             case "update":
@@ -113,11 +113,10 @@ class EditEventsController
     private function updateAction(Request $request): Response
     {
         $events = $this->eventDataService->readEvents();
-        assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
-        if (!array_key_exists($_GET['event_id'], $events)) {
+        $id = $request->get("event_id");
+        if ($id === null || !array_key_exists($id, $events)) {
             return $this->redirectToOverviewResponse($request);
         }
-        $id = $_GET['event_id'];
         $event = $events[$id];
         return Response::create($this->renderEditForm($request, $event, $id, "update"));
     }
@@ -125,11 +124,10 @@ class EditEventsController
     private function deleteAction(Request $request): Response
     {
         $events = $this->eventDataService->readEvents();
-        assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
-        if (!array_key_exists($_GET['event_id'], $events)) {
+        $id = $request->get("event_id");
+        if ($id === null || !array_key_exists($id, $events)) {
             return $this->redirectToOverviewResponse($request);
         }
-        $id = $_GET['event_id'];
         $event = $events[$id];
         return Response::create($this->renderEditForm($request, $event, $id, "delete"));
     }
@@ -139,12 +137,12 @@ class EditEventsController
      */
     private function renderEditForm(Request $request, Event $event, $id, string $action): string
     {
-        $url = $request->url()->with("admin", "plugin_main")->with("action", $action)->relative();
+        $url = $request->url()->with("admin", "plugin_main")->with("action", $action);
         if ($id !== null) {
-            $url .= "&event_id=$id";
+            $url = $url->with("event_id", $id);
         }
         return $this->view->render('edit-form', [
-            'action' => $url,
+            'action' => $url->relative(),
             'showEventTime' => (bool) $this->conf['show_event_time'],
             'showEventLocation' => (bool) $this->conf['show_event_location'],
             'showEventLink' => (bool) $this->conf['show_event_link'],
@@ -173,8 +171,8 @@ class EditEventsController
     private function doUpdateAction(Request $request): Response
     {
         $this->csrfProtector->check();
-        assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
-        $id = $_GET['event_id'];
+        $id = $request->get("event_id");
+        assert($id !== null); // TODO invalid assertion
         $events = $this->eventDataService->readEvents();
         return $this->upsert($request, $events, array_key_exists($id, $events) ? $id : null);
     }
@@ -225,8 +223,8 @@ class EditEventsController
     private function doDeleteAction(Request $request): Response
     {
         $this->csrfProtector->check();
-        assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
-        $id = $_GET['event_id'];
+        $id = $request->get("event_id");
+        assert($id !== null); // TODO invalid assertion
         $events = $this->eventDataService->readEvents();
         if (!array_key_exists($id, $events)) {
             return $this->redirectToOverviewResponse($request);

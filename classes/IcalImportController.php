@@ -50,7 +50,7 @@ class IcalImportController
     {
         switch ($request->get("action")) {
             case "import":
-                return $this->importAction();
+                return $this->importAction($request);
             default:
                 return $this->defaultAction($request);
         }
@@ -65,11 +65,13 @@ class IcalImportController
         return Response::create($output);
     }
 
-    private function importAction(): Response
+    private function importAction(Request $request): Response
     {
-        assert(is_string($_POST['calendar_ics']));
+        if ($request->post("calendar_ics") === null) {
+            return $this->defaultAction($request);
+        }
         $reader = new ICalendarParser();
-        $events = $reader->parse($this->icsFileFinder->read($_POST['calendar_ics']));
+        $events = $reader->parse($this->icsFileFinder->read($request->post("calendar_ics")));
         $events = array_merge($this->eventDataService->readEvents(), $events);
         $this->eventDataService->writeEvents($events);
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';

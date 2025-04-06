@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Plib\Request;
 use Plib\View;
 
 class EventListController
@@ -60,9 +61,9 @@ class EventListController
         $this->view = $view;
     }
 
-    public function defaultAction(int $month, int $year, int $endMonth, int $pastMonth): string
+    public function defaultAction(int $month, int $year, int $endMonth, int $pastMonth, Request $request): string
     {
-        $this->determineYearAndMonth($year, $month, $pastMonth);
+        $this->determineYearAndMonth($request, $year, $month, $pastMonth);
         $this->determineEndMonth($endMonth);
         $endMonth = $endMonth + $pastMonth;
 
@@ -105,10 +106,9 @@ class EventListController
     /**
      * @return void
      */
-    private function determineYearAndMonth(int &$year, int &$month, int &$pastMonth)
+    private function determineYearAndMonth(Request $request, int &$year, int &$month, int &$pastMonth)
     {
-        assert(!isset($_GET['month']) || is_string($_GET['month']));
-        $month_input = isset($_GET['month']) ? max(1, min(12, (int) $_GET['month'])) : 0;
+        $month_input = $request->get("month") !== null ? max(1, min(12, (int) $request->get("month"))) : 0;
 
         if ($month) {
             if ($month_input) {
@@ -120,8 +120,7 @@ class EventListController
             $month = $month_input;
         }
 
-        assert(!isset($_GET['year']) || is_string($_GET['year']));
-        $year = isset($_GET['year']) ? max(1, min(9000, (int) $_GET['year'])) : $this->now->year;
+        $year = $request->get("year") !== null ? max(1, min(9000, (int) $request->get("year"))) : $this->now->year;
 
         if ($month === 0) {
             $month = $this->now->month;

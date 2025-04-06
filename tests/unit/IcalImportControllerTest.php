@@ -42,14 +42,17 @@ class IcalImportControllerTest extends TestCase
 
     public function testImportActionRedirects()
     {
-        $_POST = ['calendar_ics' => "foo.ics"];
         $icsFileFinder = $this->createStub(IcsFileFinder::class);
         $icsFileFinder->method('read')->willReturn([]);
         $eventDataService = $this->createStub(EventDataService::class);
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $view = new View("./views/", $plugin_tx['calendar']);
         $sut = new IcalImportController($icsFileFinder, $eventDataService, $view);
-        $response = $sut(new FakeRequest(["url" => "http://example.com/?calendar&admin=import&action=import"]));
+        $request = new FakeRequest([
+            "url" => "http://example.com/?calendar&admin=import&action=import",
+            "post" => ["calendar_ics" => "foo.ics"],
+        ]);
+        $response = $sut($request);
         $this->assertEquals(
             "http://example.com/?&calendar&admin=plugin_main&action=plugin_text",
             $response->location()
