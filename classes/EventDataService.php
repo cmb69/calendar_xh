@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 
@@ -53,8 +54,7 @@ class EventDataService
         return $this->eventfile;
     }
 
-    /** @return array<string,Event> */
-    public function readEvents(): array
+    public function readEvents(): Calendar
     {
         $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".csv");
         if (!is_file("{$eventfile}.csv")) {
@@ -105,7 +105,7 @@ class EventDataService
             flock($stream, LOCK_UN);
             fclose($stream);
         }
-        return $result;
+        return new Calendar($result);
     }
 
     /**

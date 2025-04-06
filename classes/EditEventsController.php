@@ -80,14 +80,14 @@ class EditEventsController
 
     private function defaultAction(Request $request): Response
     {
-        $events = $this->eventDataService->readEvents();
+        $calendar = $this->eventDataService->readEvents();
         $events = array_map(function (Event $event): array {
             return [
                 "start_date" => $event->getIsoStartDate(),
                 "end_date" => $event->getIsoEndDate(),
                 "summary" => $event->summary(),
             ];
-        }, $events);
+        }, $calendar->events());
         $js = $this->pluginFolder . "js/overview.min.js";
         if (!is_file($js)) {
             $js = $this->pluginFolder . "js/overview.js";
@@ -112,23 +112,21 @@ class EditEventsController
 
     private function updateAction(Request $request): Response
     {
-        $events = $this->eventDataService->readEvents();
+        $calendar = $this->eventDataService->readEvents();
         $id = $request->get("event_id");
-        if ($id === null || !array_key_exists($id, $events)) {
+        if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        $event = $events[$id];
         return Response::create($this->renderEditForm($request, $event, $id, "update"));
     }
 
     private function deleteAction(Request $request): Response
     {
-        $events = $this->eventDataService->readEvents();
+        $calendar = $this->eventDataService->readEvents();
         $id = $request->get("event_id");
-        if ($id === null || !array_key_exists($id, $events)) {
+        if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        $event = $events[$id];
         return Response::create($this->renderEditForm($request, $event, $id, "delete"));
     }
 
@@ -163,8 +161,8 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return Response::create($this->view->message("fail", "error_unauthorized"));
         }
-        $events = $this->eventDataService->readEvents();
-        return $this->upsert($request, $events, null);
+        $calendar = $this->eventDataService->readEvents();
+        return $this->upsert($request, $calendar->events(), null);
     }
 
     private function doUpdateAction(Request $request): Response
@@ -174,8 +172,8 @@ class EditEventsController
         }
         $id = $request->get("event_id");
         assert($id !== null); // TODO invalid assertion
-        $events = $this->eventDataService->readEvents();
-        return $this->upsert($request, $events, array_key_exists($id, $events) ? $id : null);
+        $calendar = $this->eventDataService->readEvents();
+        return $this->upsert($request, $calendar->events(), array_key_exists($id, $calendar->events()) ? $id : null);
     }
 
     /** @param array<string,Event> $events */
@@ -222,15 +220,13 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return Response::create($this->view->message("fail", "error_unauthorized"));
         }
+        $calendar = $this->eventDataService->readEvents();
         $id = $request->get("event_id");
-        assert($id !== null); // TODO invalid assertion
-        $events = $this->eventDataService->readEvents();
-        if (!array_key_exists($id, $events)) {
+        if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        $event = $events[$id];
-        unset($events[$id]);
-        if ($this->eventDataService->writeEvents($events)) {
+        $calendar->delete($id);
+        if ($this->eventDataService->writeEvents($calendar->events())) {
             return $this->redirectToOverviewResponse($request);
         } else {
             return Response::create($this->view->message("fail", "eventfile_not_saved")

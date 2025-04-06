@@ -117,7 +117,7 @@ class CalendarController
      */
     private function getRowData(Request $request, array $columns, int $year, int $month, string $eventpage): array
     {
-        $events = $this->eventDataService->readEvents();
+        $calendar = $this->eventDataService->readEvents();
         $today = ($month === idate("n", $request->time()) && $year === idate("Y", $request->time()))
             ? idate("j", $request->time())
             : 32;
@@ -127,7 +127,7 @@ class CalendarController
                 $row[] = ['classname' => 'calendar_noday', 'content' => ''];
                 continue;
             }
-            $dayEvents = $this->filterEventsByDay($events, $year, $month, $day);
+            $dayEvents = $this->filterEventsByDay($calendar->events(), $year, $month, $day);
             $field = [];
             $classes = [];
             $field['content'] = (string) $day;

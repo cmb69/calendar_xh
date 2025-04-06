@@ -64,7 +64,7 @@ class EventListController
         $this->determineEndMonth($endMonth);
         $endMonth = $endMonth + $pastMonth;
 
-        $events = $this->eventDataService->readEvents();
+        $calendar = $this->eventDataService->readEvents();
 
         $endmonth = $month + $endMonth;
         $endyear = $year;
@@ -80,7 +80,7 @@ class EventListController
         $monthEvents = [];
         $x = 0;
         while ($x <= $endMonth) {
-            $filteredEvents = $this->eventDataService->filterByMonth($events, $year, $month);
+            $filteredEvents = $this->eventDataService->filterByMonth($calendar->events(), $year, $month);
             if (($oneMonthEvents = $this->getMonthEvents($request, $filteredEvents, $tablecols, $year, $month))) {
                 $monthEvents[] = $oneMonthEvents;
             }

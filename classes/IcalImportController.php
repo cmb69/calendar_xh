@@ -72,7 +72,7 @@ class IcalImportController
         }
         $reader = new ICalendarParser();
         $events = $reader->parse($this->icsFileFinder->read($request->post("calendar_ics")));
-        $events = array_merge($this->eventDataService->readEvents(), $events);
+        $events = array_merge($this->eventDataService->readEvents()->events(), $events);
         $this->eventDataService->writeEvents($events);
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';
         return Response::redirect($url);
