@@ -87,6 +87,19 @@ class Calendar
         return $result;
     }
 
+    /** @return list<Event> */
+    public function eventsOn(LocalDateTime $day, bool $daysBetween): array
+    {
+        assert($day->hour() === 0 && $day->minute() === 0);
+        $result = [];
+        foreach ($this->events as $event) {
+            if ($event->occursOn($day, $daysBetween)) {
+                $result[] = $event;
+            }
+        }
+        return $result;
+    }
+
     public function delete(string $id): void
     {
         assert(array_key_exists($id, $this->events));

@@ -183,4 +183,22 @@ class Event
             && ($this->start->year() === $year
             || $this->isBirthday() && $this->start->year() < $year);
     }
+
+    public function occursOn(LocalDateTime $day, bool $daysBetween): bool
+    {
+        assert($day->hour() === 0 && $day->minute() === 0);
+        if ($this->isBirthday()) {
+            return $this->start->month() === $day->month()
+                && $this->start->day() === $day->day();
+        }
+        if (!$this->isMultiDay()) {
+            return $this->start->compareDate($day) === 0;
+        }
+        if ($daysBetween) {
+            return $this->start->compareDate($day) <= 0
+                && $this->end->compareDate($day) >= 0;
+        }
+        return $this->start->compareDate($day) === 0
+            || $this->end->compareDate($day) === 0;
+    }
 }

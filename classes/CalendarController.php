@@ -127,7 +127,8 @@ class CalendarController
                 $row[] = ['classname' => 'calendar_noday', 'content' => ''];
                 continue;
             }
-            $dayEvents = $this->filterEventsByDay($calendar->events(), $year, $month, $day);
+            $currentDay = new LocalDateTime($year, $month, $day, 0, 0);
+            $dayEvents = $calendar->eventsOn($currentDay, (bool) $this->conf['show_days_between_dates']);
             $field = [];
             $classes = [];
             $field['content'] = (string) $day;
@@ -137,7 +138,6 @@ class CalendarController
                     ->relative();
                 $field['title'] = $this->getEventsTitle($dayEvents, $year);
                 $classes[] = "calendar_eventday";
-                $currentDay = new LocalDateTime($year, $month, $day, 0, 0);
                 foreach ($dayEvents as $dayEvent) {
                     if ($dayEvent->startsOn($currentDay)) {
                         $classes[] = "calendar_eventstart";
@@ -163,46 +163,6 @@ class CalendarController
             $row[] = $field;
         }
         return $row;
-    }
-
-    /**
-     * @param array<string,Event> $events
-     * @return list<Event>
-     */
-    private function filterEventsByDay(array $events, int $year, int $month, int $day): array
-    {
-        $result = [];
-        foreach ($events as $event) {
-            if ($this->isEventOn($event, $year, $month, $day)) {
-                $result[] = $event;
-            } elseif ($this->isBirthdayOn($event, $month, $day)) {
-                $result[] = $event;
-            }
-        }
-        return $result;
-    }
-
-    private function isEventOn(Event $event, int $year, int $month, int $day): bool
-    {
-        if ($event->isBirthday()) {
-            return false;
-        }
-        $today = new LocalDateTime($year, $month, $day, 0, 0);
-        if (!$event->isMultiDay()) {
-            return $event->start()->compareDate($today) === 0;
-        }
-        if ($this->conf['show_days_between_dates']) {
-            return $event->start()->compareDate($today) <= 0
-                && $event->end()->compareDate($today) >= 0;
-        }
-        return $event->start()->compareDate($today) === 0
-            || $event->end()->compareDate($today) === 0;
-    }
-
-    private function isBirthdayOn(Event $event, int $month, int $day): bool
-    {
-        $date = $event->start();
-        return $event->isBirthday() && $date->month() == $month && $date->day() == $day;
     }
 
     /**
