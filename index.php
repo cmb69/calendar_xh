@@ -25,13 +25,14 @@
  */
 
 use Calendar\Dic;
+use Plib\Request;
 
 const CALENDAR_VERSION = "3.0-dev";
 
 /** @return string|never */
 function calendar(int $year = 0, int $month = 0, string $eventpage = '')
 {
-    return Dic::makeCalendarController()->defaultAction($year, $month, $eventpage)();
+    return Dic::makeCalendarController()->defaultAction($year, $month, $eventpage, Request::current())();
 }
 
 function events(int $month = 0, int $year = 0, int $end_month = 0, int $past_month = 0): string
@@ -47,5 +48,5 @@ function nextEvent(): string
 /** @return string|never */
 function editevents()
 {
-    return Dic::makeEditEventController()()();
+    return Dic::makeEditEventController()(Request::current())();
 }

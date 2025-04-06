@@ -34,7 +34,7 @@ class Dic
 {
     public static function makeCalendarController(): CalendarController
     {
-        global $pth, $plugin_cf, $plugin_tx, $sn, $su;
+        global $pth, $plugin_cf, $plugin_tx;
 
         return new CalendarController(
             "{$pth['folder']['plugins']}calendar/",
@@ -42,8 +42,7 @@ class Dic
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
-            self::view(),
-            "$sn?$su"
+            self::view()
         );
     }
 
@@ -75,7 +74,7 @@ class Dic
 
     public static function makeEditEventController(): EditEventsController
     {
-        global $pth, $plugin_cf, $su;
+        global $pth, $plugin_cf;
 
         return new EditEventsController(
             "{$pth['folder']['plugins']}calendar/",
@@ -83,8 +82,7 @@ class Dic
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::getCsrfProtector(),
-            self::view(),
-            $su
+            self::view()
         );
     }
 
@@ -101,10 +99,7 @@ class Dic
 
     public static function makeIcalImportController(): IcalImportController
     {
-        global $sn;
-
         return new IcalImportController(
-            $sn,
             new IcsFileFinder(self::getDataFolder()),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::view()

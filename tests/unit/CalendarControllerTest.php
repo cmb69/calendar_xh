@@ -23,6 +23,7 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\FakeRequest;
 use Plib\Response;
 use Plib\View;
 
@@ -43,10 +44,9 @@ class CalendarControllerTest extends TestCase
             $dateTime,
             $eventDataService,
             $dateTimeFormatter,
-            $view,
-            "/?page"
+            $view
         );
-        $response = $sut->defaultAction(0, 0, "");
+        $response = $sut->defaultAction(0, 0, "", new FakeRequest(["url" => "http://example.com/?page"]));
         Approvals::verifyHtml($response->output());
     }
 

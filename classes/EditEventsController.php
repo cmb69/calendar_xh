@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Plib\Request;
 use Plib\Response;
 use Plib\View;
 use XH\CSRFProtection as CsrfProtector;
@@ -50,9 +51,6 @@ class EditEventsController
     /** @var View */
     private $view;
 
-    /** @var string */
-    private $url;
-
     /** @param array<string,string> $conf */
     public function __construct(
         string $pluginFolder,
@@ -60,8 +58,7 @@ class EditEventsController
         LocalDateTime $now,
         EventDataService $eventDataService,
         CSRFProtector $csrfProtector,
-        View $view,
-        string $url
+        View $view
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
@@ -69,24 +66,23 @@ class EditEventsController
         $this->eventDataService = $eventDataService;
         $this->csrfProtector = $csrfProtector;
         $this->view = $view;
-        $this->url = $url;
     }
 
-    public function __invoke(): Response
+    public function __invoke(Request $request): Response
     {
         switch ($_GET["action"] ?? "") {
             case "create":
-                return empty($_POST) ? $this->createAction() : $this->doCreateAction();
+                return empty($_POST) ? $this->createAction($request) : $this->doCreateAction($request);
             case "update":
-                return empty($_POST) ? $this->updateAction() : $this->doUpdateAction();
+                return empty($_POST) ? $this->updateAction($request) : $this->doUpdateAction($request);
             case "delete":
-                return empty($_POST) ? $this->deleteAction() : $this->doDeleteAction();
+                return empty($_POST) ? $this->deleteAction($request) : $this->doDeleteAction($request);
             default:
-                return $this->defaultAction();
+                return $this->defaultAction($request);
         }
     }
 
-    private function defaultAction(): Response
+    private function defaultAction(Request $request): Response
     {
         $events = $this->eventDataService->readEvents();
         $events = array_map(function (Event $event): array {
@@ -97,7 +93,7 @@ class EditEventsController
             ];
         }, $events);
         $output = $this->view->render('event-table', [
-            'selected' => $this->url ? $this->url : 'calendar',
+            'selected' => $request->selected() ? $request->selected() : 'calendar',
             'showEventTime' => (bool) $this->conf['show_event_time'],
             'showEventLocation' => (bool) $this->conf['show_event_location'],
             'showEventLink' => (bool) $this->conf['show_event_link'],
@@ -108,42 +104,42 @@ class EditEventsController
         return Response::create($output);
     }
 
-    private function createAction(): Response
+    private function createAction(Request $request): Response
     {
         $event = $this->createDefaultEvent();
-        return Response::create($this->renderEditForm($event, null, "create"));
+        return Response::create($this->renderEditForm($request, $event, null, "create"));
     }
 
-    private function updateAction(): Response
+    private function updateAction(Request $request): Response
     {
         $events = $this->eventDataService->readEvents();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
         if (!array_key_exists($_GET['event_id'], $events)) {
-            return $this->redirectToOverviewResponse();
+            return $this->redirectToOverviewResponse($request);
         }
         $id = $_GET['event_id'];
         $event = $events[$id];
-        return Response::create($this->renderEditForm($event, $id, "update"));
+        return Response::create($this->renderEditForm($request, $event, $id, "update"));
     }
 
-    private function deleteAction(): Response
+    private function deleteAction(Request $request): Response
     {
         $events = $this->eventDataService->readEvents();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
         if (!array_key_exists($_GET['event_id'], $events)) {
-            return $this->redirectToOverviewResponse();
+            return $this->redirectToOverviewResponse($request);
         }
         $id = $_GET['event_id'];
         $event = $events[$id];
-        return Response::create($this->renderEditForm($event, $id, "delete"));
+        return Response::create($this->renderEditForm($request, $event, $id, "delete"));
     }
 
     /**
      * @param string|null $id
      */
-    private function renderEditForm(Event $event, $id, string $action): string
+    private function renderEditForm(Request $request, Event $event, $id, string $action): string
     {
-        $url = "?{$this->url}&admin=plugin_main&action=$action";
+        $url = $request->url()->with("admin", "plugin_main")->with("action", $action)->relative();
         if ($id !== null) {
             $url .= "&event_id=$id";
         }
@@ -167,27 +163,27 @@ class EditEventsController
         ]);
     }
 
-    private function doCreateAction(): Response
+    private function doCreateAction(Request $request): Response
     {
         $this->csrfProtector->check();
         $events = $this->eventDataService->readEvents();
-        return $this->upsert($events, null);
+        return $this->upsert($request, $events, null);
     }
 
-    private function doUpdateAction(): Response
+    private function doUpdateAction(Request $request): Response
     {
         $this->csrfProtector->check();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
         $id = $_GET['event_id'];
         $events = $this->eventDataService->readEvents();
-        return $this->upsert($events, array_key_exists($id, $events) ? $id : null);
+        return $this->upsert($request, $events, array_key_exists($id, $events) ? $id : null);
     }
 
     /**
      * @param Event[] $events
      * @param string|null $id
      */
-    private function upsert(array $events, $id): Response
+    private function upsert(Request $request, array $events, $id): Response
     {
         $varnames = array(
             'datestart', 'dateend', 'starttime', 'endtime', 'event', 'linkadr', 'linktxt', 'location'
@@ -205,7 +201,7 @@ class EditEventsController
         }
         $maybeEvent = Event::create(...array_values($post));
         if ($maybeEvent === null) {
-            return $this->redirectToOverviewResponse();
+            return $this->redirectToOverviewResponse($request);
         }
         if ($id !== null) {
             $events[$id] = $maybeEvent;
@@ -219,40 +215,40 @@ class EditEventsController
         });
         /** @var Event[] $events */
         if ($this->eventDataService->writeEvents($events)) {
-            return $this->redirectToOverviewResponse();
+            return $this->redirectToOverviewResponse($request);
         } else {
             return Response::create($this->view->message("fail", "eventfile_not_saved")
-                . $this->renderEditForm($maybeEvent, $id, $id !== null ? "create" : "update"));
+                . $this->renderEditForm($request, $maybeEvent, $id, $id !== null ? "create" : "update"));
         }
     }
 
-    private function doDeleteAction(): Response
+    private function doDeleteAction(Request $request): Response
     {
         $this->csrfProtector->check();
         assert(isset($_GET['event_id']) && is_string($_GET['event_id']));
         $id = $_GET['event_id'];
         $events = $this->eventDataService->readEvents();
         if (!array_key_exists($id, $events)) {
-            return $this->redirectToOverviewResponse();
+            return $this->redirectToOverviewResponse($request);
         }
         $event = $events[$id];
         unset($events[$id]);
         if ($this->eventDataService->writeEvents($events)) {
-            return $this->redirectToOverviewResponse();
+            return $this->redirectToOverviewResponse($request);
         } else {
             return Response::create($this->view->message("fail", "eventfile_not_saved")
-                . $this->renderEditForm($event, $id, "delete"));
+                . $this->renderEditForm($request, $event, $id, "delete"));
         }
     }
 
-    private function redirectToOverviewResponse(): Response
+    private function redirectToOverviewResponse(Request $request): Response
     {
-        if ($this->url === '' || $this->url === 'calendar') {
-            $url = CMSIMPLE_URL . "?calendar&admin=plugin_main&action=plugin_text";
+        if ($request->selected() === '' || $request->selected() === "calendar") {
+            $url = $request->url()->page("calendar")->with("admin", "plugin_main")->with("action", "plugin_text");
         } else {
-            $url = CMSIMPLE_URL . "?{$this->url}";
+            $url = $request->url()->page($request->selected());
         }
-        return Response::redirect($url);
+        return Response::redirect($url->absolute());
     }
 
     private function isValidDate(string $date): bool

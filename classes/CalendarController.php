@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Plib\Request;
 use Plib\Response;
 use Plib\View;
 
@@ -49,9 +50,6 @@ class CalendarController
     /** @var View */
     private $view;
 
-    /** @var string */
-    private $url;
-
     /** @param array<string,string> $conf */
     public function __construct(
         string $pluginFolder,
@@ -59,8 +57,7 @@ class CalendarController
         LocalDateTime $now,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
-        View $view,
-        string $url
+        View $view
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
@@ -68,10 +65,9 @@ class CalendarController
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
-        $this->url = $url;
     }
 
-    public function defaultAction(int $year, int $month, string $eventpage): Response
+    public function defaultAction(int $year, int $month, string $eventpage, Request $request): Response
     {
         if ($eventpage == '') {
             $eventpage = $this->view->plain("event_page");
@@ -85,8 +81,8 @@ class CalendarController
         $data = [
             'caption' => $this->dateTimeFormatter->formatMonthYear($month, $year),
             'hasPrevNextButtons' => (bool) $this->conf['prev_next_button'],
-            'prevUrl' => $this->getPrevUrl($year, $month),
-            'nextUrl' => $this->getNextUrl($year, $month),
+            'prevUrl' => $this->getPrevUrl($request, $year, $month),
+            'nextUrl' => $this->getNextUrl($request, $year, $month),
             'headRow' => $this->getDaynamesRow(),
             'rows' => $rows,
             'jsUrl' => "{$this->pluginFolder}js/calendar.min.js",
@@ -267,7 +263,7 @@ class CalendarController
         return $row;
     }
 
-    private function getPrevUrl(int $year, int $month): string
+    private function getPrevUrl(Request $request, int $year, int $month): string
     {
         if ($month <= 1) {
             $month_prev = 12;
@@ -276,10 +272,10 @@ class CalendarController
             $month_prev = $month - 1;
             $year_prev = $year;
         }
-        return "{$this->url}&month=$month_prev&year=$year_prev";
+        return $request->url()->with("month", (string) $month_prev)->with("year", (string) $year_prev)->relative();
     }
 
-    private function getNextUrl(int $year, int $month): string
+    private function getNextUrl(Request $request, int $year, int $month): string
     {
         if ($month >= 12) {
             $month_next = 1;
@@ -288,6 +284,6 @@ class CalendarController
             $month_next = $month + 1;
             $year_next = $year;
         }
-        return "{$this->url}&month=$month_next&year=$year_next";
+        return $request->url()->with("month", (string) $month_next)->with("year", (string) $year_next)->relative();
     }
 }

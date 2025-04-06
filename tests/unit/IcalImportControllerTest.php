@@ -23,6 +23,7 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\FakeRequest;
 use Plib\View;
 
 class IcalImportControllerTest extends TestCase
@@ -34,8 +35,8 @@ class IcalImportControllerTest extends TestCase
         $eventDataService = $this->createStub(EventDataService::class);
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $view = new View("./views/", $plugin_tx['calendar']);
-        $sut = new IcalImportController("/", $icsFileFinder, $eventDataService, $view);
-        $response = $sut("");
+        $sut = new IcalImportController($icsFileFinder, $eventDataService, $view);
+        $response = $sut(new FakeRequest(), "");
         Approvals::verifyHtml($response->output());
     }
 
@@ -47,8 +48,8 @@ class IcalImportControllerTest extends TestCase
         $eventDataService = $this->createStub(EventDataService::class);
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $view = new View("./views/", $plugin_tx['calendar']);
-        $sut = new IcalImportController("/", $icsFileFinder, $eventDataService, $view);
-        $response = $sut("import");
+        $sut = new IcalImportController($icsFileFinder, $eventDataService, $view);
+        $response = $sut(new FakeRequest(), "import");
         $this->assertEquals(
             "http://example.com/?&calendar&admin=plugin_main&action=plugin_text",
             $response->location()

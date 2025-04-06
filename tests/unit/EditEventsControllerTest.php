@@ -23,6 +23,7 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\FakeRequest;
 use Plib\View;
 use XH\CSRFProtection as CsrfProtector;
 
@@ -62,42 +63,42 @@ class EditEventsControllerTest extends TestCase
 
     public function testDefaultActionRendersHtml()
     {
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         Approvals::verifyHtml($response->output());
     }
 
     public function testCreateActionRendersHtml()
     {
         $_GET = ["action" => "create"];
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         Approvals::verifyHtml($response->output());
     }
 
     public function testUpdateActionRedirectsOnUnknowEvent()
     {
         $_GET = ["action" => "update", "event_id" => "invalid id"];
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testUpdateActionRendersEditFormOnKnownEvent()
     {
         $_GET = ["action" => "update", "event_id" => "111"];
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         Approvals::verifyHtml($response->output());
     }
 
     public function testDeleteActionRedirectsOnUnknowEvent()
     {
         $_GET = ["action" => "delete", "event_id" => "invalid id"];
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDeleteActionRendersEditFormOnKnownEvent()
     {
         $_GET = ["action" => "delete", "event_id" => "111"];
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         Approvals::verifyHtml($response->output());
     }
 
@@ -106,7 +107,7 @@ class EditEventsControllerTest extends TestCase
         $_GET = ["action" => "create"];
         $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -115,7 +116,7 @@ class EditEventsControllerTest extends TestCase
         $_GET = ["action" => "update", "event_id" => "invalid id"];
         $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -135,7 +136,7 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
             ->willReturn(true);
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -155,7 +156,7 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
             ->willReturn(false);
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         Approvals::verifyHtml($response->output());
     }
 
@@ -164,7 +165,7 @@ class EditEventsControllerTest extends TestCase
         $_GET = ["action" => "delete", "event_id" => "invalid id"];
         $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -174,7 +175,7 @@ class EditEventsControllerTest extends TestCase
         $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(true);
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -184,7 +185,7 @@ class EditEventsControllerTest extends TestCase
         $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(false);
-        $response = ($this->sut)();
+        $response = ($this->sut)(new FakeRequest());
         Approvals::verifyHtml($response->output());
     }
 

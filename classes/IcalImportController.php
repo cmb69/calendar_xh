@@ -21,14 +21,12 @@
 
 namespace Calendar;
 
+use Plib\Request;
 use Plib\Response;
 use Plib\View;
 
 class IcalImportController
 {
-    /** @var string */
-    private $scriptName;
-
     /** @var IcsFileFinder */
     private $icsFileFinder;
 
@@ -39,31 +37,29 @@ class IcalImportController
     private $view;
 
     public function __construct(
-        string $scriptName,
         IcsFileFinder $icsFileFinder,
         EventDataService $eventDataService,
         View $view
     ) {
-        $this->scriptName = $scriptName;
         $this->view = $view;
         $this->icsFileFinder = $icsFileFinder;
         $this->eventDataService = $eventDataService;
     }
 
-    public function __invoke(string $action): Response
+    public function __invoke(Request $request, string $action): Response
     {
         switch ($action) {
             case 'import':
                 return $this->importAction();
             default:
-                return $this->defaultAction();
+                return $this->defaultAction($request);
         }
     }
 
-    private function defaultAction(): Response
+    private function defaultAction(Request $request): Response
     {
         $output = $this->view->render('import', [
-            'url' => $this->scriptName . '?&calendar&admin=import&action=import',
+            'url' => $request->url()->page("calendar")->with("admin", "import")->with("action", "import")->relative(),
             'files' => $this->icsFileFinder->all(),
         ]);
         return Response::create($output);

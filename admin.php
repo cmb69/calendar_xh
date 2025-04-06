@@ -25,6 +25,7 @@
  */
 
 use Calendar\Dic;
+use Plib\Request;
 use XH\ClassicPluginMenu;
 
 if (!defined("CMSIMPLE_XH_VERSION")) {
@@ -54,10 +55,10 @@ if (XH_wantsPluginAdministration("calendar")) {
             break;
         case 'plugin_main':
             $o .= sprintf("<h1>Calendar – %s</h1>", XH_hsc($plugin_tx["calendar"]["menu_main"]))
-                . Dic::makeEditEventController()()();
+                . Dic::makeEditEventController()(Request::current())();
             break;
         case 'import':
-            $o .= Dic::makeIcalImportController()($action)();
+            $o .= Dic::makeIcalImportController()(Request::current(), $action)();
             break;
         default:
             $o .= plugin_admin_common();
