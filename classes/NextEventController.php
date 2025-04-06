@@ -26,6 +26,8 @@
 
 namespace Calendar;
 
+use Plib\View;
+
 class NextEventController
 {
     /** @var array<string,string> */

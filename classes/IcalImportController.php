@@ -21,6 +21,8 @@
 
 namespace Calendar;
 
+use Plib\View;
+
 class IcalImportController
 {
     /** @var string */

@@ -9,9 +9,9 @@ if (!isset($this)) {header("404 Not found"); exit;}
  */
 ?>
 
-<script type="module" src="<?=$jsUrl?>"></script>
+<script type="module" src="<?=$this->esc($jsUrl)?>"></script>
 <form method="get" class="calendar_overview">
-  <input type="hidden" name="selected" value="<?=$selected?>">
+  <input type="hidden" name="selected" value="<?=$this->esc($selected)?>">
 <?if ($selected === 'calendar'):?>
   <input type="hidden" name="admin" value="plugin_main">
 <?endif?>
@@ -23,9 +23,9 @@ if (!isset($this)) {header("404 Not found"); exit;}
   <table>
 <?foreach ($events as $id => $event):?>
     <tr>
-      <td><?=$event['start_date']?></td>
-      <td><?=$event['end_date']?></td>
-      <td><?=$event['summary']?></td>
+      <td><?=$this->esc($event['start_date'])?></td>
+      <td><?=$this->esc($event['end_date'])?></td>
+      <td><?=$this->esc($event['summary'])?></td>
       <td><input type="radio" name="event_id" value="<?=$id?>"></td>
     </tr>
 <?endforeach?>

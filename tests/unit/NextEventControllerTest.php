@@ -23,6 +23,7 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\View;
 
 class NextEventControllerTest extends TestCase
 {

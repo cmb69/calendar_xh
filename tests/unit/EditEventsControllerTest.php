@@ -23,6 +23,7 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\View;
 use XH\CSRFProtection as CsrfProtector;
 
 class EditEventsControllerTest extends TestCase

@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Plib\View;
 use XH\CSRFProtection as CsrfProtector;
 
 class Dic
@@ -41,7 +42,7 @@ class Dic
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
-            self::makeView(),
+            self::view(),
             "$sn?$su"
         );
     }
@@ -56,7 +57,7 @@ class Dic
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
-            self::makeView()
+            self::view()
         );
     }
 
@@ -69,7 +70,7 @@ class Dic
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
-            self::makeView()
+            self::view()
         );
     }
 
@@ -84,7 +85,7 @@ class Dic
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::getCsrfProtector(),
-            self::makeView(),
+            self::view(),
             $su
         );
     }
@@ -97,7 +98,7 @@ class Dic
             "{$pth['folder']['plugins']}calendar/",
             $plugin_tx['calendar'],
             new SystemChecker(),
-            self::makeView()
+            self::view()
         );
     }
 
@@ -109,7 +110,7 @@ class Dic
             $sn,
             new IcsFileFinder(self::getDataFolder()),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            self::makeView()
+            self::view()
         );
     }
 
@@ -153,7 +154,7 @@ class Dic
         return $_XH_csrfProtection;
     }
 
-    private static function makeView(): View
+    private static function view(): View
     {
         global $pth, $plugin_tx;
 

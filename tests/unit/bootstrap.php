@@ -24,8 +24,12 @@ const CMSIMPLE_URL = "http://example.com/";
 const CALENDAR_VERSION = "3.0-dev";
 
 require_once './vendor/autoload.php';
+
 require_once '../../cmsimple/classes/CSRFProtection.php';
 require_once '../../cmsimple/functions.php';
+
+require_once "../plib/classes/View.php";
+
 require_once './classes/Calendar.php';
 require_once './classes/CalendarController.php';
 require_once './classes/DateTimeFormatter.php';
@@ -37,10 +41,8 @@ require_once './classes/EventListController.php';
 require_once './classes/IcalImportController.php';
 require_once './classes/IcsFileFinder.php';
 require_once './classes/InfoController.php';
-require_once './classes/HtmlString.php';
 require_once './classes/LocalDateTime.php';
 require_once './classes/ICalendarParser.php';
 require_once './classes/NextEventController.php';
-require_once './classes/View.php';
 require_once './classes/Response.php';
 require_once './classes/SystemChecker.php';

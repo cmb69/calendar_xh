@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Plib\View;
 use XH\CSRFProtection as CsrfProtector;
 
 class EditEventsController
@@ -170,7 +171,7 @@ class EditEventsController
                 "location" => $event->location,
             ],
             'button_label' => $this->lang[$label],
-            'csrf_token' => new HtmlString($this->csrfProtector->tokenInput()),
+            'csrf_token' => $this->csrfProtector->tokenInput(),
         ]);
     }
 

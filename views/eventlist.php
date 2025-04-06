@@ -5,17 +5,17 @@ if (!isset($this)) {header("404 Not found"); exit;}
 /**
  * @var bool $showHeading
  * @var string $heading
- * @var list<array{headline:array{tablecols:int,monthYear:string,showTime:string,showLocation:string,showLink:string},rows:list<array{is_birthday:bool,age?:int,summary:string,location:string,past_event_class?:string,date:string,showTime:string,showLocation:string,showLink:string,link:string,time?:string }>}> $monthEvents
+ * @var list<array{headline:array{tablecols:int,monthYear:string,showTime:bool,showLocation:bool,showLink:bool},rows:list<array{is_birthday:bool,age?:int,summary:string,location:string,past_event_class?:string,date:string,showTime:bool,showLocation:bool,showLink:bool,link:string,time?:string }>}> $monthEvents
  */
 ?>
 
 <table class="calendar_eventlist">
 <?if ($showHeading):?>
-  <caption class="period_of_events"><?=$heading?></caption>
+  <caption class="period_of_events"><?=$this->raw($heading)?></caption>
 <?endif?>
 <?foreach ($monthEvents as $monthEvent):?>
   <tr>
-    <th class="event_monthyear" colspan="<?=$monthEvent['headline']['tablecols']?>"><?=$monthEvent['headline']['monthYear']?></th>
+    <th class="event_monthyear" colspan="<?=$monthEvent['headline']['tablecols']?>"><?=$this->esc($monthEvent['headline']['monthYear'])?></th>
   </tr>
   <tr class="event_heading_row">
     <th class="event_heading event_date"><?=$this->text('event_date')?></th>
@@ -34,31 +34,31 @@ if (!isset($this)) {header("404 Not found"); exit;}
 <?    if ($row['is_birthday']):?>
 <?      assert(isset($row['age']))?>
   <tr class="birthday_data_row">
-    <td class="event_data event_date"><?=$row['date']?></td>
+    <td class="event_data event_date"><?=$this->esc($row['date'])?></td>
 <?       if ($row['showTime']):?>
     <td class="event_data event_time"></td>
 <?      endif?>
-    <td class="event_data event_summary"><?=$row['summary']?> <?=$this->plural('age', $row['age'])?></td>
+    <td class="event_data event_summary"><?=$this->esc($row['summary'])?> <?=$this->plural('age', $row['age'])?></td>
 <?      if ($row['showLocation']):?>
     <td class="event_data event_location"><?=$this->text('birthday_text')?></td>
 <?      endif?>
 <?      if ($row['showLink']):?>
-    <td class="event_data event_link"><?=$row['link']?></td>
+    <td class="event_data event_link"><?=$this->raw($row['link'])?></td>
 <?      endif?>
   </tr>
 <?    else:?>
 <?      assert(isset($row['past_event_class'], $row['time']))?>
-  <tr class="event_data_row <?=$row['past_event_class']?>">
-    <td class="event_data event_date"><?=$row['date']?></td>
+  <tr class="event_data_row <?=$this->esc($row['past_event_class'])?>">
+    <td class="event_data event_date"><?=$this->esc($row['date'])?></td>
 <?      if ($row['showTime']):?>
-    <td class="event_data event_time"><?=$row['time']?></td>
+    <td class="event_data event_time"><?=$this->esc($row['time'])?></td>
 <?      endif?>
-    <td class="event_data event_summary"><?=$row['summary']?></td>
+    <td class="event_data event_summary"><?=$this->esc($row['summary'])?></td>
 <?      if ($row['showLocation']):?>
-    <td class="event_data event_location"><?=$row['location']?></td>
+    <td class="event_data event_location"><?=$this->esc($row['location'])?></td>
 <?      endif?>
 <?      if ($row['showLink']):?>
-    <td class="event_data event_link"><?=$row['link']?></td>
+    <td class="event_data event_link"><?=$this->raw($row['link'])?></td>
 <?      endif?>
   </tr>
 <?    endif?>
