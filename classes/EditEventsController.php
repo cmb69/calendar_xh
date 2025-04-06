@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Plib\Response;
 use Plib\View;
 use XH\CSRFProtection as CsrfProtector;
 
@@ -262,7 +263,7 @@ class EditEventsController
         } else {
             $url = CMSIMPLE_URL . "?{$this->url}";
         }
-        return Response::createRedirect($url);
+        return Response::redirect($url);
     }
 
     private function isValidDate(string $date): bool

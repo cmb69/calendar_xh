@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Plib\Response;
 use Plib\View;
 
 class CalendarController
@@ -99,7 +100,7 @@ class CalendarController
             'jsUrl' => "{$this->pluginFolder}js/calendar.min.js",
         ];
         if (isset($_GET['calendar_ajax'])) {
-            return Response::createAjax($this->view->render('calendar', $data));
+            return Response::create($this->view->render('calendar', $data))->withContentType("text/html");
         }
         $output = '<div class="calendar_calendar">'
             . $this->view->render('calendar', $data)

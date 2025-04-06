@@ -21,6 +21,7 @@
 
 namespace Calendar;
 
+use Plib\Response;
 use Plib\View;
 
 class IcalImportController
@@ -76,6 +77,6 @@ class IcalImportController
         $events = array_merge($this->eventDataService->readEvents(), $events);
         $this->eventDataService->writeEvents($events);
         $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';
-        return Response::createRedirect($url);
+        return Response::redirect($url);
     }
 }
