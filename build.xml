@@ -2,6 +2,8 @@
 
 <project name="Calendar" default="help">
 
+  <property name="dir" value="${project.basedir}"/>
+
   <target name="help" description="lists available targets">
     <exec executable="phing" outputProperty="help">
       <arg value="-l"/>
@@ -45,6 +47,15 @@
     </exec>
   </target>
 
+  <target name="minify" description="minifies JS">
+    <exec executable="uglifyjs" checkreturn="true" dir="${dir}">
+      <arg line="js/calendar.js --module --compress --mangle --output js/calendar.min.js"/>
+    </exec>
+    <exec executable="uglifyjs" checkreturn="true" dir="${dir}">
+      <arg line="js/overview.js --module --compress --mangle --output js/overview.min.js"/>
+    </exec>
+  </target>
+
   <target name="gen-help" description="builds help.htm from README.md">
     <exec executable="pandoc" logoutput="true">
       <arg line="-s --eol=lf --template=help/template.htm -Vlang=en -Vpagetitle=&quot;User Manual&quot; -o help/help.htm README.md -t html"/>
@@ -60,20 +71,9 @@
     </exec>
     <unzip file="export.zip" todir="export"/>
     <delete file="export.zip"/>
-    <exec executable="uglifyjs" checkreturn="true">
-      <arg file="export/js/calendar.min.js"/>
-      <arg value="--compress"/>
-      <arg value="--mangle"/>
-      <arg value="--output"/>
-      <arg file="export/js/calendar.min.js"/>
-    </exec>
-    <exec executable="uglifyjs" checkreturn="true">
-      <arg file="export/js/overview.min.js"/>
-      <arg value="--compress"/>
-      <arg value="--mangle"/>
-      <arg value="--output"/>
-      <arg file="export/js/overview.min.js"/>
-    </exec>
+    <phingcall target="minify">
+      <property name="dir" value="export"/>
+    </phingcall>
     <move todir="dist">
       <fileset dir="export">
         <include name="views/*.php"/>

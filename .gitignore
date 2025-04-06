@@ -4,3 +4,5 @@
 /.phpunit.result.cache
 /composer.lock
 /.phpunit.cache
+/js/overview.min.js
+/js/calendar.min.js

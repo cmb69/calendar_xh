@@ -78,6 +78,10 @@ class CalendarController
         foreach ($calendar->getMonthMatrix($year, $month) as $columns) {
             $rows[] = $this->getRowData($columns, $year, $month, $eventpage);
         }
+        $js = $this->pluginFolder . "js/calendar.min.js";
+        if (!is_file($js)) {
+            $js = $this->pluginFolder . "js/calendar.js";
+        }
         $data = [
             'caption' => $this->dateTimeFormatter->formatMonthYear($month, $year),
             'hasPrevNextButtons' => (bool) $this->conf['prev_next_button'],
@@ -85,7 +89,7 @@ class CalendarController
             'nextUrl' => $this->getNextUrl($request, $year, $month),
             'headRow' => $this->getDaynamesRow(),
             'rows' => $rows,
-            'jsUrl' => "{$this->pluginFolder}js/calendar.min.js",
+            'jsUrl' => $js,
         ];
         if ($request->header("X-CMSimple-XH-Request") === "calendar") {
             return Response::create($this->view->render('calendar', $data))->withContentType("text/html");

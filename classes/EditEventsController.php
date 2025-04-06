@@ -92,6 +92,10 @@ class EditEventsController
                 "summary" => $event->summary,
             ];
         }, $events);
+        $js = $this->pluginFolder . "js/overview.min.js";
+        if (!is_file($js)) {
+            $js = $this->pluginFolder . "js/overview.js";
+        }
         $output = $this->view->render('event-table', [
             'selected' => $request->selected() ? $request->selected() : 'calendar',
             'showEventTime' => (bool) $this->conf['show_event_time'],
@@ -99,7 +103,7 @@ class EditEventsController
             'showEventLink' => (bool) $this->conf['show_event_link'],
             'events' => $events,
             'hash' => sha1(serialize($events)),
-            'jsUrl' => "{$this->pluginFolder}js/overview.min.js",
+            'jsUrl' => $js,
         ]);
         return Response::create($output);
     }
