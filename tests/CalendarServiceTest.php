@@ -23,11 +23,11 @@ namespace Calendar;
 
 use PHPUnit\Framework\TestCase;
 
-class CalendarTest extends TestCase
+class CalendarServiceTest extends TestCase
 {
     public function testMonthMatrixForMarch2021()
     {
-        $calendar = new Calendar(true);
+        $calendar = new CalendarService(true);
         $expected = [
             [   1,    2,    3,    4,    5,    6,    7],
             [   8,    9,   10,   11,   12,   13,   14],
@@ -40,7 +40,7 @@ class CalendarTest extends TestCase
 
     public function testMonthMatrixForMarch2021WhereWeekStartsSunday()
     {
-        $calendar = new Calendar(false);
+        $calendar = new CalendarService(false);
         $expected = [
             [null,    1,    2,    3,    4,    5,    6],
             [   7,    8,    9,   10,   11,   12,   13],

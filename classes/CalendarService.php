@@ -21,7 +21,7 @@
 
 namespace Calendar;
 
-class Calendar
+class CalendarService
 {
     /** @var bool */
     private $weekStartsMonday;

@@ -70,7 +70,7 @@ class CalendarController
             $eventpage = $this->view->plain("event_page");
         }
         $this->determineYearAndMonth($request, $year, $month);
-        $calendar = new Calendar((bool) $this->conf['week_starts_mon']);
+        $calendar = new CalendarService((bool) $this->conf['week_starts_mon']);
         $rows = [];
         foreach ($calendar->getMonthMatrix($year, $month) as $columns) {
             $rows[] = $this->getRowData($request, $columns, $year, $month, $eventpage);
