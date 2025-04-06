@@ -180,13 +180,7 @@ class EditEventsController
     /** @param array<string,Event> $events */
     private function upsert(Request $request, array $events, ?string $id): Response
     {
-        $varnames = array(
-            "datestart", "dateend", "starttime", "endtime", "event", "linkadr", "linktxt", "location"
-        );
-        $post = [];
-        foreach ($varnames as $varname) {
-            $post[$varname] = $request->post($varname) ?? "";
-        }
+        $post = $this->eventPost($request);
         if (!$this->isValidDate($post["datestart"])) {
             $post["datestart"] = "";
         }
@@ -202,7 +196,6 @@ class EditEventsController
         } else {
             $events[] = $maybeEvent;
         }
-
         // sorting new event inputs, idea of manu, forum-message
         uasort($events, function (Event $a, Event $b): int {
             return $a->start()->compare($b->start());
@@ -213,6 +206,21 @@ class EditEventsController
             return Response::create($this->view->message("fail", "eventfile_not_saved")
                 . $this->renderEditForm($request, $maybeEvent, $id, $id !== null ? "create" : "update"));
         }
+    }
+
+    /** @return array{datestart:string,dateend:string,starttime:string,endtime:string,event:string,linkadr:string,linktxt:string,location:string} */
+    private function eventPost(Request $request): array
+    {
+        return [
+            "datestart" => $request->post("datestart") ?? "",
+            "dateend" => $request->post("dateend") ?? "",
+            "starttime" => $request->post("starttime") ?? "",
+            "endtime" => $request->post("endtime") ?? "",
+            "event" => $request->post("event") ?? "",
+            "linkadr" => $request->post("linkadr") ?? "",
+            "linktxt" => $request->post("linktxt") ?? "",
+            "location" => $request->post("location") ?? "",
+        ];
     }
 
     private function doDeleteAction(Request $request): Response
