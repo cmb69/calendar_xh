@@ -196,10 +196,10 @@ class EventListController
     {
         return [
             'is_birthday' => true,
-            'age' => $year - $event->start->year,
-            'summary' => $event->summary,
-            'location' => $event->location,
-            'date' => $this->dateTimeFormatter->formatDate($event->start->withYear($year)),
+            'age' => $year - $event->start()->year(),
+            'summary' => $event->summary(),
+            'location' => $event->location(),
+            'date' => $this->dateTimeFormatter->formatDate($event->start()->withYear($year)),
             'showTime' => (bool) $this->conf['show_event_time'],
             'showLocation' => (bool) $this->conf['show_event_location'],
             'showLink' => (bool) $this->conf['show_event_link'],
@@ -216,20 +216,20 @@ class EventListController
             if ($event->isMultiDay()) {
                 $time = sprintf(
                     $this->view->plain("format_time_interval"),
-                    $this->dateTimeFormatter->formatTime($event->start),
-                    $this->dateTimeFormatter->formatTime($event->end)
+                    $this->dateTimeFormatter->formatTime($event->start()),
+                    $this->dateTimeFormatter->formatTime($event->end())
                 );
             } else {
-                $time = $this->dateTimeFormatter->formatTime($event->start);
+                $time = $this->dateTimeFormatter->formatTime($event->start());
             }
         }
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
         assert($now !== null);
         return [
             'is_birthday' => false,
-            'summary' => $event->summary,
-            'location' => $event->location,
-            'past_event_class' => $event->end->compare($now) < 0 ? "past_event" : "",
+            'summary' => $event->summary(),
+            'location' => $event->location(),
+            'past_event_class' => $event->end()->compare($now) < 0 ? "past_event" : "",
             'date' => $this->renderDate($event),
             'showTime' => (bool) $this->conf['show_event_time'],
             'showLocation' => (bool) $this->conf['show_event_location'],
@@ -244,25 +244,25 @@ class EventListController
         if ($event->isMultiDay()) {
             return $this->view->plain(
                 "format_date_interval",
-                $this->dateTimeFormatter->formatDate($event->start),
-                $this->dateTimeFormatter->formatDate($event->end)
+                $this->dateTimeFormatter->formatDate($event->start()),
+                $this->dateTimeFormatter->formatDate($event->end())
             );
         } else {
-            return $this->dateTimeFormatter->formatDate($event->start);
+            return $this->dateTimeFormatter->formatDate($event->start());
         }
     }
 
     private function renderLink(Event $event): string
     {
-        if ($event->linkadr) {
-            $url = $event->linkadr;
+        if ($event->linkadr()) {
+            $url = $event->linkadr();
             $target = (strpos($url, '://') === false) ? '_self' : '_blank';
-            $title = $event->summary;
-            $text = $event->linktxt ?: $event->linkadr;
+            $title = $event->summary();
+            $text = $event->linktxt() ?: $event->linkadr();
             return "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
                 . "{$text}</a>";
         } else {
-            return $event->linktxt;
+            return $event->linktxt();
         }
     }
 

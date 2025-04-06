@@ -136,8 +136,8 @@ class CalendarController
                 $currentDay = new LocalDateTime($year, $month, $day, 0, 0);
                 foreach ($dayEvents as $dayEvent) {
                     if (
-                        $dayEvent->start->compareDate($currentDay) === 0
-                        && $dayEvent->end->compareDate($currentDay) !== 0
+                        $dayEvent->start()->compareDate($currentDay) === 0
+                        && $dayEvent->end()->compareDate($currentDay) !== 0
                     ) {
                         $classes[] = "calendar_eventstart";
                         break;
@@ -145,8 +145,8 @@ class CalendarController
                 }
                 foreach ($dayEvents as $dayEvent) {
                     if (
-                        $dayEvent->end->compareDate($currentDay) === 0
-                        && $dayEvent->start->compareDate($currentDay) !== 0
+                        $dayEvent->end()->compareDate($currentDay) === 0
+                        && $dayEvent->start()->compareDate($currentDay) !== 0
                     ) {
                         $classes[] = "calendar_eventend";
                         break;
@@ -191,20 +191,20 @@ class CalendarController
         }
         $today = new LocalDateTime($year, $month, $day, 0, 0);
         if (!$event->isMultiDay()) {
-            return $event->start->compareDate($today) === 0;
+            return $event->start()->compareDate($today) === 0;
         }
         if ($this->conf['show_days_between_dates']) {
-            return $event->start->compareDate($today) <= 0
-                && $event->end->compareDate($today) >= 0;
+            return $event->start()->compareDate($today) <= 0
+                && $event->end()->compareDate($today) >= 0;
         }
-        return $event->start->compareDate($today) === 0
-            || $event->end->compareDate($today) === 0;
+        return $event->start()->compareDate($today) === 0
+            || $event->end()->compareDate($today) === 0;
     }
 
     private function isBirthdayOn(Event $event, int $month, int $day): bool
     {
-        $date = $event->start;
-        return $event->isBirthday() && $date->month == $month && $date->day == $day;
+        $date = $event->start();
+        return $event->isBirthday() && $date->month() == $month && $date->day() == $day;
     }
 
     /**
@@ -217,17 +217,17 @@ class CalendarController
             if ($event->isMultiDay()) {
                 $text = sprintf(
                     "%s %s %s",
-                    $event->summary,
+                    $event->summary(),
                     $this->view->plain("event_date_till_date"),
-                    $this->dateTimeFormatter->formatDateTime($event->end)
+                    $this->dateTimeFormatter->formatDateTime($event->end())
                 );
             } else {
-                $text = $event->summary;
+                $text = $event->summary();
             }
             if (!$event->isBirthday()) {
-                $titles[] = $this->dateTimeFormatter->formatTime($event->start) . " " . $text;
+                $titles[] = $this->dateTimeFormatter->formatTime($event->start()) . " " . $text;
             } else {
-                $age = $year - $event->start->year;
+                $age = $year - $event->start()->year();
                 $age = sprintf($this->view->plain("age" . XH_numberSuffix($age), $age));
                 $titles[] = "{$text} {$age}";
             }

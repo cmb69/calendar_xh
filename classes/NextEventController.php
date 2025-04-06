@@ -59,30 +59,30 @@ class NextEventController
         $data = [];
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
-                $ldt = $nextevent->start->withYear($now->year);
+                $ldt = $nextevent->start()->withYear($now->year());
                 if ($ldt->compare($now) < 0) {
-                    $ldt = $nextevent->start->withYear($now->year + 1);
+                    $ldt = $nextevent->start()->withYear($now->year() + 1);
                 }
-                $age = $now->year - $nextevent->start->year;
+                $age = $now->year() - $nextevent->start()->year();
                 $nexteventtext = $this->view->plain("age" . XH_numberSuffix($age), $age);
                 $nexteventtext2 = null;
-            } elseif ($nextevent->start->compare($now) >= 0) {
-                $ldt = $nextevent->start;
+            } elseif ($nextevent->start()->compare($now) >= 0) {
+                $ldt = $nextevent->start();
                 if ($nextevent->isMultiDay()) {
                     $nexteventtext = $this->view->plain("event_date_till_date");
                     $nexteventtext2 = $nextevent->isFullDay()
-                        ? $this->dateTimeFormatter->formatDate($nextevent->end)
-                        : $this->dateTimeFormatter->formatDateTime($nextevent->end);
+                        ? $this->dateTimeFormatter->formatDate($nextevent->end())
+                        : $this->dateTimeFormatter->formatDateTime($nextevent->end());
                 } else {
                     $nexteventtext = '';
                     $nexteventtext2 = null;
                 }
             } else {
-                $ldt = $nextevent->end;
+                $ldt = $nextevent->end();
                 $nexteventtext = $this->view->plain("event_started");
                 $nexteventtext2 = $nextevent->isFullDay()
-                    ? $this->dateTimeFormatter->formatDate($nextevent->start)
-                    : $this->dateTimeFormatter->formatDateTime($nextevent->start);
+                    ? $this->dateTimeFormatter->formatDate($nextevent->start())
+                    : $this->dateTimeFormatter->formatDateTime($nextevent->start());
             }
             if ($nextevent->isFullDay()) {
                 $date = $this->dateTimeFormatter->formatDate($ldt);
@@ -90,11 +90,11 @@ class NextEventController
                 $date = $this->dateTimeFormatter->formatDateTime($ldt);
             }
             $data = [
-                'summary' => $nextevent->summary,
+                'summary' => $nextevent->summary(),
                 'event_text' => $nexteventtext,
                 'event_text_2' => $nexteventtext2,
                 'date' => $date,
-                'location' => $nextevent->isBirthday() ? $this->view->plain("birthday_text") : $nextevent->location,
+                'location' => $nextevent->isBirthday() ? $this->view->plain("birthday_text") : $nextevent->location(),
             ];
         }
         return $this->view->render('nextevent', $data);

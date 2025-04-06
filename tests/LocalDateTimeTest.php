@@ -54,8 +54,8 @@ class LocalDateTimeTest extends TestCase
     public function testWithYearHandlesLeapDays(): void
     {
         $subject = (new LocalDateTime(2020, 2, 29, 0, 0))->withYear(2021);
-        $this->assertSame(3, $subject->month);
-        $this->assertSame(1, $subject->day);
+        $this->assertSame(3, $subject->month());
+        $this->assertSame(1, $subject->day());
     }
 
     /**

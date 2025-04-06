@@ -54,12 +54,12 @@ class DateTimeFormatter
     public function formatDate(LocalDateTime $ldt): string
     {
         $replace = [
-            "%Y" => sprintf("%04d", $ldt->year),
-            "%F" => $this->monthnames[$ldt->month - 1],
-            "%m" => sprintf("%02d", $ldt->month),
-            "%n" => sprintf("%d", $ldt->month),
-            "%d" => sprintf("%02d", $ldt->day),
-            "%j" => sprintf("%d", $ldt->day),
+            "%Y" => sprintf("%04d", $ldt->year()),
+            "%F" => $this->monthnames[$ldt->month() - 1],
+            "%m" => sprintf("%02d", $ldt->month()),
+            "%n" => sprintf("%d", $ldt->month()),
+            "%d" => sprintf("%02d", $ldt->day()),
+            "%j" => sprintf("%d", $ldt->day()),
         ];
         return strtr($this->lang['format_date'], $replace);
     }
@@ -67,17 +67,17 @@ class DateTimeFormatter
     public function formatDateTime(LocalDateTime $ldt): string
     {
         $replace = [
-            "%Y" => sprintf("%04d", $ldt->year),
-            "%F" => $this->monthnames[$ldt->month - 1],
-            "%m" => sprintf("%02d", $ldt->month),
-            "%n" => sprintf("%d", $ldt->month),
-            "%d" => sprintf("%02d", $ldt->day),
-            "%j" => sprintf("%d", $ldt->day),
-            "%a" => $ldt->hour < 12 ? "am" : "pm",
-            "%g" => sprintf("%d", $ldt->hour % 12 === 0 ? 12 : $ldt->hour % 12),
-            "%H" => sprintf("%02d", $ldt->hour),
-            "%G" => sprintf("%d", $ldt->hour),
-            "%i" => sprintf("%02d", $ldt->minute),
+            "%Y" => sprintf("%04d", $ldt->year()),
+            "%F" => $this->monthnames[$ldt->month() - 1],
+            "%m" => sprintf("%02d", $ldt->month()),
+            "%n" => sprintf("%d", $ldt->month()),
+            "%d" => sprintf("%02d", $ldt->day()),
+            "%j" => sprintf("%d", $ldt->day()),
+            "%a" => $ldt->hour() < 12 ? "am" : "pm",
+            "%g" => sprintf("%d", $ldt->hour() % 12 === 0 ? 12 : $ldt->hour() % 12),
+            "%H" => sprintf("%02d", $ldt->hour()),
+            "%G" => sprintf("%d", $ldt->hour()),
+            "%i" => sprintf("%02d", $ldt->minute()),
         ];
         return strtr($this->lang['format_date_time'], $replace);
     }
@@ -85,11 +85,11 @@ class DateTimeFormatter
     public function formatTime(LocalDateTime $ldt): string
     {
         $replace = [
-            "%a" => $ldt->hour < 12 ? "am" : "pm",
-            "%g" => sprintf("%d", $ldt->hour % 12 === 0 ? 12 : $ldt->hour % 12),
-            "%H" => sprintf("%02d", $ldt->hour),
-            "%G" => sprintf("%d", $ldt->hour),
-            "%i" => sprintf("%02d", $ldt->minute),
+            "%a" => $ldt->hour() < 12 ? "am" : "pm",
+            "%g" => sprintf("%d", $ldt->hour() % 12 === 0 ? 12 : $ldt->hour() % 12),
+            "%H" => sprintf("%02d", $ldt->hour()),
+            "%G" => sprintf("%d", $ldt->hour()),
+            "%i" => sprintf("%02d", $ldt->minute()),
         ];
         return strtr($this->lang['format_time'], $replace);
     }

@@ -28,41 +28,23 @@ namespace Calendar;
 
 class Event
 {
-    /**
-     * @readonly
-     * @var LocalDateTime
-     */
-    public $start;
+    /** @var LocalDateTime */
+    private $start;
 
-    /**
-     * @readonly
-     * @var LocalDateTime
-     */
-    public $end;
+    /** @var LocalDateTime */
+    private $end;
 
-    /**
-     * @readonly
-     * @var string
-     */
-    public $summary;
+    /** @var string */
+    private $summary;
 
-    /**
-     * @readonly
-     * @var string
-     */
-    public $linkadr;
+    /** @var string */
+    private $linkadr;
 
-    /**
-     * @readonly
-     * @var string
-     */
-    public $linktxt;
+    /** @var string */
+    private $linktxt;
 
-    /**
-     * @readonly
-     * @var string
-     */
-    public $location;
+    /** @var string */
+    private $location;
 
     public static function create(
         string $datestart,
@@ -115,6 +97,36 @@ class Event
         $this->location = $location;
     }
 
+    public function start(): LocalDateTime
+    {
+        return $this->start;
+    }
+
+    public function end(): LocalDateTime
+    {
+        return $this->end;
+    }
+
+    public function summary(): string
+    {
+        return $this->summary;
+    }
+
+    public function linkadr(): string
+    {
+        return $this->linkadr;
+    }
+
+    public function linktxt(): string
+    {
+        return $this->linktxt;
+    }
+
+    public function location(): string
+    {
+        return $this->location;
+    }
+
     public function getIsoStartDate(): string
     {
         return $this->start->getIsoDate();
@@ -142,8 +154,8 @@ class Event
 
     public function isFullDay(): bool
     {
-        return $this->start->hour === 0 && $this->start->minute === 0
-            && $this->end->hour === 23 && $this->end->minute === 59;
+        return $this->start->hour() === 0 && $this->start->minute() === 0
+            && $this->end->hour() === 23 && $this->end->minute() === 59;
     }
 
     public function isBirthday(): bool

@@ -130,15 +130,15 @@ class EventDataService
     {
         $result = [];
         foreach ($events as $event) {
-            if ($event->start->month === $month) {
-                if ($event->start->year === $year || ($event->isBirthday() && $event->start->year < $year)) {
+            if ($event->start()->month() === $month) {
+                if ($event->start()->year() === $year || ($event->isBirthday() && $event->start()->year() < $year)) {
                     $result[] = $event;
                 }
             }
         }
         uasort($result, function (Event $a, Event $b) use ($year): int {
-            $dt1 = $a->isBirthday() ? $a->start->withYear($year) : $a->start;
-            $dt2 = $b->isBirthday() ? $b->start->withYear($year) : $b->start;
+            $dt1 = $a->isBirthday() ? $a->start()->withYear($year) : $a->start();
+            $dt2 = $b->isBirthday() ? $b->start()->withYear($year) : $b->start();
             return $dt1->compare($dt2);
         });
         return $result;
@@ -151,14 +151,14 @@ class EventDataService
         $nextldt = null;
         foreach ($events as $event) {
             if ($event->isBirthday()) {
-                $ldt = $event->start->withYear($now->year);
+                $ldt = $event->start()->withYear($now->year());
                 if ($ldt->compare($now) < 0) {
-                    $ldt = $event->start->withYear($now->year + 1);
+                    $ldt = $event->start()->withYear($now->year() + 1);
                 }
             } else {
-                $ldt = $event->start;
+                $ldt = $event->start();
                 if ($ldt->compare($now) < 0) {
-                    $ldt = $event->end;
+                    $ldt = $event->end();
                     if ($ldt->compare($now) < 0) {
                         continue;
                     }
@@ -269,10 +269,10 @@ class EventDataService
             $event->getIsoStartTime(),
             $event->getIsoEndDate(),
             $event->getIsoEndTime(),
-            $event->summary,
-            $event->location,
-            $event->linkadr,
-            $event->linktxt
+            $event->summary(),
+            $event->location(),
+            $event->linkadr(),
+            $event->linktxt()
         ];
         return fputcsv($fp, $record, ';', '"', "\0") !== false;
     }

@@ -25,35 +25,20 @@ use Exception;
 
 class LocalDateTime
 {
-    /**
-     * @readonly
-     * @var int
-     */
-    public $year;
+    /** @var int */
+    private $year;
 
-    /**
-     * @readonly
-     * @var int
-     */
-    public $month;
+    /** @var int */
+    private $month;
 
-    /**
-     * @readonly
-     * @var int
-     */
-    public $day;
+    /** @var int */
+    private $day;
 
-    /**
-     * @readonly
-     * @var int
-     */
-    public $hour;
+    /** @var int */
+    private $hour;
 
-    /**
-     * @readonly
-     * @var int
-     */
-    public $minute;
+    /** @var int */
+    private $minute;
 
     public static function fromIsoString(string $string): ?LocalDateTime
     {
@@ -87,6 +72,31 @@ class LocalDateTime
         $this->day = $day;
         $this->hour = $hour;
         $this->minute = $minute;
+    }
+
+    public function year(): int
+    {
+        return $this->year;
+    }
+
+    public function month(): int
+    {
+        return $this->month;
+    }
+
+    public function day(): int
+    {
+        return $this->day;
+    }
+
+    public function hour(): int
+    {
+        return $this->hour;
+    }
+
+    public function minute(): int
+    {
+        return $this->minute;
     }
 
     public function withYear(int $year): self

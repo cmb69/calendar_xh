@@ -84,7 +84,7 @@ class EditEventsController
             return [
                 "start_date" => $event->getIsoStartDate(),
                 "end_date" => $event->getIsoEndDate(),
-                "summary" => $event->summary,
+                "summary" => $event->summary(),
             ];
         }, $events);
         $js = $this->pluginFolder . "js/overview.min.js";
@@ -147,10 +147,10 @@ class EditEventsController
                 "start_time" => $event->getIsoStartTime(),
                 "end_date" => $event->getIsoEndDate(),
                 "end_time" => $event->getIsoEndTime(),
-                "summary" => $event->summary,
-                "linkadr" => $event->linkadr,
-                "linktxt" => $event->linktxt,
-                "location" => $event->location,
+                "summary" => $event->summary(),
+                "linkadr" => $event->linkadr(),
+                "linktxt" => $event->linktxt(),
+                "location" => $event->location(),
             ],
             'button_label' => $action === "delete" ? "label_delete" : "label_save",
             'csrf_token' => $this->csrfProtector->token(),
@@ -206,7 +206,7 @@ class EditEventsController
 
         // sorting new event inputs, idea of manu, forum-message
         uasort($events, function (Event $a, Event $b): int {
-            return $a->start->compare($b->start);
+            return $a->start()->compare($b->start());
         });
         if ($this->eventDataService->writeEvents($events)) {
             return $this->redirectToOverviewResponse($request);
