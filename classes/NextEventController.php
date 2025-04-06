@@ -31,9 +31,6 @@ use Plib\View;
 
 class NextEventController
 {
-    /** @var array<string,string> */
-    private $lang;
-
     /** @var EventDataService */
     private $eventDataService;
 
@@ -43,16 +40,11 @@ class NextEventController
     /** @var View */
     private $view;
 
-    /**
-     * @param array<string,string> $lang
-     */
     public function __construct(
-        array $lang,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
         View $view
     ) {
-        $this->lang = $lang;
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
@@ -72,12 +64,12 @@ class NextEventController
                     $ldt = $nextevent->start->withYear($now->year + 1);
                 }
                 $age = $now->year - $nextevent->start->year;
-                $nexteventtext = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
+                $nexteventtext = $this->view->plain("age" . XH_numberSuffix($age), $age);
                 $nexteventtext2 = null;
             } elseif ($nextevent->start->compare($now) >= 0) {
                 $ldt = $nextevent->start;
                 if ($nextevent->isMultiDay()) {
-                    $nexteventtext = $this->lang['event_date_till_date'];
+                    $nexteventtext = $this->view->plain("event_date_till_date");
                     $nexteventtext2 = $nextevent->isFullDay()
                         ? $this->dateTimeFormatter->formatDate($nextevent->end)
                         : $this->dateTimeFormatter->formatDateTime($nextevent->end);
@@ -87,7 +79,7 @@ class NextEventController
                 }
             } else {
                 $ldt = $nextevent->end;
-                $nexteventtext = $this->lang['event_started'];
+                $nexteventtext = $this->view->plain("event_started");
                 $nexteventtext2 = $nextevent->isFullDay()
                     ? $this->dateTimeFormatter->formatDate($nextevent->start)
                     : $this->dateTimeFormatter->formatDateTime($nextevent->start);
@@ -102,7 +94,7 @@ class NextEventController
                 'event_text' => $nexteventtext,
                 'event_text_2' => $nexteventtext2,
                 'date' => $date,
-                'location' => $nextevent->isBirthday() ? $this->lang['birthday_text'] : $nextevent->location,
+                'location' => $nextevent->isBirthday() ? $this->view->plain("birthday_text") : $nextevent->location,
             ];
         }
         return $this->view->render('nextevent', $data);

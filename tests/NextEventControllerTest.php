@@ -53,6 +53,6 @@ class NextEventControllerTest extends TestCase
         $eventDataService->method("findNextEvent")->willReturn($event);
         $dateTimeFormatter = new DateTimeFormatter($lang);
         $view = new View("./views/", $lang);
-        return new NextEventController($lang, $eventDataService, $dateTimeFormatter, $view);
+        return new NextEventController($eventDataService, $dateTimeFormatter, $view);
     }
 }

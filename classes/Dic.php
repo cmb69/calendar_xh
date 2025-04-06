@@ -62,7 +62,6 @@ class Dic
         global $plugin_tx;
 
         return new NextEventController(
-            $plugin_tx['calendar'],
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
