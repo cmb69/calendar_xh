@@ -27,8 +27,12 @@ features at the cost of greatly increased complexity.
 
 ## Requirements
 
-Calendar\_XH is a plugin for CMSimple\_XH.
-It requires CMSimple\_XH ≥ 1.7.0, and PHP ≥ 7.0.0.
+Calendar_XH is a plugin for [CMSimple_XH](https://www.cmsimple-xh.org/).
+It requires CMSimple_XH ≥ 1.7.0, and PHP ≥ 7.0.0.
+Calendar_XH also requires [Plib_XH](https://github.com/cmb69/plib_xh) ≥ 1.6;
+if that is not already installed (see *Settings*→*Info*),
+get the [lastest release](https://github.com/cmb69/plib_xh/releases/latest),
+and install it.
 
 ## Download
 
