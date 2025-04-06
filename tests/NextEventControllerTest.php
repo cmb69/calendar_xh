@@ -52,8 +52,7 @@ class NextEventControllerTest extends TestCase
         $lang = $plugin_tx['calendar'];
         $event = Event::create("1969-03-24", null, "", null, "cmb", "", "", "###");
         $eventDataService = $this->createStub(EventDataService::class);
-        $eventDataService->method("findNextEvent")->willReturn($event);
-        $eventDataService->method("readEvents")->willReturn(new Calendar([]));
+        $eventDataService->method("readEvents")->willReturn(new Calendar([$event]));
         $dateTimeFormatter = new DateTimeFormatter($lang);
         $view = new View("./views/", $lang);
         return new NextEventController($eventDataService, $dateTimeFormatter, $view);

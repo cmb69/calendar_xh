@@ -77,7 +77,7 @@ CSV;
         vfsStream::setup("root");
         file_put_contents(vfsStream::url("root/calendar.csv"), $csv);
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $nextevent = $subject->findNextEvent($subject->readEvents()->events(), $now);
+        $nextevent = $subject->readEvents()->nextEvent($now);
         if ($expected !== null) {
             $this->assertInstanceOf(Event::class, $nextevent);
             $this->assertSame($expected, $nextevent->summary());

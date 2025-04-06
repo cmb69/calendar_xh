@@ -57,7 +57,7 @@ class NextEventController
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
         assert($now !== null);
         $calendar = $this->eventDataService->readEvents();
-        $nextevent = $this->eventDataService->findNextEvent($calendar->events(), $now);
+        $nextevent = $calendar->nextEvent($now);
         $data = [];
         if ($nextevent !== null) {
             if ($nextevent->isBirthday()) {
