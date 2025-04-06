@@ -132,7 +132,9 @@ class CalendarController
             $classes = [];
             $field['content'] = (string) $day;
             if (!empty($dayEvents)) {
-                $field['href'] = "?{$eventpage}&month={$month}&year={$year}";
+                $field['href'] = $request->url()->page($eventpage)
+                    ->with("month", (string) $month)->with("year", (string) $year)
+                    ->relative();
                 $field['title'] = $this->getEventsTitle($dayEvents, $year);
                 $classes[] = "calendar_eventday";
                 $currentDay = new LocalDateTime($year, $month, $day, 0, 0);
