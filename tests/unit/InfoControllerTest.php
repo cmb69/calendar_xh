@@ -30,10 +30,11 @@ class InfoControllerTest extends TestCase
 {
     public function testDefaultActionRendersPluginInfo(): void
     {
-        $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
-        $lang = $plugin_tx['calendar'];
-        $systemChecker = new FakeSystemChecker(true);
-        $sut = new InfoController("./", $lang, $systemChecker, new View("./views/", $lang));
+        $sut = new InfoController(
+            "./",
+            new FakeSystemChecker(true),
+            new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"])
+        );
         $response = $sut->defaultAction();
         Approvals::verifyHtml($response);
     }

@@ -38,9 +38,6 @@ class EditEventsController
     /** @var array<string,string> */
     private $conf;
 
-    /** @var array<string,string> */
-    private $lang;
-
     /** @var LocalDateTime */
     private $now;
 
@@ -56,14 +53,10 @@ class EditEventsController
     /** @var string */
     private $url;
 
-    /**
-     * @param array<string,string> $conf
-     * @param array<string,string> $lang
-     */
+    /** @param array<string,string> $conf */
     public function __construct(
         string $pluginFolder,
         array $conf,
-        array $lang,
         LocalDateTime $now,
         EventDataService $eventDataService,
         CSRFProtector $csrfProtector,
@@ -72,7 +65,6 @@ class EditEventsController
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
-        $this->lang = $lang;
         $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->csrfProtector = $csrfProtector;
@@ -155,7 +147,6 @@ class EditEventsController
         if ($id !== null) {
             $url .= "&event_id=$id";
         }
-        $label = $action === "delete" ? "label_delete" : "label_save";
         return $this->view->render('edit-form', [
             'action' => $url,
             'showEventTime' => (bool) $this->conf['show_event_time'],
@@ -171,7 +162,7 @@ class EditEventsController
                 "linktxt" => $event->linktxt,
                 "location" => $event->location,
             ],
-            'button_label' => $this->lang[$label],
+            'button_label' => $action === "delete" ? "label_delete" : "label_save",
             'csrf_token' => $this->csrfProtector->tokenInput(),
         ]);
     }
@@ -230,9 +221,8 @@ class EditEventsController
         if ($this->eventDataService->writeEvents($events)) {
             return $this->redirectToOverviewResponse();
         } else {
-            $output = XH_message('fail', $this->lang['eventfile_not_saved'])
-                . $this->renderEditForm($maybeEvent, $id, $id !== null ? "create" : "update");
-            return Response::create($output);
+            return Response::create($this->view->message("fail", "eventfile_not_saved")
+                . $this->renderEditForm($maybeEvent, $id, $id !== null ? "create" : "update"));
         }
     }
 
@@ -250,9 +240,8 @@ class EditEventsController
         if ($this->eventDataService->writeEvents($events)) {
             return $this->redirectToOverviewResponse();
         } else {
-            $output = XH_message('fail', $this->lang['eventfile_not_saved'])
-                . $this->renderEditForm($event, $id, "delete");
-            return Response::create($output);
+            return Response::create($this->view->message("fail", "eventfile_not_saved")
+                . $this->renderEditForm($event, $id, "delete"));
         }
     }
 
@@ -278,7 +267,7 @@ class EditEventsController
             '',
             '',
             '',
-            $this->lang['event_summary'],
+            $this->view->plain("event_summary"),
             '',
             '',
             ''

@@ -34,20 +34,15 @@ class InfoController
     /** @var string */
     private $pluginFolder;
 
-    /** @var array<string,string> */
-    private $lang;
-
     /** @var SystemChecker */
     private $systemChecker;
 
     /** @var View */
     private $view;
 
-    /** @param array<string,string> $lang */
-    public function __construct(string $pluginFolder, array $lang, SystemChecker $systemChecker, View $view)
+    public function __construct(string $pluginFolder, SystemChecker $systemChecker, View $view)
     {
         $this->pluginFolder = $pluginFolder;
-        $this->lang = $lang;
         $this->systemChecker = $systemChecker;
         $this->view = $view;
     }
@@ -70,8 +65,8 @@ class InfoController
     private function checkPhpVersion(string $version): array
     {
         $state = $this->systemChecker->checkVersion(PHP_VERSION, $version) ? 'success' : 'fail';
-        $label = sprintf($this->lang['syscheck_phpversion'], $version);
-        $stateLabel = $this->lang["syscheck_$state"];
+        $label = $this->view->plain("syscheck_phpversion", $version);
+        $stateLabel = $this->view->plain("syscheck_$state");
         return compact('state', 'label', 'stateLabel');
     }
 
@@ -79,8 +74,8 @@ class InfoController
     private function checkXhVersion(string $version): array
     {
         $state = $this->systemChecker->checkVersion(CMSIMPLE_XH_VERSION, "CMSimple_XH $version") ? 'success' : 'fail';
-        $label = sprintf($this->lang['syscheck_xhversion'], $version);
-        $stateLabel = $this->lang["syscheck_$state"];
+        $label = $this->view->plain("syscheck_xhversion", $version);
+        $stateLabel = $this->view->plain("syscheck_$state");
         return compact('state', 'label', 'stateLabel');
     }
 
@@ -88,8 +83,8 @@ class InfoController
     private function checkWritability(string $folder): array
     {
         $state = $this->systemChecker->checkWritability($folder) ? 'success' : 'warning';
-        $label = sprintf($this->lang['syscheck_writable'], $folder);
-        $stateLabel = $this->lang["syscheck_$state"];
+        $label = $this->view->plain("syscheck_writable", $folder);
+        $stateLabel = $this->view->plain("syscheck_$state");
         return compact('state', 'label', 'stateLabel');
     }
 }

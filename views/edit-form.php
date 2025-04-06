@@ -66,7 +66,7 @@ if (!isset($this)) {header("404 Not found"); exit;}
 <?endif?>
   </div>
   <p>
-    <button><?=$this->esc($button_label)?></button>
+    <button><?=$this->text($button_label)?></button>
   </p>
   <?=$this->raw($csrf_token)?>
 </form>

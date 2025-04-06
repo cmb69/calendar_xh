@@ -33,9 +33,6 @@ class EventListController
     /** @var array<string,string> */
     private $conf;
 
-    /** @var array<string,string> */
-    private $lang;
-
     /** @var LocalDateTime */
     private $now;
 
@@ -48,20 +45,15 @@ class EventListController
     /** @var View */
     private $view;
 
-    /**
-     * @param array<string,string> $conf
-     * @param array<string,string> $lang
-     */
+    /** @param array<string,string> $conf */
     public function __construct(
         array $conf,
-        array $lang,
         LocalDateTime $now,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
         View $view
     ) {
         $this->conf = $conf;
-        $this->lang = $lang;
         $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
@@ -101,10 +93,10 @@ class EventListController
         $end = $this->dateTimeFormatter->formatMonthYear($endmonth, $endyear);
         return $this->view->render('eventlist', [
             'showHeading' => (bool) $this->conf['show_period_of_events'],
-            'heading' => sprintf(
-                XH_hsc($this->lang['event_list_heading']),
-                '<span>' . XH_hsc($start) . '</span>',
-                '<span>' . XH_hsc($end) . '</span>'
+            'heading' => str_replace(
+                ["\x06", "\x15"],
+                ["<span>", "</span>"],
+                $this->view->text("event_list_heading", "\x06" . $start . "\x15", "\x06" . $end . "\x15")
             ),
             'monthEvents' => $monthEvents,
         ]);
@@ -236,7 +228,7 @@ class EventListController
         } else {
             if ($event->isMultiDay()) {
                 $time = sprintf(
-                    $this->lang['format_time_interval'],
+                    $this->view->plain("format_time_interval"),
                     $this->dateTimeFormatter->formatTime($event->start),
                     $this->dateTimeFormatter->formatTime($event->end)
                 );
@@ -261,8 +253,8 @@ class EventListController
     private function renderDate(Event $event): string
     {
         if ($event->isMultiDay()) {
-            return sprintf(
-                $this->lang['format_date_interval'],
+            return $this->view->plain(
+                "format_date_interval",
                 $this->dateTimeFormatter->formatDate($event->start),
                 $this->dateTimeFormatter->formatDate($event->end)
             );

@@ -39,7 +39,6 @@ class Dic
         return new CalendarController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
-            $plugin_tx['calendar'],
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
@@ -54,7 +53,6 @@ class Dic
 
         return new EventListController(
             $plugin_cf['calendar'],
-            $plugin_tx['calendar'],
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
@@ -77,12 +75,11 @@ class Dic
 
     public static function makeEditEventController(): EditEventsController
     {
-        global $pth, $plugin_cf, $plugin_tx, $su;
+        global $pth, $plugin_cf, $su;
 
         return new EditEventsController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
-            $plugin_tx['calendar'],
             self::now(),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             self::getCsrfProtector(),
@@ -93,11 +90,10 @@ class Dic
 
     public static function makeInfoController(): InfoController
     {
-        global $pth, $plugin_tx;
+        global $pth;
 
         return new InfoController(
             "{$pth['folder']['plugins']}calendar/",
-            $plugin_tx['calendar'],
             new SystemChecker(),
             self::view()
         );

@@ -37,9 +37,6 @@ class CalendarController
     /** @var array<string,string> */
     private $conf;
 
-    /** @var array<string,string> */
-    private $lang;
-
     /** @var LocalDateTime */
     private $now;
 
@@ -55,14 +52,10 @@ class CalendarController
     /** @var string */
     private $url;
 
-    /**
-     * @param array<string,string> $conf
-     * @param array<string,string> $lang
-     */
+    /** @param array<string,string> $conf */
     public function __construct(
         string $pluginFolder,
         array $conf,
-        array $lang,
         LocalDateTime $now,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
@@ -71,7 +64,6 @@ class CalendarController
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
-        $this->lang = $lang;
         $this->now = $now;
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
@@ -82,7 +74,7 @@ class CalendarController
     public function defaultAction(int $year, int $month, string $eventpage): Response
     {
         if ($eventpage == '') {
-            $eventpage = $this->lang['event_page'];
+            $eventpage = $this->view->plain("event_page");
         }
         $this->determineYearAndMonth($year, $month);
         $calendar = new Calendar((bool) $this->conf['week_starts_mon']);
@@ -228,7 +220,7 @@ class CalendarController
                 $text = sprintf(
                     "%s %s %s",
                     $event->summary,
-                    $this->lang['event_date_till_date'],
+                    $this->view->plain("event_date_till_date"),
                     $this->dateTimeFormatter->formatDateTime($event->end)
                 );
             } else {
@@ -238,7 +230,7 @@ class CalendarController
                 $titles[] = $this->dateTimeFormatter->formatTime($event->start) . " " . $text;
             } else {
                 $age = $year - $event->start->year;
-                $age = sprintf($this->lang['age' . XH_numberSuffix($age)], $age);
+                $age = sprintf($this->view->plain("age" . XH_numberSuffix($age), $age));
                 $titles[] = "{$text} {$age}";
             }
         }
@@ -256,7 +248,7 @@ class CalendarController
      */
     private function getDaynamesRow(): array
     {
-        $dayarray = explode(',', $this->lang['daynames_array']);
+        $dayarray = explode(',', $this->view->plain("daynames_array"));
         $row = [];
         for ($i = 0; $i <= 6; $i++) {
             if ($this->conf['week_starts_mon']) {

@@ -41,8 +41,6 @@ class EditEventsControllerTest extends TestCase
     {
         $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
         $conf = $plugin_cf['calendar'];
-        $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
-        $lang = $plugin_tx['calendar'];
         $dateTime = LocalDateTime::fromIsoString("2023-01-30T14:27");
         $this->eventDataService = $this->createMock(EventDataService::class);
         $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
@@ -50,11 +48,10 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->method("tokenInput")->willReturn(
             "<input type=\"hidden\" name=\"xh_csrf_token\" value=\"42881056d048537da0e061f7f672854b\">"
         );
-        $view = new View("./views/", $lang);
+        $view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
         $this->sut = new EditEventsController(
             "./",
             $conf,
-            $lang,
             $dateTime,
             $this->eventDataService,
             $this->csrfProtector,
