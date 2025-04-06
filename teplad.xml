@@ -40,18 +40,18 @@
 <teplad version="1.1">
   <xml_url>https://raw.githubusercontent.com/cmb69/calendar_xh/master/teplad.xml</xml_url>
   <name type="plugin">Calendar_XH</name>
-  <date_update>2025-03-05</date_update>
-  <version>2.4</version>
-  <date_version>2025-03-05</date_version>
+  <date_update>2025-04-06</date_update>
+  <version>2.5</version>
+  <date_version>2025-04-06</date_version>
   <coder>Christoph M. Becker</coder>
   <tags>calendar</tags>
   <url>
-    <download_url>https://github.com/cmb69/calendar_xh/releases/tag/2.3</download_url>
+    <download_url>https://github.com/cmb69/calendar_xh/releases/tag/2.5</download_url>
     <coder_url>https://3-magi.net/</coder_url>
     <demo_url></demo_url>
   </url>
   <compatibility>≥ 1.7.0</compatibility>
-  <php_ver>≥ 7.0.0</php_ver>
+  <php_ver>≥ 7.1.0</php_ver>
   <license>GPLv3</license>
   <descriptions>
     <description lang="en">
