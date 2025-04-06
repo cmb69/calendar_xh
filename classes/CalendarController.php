@@ -87,7 +87,7 @@ class CalendarController
             'rows' => $rows,
             'jsUrl' => "{$this->pluginFolder}js/calendar.min.js",
         ];
-        if (isset($_GET['calendar_ajax'])) {
+        if ($request->header("X-CMSimple-XH-Request") === "calendar") {
             return Response::create($this->view->render('calendar', $data))->withContentType("text/html");
         }
         $output = '<div class="calendar_calendar">'
