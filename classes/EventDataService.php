@@ -28,7 +28,6 @@ namespace Calendar;
 
 use Calendar\Model\Calendar;
 use Calendar\Model\Event;
-use Calendar\Model\LocalDateTime;
 
 class EventDataService
 {
@@ -51,6 +50,12 @@ class EventDataService
 
     public function getFilename(): string
     {
+        if (!is_dir($this->dataFolder) && mkdir($this->dataFolder, 0777)) {
+            chmod($this->dataFolder, 0777);
+        }
+        if (!file_exists($this->eventfile)) {
+            touch($this->eventfile);
+        }
         return $this->eventfile;
     }
 
@@ -59,19 +64,12 @@ class EventDataService
         $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".csv");
         if (!is_file("{$eventfile}.csv")) {
             if (is_file("{$eventfile}.txt")) {
-                $this->eventfile = "{$eventfile}.txt";
-                $events = $this->readOldEvents();
-                $this->eventfile = "{$eventfile}.csv";
+                $events = $this->readOldEvents("{$eventfile}.txt");
                 $this->writeEvents($events);
-            } else {
-                if (!is_dir($this->dataFolder) && mkdir($this->dataFolder, 0777)) {
-                    chmod($this->dataFolder, 0777);
-                }
-                touch("{$eventfile}.csv");
             }
         }
         $result = array();
-        if ($stream = fopen($this->eventfile, 'r')) {
+        if ($stream = fopen($this->getFilename(), 'r')) {
             flock($stream, LOCK_SH);
             while (($record = fgetcsv($stream, 0, ';', '"', "\0")) !== false) {
                 if (!$this->validateRecord($record)) {
@@ -126,10 +124,10 @@ class EventDataService
     }
 
     /** @return list<Event> */
-    private function readOldEvents(): array
+    private function readOldEvents(string $eventfile): array
     {
         $result = array();
-        if ($stream = fopen($this->eventfile, 'r')) {
+        if ($stream = fopen($eventfile, 'r')) {
             flock($stream, LOCK_SH);
             while (($line = fgets($stream)) !== false) {
                 list($eventdates, $event, $location, $link, $starttime) = explode(';', rtrim($line));
@@ -186,7 +184,7 @@ class EventDataService
     /** @param array<Event> $events */
     public function writeEvents(array $events): bool
     {
-        $eventfile = $this->eventfile;
+        $eventfile = $this->getFilename();
 
         // remove old backup
         if (is_file("{$eventfile}.bak")) {

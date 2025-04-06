@@ -87,6 +87,7 @@ class Dic
 
         return new InfoController(
             "{$pth['folder']['plugins']}calendar/",
+            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new SystemChecker(),
             self::view()
         );

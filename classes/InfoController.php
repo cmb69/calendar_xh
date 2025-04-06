@@ -34,15 +34,23 @@ class InfoController
     /** @var string */
     private $pluginFolder;
 
+    /** @var EventDataService */
+    private $dataService;
+
     /** @var SystemChecker */
     private $systemChecker;
 
     /** @var View */
     private $view;
 
-    public function __construct(string $pluginFolder, SystemChecker $systemChecker, View $view)
-    {
+    public function __construct(
+        string $pluginFolder,
+        EventDataService $dataService,
+        SystemChecker $systemChecker,
+        View $view
+    ) {
         $this->pluginFolder = $pluginFolder;
+        $this->dataService = $dataService;
         $this->systemChecker = $systemChecker;
         $this->view = $view;
     }
@@ -56,7 +64,8 @@ class InfoController
                 $this->checkXhVersion('1.7.0'),
                 $this->checkWritability("{$this->pluginFolder}css/"),
                 $this->checkWritability("{$this->pluginFolder}config/"),
-                $this->checkWritability("{$this->pluginFolder}languages/")
+                $this->checkWritability("{$this->pluginFolder}languages/"),
+                $this->checkWritability($this->dataService->getFilename()),
             ],
         ]);
     }

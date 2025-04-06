@@ -30,8 +30,11 @@ class InfoControllerTest extends TestCase
 {
     public function testDefaultActionRendersPluginInfo(): void
     {
+        $dataService = $this->createStub(EventDataService::class);
+        $dataService->method("getFilename")->willReturn("./content/calendar/calendar.csv");
         $sut = new InfoController(
             "./",
+            $dataService,
             new FakeSystemChecker(true),
             new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"])
         );
