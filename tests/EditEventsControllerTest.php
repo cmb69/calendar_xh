@@ -118,7 +118,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoCreateActionRedirects()
     {
-        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=create",
@@ -133,7 +132,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoUpdateActionRedirectsOnInvalidEvent()
     {
-        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=update&event_id=invalid%20id",
@@ -148,16 +146,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoUpdateActionSavesEventAndRedirectsOnSuccess()
     {
-        $_POST = [
-            "datestart" => "2023-01-04",
-            "dateend" => "2023-01-04",
-            "starttime" => "12:00",
-            "endtime" => "13:00",
-            "event" => "Lunch break",
-            "linkadr" => "http://example.com/lunchbreak",
-            "linktxt" => "Tips for lunch breaks",
-            "location" => "whereever I am",
-        ];
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
             ->willReturn(true);
@@ -166,6 +154,14 @@ class EditEventsControllerTest extends TestCase
             "time" => 1675088820,
             "post" => [
                 "calendar_do" => "",
+                "datestart" => "2023-01-04",
+                "dateend" => "2023-01-04",
+                "starttime" => "12:00",
+                "endtime" => "13:00",
+                "event" => "Lunch break",
+                "linkadr" => "http://example.com/lunchbreak",
+                "linktxt" => "Tips for lunch breaks",
+                "location" => "whereever I am",
             ],
         ]);
         $response = ($this->sut)($request);
@@ -174,16 +170,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoUpdateActionShowsErrorOnFailureToUpdateEvent()
     {
-        $_POST = [
-            "datestart" => "2023-01-04",
-            "dateend" => "2023-01-04",
-            "starttime" => "12:00",
-            "endtime" => "13:00",
-            "event" => "Lunch break",
-            "linkadr" => "http://example.com/lunchbreak",
-            "linktxt" => "Tips for lunch breaks",
-            "location" => "whereever I am",
-        ];
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
             ->willReturn(false);
@@ -192,6 +178,14 @@ class EditEventsControllerTest extends TestCase
             "time" => 1675088820,
             "post" => [
                 "calendar_do" => "",
+                "datestart" => "2023-01-04",
+                "dateend" => "2023-01-04",
+                "starttime" => "12:00",
+                "endtime" => "13:00",
+                "event" => "Lunch break",
+                "linkadr" => "http://example.com/lunchbreak",
+                "linktxt" => "Tips for lunch breaks",
+                "location" => "whereever I am",
             ],
         ]);
         $response = ($this->sut)($request);
@@ -200,7 +194,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoDeleteActionRedirectsOnUnknowEvent()
     {
-        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=delete&event_id=invalid%20id",
@@ -215,7 +208,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoDeleteActionDeletesEventAndRedirectsOnSuccess()
     {
-        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(true);
         $request = new FakeRequest([
@@ -231,7 +223,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoDeleteActionShowsErrorOnFailureToDeleteEvent()
     {
-        $_POST = ["foo" => "bar"];
         $this->csrfProtector->expects($this->once())->method("check");
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(false);
         $request = new FakeRequest([

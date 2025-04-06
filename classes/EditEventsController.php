@@ -181,18 +181,17 @@ class EditEventsController
     private function upsert(Request $request, array $events, ?string $id): Response
     {
         $varnames = array(
-            'datestart', 'dateend', 'starttime', 'endtime', 'event', 'linkadr', 'linktxt', 'location'
+            "datestart", "dateend", "starttime", "endtime", "event", "linkadr", "linktxt", "location"
         );
         $post = [];
-        foreach ($varnames as $var) {
-            assert(!isset($_POST[$var]) || is_string($_POST[$var]));
-            $post[$var] = isset($_POST[$var]) ? $_POST[$var] : "";
+        foreach ($varnames as $varname) {
+            $post[$varname] = $request->post($varname) ?? "";
         }
-        if (!$this->isValidDate($post['datestart'])) {
-            $post['datestart'] = '';
+        if (!$this->isValidDate($post["datestart"])) {
+            $post["datestart"] = "";
         }
-        if (!$this->isValidDate($post['dateend'])) {
-            $post['dateend'] = '';
+        if (!$this->isValidDate($post["dateend"])) {
+            $post["dateend"] = "";
         }
         $maybeEvent = Event::create(...array_values($post));
         if ($maybeEvent === null) {
