@@ -26,6 +26,9 @@
 
 namespace Calendar;
 
+use Calendar\Dto\BirthdayRow;
+use Calendar\Dto\EventRow;
+use Calendar\Dto\HeaderRow;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Plib\Request;
@@ -96,7 +99,7 @@ class EventListController
                 ["<span>", "</span>"],
                 $this->view->text("event_list_heading", "\x06" . $start . "\x15", "\x06" . $end . "\x15")
             ),
-            'monthEvents' => $monthEvents,
+            'events' => $monthEvents,
         ]);
     }
 
@@ -175,9 +178,9 @@ class EventListController
 
     /**
      * @param array<Event> $events
-     * @return ?array{headline:array{tablecols:int,monthYear:string,showTime:bool,showLocation:bool,showLink:bool},rows:list<array{is_birthday:bool,age?:int,summary:string,location:string,past_event_class?:string,date:string,showTime:bool,showLocation:bool,showLink:bool,link:string,time?:string}>}
+     * @return ?object{headline:HeaderRow,rows:list<BirthdayRow|EventRow>}
      */
-    private function getMonthEvents(Request $request, array $events, int $tablecols, int $year, int $month): ?array
+    private function getMonthEvents(Request $request, array $events, int $tablecols, int $year, int $month): ?object
     {
         if (empty($events)) {
             return null;
@@ -190,27 +193,24 @@ class EventListController
                 $result['rows'][] = $this->getEventRowView($request, $event);
             }
         }
-        return $result;
+        return (object) $result;
     }
 
-    /** @return array{is_birthday:bool,age:int,summary:string,location:string,date:string,showTime:bool,showLocation:bool,showLink:bool,link:string} */
-    private function getBirthdayRowView(Event $event, int $year): array
+    private function getBirthdayRowView(Event $event, int $year): BirthdayRow
     {
-        return [
-            'is_birthday' => true,
-            'age' => $year - $event->start()->year(),
-            'summary' => $event->summary(),
-            'location' => $event->location(),
-            'date' => $this->dateTimeFormatter->formatDate($event->start()->withYear($year)),
-            'showTime' => (bool) $this->conf['show_event_time'],
-            'showLocation' => (bool) $this->conf['show_event_location'],
-            'showLink' => (bool) $this->conf['show_event_link'],
-            'link' => $this->renderLink($event),
-        ];
+        return new BirthdayRow(
+            $year - $event->start()->year(),
+            $event->summary(),
+            $event->location(),
+            $this->dateTimeFormatter->formatDate($event->start()->withYear($year)),
+            (bool) $this->conf['show_event_time'],
+            (bool) $this->conf['show_event_location'],
+            (bool) $this->conf['show_event_link'],
+            $this->renderLink($event)
+        );
     }
 
-    /** @return array{is_birthday:bool,summary:string,location:string,past_event_class:string,date:string,showTime:bool,showLocation:bool,showLink:bool,link:string,time:string} */
-    private function getEventRowView(Request $request, Event $event): array
+    private function getEventRowView(Request $request, Event $event): EventRow
     {
         if ($event->isFullDay()) {
             $time = "";
@@ -227,18 +227,17 @@ class EventListController
         }
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
         assert($now !== null);
-        return [
-            'is_birthday' => false,
-            'summary' => $event->summary(),
-            'location' => $event->location(),
-            'past_event_class' => $event->end()->compare($now) < 0 ? "past_event" : "",
-            'date' => $this->renderDate($event),
-            'showTime' => (bool) $this->conf['show_event_time'],
-            'showLocation' => (bool) $this->conf['show_event_location'],
-            'showLink' => (bool) $this->conf['show_event_link'],
-            'link' => $this->renderLink($event),
-            'time' => $time,
-        ];
+        return new EventRow(
+            $event->summary(),
+            $event->location(),
+            $this->renderDate($event),
+            $time,
+            (bool) $this->conf['show_event_time'],
+            (bool) $this->conf['show_event_location'],
+            (bool) $this->conf['show_event_link'],
+            $this->renderLink($event),
+            $event->end()->compare($now) < 0 ? "past_event" : ""
+        );
     }
 
     private function renderDate(Event $event): string
@@ -268,15 +267,14 @@ class EventListController
         }
     }
 
-    /** @return array{tablecols:int,monthYear:string,showTime:bool,showLocation:bool,showLink:bool} */
-    private function getHeadline(int $tablecols, int $year, int $month): array
+    private function getHeadline(int $tablecols, int $year, int $month): HeaderRow
     {
-        return [
-            'tablecols' => $tablecols,
-            'monthYear' => $this->dateTimeFormatter->formatMonthYear($month, $year),
-            'showTime' => (bool) $this->conf['show_event_time'],
-            'showLocation' => (bool) $this->conf['show_event_location'],
-            'showLink' => (bool) $this->conf['show_event_link'],
-        ];
+        return new HeaderRow(
+            $tablecols,
+            $this->dateTimeFormatter->formatMonthYear($month, $year),
+            (bool) $this->conf['show_event_time'],
+            (bool) $this->conf['show_event_location'],
+            (bool) $this->conf['show_event_link'],
+        );
     }
 }
