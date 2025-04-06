@@ -103,7 +103,7 @@ class EditEventsController
             'showEventLink' => (bool) $this->conf['show_event_link'],
             'events' => $events,
             'hash' => sha1(serialize($events)),
-            'jsUrl' => $js,
+            'jsUrl' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
         ]);
         return Response::create($output);
     }

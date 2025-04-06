@@ -89,7 +89,7 @@ class CalendarController
             'nextUrl' => $this->getNextUrl($request, $year, $month),
             'headRow' => $this->getDaynamesRow(),
             'rows' => $rows,
-            'jsUrl' => $js,
+            'jsUrl' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
         ];
         if ($request->header("X-CMSimple-XH-Request") === "calendar") {
             return Response::create($this->view->render('calendar', $data))->withContentType("text/html");
