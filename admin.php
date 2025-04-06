@@ -54,10 +54,10 @@ if (XH_wantsPluginAdministration("calendar")) {
             break;
         case 'plugin_main':
             $o .= sprintf("<h1>Calendar – %s</h1>", XH_hsc($plugin_tx["calendar"]["menu_main"]))
-                . Dic::makeEditEventController()()->trigger();
+                . Dic::makeEditEventController()()();
             break;
         case 'import':
-            $o .= Dic::makeIcalImportController()($action)->trigger();
+            $o .= Dic::makeIcalImportController()($action)();
             break;
         default:
             $o .= plugin_admin_common();

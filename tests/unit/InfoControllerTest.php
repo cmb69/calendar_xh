@@ -23,6 +23,7 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\FakeSystemChecker;
 use Plib\View;
 
 class InfoControllerTest extends TestCase
@@ -31,9 +32,7 @@ class InfoControllerTest extends TestCase
     {
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $lang = $plugin_tx['calendar'];
-        $systemChecker = $this->createStub(SystemChecker::class);
-        $systemChecker->method('checkVersion')->willReturn(true);
-        $systemChecker->method('checkWritability')->willReturn(true);
+        $systemChecker = new FakeSystemChecker(true);
         $sut = new InfoController("./", $lang, $systemChecker, new View("./views/", $lang));
         $response = $sut->defaultAction();
         Approvals::verifyHtml($response);

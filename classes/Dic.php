@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Plib\SystemChecker;
 use Plib\View;
 use XH\CSRFProtection as CsrfProtector;
 

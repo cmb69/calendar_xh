@@ -23,6 +23,7 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use PHPUnit\Framework\TestCase;
+use Plib\Response;
 use Plib\View;
 
 class CalendarControllerTest extends TestCase
