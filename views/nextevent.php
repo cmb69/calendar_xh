@@ -16,7 +16,7 @@ if (!isset($this)) {header("404 Not found"); exit;}
 <div class="calendar_marquee_outer">
   <div class="calendar_marquee">
     <div class="nextevent_event"><?=$this->esc($summary)?></div>
-    <div class="nextevent_date"><?=$this->esc($event_text)?></div>
+    <div class="nextevent_date"><?=$this->raw($event_text)?></div>
 <?  if (isset($event_text_2)):?>
     <div class="nextevent_date"><?=$this->esc($event_text_2)?></div>
 <?  endif?>

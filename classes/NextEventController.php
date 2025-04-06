@@ -66,12 +66,12 @@ class NextEventController
                     $ldt = $nextevent->start()->withYear($now->year() + 1);
                 }
                 $age = $now->year() - $nextevent->start()->year();
-                $nexteventtext = $this->view->plain("age" . XH_numberSuffix($age), $age);
+                $nexteventtext = $this->view->plural("age", $age);
                 $nexteventtext2 = null;
             } elseif ($nextevent->start()->compare($now) >= 0) {
                 $ldt = $nextevent->start();
                 if ($nextevent->isMultiDay()) {
-                    $nexteventtext = $this->view->plain("event_date_till_date");
+                    $nexteventtext = $this->view->text("event_date_till_date");
                     $nexteventtext2 = $nextevent->isFullDay()
                         ? $this->dateTimeFormatter->formatDate($nextevent->end())
                         : $this->dateTimeFormatter->formatDateTime($nextevent->end());
@@ -81,7 +81,7 @@ class NextEventController
                 }
             } else {
                 $ldt = $nextevent->end();
-                $nexteventtext = $this->view->plain("event_started");
+                $nexteventtext = $this->view->text("event_started");
                 $nexteventtext2 = $nextevent->isFullDay()
                     ? $this->dateTimeFormatter->formatDate($nextevent->start())
                     : $this->dateTimeFormatter->formatDateTime($nextevent->start());

@@ -35,7 +35,7 @@ if (!isset($this)) {header("404 Not found"); exit;}
 <?  foreach ($row as $cell):?>
     <td class="<?=$this->esc($cell['classname'])?>">
 <?    if (isset($cell['href'], $cell['title'])):?>
-      <a href="<?=$this->esc($cell['href'])?>" title="<?=$this->esc($cell['title'])?>">
+      <a href="<?=$this->esc($cell['href'])?>" title="<?=$this->raw($cell['title'])?>">
 <?    endif?>
         <?=$this->esc($cell['content'])?>
 <?    if (isset($cell['href'])):?>

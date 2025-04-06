@@ -16,6 +16,7 @@ $plugin_tx['calendar']['event_date_start']="Anfangsdatum";
 $plugin_tx['calendar']['event_date_end']="Enddatum";
 
 $plugin_tx['calendar']['birthday_text']="Geburtstag";
+$plugin_tx['calendar']['age_0']="%d Jahre alt";
 $plugin_tx['calendar']['age_1']="%d Jahr alt";
 $plugin_tx['calendar']['age_2_4']="%d Jahre alt";
 $plugin_tx['calendar']['age_5']="%d Jahre alt";

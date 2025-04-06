@@ -227,10 +227,10 @@ class CalendarController
                 $text = $event->summary();
             }
             if (!$event->isBirthday()) {
-                $titles[] = $this->dateTimeFormatter->formatTime($event->start()) . " " . $text;
+                $titles[] = $this->view->esc($this->dateTimeFormatter->formatTime($event->start()) . " " . $text);
             } else {
                 $age = $year - $event->start()->year();
-                $age = sprintf($this->view->plain("age" . XH_numberSuffix($age), $age));
+                $age = $this->view->plural("age", $age);
                 $titles[] = "{$text} {$age}";
             }
         }
