@@ -152,6 +152,20 @@ class Event
         return $this->end->compareDate($this->start) > 0;
     }
 
+    public function startsOn(LocalDateTime $day): bool
+    {
+        assert($day->hour() === 0 && $day->minute() === 0);
+        return $this->start()->compareDate($day) === 0
+            && $this->end()->compareDate($day) !== 0;
+    }
+
+    public function endsOn(LocalDateTime $day): bool
+    {
+        assert($day->hour() === 0 && $day->minute() === 0);
+        return $this->end()->compareDate($day) === 0
+            && $this->start()->compareDate($day) !== 0;
+    }
+
     public function isFullDay(): bool
     {
         return $this->start->hour() === 0 && $this->start->minute() === 0
