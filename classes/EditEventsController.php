@@ -66,13 +66,14 @@ class EditEventsController
 
     public function __invoke(Request $request): Response
     {
+        $do = $request->post("calendar_do") !== null;
         switch ($request->get("action") ?? "") {
             case "create":
-                return empty($_POST) ? $this->createAction($request) : $this->doCreateAction($request);
+                return !$do ? $this->createAction($request) : $this->doCreateAction($request);
             case "update":
-                return empty($_POST) ? $this->updateAction($request) : $this->doUpdateAction($request);
+                return !$do ? $this->updateAction($request) : $this->doUpdateAction($request);
             case "delete":
-                return empty($_POST) ? $this->deleteAction($request) : $this->doDeleteAction($request);
+                return !$do ? $this->deleteAction($request) : $this->doDeleteAction($request);
             default:
                 return $this->defaultAction($request);
         }

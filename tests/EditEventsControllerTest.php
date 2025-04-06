@@ -123,6 +123,9 @@ class EditEventsControllerTest extends TestCase
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=create",
             "time" => 1675088820,
+            "post" => [
+                "calendar_do" => "",
+            ],
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -135,6 +138,9 @@ class EditEventsControllerTest extends TestCase
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=update&event_id=invalid%20id",
             "time" => 1675088820,
+            "post" => [
+                "calendar_do" => "",
+            ],
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -158,6 +164,9 @@ class EditEventsControllerTest extends TestCase
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=update&event_id=111",
             "time" => 1675088820,
+            "post" => [
+                "calendar_do" => "",
+            ],
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -181,6 +190,9 @@ class EditEventsControllerTest extends TestCase
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=update&event_id=111",
             "time" => 1675088820,
+            "post" => [
+                "calendar_do" => "",
+            ],
         ]);
         $response = ($this->sut)($request);
         Approvals::verifyHtml($response->output());
@@ -193,6 +205,9 @@ class EditEventsControllerTest extends TestCase
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=delete&event_id=invalid%20id",
             "time" => 1675088820,
+            "post" => [
+                "calendar_do" => "",
+            ],
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -206,6 +221,9 @@ class EditEventsControllerTest extends TestCase
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=delete&event_id=111",
             "time" => 1675088820,
+            "post" => [
+                "calendar_do" => "",
+            ],
         ]);
         $response = ($this->sut)($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
@@ -219,6 +237,9 @@ class EditEventsControllerTest extends TestCase
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=delete&event_id=111",
             "time" => 1675088820,
+            "post" => [
+                "calendar_do" => "",
+            ],
         ]);
         $response = ($this->sut)($request);
         Approvals::verifyHtml($response->output());
