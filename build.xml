@@ -20,12 +20,6 @@
     </exec>
   </target>
 
-  <target name="mess" description="detects code flaws">
-    <exec executable="phpmd" passthru="true" checkreturn="true">
-      <arg line="tests/unit/,admin.php,index.php,classes ansi codesize,unusedcode --ignore-violations-on-exit"/>
-    </exec>
-  </target>
-
   <target name="stan" description="runs static analyzer">
     <exec executable="phpstan" passthru="true" checkreturn="true"/>
   </target>
