@@ -63,18 +63,20 @@ class EventListController
 
     public function defaultAction(int $month, int $year, int $endMonth, int $pastMonth, Request $request): string
     {
-        $this->determineYearAndMonth($request, $year, $month, $pastMonth);
-        $this->determineEndMonth($endMonth);
-        $endMonth = $endMonth + $pastMonth;
-
-        $calendar = $this->eventDataService->readEvents();
-
-        $startDate = new LocalDateTime($year, $month, 1, 0, 0);
-        $endDate = $startDate->plusMonths($endMonth);
-
+        if ($pastMonth === 0) {
+            $pastMonth = (int) $this->conf['show_number_of_previous_months'];
+        }
+        $pastMonth = max($pastMonth, 0);
+        if ($endMonth === 0) {
+            $endMonth = (int) $this->conf['show_number_of_future_months'];
+        }
+        $endMonth = max($endMonth, 1);
+        $desiredMonth = $this->desiredMonth($request, $year, $month);
+        $startDate = $desiredMonth->plusMonths(-$pastMonth);
+        $endDate = $desiredMonth->plusMonths($endMonth);
         $tablecols = $this->calcTablecols();
-
         $monthEvents = [];
+        $calendar = $this->eventDataService->readEvents();
         $currDate = $startDate;
         while ($currDate->compareDate($endDate) < 0) {
             $year = $currDate->year();
@@ -98,10 +100,9 @@ class EventListController
         ]);
     }
 
-    private function determineYearAndMonth(Request $request, int &$year, int &$month, int &$pastMonth): void
+    private function desiredMonth(Request $request, int $year, int $month): LocalDateTime
     {
         $month_input = $request->get("month") !== null ? max(1, min(12, (int) $request->get("month"))) : 0;
-
         if ($month) {
             if ($month_input) {
                 if ($month >= $month_input) {
@@ -111,36 +112,13 @@ class EventListController
         } else {
             $month = $month_input;
         }
-
         $year = $request->get("year") !== null
             ? max(1, min(9000, (int) $request->get("year")))
-            : idate("Y", $request->time());
-
+            : (int) idate("Y", $request->time());
         if ($month === 0) {
-            $month = idate("n", $request->time());
+            $month = (int) idate("n", $request->time());
         }
-
-        if (!$pastMonth) {
-            $pastMonth = (int) $this->conf['show_number_of_previous_months'];
-        }
-
-        $month = $month - $pastMonth;
-        if ($month < 1) {
-            $year = $year - 1;
-            $month = 12 + $month;
-        }
-    }
-
-    /** @param-out int $endMonth */
-    private function determineEndMonth(int &$endMonth): void
-    {
-        if ($endMonth === 0) {
-            if ($this->conf['show_number_of_future_months']) {
-                $endMonth = (int) $this->conf['show_number_of_future_months'];
-            } else {
-                $endMonth = 1;
-            }
-        }
+        return new LocalDateTime($year, $month, 1, 0, 0);
     }
 
     private function calcTablecols(): int
