@@ -75,4 +75,25 @@ class LocalDateTimeTest extends TestCase
             [new LocalDateTime(2021, 4, 3, 0, 0), new LocalDateTime(2021, 3, 3, 0, 0), 1],
         ];
     }
+
+    /** @dataProvider plusMonthsData */
+    public function testPlusMonths(LocalDateTime $now, int $months, LocalDateTime $expected): void
+    {
+        $actual = $now->plusMonths($months);
+        $this->assertSame($expected->year(), $actual->year());
+        $this->assertSame($expected->month(), $actual->month());
+    }
+
+    public function plusMonthsData(): array
+    {
+        return [
+            [new LocalDateTime(2025, 4, 1, 0, 0), 0, new LocalDateTime(2025, 4, 1, 0, 0)],
+            [new LocalDateTime(2025, 4, 1, 0, 0), 3, new LocalDateTime(2025, 7, 1, 0, 0)],
+            [new LocalDateTime(2025, 4, 1, 0, 0), -3, new LocalDateTime(2025, 1, 1, 0, 0)],
+            [new LocalDateTime(2025, 4, 1, 0, 0), -4, new LocalDateTime(2024, 12, 1, 0, 0)],
+            [new LocalDateTime(2025, 4, 1, 0, 0), -20, new LocalDateTime(2023, 8, 1, 0, 0)],
+            [new LocalDateTime(2025, 4, 1, 0, 0), 9, new LocalDateTime(2026, 1, 1, 0, 0)],
+            [new LocalDateTime(2025, 4, 1, 0, 0), 21, new LocalDateTime(2027, 1, 1, 0, 0)],
+        ];
+    }
 }

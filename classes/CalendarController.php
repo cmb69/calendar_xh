@@ -79,11 +79,16 @@ class CalendarController
         if (!is_file($js)) {
             $js = $this->pluginFolder . "js/calendar.js";
         }
+        $currMonth = new LocalDateTime($year, $month, 1, 0, 0);
+        $prevMonth = $currMonth->plusMonths(-1);
+        $nextMonth = $currMonth->plusMonths(1);
         $data = [
             'caption' => $this->dateTimeFormatter->formatMonthYear($month, $year),
             'hasPrevNextButtons' => (bool) $this->conf['prev_next_button'],
-            'prevUrl' => $this->getPrevUrl($request, $year, $month),
-            'nextUrl' => $this->getNextUrl($request, $year, $month),
+            'prevUrl' => $request->url()->with("month", (string) $prevMonth->month())
+                ->with("year", (string) $prevMonth->year())->relative(),
+            'nextUrl' => $request->url()->with("month", (string) $nextMonth->month())
+                ->with("year", (string) $nextMonth->year())->relative(),
             'headRow' => $this->getDaynamesRow(),
             'rows' => $rows,
             'jsUrl' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
@@ -231,29 +236,5 @@ class CalendarController
             ];
         }
         return $row;
-    }
-
-    private function getPrevUrl(Request $request, int $year, int $month): string
-    {
-        if ($month <= 1) {
-            $month_prev = 12;
-            $year_prev = $year - 1;
-        } else {
-            $month_prev = $month - 1;
-            $year_prev = $year;
-        }
-        return $request->url()->with("month", (string) $month_prev)->with("year", (string) $year_prev)->relative();
-    }
-
-    private function getNextUrl(Request $request, int $year, int $month): string
-    {
-        if ($month >= 12) {
-            $month_next = 1;
-            $year_next = $year + 1;
-        } else {
-            $month_next = $month + 1;
-            $year_next = $year;
-        }
-        return $request->url()->with("month", (string) $month_next)->with("year", (string) $year_next)->relative();
     }
 }

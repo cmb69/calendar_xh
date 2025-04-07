@@ -69,29 +69,24 @@ class EventListController
 
         $calendar = $this->eventDataService->readEvents();
 
-        $endmonth = $month + $endMonth;
-        $endyear = $year;
-        while ($endmonth > 12) {
-            $endyear++;
-            $endmonth -= 12;
-        }
+        $startDate = new LocalDateTime($year, $month, 1, 0, 0);
+        $endDate = $startDate->plusMonths($endMonth);
 
         $tablecols = $this->calcTablecols();
 
-        $startmonth = $month;
-        $startyear = $year;
         $monthEvents = [];
-        $x = 0;
-        while ($x <= $endMonth) {
+        $currDate = $startDate;
+        while ($currDate->compareDate($endDate) < 0) {
+            $year = $currDate->year();
+            $month = $currDate->month();
             $filteredEvents = $calendar->eventsDuring($year, $month);
             if (($oneMonthEvents = $this->getMonthEvents($request, $filteredEvents, $tablecols, $year, $month))) {
                 $monthEvents[] = $oneMonthEvents;
             }
-            $x++;
-            $this->advanceMonth($year, $month);
+            $currDate = $currDate->plusMonths(1);
         }
-        $start = $this->dateTimeFormatter->formatMonthYear($startmonth, $startyear);
-        $end = $this->dateTimeFormatter->formatMonthYear($endmonth, $endyear);
+        $start = $this->dateTimeFormatter->formatMonthYear($startDate->month(), $startDate->year());
+        $end = $this->dateTimeFormatter->formatMonthYear($endDate->month(), $endDate->year());
         return $this->view->render($this->conf["eventlist_template"], [
             'showHeading' => (bool) $this->conf['show_period_of_events'],
             'heading' => str_replace(
@@ -145,16 +140,6 @@ class EventListController
             } else {
                 $endMonth = 1;
             }
-        }
-    }
-
-    private function advanceMonth(int &$year, int &$month): void
-    {
-        if ($month == 12) {
-            $year++;
-            $month = 1;
-        } else {
-            $month++;
         }
     }
 

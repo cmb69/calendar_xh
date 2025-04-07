@@ -146,4 +146,23 @@ class LocalDateTime
         }
         return $this->day - $other->day;
     }
+
+    public function plusMonths(int $months): self
+    {
+        assert($this->day === 1 && $this->hour === 0 && $this->minute === 0);
+        if ($months === 0) {
+            return $this;
+        }
+        $year = $this->year;
+        $month = $this->month + $months;
+        while ($month < 1) {
+            $year--;
+            $month += 12;
+        }
+        while ($month > 12) {
+            $year++;
+            $month -= 12;
+        }
+        return new self($year, $month, 1, 0, 0);
+    }
 }
