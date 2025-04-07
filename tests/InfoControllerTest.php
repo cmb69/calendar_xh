@@ -39,6 +39,6 @@ class InfoControllerTest extends TestCase
             new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"])
         );
         $response = $sut->defaultAction();
-        Approvals::verifyHtml($response);
+        Approvals::verifyHtml($response->output());
     }
 }

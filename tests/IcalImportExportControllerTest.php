@@ -39,6 +39,7 @@ class IcalImportControllerTest extends TestCase
         $view = new View("./views/", $plugin_tx['calendar']);
         $sut = new IcalImportExportController($icsFileFinder, $eventDataService, $iCalendarWriter, $view);
         $response = $sut(new FakeRequest());
+        $this->assertSame("Calendar – Import/Export", $response->title());
         Approvals::verifyHtml($response->output());
     }
 
@@ -99,6 +100,7 @@ class IcalImportControllerTest extends TestCase
             "post" => ["calendar_ics" => "calendar.ics"],
         ]);
         $response = $sut($request);
+        $this->assertSame("Calendar – Import/Export", $response->title());
         $this->assertStringContainsString("Could not export to calendar.ics!", $response->output());
     }
 }

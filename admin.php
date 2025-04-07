@@ -52,7 +52,7 @@ if (XH_wantsPluginAdministration("calendar")) {
     $o .= $_XH_pluginMenu->show();
     switch ($admin) {
         case '':
-            $o .= Dic::makeInfoController()->defaultAction();
+            $o .= Dic::makeInfoController()->defaultAction()();
             break;
         case 'plugin_main':
             $o .= sprintf("<h1>Calendar – %s</h1>", XH_hsc($plugin_tx["calendar"]["menu_main"]))

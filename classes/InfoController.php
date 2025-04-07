@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Plib\Response;
 use Plib\SystemChecker;
 use Plib\View;
 
@@ -55,9 +56,9 @@ class InfoController
         $this->view = $view;
     }
 
-    public function defaultAction(): string
+    public function defaultAction(): Response
     {
-        return $this->view->render('info', [
+        return Response::create($this->view->render('info', [
             'version' => CALENDAR_VERSION,
             'checks' => [
                 $this->checkPhpVersion('7.0.0'),
@@ -67,7 +68,7 @@ class InfoController
                 $this->checkWritability("{$this->pluginFolder}languages/"),
                 $this->checkWritability($this->dataService->getFilename()),
             ],
-        ]);
+        ]))->withTitle("Calendar " . $this->view->esc(CALENDAR_VERSION));
     }
 
     /** @return array{state:string,label:string,stateLabel:string} */

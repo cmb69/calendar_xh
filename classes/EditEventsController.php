@@ -102,13 +102,13 @@ class EditEventsController
             'hash' => sha1(serialize($events)),
             'jsUrl' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
         ]);
-        return Response::create($output);
+        return $this->respondWith($request, $output);
     }
 
     private function createAction(Request $request): Response
     {
         $event = $this->createDefaultEvent($request);
-        return Response::create($this->renderEditForm($request, $event, null, "create"));
+        return $this->respondWith($request, $this->renderEditForm($request, $event, null, "create"));
     }
 
     private function updateAction(Request $request): Response
@@ -118,7 +118,7 @@ class EditEventsController
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        return Response::create($this->renderEditForm($request, $event, $id, "update"));
+        return $this->respondWith($request, $this->renderEditForm($request, $event, $id, "update"));
     }
 
     private function deleteAction(Request $request): Response
@@ -128,7 +128,7 @@ class EditEventsController
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        return Response::create($this->renderEditForm($request, $event, $id, "delete"));
+        return $this->respondWith($request, $this->renderEditForm($request, $event, $id, "delete"));
     }
 
     private function renderEditForm(Request $request, Event $event, ?string $id, string $action): string
@@ -160,7 +160,7 @@ class EditEventsController
     private function doCreateAction(Request $request): Response
     {
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
-            return Response::create($this->view->message("fail", "error_unauthorized"));
+            return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
         $calendar = $this->eventDataService->readEvents();
         return $this->upsert($request, $calendar->events(), null);
@@ -169,7 +169,7 @@ class EditEventsController
     private function doUpdateAction(Request $request): Response
     {
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
-            return Response::create($this->view->message("fail", "error_unauthorized"));
+            return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
         $id = $request->get("event_id");
         assert($id !== null); // TODO invalid assertion
@@ -203,7 +203,7 @@ class EditEventsController
         if ($this->eventDataService->writeEvents($events)) {
             return $this->redirectToOverviewResponse($request);
         } else {
-            return Response::create($this->view->message("fail", "eventfile_not_saved")
+            return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderEditForm($request, $maybeEvent, $id, $id !== null ? "create" : "update"));
         }
     }
@@ -226,7 +226,7 @@ class EditEventsController
     private function doDeleteAction(Request $request): Response
     {
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
-            return Response::create($this->view->message("fail", "error_unauthorized"));
+            return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
         $calendar = $this->eventDataService->readEvents();
         $id = $request->get("event_id");
@@ -237,9 +237,18 @@ class EditEventsController
         if ($this->eventDataService->writeEvents($calendar->events())) {
             return $this->redirectToOverviewResponse($request);
         } else {
-            return Response::create($this->view->message("fail", "eventfile_not_saved")
+            return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderEditForm($request, $event, $id, "delete"));
         }
+    }
+
+    private function respondWith(Request $request, string $output): Response
+    {
+        $response = Response::create($output);
+        if ($request->selected() === '' || $request->selected() === "calendar") {
+            $response = $response->withTitle("Calendar – " . $this->view->text("menu_main"));
+        }
+        return $response;
     }
 
     private function redirectToOverviewResponse(Request $request): Response

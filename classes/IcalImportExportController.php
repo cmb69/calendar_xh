@@ -72,7 +72,7 @@ class IcalImportExportController
                 ->with("admin", "import_export")->with("action", "export")->relative(),
             'files' => $this->icsFileFinder->all(),
         ]);
-        return Response::create($output);
+        return Response::create($output)->withTitle("Calendar – " . $this->view->text("label_import_export"));
     }
 
     private function importAction(Request $request): Response
@@ -94,7 +94,8 @@ class IcalImportExportController
             return $this->defaultAction($request);
         }
         if (!$this->iCalendarWriter->write($this->eventDataService->readEvents())) {
-            return Response::create($this->view->message("fail", "error_export"));
+            return Response::create($this->view->message("fail", "error_export"))
+                ->withTitle("Calendar – " . $this->view->text("label_import_export"));
         }
         return Response::redirect($request->url()->page("calendar")->with("admin", "import_export")->absolute());
     }
