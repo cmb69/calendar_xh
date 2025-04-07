@@ -65,12 +65,17 @@ class IcalImportExportController
 
     private function defaultAction(Request $request): Response
     {
+        $ignored = $request->get("calendar_ignored");
+        if ($ignored !== null) {
+            $ignored = (int) $ignored;
+        }
         $output = $this->view->render('import_export', [
             'url' => $request->url()->page("calendar")->with("admin", "import_export")
                 ->with("action", "import")->relative(),
             'export_url' => $request->url()->page("calendar")
                 ->with("admin", "import_export")->with("action", "export")->relative(),
             'files' => $this->icsFileFinder->all(),
+            'ignored' => $ignored,
         ]);
         return Response::create($output)->withTitle("Calendar – " . $this->view->text("label_import_export"));
     }
@@ -82,9 +87,10 @@ class IcalImportExportController
         }
         $reader = new ICalendarParser();
         $events = $reader->parse($this->icsFileFinder->read($request->post("calendar_ics")));
+        $ignored = $reader->eventCount() - count($events);
         $events = array_merge($this->eventDataService->readEvents()->events(), $events);
         $this->eventDataService->writeEvents($events);
-        $url = $request->url()->page("calendar")->with("admin", "plugin_main")->with("action", "plugin_text");
+        $url = $request->url()->page("calendar")->with("admin", "import_export")->with("calendar_ignored", (string) $ignored);
         return Response::redirect($url->absolute());
     }
 

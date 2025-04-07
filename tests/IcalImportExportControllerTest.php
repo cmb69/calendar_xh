@@ -38,7 +38,9 @@ class IcalImportControllerTest extends TestCase
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $view = new View("./views/", $plugin_tx['calendar']);
         $sut = new IcalImportExportController($icsFileFinder, $eventDataService, $iCalendarWriter, $view);
-        $response = $sut(new FakeRequest());
+        $response = $sut(new FakeRequest([
+            "url" => "http://example.com/?calendar&calendar_ignored=2",
+        ]));
         $this->assertSame("Calendar – Import/Export", $response->title());
         Approvals::verifyHtml($response->output());
     }
@@ -59,7 +61,7 @@ class IcalImportControllerTest extends TestCase
         ]);
         $response = $sut($request);
         $this->assertEquals(
-            "http://example.com/?calendar&admin=plugin_main&action=plugin_text",
+            "http://example.com/?calendar&admin=import_export&calendar_ignored=0",
             $response->location()
         );
     }

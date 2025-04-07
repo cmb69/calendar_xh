@@ -50,6 +50,11 @@ $plugin_tx['calendar']['label_import_export']="Import/Export";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_export']="Export";
 
+$plugin_tx['calendar']['message_ignored_0']="All events have been imported!";
+$plugin_tx['calendar']['message_ignored_1']="One event could not be imported!";
+$plugin_tx['calendar']['message_ignored_2_4']="%d events could not be imported!";
+$plugin_tx['calendar']['message_ignored_5']="%d events could not be imported!";
+
 $plugin_tx['calendar']['error_export']="Could not export to calendar.ics!";
 $plugin_tx['calendar']['error_unauthorized']="You are not authorized for this action!";
 

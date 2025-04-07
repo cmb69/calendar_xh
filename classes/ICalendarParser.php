@@ -42,6 +42,9 @@ class ICalendarParser
     /** @var array<string,string> */
     private $currentEvent = [];
 
+    /** @var int */
+    private $eventCount;
+
     /**
      * @param list<string> $lines
      * @return array<Event>
@@ -49,6 +52,7 @@ class ICalendarParser
     public function parse(array $lines): array
     {
         $this->lines = $lines;
+        $this->eventCount = 0;
         $this->unfold();
         $this->doParse();
         return $this->events;
@@ -90,6 +94,7 @@ class ICalendarParser
                 }
             } else {
                 if ($this->currentLine === 'BEGIN:VEVENT') {
+                    $this->eventCount++;
                     $isInEvent = true;
                     $this->currentEvent = [];
                 }
@@ -194,5 +199,10 @@ class ICalendarParser
             return "$matches[1]-$matches[2]-$matches[3]";
         }
         return null;
+    }
+
+    public function eventCount(): int
+    {
+        return $this->eventCount;
     }
 }

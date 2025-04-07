@@ -50,6 +50,11 @@ $plugin_tx['calendar']['label_import_export']="Import/Export";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_export']="Export";
 
+$plugin_tx['calendar']['message_ignored_0']="Alle Veranstaltungen wurden importiert!";
+$plugin_tx['calendar']['message_ignored_1']="Eine Veranstaltung konnte nicht importiert werden!";
+$plugin_tx['calendar']['message_ignored_2_4']="%d Veranstaltungen konnten nicht importiert werden!";
+$plugin_tx['calendar']['message_ignored_5']="%d Veranstaltungen konnten nicht importiert werden!";
+
 $plugin_tx['calendar']['error_export']="Konnte nicht nach calendar.ics exportieren!";
 $plugin_tx['calendar']['error_unauthorized']="Sie sind nicht befugt diese Aktion auszuführen!";
 
