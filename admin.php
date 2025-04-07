@@ -42,12 +42,13 @@ if (!defined("CMSIMPLE_XH_VERSION")) {
  * @var ClassicPluginMenu $_XH_pluginMenu
  */
 
+$temp = $sn . "?&calendar&admin=import_export&normal"; // can't use Request::url() here
 XH_registerStandardPluginMenuItems(true);
-XH_registerPluginMenuItem("calendar", $plugin_tx["calendar"]["label_import_export"], $sn . "?&calendar&admin=import_export&normal");
+XH_registerPluginMenuItem("calendar", $plugin_tx["calendar"]["label_import_export"], $temp);
 if (XH_wantsPluginAdministration("calendar")) {
     $o .= print_plugin_admin("on");
     $_XH_pluginMenu->makeRow();
-    $_XH_pluginMenu->makeTab("$sn?&calendar&admin=import_export&normal", "", $plugin_tx["calendar"]["label_import_export"]);
+    $_XH_pluginMenu->makeTab($temp, "", $plugin_tx["calendar"]["label_import_export"]);
     $o .= $_XH_pluginMenu->show();
     switch ($admin) {
         case '':
