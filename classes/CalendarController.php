@@ -182,8 +182,18 @@ class CalendarController
             } else {
                 $text = $event->summary();
             }
+            $text = $this->view->esc($text);
             if (!$event->isBirthday()) {
-                $titles[] = $this->view->esc($this->dateTimeFormatter->formatTime($event->start()) . " " . $text);
+                if (!$event->isFullDay() && !$event->isMultiDay()) {
+                    $time = $this->view->text(
+                        "format_time_interval",
+                        $this->dateTimeFormatter->formatTime($event->start()),
+                        $this->dateTimeFormatter->formatTime($event->end())
+                    );
+                } else {
+                    $time = $this->view->esc($this->dateTimeFormatter->formatTime($event->start()));
+                }
+                $titles[] = $time . " " . $text;
             } else {
                 $age = $year - $event->start()->year();
                 $age = $this->view->plural("age", $age);

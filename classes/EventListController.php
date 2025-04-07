@@ -212,18 +212,14 @@ class EventListController
 
     private function getEventRowView(Request $request, Event $event): EventRow
     {
-        if ($event->isFullDay()) {
+        if ($event->isFullDay() || $event->isBirthday()) {
             $time = "";
         } else {
-            if ($event->isMultiDay()) {
-                $time = sprintf(
-                    $this->view->plain("format_time_interval"),
-                    $this->dateTimeFormatter->formatTime($event->start()),
-                    $this->dateTimeFormatter->formatTime($event->end())
-                );
-            } else {
-                $time = $this->dateTimeFormatter->formatTime($event->start());
-            }
+            $time = $this->view->text(
+                "format_time_interval",
+                $this->dateTimeFormatter->formatTime($event->start()),
+                $this->dateTimeFormatter->formatTime($event->end())
+            );
         }
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
         assert($now !== null);
