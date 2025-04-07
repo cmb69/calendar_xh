@@ -92,7 +92,7 @@ class EventListController
         }
         $start = $this->dateTimeFormatter->formatMonthYear($startmonth, $startyear);
         $end = $this->dateTimeFormatter->formatMonthYear($endmonth, $endyear);
-        return $this->view->render('eventlist', [
+        return $this->view->render($this->conf["eventlist_template"], [
             'showHeading' => (bool) $this->conf['show_period_of_events'],
             'heading' => str_replace(
                 ["\x06", "\x15"],
