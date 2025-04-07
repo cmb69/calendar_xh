@@ -99,7 +99,7 @@ class ICalendarParser
 
     private function processPropertyLine(): void
     {
-        list($property, $param, $value) = $this->parseLine();
+        ["property" => $property, "params" => $params, "value" => $value] = $this->parseLine();
         assert($property !== null);
         assert($value !== null);
         switch ($property) {
@@ -113,58 +113,63 @@ class ICalendarParser
                 $this->currentEvent['linkadr'] = $value;
                 return;
             case 'DTSTART':
-                $this->processDtStart($param, $value);
+                $this->processDtStart($params, $value);
                 return;
             case 'DTEND':
-                $this->processDtEnd($param, $value);
+                $this->processDtEnd($params, $value);
                 return;
         }
     }
 
-    private function processDtStart(?string $param, string $value): void
+    /** @param array<string,string> $params */
+    private function processDtStart(array $params, string $value): void
     {
-        if ($param === null) {
-            if (($datetime = $this->parseDateTime($value))) {
-                list($this->currentEvent['datestart'], $this->currentEvent['starttime']) = $datetime;
-            }
-        } elseif ($param === "VALUE=DATE") {
-            if (($date = $this->parseDate($value))) {
-                $this->currentEvent['datestart'] = $date;
-            }
+        switch ($params["VALUE"] ?? "DATE-TIME") {
+            case "DATE-TIME":
+                if (($datetime = $this->parseDateTime($value))) {
+                    list($this->currentEvent['datestart'], $this->currentEvent['starttime']) = $datetime;
+                }
+                break;
+            case "DATE":
+                if (($date = $this->parseDate($value))) {
+                    $this->currentEvent['datestart'] = $date;
+                }
+                break;
         }
     }
 
-    private function processDtEnd(?string $param, string $value): void
+    /** @param array<string,string> $params */
+    private function processDtEnd(array $params, string $value): void
     {
-        if ($param === null) {
-            if (($datetime = $this->parseDateTime($value))) {
-                list($this->currentEvent['dateend'], $this->currentEvent['endtime']) = $datetime;
-            }
-        } elseif ($param === "VALUE=DATE") {
-            if (($date = $this->parseDate($value))) {
-                $this->currentEvent['dateend'] = $date;
-            }
+        switch ($params["VALUE"] ?? "DATE-TIME") {
+            case "DATE-TIME":
+                if (($datetime = $this->parseDateTime($value))) {
+                    list($this->currentEvent['dateend'], $this->currentEvent['endtime']) = $datetime;
+                }
+                break;
+            case "DATE":
+                if (($date = $this->parseDate($value))) {
+                    $this->currentEvent['dateend'] = $date;
+                }
+                break;
         }
     }
 
-    /**
-     * ignores property parameters
-     *
-     * @return array<?string>
-     */
+    /** @return array{property:string,params:array<string,string>,value:string} */
     private function parseLine(): array
     {
         list($property, $value) = explode(':', $this->currentLine, 2);
         $parts = explode(';', $property);
         $property = $parts[0];
+        $params = [];
         if (count($parts) > 1) {
-            $param = $parts[1];
-        } else {
-            $param = null;
+            foreach (array_splice($parts, 1) as $part) {
+                [$name, $val] = explode("=", $part);
+                $params[$name] = $val;
+            }
         }
         $value = str_replace(["\\\\", "\\;", "\\,", "\\N", "\\n"], ["\\", ";", ",", "\n", "\n"], $value);
-        // $value = preg_replace('/\\\\(?!\\\\)/', '', $value);
-        return [$property, $param, $value];
+        return ["property" => $property, "params" => $params, "value" => $value];
     }
 
     /**

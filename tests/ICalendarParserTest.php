@@ -33,7 +33,7 @@ class ICalendarParserTest extends TestCase
         $subject = new ICalendarParser();
         $actual = $subject->parse($lines);
         $this->assertContainsOnlyInstancesOf(Event::class, $actual);
-        $this->assertCount(2, $actual);
+        $this->assertCount(3, $actual);
 
         $first = $actual[0];
         $this->assertSame(0, (new LocalDateTime(1997, 7, 14, 17, 0))->compare($first->start()));
@@ -50,5 +50,13 @@ class ICalendarParserTest extends TestCase
         $this->assertSame("https://3-magi.net/", $second->linkadr());
         $this->assertSame("", $second->linktxt());
         $this->assertSame("a\\\\b;c,d\ne\nf", $second->location());
+
+        $third = $actual[2];
+        $this->assertSame(0, (new LocalDateTime(2024, 1, 23, 15, 0))->compare($third->start()));
+        $this->assertSame(0, (new LocalDateTime(2024, 1, 23, 17, 0))->compare($third->end()));
+        $this->assertSame("Digitale Reise Bubenheim", $third->summary());
+        $this->assertSame("https://www.digibos.org", $third->linkadr());
+        $this->assertSame("", $third->linktxt());
+        $this->assertSame("55270 Bubenheim Schulstraße 2 Dorfgemeinschaftshaus ", $third->location());
     }
 }
