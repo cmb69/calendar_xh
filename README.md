@@ -20,7 +20,7 @@ features at the cost of greatly increased complexity.
     - [Calendars](#calendars)
     - [Event List](#event-list)
     - [Next Event](#next-event)
-    - [Import](#import)
+    - [Import/Export](#importexport)
   - [Troubleshooting](#troubleshooting)
   - [License](#license)
   - [Credits](#credits)
@@ -145,13 +145,17 @@ or on a page:
 
     {{{nextevent()}}}
 
-### Import
+### Import/Export
 
 To import existing `.ics` files (iCalendar format), you have to put them
-in the `content/` folder (right besides the `calendar.csv` file). Then
-navigate to *Plugins* → *Calendar* → *Import* where you can actually
+in the `content/calendar/`/` folder (right besides the `calendar.csv` file). Then
+navigate to `Plugins` → `Calendar` → `Import/Export` where you can actually
 import the desired file(s). Note that only a very minimalistic import is
 implemented so far. Also note that no synchronization is being done on import.
+
+Under `Plugins` → `Calendar` → `Import/Export` you can also export the
+calendar to calendar.ics (iCalendar format).  The file will be created
+in the `content/calendar/` folder (right besides the `calendar.csv` file).
 
 ## Troubleshooting
 Report bugs and ask for support either on [Github](https://github.com/cmb69/calendar_xh/issues)

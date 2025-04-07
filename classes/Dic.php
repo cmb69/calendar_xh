@@ -93,11 +93,12 @@ class Dic
         );
     }
 
-    public static function makeIcalImportController(): IcalImportController
+    public static function makeIcalImportExportController(): IcalImportExportController
     {
-        return new IcalImportController(
+        return new IcalImportExportController(
             new IcsFileFinder(self::getDataFolder()),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new ICalendarWriter(self::getDataFolder()),
             self::view()
         );
     }

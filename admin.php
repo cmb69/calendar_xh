@@ -43,11 +43,11 @@ if (!defined("CMSIMPLE_XH_VERSION")) {
  */
 
 XH_registerStandardPluginMenuItems(true);
-XH_registerPluginMenuItem("calendar", $plugin_tx["calendar"]["label_import"], $sn . "?&calendar&admin=import&normal");
+XH_registerPluginMenuItem("calendar", $plugin_tx["calendar"]["label_import_export"], $sn . "?&calendar&admin=import_export&normal");
 if (XH_wantsPluginAdministration("calendar")) {
     $o .= print_plugin_admin("on");
     $_XH_pluginMenu->makeRow();
-    $_XH_pluginMenu->makeTab("$sn?&calendar&admin=import&normal", "", $plugin_tx["calendar"]["label_import"]);
+    $_XH_pluginMenu->makeTab("$sn?&calendar&admin=import_export&normal", "", $plugin_tx["calendar"]["label_import_export"]);
     $o .= $_XH_pluginMenu->show();
     switch ($admin) {
         case '':
@@ -57,8 +57,8 @@ if (XH_wantsPluginAdministration("calendar")) {
             $o .= sprintf("<h1>Calendar – %s</h1>", XH_hsc($plugin_tx["calendar"]["menu_main"]))
                 . Dic::makeEditEventController()(Request::current())();
             break;
-        case 'import':
-            $o .= Dic::makeIcalImportController()(Request::current())();
+        case 'import_export':
+            $o .= Dic::makeIcalImportExportController()(Request::current())();
             break;
         default:
             $o .= plugin_admin_common();

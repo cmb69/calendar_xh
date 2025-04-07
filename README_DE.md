@@ -20,7 +20,7 @@ zusätzlicher Features anbietet, allerdings zu Lasten der Einfachheit.
     - [Kalender](#kalender)
     - [Veranstaltungsliste](#veranstaltungsliste)
     - [Nächste Veranstaltung](#nächste-veranstaltung)
-    - [Import](#import)
+    - [Import/Export](#importexport)
   - [Fehlerbehebung](#fehlerbehebung)
   - [Lizenz](#lizenz)
   - [Danksagung](#danksagung)
@@ -149,14 +149,18 @@ oder auf einer Seite:
 
     {{{nextevent()}}}
 
-### Import
+### Import/Export
 
 Um vorhandene `.ics` Dateien (iCalendar-Format) zu importieren, müssen
-diese zunächst im `content/` Ordner (neben der `calendar.csv` Datei)
-abgelegt werden. Unter *Plugins* → *Calendar* → *Import* kann dann der
+diese zunächst im `content/calendar/` Ordner (neben der `calendar.csv` Datei)
+abgelegt werden. Unter `Plugins` → `Calendar` → `Import` kann dann der
 eigentliche Import der Datei(en) durchgeführt werden.
-Es ist zu beachten, dass bisland nur ein sehr minimalistischer Import implementiert ist.
+Es ist zu beachten, dass bislang nur ein sehr minimalistischer Import implementiert ist.
 Es ist ebenfalls zu beachten, dass beim Import keine Synchronisation durchgeführt wird.
+
+Unter `Plugins` → `Calendar` → `Import/Export` können Sie ebenfalls den
+Kalender nach calendar.ics (iCalendar-Format) exportieren.  Die Datei wird
+im `content/calendar/` Ordner (neben der `calendar.csv` Datei) angelegt.
 
 ## Fehlerbehebung
 

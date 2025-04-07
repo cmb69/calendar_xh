@@ -46,9 +46,11 @@ $plugin_tx['calendar']['label_new']="New";
 $plugin_tx['calendar']['label_edit']="Edit";
 $plugin_tx['calendar']['label_delete']="Delete";
 $plugin_tx['calendar']['label_save']="Save";
+$plugin_tx['calendar']['label_import_export']="Import/Export";
 $plugin_tx['calendar']['label_import']="Import";
-$plugin_tx['calendar']['label_import_button']="Import %s";
+$plugin_tx['calendar']['label_export']="Export";
 
+$plugin_tx['calendar']['error_export']="Could not export to calendar.ics!";
 $plugin_tx['calendar']['error_unauthorized']="You are not authorized for this action!";
 
 $plugin_tx['calendar']['syscheck_extension']="the PHP extension '%s' is loaded";

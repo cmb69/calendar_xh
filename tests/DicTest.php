@@ -59,8 +59,8 @@ class DicTest extends TestCase
         $this->assertInstanceOf(InfoController::class, Dic::makeInfoController());
     }
 
-    public function testMakeIcalImportController(): void
+    public function testMakeIcalImportExportController(): void
     {
-        $this->assertInstanceOf(IcalImportController::class, Dic::makeIcalImportController());
+        $this->assertInstanceOf(IcalImportExportController::class, Dic::makeIcalImportExportController());
     }
 }

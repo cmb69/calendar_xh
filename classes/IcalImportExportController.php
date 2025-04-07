@@ -25,7 +25,7 @@ use Plib\Request;
 use Plib\Response;
 use Plib\View;
 
-class IcalImportController
+class IcalImportExportController
 {
     /** @var IcsFileFinder */
     private $icsFileFinder;
@@ -33,17 +33,22 @@ class IcalImportController
     /** @var EventDataService */
     private $eventDataService;
 
+    /** @var ICalendarWriter */
+    private $iCalendarWriter;
+
     /** @var View */
     private $view;
 
     public function __construct(
         IcsFileFinder $icsFileFinder,
         EventDataService $eventDataService,
+        ICalendarWriter $iCalendarWriter,
         View $view
     ) {
         $this->view = $view;
         $this->icsFileFinder = $icsFileFinder;
         $this->eventDataService = $eventDataService;
+        $this->iCalendarWriter = $iCalendarWriter;
     }
 
     public function __invoke(Request $request): Response
@@ -51,6 +56,8 @@ class IcalImportController
         switch ($request->get("action")) {
             case "import":
                 return $this->importAction($request);
+            case "export":
+                return $this->export($request);
             default:
                 return $this->defaultAction($request);
         }
@@ -58,8 +65,11 @@ class IcalImportController
 
     private function defaultAction(Request $request): Response
     {
-        $output = $this->view->render('import', [
-            'url' => $request->url()->page("calendar")->with("admin", "import")->with("action", "import")->relative(),
+        $output = $this->view->render('import_export', [
+            'url' => $request->url()->page("calendar")->with("admin", "import_export")
+                ->with("action", "import")->relative(),
+            'export_url' => $request->url()->page("calendar")
+                ->with("admin", "import_export")->with("action", "export")->relative(),
             'files' => $this->icsFileFinder->all(),
         ]);
         return Response::create($output);
@@ -74,7 +84,18 @@ class IcalImportController
         $events = $reader->parse($this->icsFileFinder->read($request->post("calendar_ics")));
         $events = array_merge($this->eventDataService->readEvents()->events(), $events);
         $this->eventDataService->writeEvents($events);
-        $url = CMSIMPLE_URL . '?&calendar&admin=plugin_main&action=plugin_text';
-        return Response::redirect($url);
+        $url = $request->url()->page("calendar")->with("admin", "plugin_main")->with("action", "plugin_text");
+        return Response::redirect($url->absolute());
+    }
+
+    private function export(Request $request): Response
+    {
+        if ($request->post("calendar_ics") !== "calendar.ics") {
+            return $this->defaultAction($request);
+        }
+        if (!$this->iCalendarWriter->write($this->eventDataService->readEvents())) {
+            return Response::create($this->view->message("fail", "error_export"));
+        }
+        return Response::redirect($request->url()->page("calendar")->with("admin", "import_export")->absolute());
     }
 }

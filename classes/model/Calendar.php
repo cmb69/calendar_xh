@@ -105,4 +105,16 @@ class Calendar
         assert(array_key_exists($id, $this->events));
         unset($this->events[$id]);
     }
+
+    public function toICalendarString(): string
+    {
+        $res = "BEGIN:VCALENDAR\r\n"
+            . "PRODID:-//3-magi.net//Calendar_XH//EN\r\n"
+            . "VERSION:2.0\r\n";
+        foreach ($this->events() as $id => $event) {
+            $res .= $event->toICalendarString($id);
+        }
+        $res .= "END:VCALENDAR\r\n";
+        return $res;
+    }
 }

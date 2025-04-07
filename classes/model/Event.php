@@ -201,4 +201,70 @@ class Event
         return $this->start->compareDate($day) === 0
             || $this->end->compareDate($day) === 0;
     }
+
+    public function toICalendarString(string $id): string
+    {
+        $res = "BEGIN:VEVENT\r\n"
+            . "UID:$id\r\n";
+        $res .= $this->getDtstart() . "\r\n";
+        $res .= $this->getDtend() . "\r\n";
+        if ($this->summary !== "") {
+            $res .= "SUMMARY:" . $this->summary . "\r\n";
+        }
+        if ($this->linkadr !== "") {
+            $res .= "URL:" . $this->linkadr . "\r\n";
+        }
+        if ($this->linktxt !== "") {
+            $res .= "DESCRIPTION:" . $this->linktxt . "\r\n";
+        }
+        if ($this->isBirthday()) {
+            $res .= "RRULE:FREQ=YEARLY\r\n";
+        } elseif ($this->location() !== "") {
+            $res .= "LOCATION:" . $this->location . "\r\n";
+        }
+        $res .= "END:VEVENT\r\n";
+        return $res;
+    }
+
+    private function getDtstart(): string
+    {
+        if ($this->start->hour() === 23 && $this->start->minute() === 59) {
+            return sprintf(
+                "DTSTART;VALUE=DATE:%04d%02d%02d",
+                $this->start->year(),
+                $this->start->month(),
+                $this->start->day()
+            );
+        } else {
+            return sprintf(
+                "DTSTART:%04d%02d%02dT%02d%02d00",
+                $this->start->year(),
+                $this->start->month(),
+                $this->start->day(),
+                $this->start->hour(),
+                $this->start->minute()
+            );
+        }
+    }
+
+    private function getDtend(): string
+    {
+        if ($this->end->hour() === 23 && $this->end->minute() === 59) {
+            return sprintf(
+                "DTEND;VALUE=DATE:%04d%02d%02d",
+                $this->end->year(),
+                $this->end->month(),
+                $this->end->day()
+            );
+        } else {
+            return sprintf(
+                "DTEND:%04d%02d%02dT%02d%02d00",
+                $this->end->year(),
+                $this->end->month(),
+                $this->end->day(),
+                $this->end->hour(),
+                $this->end->minute()
+            );
+        }
+    }
 }

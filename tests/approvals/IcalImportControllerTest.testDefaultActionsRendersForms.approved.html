@@ -1,8 +1,15 @@
 
 <div class="calendar_import">
-  <h1>Calendar – Import</h1>
-  <form action="/?calendar&amp;admin=import&amp;action=import" method="POST">
-    <button name="calendar_ics" value="cal1.ics">Import cal1.ics</button>
-    <button name="calendar_ics" value="cal2.ics">Import cal2.ics</button>
+  <h1>Calendar – Import/Export</h1>
+  <form action="/?calendar&amp;admin=import_export&amp;action=import" method="POST">
+    <fieldset>
+      <legend>Import</legend>
+      <button name="calendar_ics" value="cal1.ics">cal1.ics</button>
+      <button name="calendar_ics" value="cal2.ics">cal2.ics</button>
+    </fieldset>
+    <fieldset>
+      <legend>Export</legend>
+      <button formaction="/?calendar&amp;admin=import_export&amp;action=export" name="calendar_ics" value="calendar.ics">calendar.ics</button>
+    </fieldset>
   </form>
 </div>
