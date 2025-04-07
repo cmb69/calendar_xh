@@ -34,12 +34,13 @@ class CalendarControllerTest extends TestCase
     {
         $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
         $conf = $plugin_cf['calendar'];
+        $lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
         $eventDataService = $this->createStub(EventDataService::class);
         $eventDataService->method("readEvents")->willReturn(
             new Calendar([$this->lunchBreak(), $this->weekend(), $this->birthday()])
         );
-        $dateTimeFormatter = $this->createStub(DateTimeFormatter::class);
-        $view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
+        $dateTimeFormatter = new DateTimeFormatter($lang);
+        $view = new View("./views/", $lang);
         $sut = new CalendarController(
             "./",
             $conf,
