@@ -104,7 +104,9 @@ p.event_link {
     text-align: right;
 }
 
-/* ===================== For display of next event only, with marquee-funktion, does not validate! ===================== */
+/*
+ * nextevent
+ */
 
 .nextevent_date {
     text-align: center;
