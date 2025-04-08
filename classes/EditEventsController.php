@@ -37,9 +37,6 @@ class EditEventsController
     /** @var string */
     private $pluginFolder;
 
-    /** @var array<string,string> */
-    private $conf;
-
     /** @var EventDataService */
     private $eventDataService;
 
@@ -49,16 +46,13 @@ class EditEventsController
     /** @var View */
     private $view;
 
-    /** @param array<string,string> $conf */
     public function __construct(
         string $pluginFolder,
-        array $conf,
         EventDataService $eventDataService,
         CsrfProtector $csrfProtector,
         View $view
     ) {
         $this->pluginFolder = $pluginFolder;
-        $this->conf = $conf;
         $this->eventDataService = $eventDataService;
         $this->csrfProtector = $csrfProtector;
         $this->view = $view;
@@ -95,9 +89,6 @@ class EditEventsController
         }
         $output = $this->view->render('event-table', [
             'selected' => $request->selected() ? $request->selected() : 'calendar',
-            'showEventTime' => (bool) $this->conf['show_event_time'],
-            'showEventLocation' => (bool) $this->conf['show_event_location'],
-            'showEventLink' => (bool) $this->conf['show_event_link'],
             'events' => $events,
             'hash' => sha1(serialize($events)),
             'jsUrl' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
@@ -139,9 +130,6 @@ class EditEventsController
         }
         return $this->view->render('edit-form', [
             'action' => $url->relative(),
-            'showEventTime' => (bool) $this->conf['show_event_time'],
-            'showEventLocation' => (bool) $this->conf['show_event_location'],
-            'showEventLink' => (bool) $this->conf['show_event_link'],
             'event' => [
                 "start_date" => $event->getIsoStartDate(),
                 "start_time" => $event->getIsoStartTime(),

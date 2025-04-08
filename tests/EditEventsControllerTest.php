@@ -42,8 +42,6 @@ class EditEventsControllerTest extends TestCase
 
     public function setUp(): void
     {
-        $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
-        $conf = $plugin_cf['calendar'];
         $this->eventDataService = $this->createMock(EventDataService::class);
         $this->eventDataService->method("readEvents")->willReturn(new Calendar(["111" => $this->lunchBreak()]));
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
@@ -52,7 +50,6 @@ class EditEventsControllerTest extends TestCase
         $view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
         $this->sut = new EditEventsController(
             "./",
-            $conf,
             $this->eventDataService,
             $this->csrfProtector,
             $view,
