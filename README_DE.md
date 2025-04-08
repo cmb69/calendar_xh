@@ -138,6 +138,20 @@ durch den folgenden Pluginaufruf eingebettet werden:
 
     {{{events()}}}
 
+Die klassische Veranstaltungsliste wird als Tabelle dargestellt, was
+je nach Template, den Veranstaltungsdaten und dem verwendeten Browser
+möglicherweise nicht gut aussieht.
+Sie können die Ausgabe der `time`, `location` und `link` Spalten
+under `Plugins` → `Calendar` → `Konfiguration` → `Show` unterdrücken,
+was das Darstellungsproblem entschärfen kann.
+Allerdings werden dem Nutzer möglicherweise relevante Veranstaltungs-Informationen
+nicht präsentiert.
+
+Eine Alternative ist `eventlist_new` unter `Plugins` → `Calendar` →
+`Konfiguration` → `Eventlist` → `Template` auszuwählen.
+Die neuartige Veranstaltungsliste wird als wirkliche Liste angezeigt,
+so dass alle Informationen anzeigt werden können, ohne dass es häßlich aussieht.
+
 ### Nächste Veranstaltung
 
 Optional kann die nächste geplante Veranstaltung als Lauftext

@@ -100,6 +100,8 @@
 <h3 id="event-list">Event List</h3>
 <p>The event list is supposed to be embedded on the <em>event page</em> that is defined in the language settings of Calendar_XH with the following plugin call:</p>
 <pre><code>{{{events()}}}</code></pre>
+<p>The classic event list is displayed as table, so it may not look great, depending on the template, the event data, and the browser. You can suppress the output of the <code>time</code>, <code>location</code> and <code>link</code> columns under <code>Plugins</code> → <code>Calendar</code> → <code>Config</code> → <code>Show</code>, what may mitigate the issue. However, in this case not all relevant information about the events might be available to the user.</p>
+<p>An alternative is to switch to <code>eventlist_new</code> under <code>Plugins</code> → <code>Calendar</code> → <code>Config</code> → <code>Eventlist</code> → <code>Template</code>. The new style event list will be displayed as a real list, so all information can be shown without looking ugly.</p>
 <h3 id="next-event">Next Event</h3>
 <p>Optionally, you can show the next scheduled event in a <em>marquee</em> like manner, either from the template:</p>
 <pre><code>&lt;?=nextevent()?&gt;</code></pre>

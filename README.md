@@ -134,6 +134,18 @@ plugin call:
 
     {{{events()}}}
 
+The classic event list is displayed as table, so it may not look great,
+depending on the template, the event data, and the browser.
+You can suppress the output of the `time`, `location` and `link` columns
+under `Plugins` → `Calendar` → `Config` → `Show`, what may mitigate the issue.
+However, in this case not all relevant information about the events
+might be available to the user.
+
+An alternative is to switch to `eventlist_new` under
+`Plugins` → `Calendar` → `Config` → `Eventlist` → `Template`.
+The new style event list will be displayed as a real list, so all information
+can be shown without looking ugly. 
+
 ### Next Event
 
 Optionally, you can show the next scheduled event in a *marquee* like manner, either

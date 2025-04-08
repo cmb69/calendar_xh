@@ -15,44 +15,38 @@ if (!defined("CMSIMPLE_XH_VERSION")) {header("404 Not found"); exit;}
  */
 ?>
 
-<div class="calendar_eventlist">
 <?if ($showHeading):?>
-  <div class="period_of_events"><?=$this->raw($heading)?></div>
+<p class="period_of_events"><?=$this->raw($heading)?></p>
 <?endif?>
 <?foreach ($events as $event):?>
-  <div class="event_monthyear"><?=$this->esc($event->headline->month_year)?></div>
+<figure>
+  <figcaption class="event_monthyear"><?=$this->esc($event->headline->month_year)?></figcaption>
+  <ol class="calendar_eventlist">
 <?  foreach ($event->rows as $row):?>
 <?    if ($row->is_birthday):?>
 <?      assert($row instanceof BirthdayRow)?>
-  <div class="birthday_data_row">
-    <div class="event_data event_date"><?=$this->esc($row->date)?></div>
-<?       if ($row->show_time):?>
-    <div class="event_data event_time"></div>
-<?      endif?>
-    <div class="event_data event_summary"><?=$this->esc($row->summary)?> <?=$this->plural('age', $row->age)?></div>
-<?      if ($row->show_location):?>
-    <div class="event_data event_location"><?=$this->text('birthday_text')?></div>
-<?      endif?>
-<?      if ($row->show_link):?>
-    <div class="event_data event_link"><?=$this->raw($row->link)?></div>
-<?      endif?>
-</div>
+    <li class="birthday_data_row">
+      <p class="event_data">
+        <span class="event_date"><?=$this->esc($row->date)?></span>
+        <span class="event_time"></span>
+      </p>
+      <p class="event_data event_summary"><?=$this->esc($row->summary)?> <?=$this->plural('age', $row->age)?></p>
+      <p class="event_data event_location"><?=$this->text('birthday_text')?></p>
+      <p class="event_data event_link"><?=$this->raw($row->link)?></p>
+    </li>
 <?    else:?>
   <?      assert($row instanceof EventRow)?>
-  <div class="event_data_row <?=$this->esc($row->past_event_class)?>">
-    <div class="event_data event_date"><?=$this->esc($row->date)?></div>
-<?      if ($row->show_time):?>
-    <div class="event_data event_time"><?=$this->esc($row->time)?></div>
-<?      endif?>
-    <div class="event_data event_summary"><?=$this->esc($row->summary)?></div>
-<?      if ($row->show_location):?>
-    <div class="event_data event_location"><?=$this->esc($row->location)?></div>
-<?      endif?>
-<?      if ($row->show_link):?>
-    <div class="event_data event_link"><?=$this->raw($row->link)?></div>
-<?      endif?>
-  </div>
+    <li class="event_data_row <?=$this->esc($row->past_event_class)?>">
+      <p class="event_data">
+        <span class="event_date"><?=$this->esc($row->date)?></span>
+        <span class="event_time"><?=$this->esc($row->time)?></span>
+      </p>
+      <p class="event_data event_summary"><?=$this->esc($row->summary)?></p>
+      <p class="event_data event_location"><?=$this->esc($row->location)?></p>
+      <p class="event_data event_link"><?=$this->raw($row->link)?></p>
+    </li>
 <?    endif?>
 <?  endforeach?>
 <?endforeach?>
-</div>
+  </ol>
+</figure>

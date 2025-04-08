@@ -30,10 +30,31 @@ use Plib\View;
 
 class EventListControllerTest extends TestCase
 {
-    public function testIt()
+    public function testRendersClassicEventListByDefault()
     {
         $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
         $conf = $plugin_cf['calendar'];
+        $lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
+        $eventDataService = $this->createStub(EventDataService::class);
+        $eventDataService->method("readEvents")->willReturn(
+            new Calendar([$this->lunchBreak(), $this->easter(), $this->birthday()])
+        );
+        $view = new View("./views/", $lang);
+        $sut = new EventListController(
+            $conf,
+            $eventDataService,
+            new DateTimeFormatter($lang),
+            $view
+        );
+        $request = new FakeRequest(["time" => 1675088820]);
+        Approvals::verifyHtml($sut->defaultAction(0, 0, 0, 0, $request));
+    }
+
+    public function testRendersNewStyleEventListIfConfigured(): void
+    {
+        $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
+        $conf = $plugin_cf['calendar'];
+        $conf["eventlist_template"] = "eventlist_new";
         $lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
         $eventDataService = $this->createStub(EventDataService::class);
         $eventDataService->method("readEvents")->willReturn(

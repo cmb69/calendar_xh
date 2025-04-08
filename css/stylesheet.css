@@ -66,39 +66,41 @@ but it should take the same width.) */
 .event_heading_row td {} /*sub heading*/
 .event_heading {}
 
-div.calendar_eventlist {
-}
-div.period_of_events {
+/*
+ *new style event list
+ */
+
+p.period_of_events {
     font-size: 1.2em;
     text-align: center;
     margin-bottom: 1em;
 }
-div.event_monthyear {
+figcaption.event_monthyear {
     font-size: 1.2em;
     margin: 1em 0;
     text-align: center;
 }
-div.birthday_data_row, div.event_data_row {
+ol.calendar_eventlist {
+    list-style: none;
+    padding: 0;
+}
+li.birthday_data_row, li.event_data_row {
+    list-style: none;
     border: 1px dotted grey;
     margin: 0.5em 0;
     padding: 0.5em;
 }
-div.event_data {
-    margin: 0.5em 0;
-}
-div.event_date {
-    display: float;
-    float:left;
-    padding-right: 1ex;
-}
-div.event_summary {
+p.event_data {}
+span.event_date {}
+span.event_time {}
+p.event_summary {
     font-size: 1.2em;
     text-align: center;
 }
-div.event_location {
+p.event_location {
     text-align: center;
 }
-div.event_link {
+p.event_link {
     text-align: right;
 }
 
