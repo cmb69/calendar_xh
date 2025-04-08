@@ -18,15 +18,13 @@ if (!isset($this)) {header("404 Not found"); exit;}
     <p>
       <label>
         <span><?=$this->text('event_date_start')?></span>
-        <input type="date" class="calendar_input_date" maxlength="10" name="datestart" value="<?=$this->esc($event['start_date'])?>">
-        <input type="time" class="calendar_input_time" maxlength="5" name="starttime" value="<?=$this->esc($event['start_time'])?>">
+        <input type="datetime-local" class="calendar_input_date" maxlength="10" name="datestart" value="<?=$this->esc($event['start_date'])?>">
       </label>
     </p>
     <p>
       <label>
         <span><?=$this->text('event_date_end')?></span>
-        <input type="date" class="calendar_input_date" maxlength="10" name="dateend" value="<?=$this->esc($event['end_date'])?>">
-        <input type="time" class="calendar_input_time" maxlength="5" name="endtime" value="<?=$this->esc($event['end_time'])?>">
+        <input type="datetime-local" class="calendar_input_date" maxlength="10" name="dateend" value="<?=$this->esc($event['end_date'])?>">
       </label>
     </p>
     <p>

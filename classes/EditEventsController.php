@@ -130,10 +130,8 @@ class EditEventsController
         return $this->view->render('edit-form', [
             'action' => $url->relative(),
             'event' => [
-                "start_date" => $event->getIsoStartDate(),
-                "start_time" => $event->getIsoStartTime(),
-                "end_date" => $event->getIsoEndDate(),
-                "end_time" => $event->getIsoEndTime(),
+                "start_date" => $event->getIsoStartDate() . "T" . $event->getIsoStartTime(),
+                "end_date" => $event->getIsoEndDate() . "T" . $event->getIsoEndTime(),
                 "summary" => $event->summary(),
                 "linkadr" => $event->linkadr(),
                 "linktxt" => $event->linktxt(),
@@ -198,11 +196,17 @@ class EditEventsController
     /** @return array{datestart:string,dateend:string,starttime:string,endtime:string,event:string,linkadr:string,linktxt:string,location:string} */
     private function eventPost(Request $request): array
     {
+        $datetime = explode("T", $request->post("datestart") ?? "", 2);
+        $datestart = $datetime[0];
+        $starttime = $datetime[1] ?? "";
+        $datetime = explode("T", $request->post("dateend") ?? "", 2);
+        $dateend = $datetime[0];
+        $endtime = $datetime[1] ?? "";
         return [
-            "datestart" => $request->post("datestart") ?? "",
-            "dateend" => $request->post("dateend") ?? "",
-            "starttime" => $request->post("starttime") ?? "",
-            "endtime" => $request->post("endtime") ?? "",
+            "datestart" => $datestart,
+            "dateend" => $dateend,
+            "starttime" => $starttime,
+            "endtime" => $endtime,
             "event" => $request->post("event") ?? "",
             "linkadr" => $request->post("linkadr") ?? "",
             "linktxt" => $request->post("linktxt") ?? "",
