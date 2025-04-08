@@ -123,20 +123,9 @@ class EventListController
 
     private function calcTablecols(): int
     {
-        // the number of tablecolumns is calculated
-        // starting with minimum number of columns (date + main entry)
-        $tablecols = 2;
-        // adding columns according to config settings
-        if ($this->conf['show_event_time']) {
-            $tablecols++;
-        }
-        if ($this->conf['show_event_location']) {
-            $tablecols++;
-        }
-        if ($this->conf['show_event_link']) {
-            $tablecols++;
-        }
-        return $tablecols;
+        return 2 + (bool) $this->conf["show_event_time"]
+            + (bool) $this->conf["show_event_location"]
+            + (bool) $this->conf["show_event_link"];
     }
 
     /**
