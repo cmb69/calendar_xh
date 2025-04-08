@@ -146,6 +146,9 @@ An alternative is to switch to `eventlist_new` under
 The new style event list will be displayed as a real list, so all information
 can be shown without looking ugly. 
 
+Note that the new style event list adds structured data according to
+<https://schema.org/Event> for SEO purposes.
+
 ### Next Event
 
 Optionally, you can show the next scheduled event in a *marquee* like manner, either

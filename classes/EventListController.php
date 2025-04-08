@@ -165,6 +165,8 @@ class EventListController
             $year - $event->start()->year(),
             $event->summary(),
             $event->location(),
+            $event->start()->withYear($year)->getIsoDate(),
+            $event->end()->withYear($year)->getIsoDate(),
             $this->dateTimeFormatter->formatDate($event->start()->withYear($year)),
             (bool) $this->conf['show_event_time'],
             (bool) $this->conf['show_event_location'],
@@ -186,9 +188,17 @@ class EventListController
         }
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
         assert($now !== null);
+        $startDate = $event->isFullDay()
+            ? $event->getIsoStartDate()
+            : $event->getIsoStartDate() . "T" . $event->getIsoStartTime() . "00";
+        $endDate = $event->isFullDay()
+            ? $event->getIsoEndDate()
+            : $event->getIsoEndDate() . "T" . $event->getIsoEndTime() . "00";
         return new EventRow(
             $event->summary(),
             $event->location(),
+            $startDate,
+            $endDate,
             $this->renderDate($event),
             $time,
             (bool) $this->conf['show_event_time'],

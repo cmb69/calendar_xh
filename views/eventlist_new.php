@@ -25,25 +25,29 @@ if (!defined("CMSIMPLE_XH_VERSION")) {header("404 Not found"); exit;}
 <?  foreach ($event->rows as $row):?>
 <?    if ($row->is_birthday):?>
 <?      assert($row instanceof BirthdayRow)?>
-    <li class="birthday_data_row">
+    <li class="birthday_data_row" itemprop="event" itemscope itemtype="https://schema.org/Event">
       <p class="event_data">
+        <meta itemprop="startDate" content="<?=$this->esc($row->start_date)?>">
+        <meta itemprop="endDate" content="<?=$this->esc($row->end_date)?>">
         <span class="event_date"><?=$this->esc($row->date)?></span>
         <span class="event_time"></span>
       </p>
-      <p class="event_data event_summary"><?=$this->esc($row->summary)?> <?=$this->plural('age', $row->age)?></p>
+      <p class="event_data event_summary" itemprop="name"><?=$this->esc($row->summary)?> <?=$this->plural('age', $row->age)?></p>
       <p class="event_data event_location"><?=$this->text('birthday_text')?></p>
-      <p class="event_data event_link"><?=$this->raw($row->link)?></p>
+      <p class="event_data event_link" itemprop="url"><?=$this->raw($row->link)?></p>
     </li>
 <?    else:?>
   <?      assert($row instanceof EventRow)?>
-    <li class="event_data_row <?=$this->esc($row->past_event_class)?>">
+    <li class="event_data_row <?=$this->esc($row->past_event_class)?>" itemprop="event" itemscope itemtype="https://schema.org/Event">
       <p class="event_data">
+        <meta itemprop="startDate" content="<?=$this->esc($row->start_date)?>">
+        <meta itemprop="endDate" content="<?=$this->esc($row->end_date)?>">
         <span class="event_date"><?=$this->esc($row->date)?></span>
         <span class="event_time"><?=$this->esc($row->time)?></span>
       </p>
-      <p class="event_data event_summary"><?=$this->esc($row->summary)?></p>
-      <p class="event_data event_location"><?=$this->esc($row->location)?></p>
-      <p class="event_data event_link"><?=$this->raw($row->link)?></p>
+      <p class="event_data event_summary" itemprop="name"><?=$this->esc($row->summary)?></p>
+      <p class="event_data event_location" itemprop="location"><?=$this->esc($row->location)?></p>
+      <p class="event_data event_link" itemprop="url"><?=$this->raw($row->link)?></p>
     </li>
 <?    endif?>
 <?  endforeach?>

@@ -51,6 +51,18 @@ class BirthdayRow
      * @readonly
      * @var string
      */
+    public $start_date;
+
+    /**
+     * @readonly
+     * @var string
+     */
+    public $end_date;
+
+    /**
+     * @readonly
+     * @var string
+     */
     public $date;
 
     /**
@@ -81,6 +93,8 @@ class BirthdayRow
         int $age,
         string $summary,
         string $location,
+        string $start_date,
+        string $end_date,
         string $date,
         bool $show_time,
         bool $show_location,
@@ -91,6 +105,8 @@ class BirthdayRow
         $this->age = $age;
         $this->summary = $summary;
         $this->location = $location;
+        $this->start_date = $start_date;
+        $this->end_date = $end_date;
         $this->date = $date;
         $this->show_time = $show_time;
         $this->show_location = $show_location;

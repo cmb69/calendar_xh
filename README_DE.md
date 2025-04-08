@@ -152,6 +152,9 @@ Eine Alternative ist `eventlist_new` unter `Plugins` → `Calendar` →
 Die neuartige Veranstaltungsliste wird als wirkliche Liste angezeigt,
 so dass alle Informationen anzeigt werden können, ohne dass es häßlich aussieht.
 
+Beachten Sie, dass die neuartige Veranstaltungsliste strukturierte Daten
+gemäß <https://schema.org/Event> hinzufügt (SEO).
+
 ### Nächste Veranstaltung
 
 Optional kann die nächste geplante Veranstaltung als Lauftext

@@ -45,6 +45,18 @@ class EventRow
      * @readonly
      * @var string
      */
+    public $start_date;
+
+    /**
+     * @readonly
+     * @var string
+     */
+    public $end_date;
+
+    /**
+     * @readonly
+     * @var string
+     */
     public $date;
 
     /**
@@ -86,6 +98,8 @@ class EventRow
     public function __construct(
         string $summary,
         string $location,
+        string $start_date,
+        string $end_date,
         string $date,
         string $time,
         bool $show_time,
@@ -97,6 +111,8 @@ class EventRow
         $this->is_birthday = false;
         $this->summary = $summary;
         $this->location = $location;
+        $this->start_date = $start_date;
+        $this->end_date = $end_date;
         $this->date = $date;
         $this->time = $time;
         $this->show_time = $show_time;
