@@ -1,32 +1,46 @@
 
 <form method="post" action="/?&amp;admin=plugin_main&amp;action=update&amp;event_id=111" class="calendar_input">
   <div>
-    <label>
-      Start Date      <input type="date" class="calendar_input_date" maxlength="10" name="datestart" value="2023-01-04">
-    </label>
-    <label>
-      Time      <input type="time" class="calendar_input_time" maxlength="5" name="starttime" value="12:00">
-    </label>
-    <label>
-      End Date      <input type="date" class="calendar_input_date" maxlength="10" name="dateend" value="2023-01-04">
-    </label>
-    <label>
-      Time      <input type="time" class="calendar_input_time" maxlength="5" name="endtime" value="13:00">
-    </label>
-    <label>
-      Summary      <input class="calendar_input_event" type="text" name="event" value="Lunch break" required>
-    </label>
-    <label>
-      Location      <input type="text" class="calendar_input_event" name="location" value="whereever I am">
-    </label>
-    <label>
-      Link      <input type="text" class="calendar_input_event" name="linkadr" value="http://example.com/lunchbreak">
-    </label>
-    <label>
-      Link text      <input type="text" class="calendar_input_event" name="linktxt" value="Tips for lunch breaks">
-    </label>
+    <p>
+      <label>
+        <span>Start Date</span>
+        <input type="date" class="calendar_input_date" maxlength="10" name="datestart" value="2023-01-04">
+        <input type="time" class="calendar_input_time" maxlength="5" name="starttime" value="12:00">
+      </label>
+    </p>
+    <p>
+      <label>
+        <span>End Date</span>
+        <input type="date" class="calendar_input_date" maxlength="10" name="dateend" value="2023-01-04">
+        <input type="time" class="calendar_input_time" maxlength="5" name="endtime" value="13:00">
+      </label>
+    </p>
+    <p>
+      <label>
+        <span>Summary</span>
+        <input class="calendar_input_event" type="text" name="event" value="Lunch break" required>
+      </label>
+    </p>
+    <p>
+      <label>
+        <span>Location</span>
+        <input type="text" class="calendar_input_event" name="location" value="whereever I am">
+      </label>
+    </p>
+    <p>
+      <label>
+        <span>Link</span>
+        <input type="text" class="calendar_input_event" name="linkadr" value="http://example.com/lunchbreak">
+      </label>
+    </p>
+    <p>
+      <label>
+        <span>Link text</span>
+        <input type="text" class="calendar_input_event" name="linktxt" value="Tips for lunch breaks">
+      </label>
+    </p>
   </div>
-  <p>
+  <p class="calendar_buttons">
     <button name="calendar_do">Save</button>
   </p>
   <input type="hidden" name="calendar_token" value="42881056d048537da0e061f7f672854b">

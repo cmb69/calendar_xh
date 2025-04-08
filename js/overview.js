@@ -34,6 +34,10 @@ class OverviewWidget {
         element.querySelectorAll("tr").forEach(tr =>
             tr.onclick = () => this.selectRow(tr)
         );
+        element.querySelectorAll(".calendar_hidden").forEach(el => {
+            el.parentElement.title = el.textContent;
+            el.style.display = "none";
+        });
     }
 
     /**

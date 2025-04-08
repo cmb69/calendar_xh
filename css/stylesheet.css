@@ -126,23 +126,39 @@ p.event_link {
 .nextevent_event {}
 .nextevent_location {}
 
-/* backend edit events */
-.calendar_overview tr {
-    border: 1px solid;
+/*
+ * edit events overview
+ */
+
+.calendar_overview table {
+    table-layout: fixed;
+    width: 100%;
+}
+.calendar_overview td:nth-child(1) { /* start-date */
+    width: 10em;
+}
+.calendar_overview td:nth-child(2) { /* summary */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.calendar_overview td:nth-child(3) { /* buttons */
+    width: 5em;
+    text-align: right;
 }
 
+/*
+ * edit event
+ */
+
 .calendar_input {}
-.calendar_input button {}
-.calendar_input > div {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+.calendar_input label span {
+    display: inline-block;
+    width: 10em;
 }
-.calendar_input > div > div {
-    align-self: flex-end;
+.calendar_input_event { /* summary, location, link, link text */
+    width: 30em;
 }
-.calendar_input > div:first-child, .calendar_input > div:last-child {}
-.calendar_input input {
-    display: block;
+.calendar_buttons {
+    text-align: center;
 }
-.calendar_input_event {} /*controls also location etc*/

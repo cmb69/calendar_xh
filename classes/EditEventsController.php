@@ -78,8 +78,7 @@ class EditEventsController
         $calendar = $this->eventDataService->readEvents();
         $events = array_map(function (Event $event): array {
             return [
-                "start_date" => $event->getIsoStartDate(),
-                "end_date" => $event->getIsoEndDate(),
+                "start_date" => $event->getIsoStartDate() . " " . $event->getIsoStartTime(),
                 "summary" => $event->summary(),
             ];
         }, $calendar->events());
