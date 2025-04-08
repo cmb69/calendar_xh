@@ -40,12 +40,14 @@ class CalendarControllerTest extends TestCase
             new Calendar([$this->lunchBreak(), $this->weekend(), $this->birthday()])
         );
         $dateTimeFormatter = new DateTimeFormatter($lang);
+
         $view = new View("./views/", $lang);
         $sut = new CalendarController(
             "./",
             $conf,
             $eventDataService,
             $dateTimeFormatter,
+            new Counter(1),
             $view
         );
         $request = new FakeRequest([

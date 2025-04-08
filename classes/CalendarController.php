@@ -46,6 +46,9 @@ class CalendarController
     /** @var DateTimeFormatter */
     private $dateTimeFormatter;
 
+    /** @var Counter */
+    private $counter;
+
     /** @var View */
     private $view;
 
@@ -55,12 +58,14 @@ class CalendarController
         array $conf,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
+        Counter $counter,
         View $view
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
+        $this->counter = $counter;
         $this->view = $view;
     }
 
@@ -89,6 +94,8 @@ class CalendarController
                 ->with("year", (string) $prevMonth->year())->relative(),
             'nextUrl' => $request->url()->with("month", (string) $nextMonth->month())
                 ->with("year", (string) $nextMonth->year())->relative(),
+            'prevId' => "calendar_id_" . $this->counter->next(),
+            'nextId' => "calendar_id_" . $this->counter->next(),
             'headRow' => $this->getDaynamesRow(),
             'rows' => $rows,
             'jsUrl' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
@@ -138,6 +145,7 @@ class CalendarController
             $classes = [];
             $field['content'] = (string) $day;
             if (!empty($dayEvents)) {
+                $field['id'] = "calendar_id_" . $this->counter->next();
                 $field['href'] = $request->url()->page($eventpage)
                     ->with("month", (string) $month)->with("year", (string) $year)
                     ->relative();
@@ -220,6 +228,7 @@ class CalendarController
     private function getDaynamesRow(): array
     {
         $dayarray = explode(',', $this->view->plain("daynames_array"));
+        $dayarrayfull = explode(',', $this->view->plain("daynames_array_full"));
         $row = [];
         for ($i = 0; $i <= 6; $i++) {
             if ($this->conf['week_starts_mon']) {
@@ -233,6 +242,7 @@ class CalendarController
             $row[] = [
                 'classname' => 'calendar_daynames ' . ($this->isWeekEnd($i) ? 'calendar_we' : 'calendar_day'),
                 'content' => $dayarray[$j],
+                'full_name' => $dayarrayfull[$j],
             ];
         }
         return $row;

@@ -1,3 +1,7 @@
+/*
+ * calendar widgets
+ */
+
 .calendar_main {
     text-align: center;
     border-collapse: collapse;
@@ -30,6 +34,21 @@
 
 .calendar_loading {
     visibility: hidden;
+}
+
+.calendar_main a {
+    display: inline-block;
+}
+[role="tooltip"] {
+    display: none;
+    position: absolute;
+    padding: 0.5em;
+    background-color: #ddd;
+    color: #222;
+}
+a:hover > [role="tooltip"],
+a:focus > [role="tooltip"] {
+    display: block;
 }
 
 /* ===================== Display of event list ===================== */

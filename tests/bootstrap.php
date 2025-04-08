@@ -44,6 +44,7 @@ require_once './classes/model/Event.php';
 require_once './classes/model/LocalDateTime.php';
 require_once './classes/CalendarController.php';
 require_once './classes/CalendarService.php';
+require_once "./classes/Counter.php";
 require_once './classes/DateTimeFormatter.php';
 require_once './classes/Dic.php';
 require_once './classes/EditEventsController.php';

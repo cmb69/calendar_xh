@@ -4,6 +4,7 @@ $plugin_tx['calendar']['menu_main']="Edit Events";
 
 $plugin_tx['calendar']['monthnames_array']="January,February,March,April,May,June,July,August,September,Oktober,November,December";
 $plugin_tx['calendar']['daynames_array']="Su,Mo,Tu,We,Th,Fr,Sa";
+$plugin_tx['calendar']['daynames_array_full']="Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday";
 $plugin_tx['calendar']['event_page']="Events";
 $plugin_tx['calendar']['event_date']="Date";
 $plugin_tx['calendar']['event_time']="Time";

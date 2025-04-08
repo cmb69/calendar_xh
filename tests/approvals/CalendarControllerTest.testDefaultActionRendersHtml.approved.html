@@ -1,122 +1,189 @@
 <div class="calendar_calendar">
 <script type="module" src="/js/calendar.js?&v=2.6-dev"></script>
-<table class="calendar_main">
+<table class="calendar_main" role="presentation">
   <caption class="calendar_monthyear">
-    <a href="/?page&amp;month=12&amp;year=2022" rel="nofollow" title="Previous month">◄</a>
-    January 2023    <a href="/?page&amp;month=2&amp;year=2023" rel="nofollow" title="Next month">►</a>
+    <a href="/?page&amp;month=12&amp;year=2022" aria-labelledby="calendar_id_5">
+      <span>◄</span>
+      <span role="tooltip" id="calendar_id_5">Previous month</span>
+    </a>
+    <span>January 2023</span>
+    <a href="/?page&amp;month=2&amp;year=2023" aria-labelledby="calendar_id_6">
+      <span>►</span>
+      <span role="tooltip" id="calendar_id_6">Next month</span>
+    </a>
   </caption>
   <tr>
-    <th class="calendar_daynames calendar_day">Mo</th>
-    <th class="calendar_daynames calendar_day">Tu</th>
-    <th class="calendar_daynames calendar_day">We</th>
-    <th class="calendar_daynames calendar_day">Th</th>
-    <th class="calendar_daynames calendar_day">Fr</th>
-    <th class="calendar_daynames calendar_we">Sa</th>
-    <th class="calendar_daynames calendar_we">Su</th>
+    <th class="calendar_daynames calendar_day" scope="col">
+      <abbr title="Monday">Mo</abbr>
+    </th>
+    <th class="calendar_daynames calendar_day" scope="col">
+      <abbr title="Tuesday">Tu</abbr>
+    </th>
+    <th class="calendar_daynames calendar_day" scope="col">
+      <abbr title="Wednesday">We</abbr>
+    </th>
+    <th class="calendar_daynames calendar_day" scope="col">
+      <abbr title="Thursday">Th</abbr>
+    </th>
+    <th class="calendar_daynames calendar_day" scope="col">
+      <abbr title="Friday">Fr</abbr>
+    </th>
+    <th class="calendar_daynames calendar_we" scope="col">
+      <abbr title="Saturday">Sa</abbr>
+    </th>
+    <th class="calendar_daynames calendar_we" scope="col">
+      <abbr title="Sunday">Su</abbr>
+    </th>
   <tr>
   <tr>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_eventday calendar_we">
-      <a href="/?Events&amp;month=1&amp;year=2023" title="Millenium 23 years">
-        1      </a>
+      <a href="/?Events&amp;month=1&amp;year=2023" aria-describedby="calendar_id_1")>
+        <span>1</span>
+        <span role="tooltip" id="calendar_id_1">Millenium 23 years</span>
+      </a>
     </td>
   </tr>
   <tr>
     <td class="calendar_day">
-        2    </td>
+        <span>2</span>
+  </td>
     <td class="calendar_day">
-        3    </td>
+        <span>3</span>
+  </td>
     <td class="calendar_eventday calendar_day">
-      <a href="/?Events&amp;month=1&amp;year=2023" title="12:00 pm - 1:00 pm Lunch break">
-        4      </a>
+      <a href="/?Events&amp;month=1&amp;year=2023" aria-describedby="calendar_id_2")>
+        <span>4</span>
+        <span role="tooltip" id="calendar_id_2">12:00 pm - 1:00 pm Lunch break</span>
+      </a>
     </td>
     <td class="calendar_day">
-        5    </td>
+        <span>5</span>
+  </td>
     <td class="calendar_day">
-        6    </td>
+        <span>6</span>
+  </td>
     <td class="calendar_eventday calendar_eventstart calendar_we">
-      <a href="/?Events&amp;month=1&amp;year=2023" title="12:00 am Weekend till 1/8/2023 11:59 pm">
-        7      </a>
+      <a href="/?Events&amp;month=1&amp;year=2023" aria-describedby="calendar_id_3")>
+        <span>7</span>
+        <span role="tooltip" id="calendar_id_3">12:00 am Weekend till 1/8/2023 11:59 pm</span>
+      </a>
     </td>
     <td class="calendar_eventday calendar_eventend calendar_we">
-      <a href="/?Events&amp;month=1&amp;year=2023" title="12:00 am Weekend till 1/8/2023 11:59 pm">
-        8      </a>
+      <a href="/?Events&amp;month=1&amp;year=2023" aria-describedby="calendar_id_4")>
+        <span>8</span>
+        <span role="tooltip" id="calendar_id_4">12:00 am Weekend till 1/8/2023 11:59 pm</span>
+      </a>
     </td>
   </tr>
   <tr>
     <td class="calendar_day">
-        9    </td>
+        <span>9</span>
+  </td>
     <td class="calendar_day">
-        10    </td>
+        <span>10</span>
+  </td>
     <td class="calendar_day">
-        11    </td>
+        <span>11</span>
+  </td>
     <td class="calendar_day">
-        12    </td>
+        <span>12</span>
+  </td>
     <td class="calendar_day">
-        13    </td>
+        <span>13</span>
+  </td>
     <td class="calendar_we">
-        14    </td>
+        <span>14</span>
+  </td>
     <td class="calendar_we">
-        15    </td>
+        <span>15</span>
+  </td>
   </tr>
   <tr>
     <td class="calendar_day">
-        16    </td>
+        <span>16</span>
+  </td>
     <td class="calendar_day">
-        17    </td>
+        <span>17</span>
+  </td>
     <td class="calendar_day">
-        18    </td>
+        <span>18</span>
+  </td>
     <td class="calendar_day">
-        19    </td>
+        <span>19</span>
+  </td>
     <td class="calendar_day">
-        20    </td>
+        <span>20</span>
+  </td>
     <td class="calendar_we">
-        21    </td>
+        <span>21</span>
+  </td>
     <td class="calendar_we">
-        22    </td>
+        <span>22</span>
+  </td>
   </tr>
   <tr>
     <td class="calendar_day">
-        23    </td>
+        <span>23</span>
+  </td>
     <td class="calendar_day">
-        24    </td>
+        <span>24</span>
+  </td>
     <td class="calendar_day">
-        25    </td>
+        <span>25</span>
+  </td>
     <td class="calendar_day">
-        26    </td>
+        <span>26</span>
+  </td>
     <td class="calendar_day">
-        27    </td>
+        <span>27</span>
+  </td>
     <td class="calendar_we">
-        28    </td>
+        <span>28</span>
+  </td>
     <td class="calendar_we">
-        29    </td>
+        <span>29</span>
+  </td>
   </tr>
   <tr>
     <td class="calendar_today calendar_day">
-        30    </td>
+        <span>30</span>
+  </td>
     <td class="calendar_day">
-        31    </td>
+        <span>31</span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
     <td class="calendar_noday">
-            </td>
+        <span></span>
+  </td>
   </tr>
 </table>
 </div>

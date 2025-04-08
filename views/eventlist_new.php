@@ -19,8 +19,8 @@ if (!defined("CMSIMPLE_XH_VERSION")) {header("404 Not found"); exit;}
 <p class="period_of_events"><?=$this->raw($heading)?></p>
 <?endif?>
 <?foreach ($events as $event):?>
-<figure>
-  <figcaption class="event_monthyear"><?=$this->esc($event->headline->month_year)?></figcaption>
+<div>
+  <p class="event_monthyear"><?=$this->esc($event->headline->month_year)?></p>
   <ol class="calendar_eventlist">
 <?  foreach ($event->rows as $row):?>
 <?    if ($row->is_birthday):?>
@@ -51,6 +51,6 @@ if (!defined("CMSIMPLE_XH_VERSION")) {header("404 Not found"); exit;}
     </li>
 <?    endif?>
 <?  endforeach?>
-<?endforeach?>
   </ol>
-</figure>
+</div>
+<?endforeach?>

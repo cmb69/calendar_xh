@@ -41,6 +41,7 @@ class Dic
             $plugin_cf['calendar'],
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
+            self::counter(),
             self::view()
         );
     }
@@ -123,6 +124,16 @@ class Dic
             $sep = '.';
         }
         return $sep;
+    }
+
+    private static function counter(): Counter
+    {
+        static $counter = null;
+
+        if ($counter === null) {
+            $counter = new Counter(1);
+        }
+        return $counter;
     }
 
     private static function view(): View
