@@ -28,12 +28,16 @@ class ICalendarWriter
     /** @var string */
     private $folder;
 
+    /** @var string */
+    private $host;
+
     /** @var Html2Text */
     private $converter;
 
-    public function __construct(string $folder, Html2Text $converter)
+    public function __construct(string $folder, string $host, Html2Text $converter)
     {
         $this->folder = $folder;
+        $this->host = $host;
         $this->converter = $converter;
     }
 
@@ -43,7 +47,7 @@ class ICalendarWriter
         if ($stream === false) {
             return false;
         }
-        $written = fwrite($stream, $calendar->toICalendarString($this->converter));
+        $written = fwrite($stream, $calendar->toICalendarString($this->converter, $this->host));
         fclose($stream);
         return $written !== false;
     }

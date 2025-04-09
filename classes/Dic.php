@@ -99,7 +99,7 @@ class Dic
         return new IcalImportExportController(
             new IcsFileFinder(self::getDataFolder()),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            new ICalendarWriter(self::getDataFolder(), new Html2Text()),
+            new ICalendarWriter(self::getDataFolder(), $_SERVER["HTTP_HOST"], new Html2Text()),
             self::view()
         );
     }

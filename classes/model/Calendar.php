@@ -108,13 +108,13 @@ class Calendar
         unset($this->events[$id]);
     }
 
-    public function toICalendarString(Html2Text $converter): string
+    public function toICalendarString(Html2Text $converter, string $host): string
     {
         $res = "BEGIN:VCALENDAR\r\n"
             . "PRODID:-//3-magi.net//Calendar_XH//EN\r\n"
             . "VERSION:2.0\r\n";
         foreach ($this->events() as $id => $event) {
-            $res .= $event->toICalendarString($id, $converter);
+            $res .= $event->toICalendarString($id, $converter, $host);
         }
         $res .= "END:VCALENDAR\r\n";
         return $res;

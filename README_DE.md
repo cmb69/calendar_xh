@@ -179,11 +179,22 @@ diese zunächst im `content/calendar/` Ordner (neben der `calendar.2.6.csv` Date
 abgelegt werden. Unter `Plugins` → `Calendar` → `Import` kann dann der
 eigentliche Import der Datei(en) durchgeführt werden.
 Es ist zu beachten, dass bislang nur ein sehr minimalistischer Import implementiert ist.
-Es ist ebenfalls zu beachten, dass beim Import keine Synchronisation durchgeführt wird.
 
 Unter `Plugins` → `Calendar` → `Import/Export` können Sie ebenfalls den
 Kalender nach calendar.ics (iCalendar-Format) exportieren.  Die Datei wird
 im `content/calendar/` Ordner (neben der `calendar.2.6.csv` Datei) angelegt.
+
+Ein besonderes Problem bezüglich des iCalendar Import/Export ist,
+dass Calendar_XH keine dauerhaften UIDs für die Veranstaltungen
+verwaltet. Beim Import werden die UIDs des iCalendar ignoriert,
+so dass keine Synchronisierung erfolgt. Wird beispielsweise der selbe
+iCalendar zweimal importiert, werden alle Veranstaltungen doppelt
+vorhanden sein. Beim Export werden UIDs ad-hoc erzeugt; diese sind
+möglicherweise nicht eindeutig. Aber schlimmer ist, dass die Bearbeitung
+einer Veranstaltung die UID ändert, so dass keine Synchronisierung
+erfolgt, wenn Nutzer Ihre `calendar.ics` importieren.
+Daher ist es vermutlich das Beste, wenn Sie Ihre exportierten
+iCalendar Dateien nicht veröffentlichen.
 
 ## Fehlerbehebung
 

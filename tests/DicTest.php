@@ -29,6 +29,7 @@ class DicTest extends TestCase
     {
         global $pth, $plugin_cf, $plugin_tx;
 
+        $_SERVER["HTTP_HOST"] = "";
         $pth = ["folder" => ["content" => "", "plugins" => ""]];
         $plugin_cf = ["calendar" => ["date_delimiter" => "", "same-event-calendar_for_all_languages" => ""]];
         $plugin_tx = ["calendar" => ["monthnames_array" => ""]];

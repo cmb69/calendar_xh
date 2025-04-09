@@ -13,7 +13,7 @@ class ICalendarWriterTest extends TestCase
     {
         $calendar = new Calendar([$this->lunchBreak(), $this->weekend(), $this->birthday()]);
         $dir = vfsStream::setup("root");
-        $sut = new ICalendarWriter($dir->url() . "/", new Html2Text());
+        $sut = new ICalendarWriter($dir->url() . "/", "example.com", new Html2Text());
         $sut->write($calendar);
         $actual = $dir->getChild("calendar.ics")->getContent();
         $expected = <<<'EOS'
@@ -21,7 +21,7 @@ class ICalendarWriterTest extends TestCase
             PRODID:-//3-magi.net//Calendar_XH//EN
             VERSION:2.0
             BEGIN:VEVENT
-            UID:0
+            UID:0@example.com
             DTSTART:20230104T120000
             DTEND:20230104T130000
             SUMMARY:Lunch break
@@ -30,13 +30,13 @@ class ICalendarWriterTest extends TestCase
             LOCATION:whereever I am
             END:VEVENT
             BEGIN:VEVENT
-            UID:1
+            UID:1@example.com
             DTSTART:20230107T000000
             DTEND;VALUE=DATE:20230108
             SUMMARY:Weekend
             END:VEVENT
             BEGIN:VEVENT
-            UID:2
+            UID:2@example.com
             DTSTART:20000101T000000
             DTEND;VALUE=DATE:20000101
             SUMMARY:Millenium

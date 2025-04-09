@@ -204,10 +204,10 @@ class Event
             || $this->end->compareDate($day) === 0;
     }
 
-    public function toICalendarString(string $id, Html2Text $converter): string
+    public function toICalendarString(string $id, Html2Text $converter, string $host): string
     {
         $res = "BEGIN:VEVENT\r\n"
-            . "UID:$id\r\n";
+            . "UID:$id@$host\r\n";
         $res .= $this->getDtstart() . "\r\n";
         $res .= $this->getDtend() . "\r\n";
         if ($this->summary !== "") {
