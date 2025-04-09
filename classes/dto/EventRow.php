@@ -87,6 +87,12 @@ class EventRow
      * @readonly
      * @var string
      */
+    public $url;
+
+    /**
+     * @readonly
+     * @var string
+     */
     public $link;
 
     /**
@@ -105,6 +111,7 @@ class EventRow
         bool $show_time,
         bool $show_location,
         bool $show_link,
+        string $url,
         string $link,
         string $past_event_class
     ) {
@@ -118,6 +125,7 @@ class EventRow
         $this->show_time = $show_time;
         $this->show_location = $show_location;
         $this->show_link = $show_link;
+        $this->url = $url;
         $this->link = $link;
         $this->past_event_class = $past_event_class;
     }

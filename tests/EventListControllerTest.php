@@ -80,7 +80,7 @@ class EventListControllerTest extends TestCase
             "13:00",
             "Lunch break",
             "http://example.com/lunchbreak",
-            "Tips for lunch breaks",
+            "<a href=\"http://example.com/lunchbreak\">Tips for lunch breaks</a>",
             "whereever I am"
         );
     }

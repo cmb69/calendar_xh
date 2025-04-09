@@ -160,7 +160,8 @@ class EventListController
             (bool) $this->conf['show_event_time'],
             (bool) $this->conf['show_event_location'],
             (bool) $this->conf['show_event_link'],
-            $this->renderLink($event)
+            $event->linkadr(),
+            $event->linktxt()
         );
     }
 
@@ -193,7 +194,8 @@ class EventListController
             (bool) $this->conf['show_event_time'],
             (bool) $this->conf['show_event_location'],
             (bool) $this->conf['show_event_link'],
-            $this->renderLink($event),
+            $event->linkadr(),
+            $event->linktxt(),
             $event->end()->compare($now) < 0 ? "past_event" : ""
         );
     }
@@ -208,20 +210,6 @@ class EventListController
             );
         } else {
             return $this->dateTimeFormatter->formatDate($event->start());
-        }
-    }
-
-    private function renderLink(Event $event): string
-    {
-        if ($event->linkadr()) {
-            $url = $event->linkadr();
-            $target = (strpos($url, '://') === false) ? '_self' : '_blank';
-            $title = $event->summary();
-            $text = $event->linktxt() ?: $event->linkadr();
-            return "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
-                . "{$text}</a>";
-        } else {
-            return $event->linktxt();
         }
     }
 

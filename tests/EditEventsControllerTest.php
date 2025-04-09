@@ -40,6 +40,9 @@ class EditEventsControllerTest extends TestCase
     /** @var CsrfProtector&MockObject */
     private $csrfProtector;
 
+    /** @var Editor&MockObject */
+    private $editor;
+
     public function setUp(): void
     {
         $this->eventDataService = $this->createMock(EventDataService::class);
@@ -47,13 +50,14 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
         $this->csrfProtector->method("token")->willReturn("42881056d048537da0e061f7f672854b");
         $this->csrfProtector->method("check")->willReturn(true);
+        $this->editor = $this->createMock(Editor::class);
         $view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
         $this->sut = new EditEventsController(
             "./",
             $this->eventDataService,
             $this->csrfProtector,
-            $view,
-            ""
+            $this->editor,
+            $view
         );
     }
 

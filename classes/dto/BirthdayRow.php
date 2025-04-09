@@ -87,6 +87,12 @@ class BirthdayRow
      * @readonly
      * @var string
      */
+    public $url;
+
+    /**
+     * @readonly
+     * @var string
+     */
     public $link;
 
     public function __construct(
@@ -99,6 +105,7 @@ class BirthdayRow
         bool $show_time,
         bool $show_location,
         bool $show_link,
+        string $url,
         string $link
     ) {
         $this->is_birthday = true;
@@ -111,6 +118,7 @@ class BirthdayRow
         $this->show_time = $show_time;
         $this->show_location = $show_location;
         $this->show_link = $show_link;
+        $this->url = $url;
         $this->link = $link;
     }
 }

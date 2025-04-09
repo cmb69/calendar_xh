@@ -47,13 +47,14 @@ if (!isset($this)) {header("404 Not found"); exit;}
     </p>
     <p>
       <label>
-        <span><?=$this->text('event_link_txt')?></span>
-        <input type="text" class="calendar_input_event" name="linktxt" value="<?=$this->esc($event['linktxt'])?>">
+        <span><?=$this->text('label_description')?></span>
+        <textarea class="calendar_input_event calendar_textarea_description" name="linktxt"><?=$this->esc($event['linktxt'])?></textarea>
       </label>
     </p>
+    <input type="hidden" name="calendar_do">
   </div>
   <p class="calendar_buttons">
-    <button name="calendar_do"><?=$this->text($button_label)?></button>
+    <button><?=$this->text($button_label)?></button>
   </p>
   <input type="hidden" name="calendar_token" value="<?=$this->raw($csrf_token)?>">
 </form>

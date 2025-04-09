@@ -46,6 +46,7 @@ $plugin_tx['calendar']['eventfile_not_saved']="ERROR: could not save event data.
 $plugin_tx['calendar']['label_new']="New";
 $plugin_tx['calendar']['label_edit']="Edit";
 $plugin_tx['calendar']['label_delete']="Delete";
+$plugin_tx['calendar']['label_description']="Description";
 $plugin_tx['calendar']['label_save']="Save";
 $plugin_tx['calendar']['label_import_export']="Import/Export";
 $plugin_tx['calendar']['label_import']="Import";

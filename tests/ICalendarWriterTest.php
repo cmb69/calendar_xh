@@ -13,7 +13,7 @@ class ICalendarWriterTest extends TestCase
     {
         $calendar = new Calendar([$this->lunchBreak(), $this->weekend(), $this->birthday()]);
         $dir = vfsStream::setup("root");
-        $sut = new ICalendarWriter($dir->url() . "/");
+        $sut = new ICalendarWriter($dir->url() . "/", new Html2Text());
         $sut->write($calendar);
         $actual = $dir->getChild("calendar.ics")->getContent();
         $expected = <<<'EOS'

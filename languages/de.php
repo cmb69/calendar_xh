@@ -46,6 +46,7 @@ $plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen k
 $plugin_tx['calendar']['label_new']="Neu";
 $plugin_tx['calendar']['label_edit']="Bearbeiten";
 $plugin_tx['calendar']['label_delete']="Löschen";
+$plugin_tx['calendar']['label_description']="Beschreibung";
 $plugin_tx['calendar']['label_save']="Speichern";
 $plugin_tx['calendar']['label_import_export']="Import/Export";
 $plugin_tx['calendar']['label_import']="Import";

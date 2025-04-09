@@ -112,6 +112,11 @@ Besides normal events, it is also possible to define *birthdays* by
 entering `###` as location, the name of the birthday child as event and
 the date of birth as start date.
 
+As of Calendar_XH 2.6, the `description` field (still called `link`
+in the front-end for backward compatibility reasons), accepts arbitrary
+HTML.  It is strongly recommended to keep the descriptions short, and
+use HTML markup sparingly; otherwise the event list may look ugly.
+
 ### Calendars
 
 You can show the event calendar either from the template:
@@ -163,14 +168,14 @@ or on a page:
 ### Import/Export
 
 To import existing `.ics` files (iCalendar format), you have to put them
-in the `content/calendar/`/` folder (right besides the `calendar.csv` file). Then
-navigate to `Plugins` → `Calendar` → `Import/Export` where you can actually
+in the `content/calendar/` folder (right besides the `calendar.2.6.csv` file).
+Then navigate to `Plugins` → `Calendar` → `Import/Export` where you can actually
 import the desired file(s). Note that only a very minimalistic import is
 implemented so far. Also note that no synchronization is being done on import.
 
 Under `Plugins` → `Calendar` → `Import/Export` you can also export the
 calendar to calendar.ics (iCalendar format).  The file will be created
-in the `content/calendar/` folder (right besides the `calendar.csv` file).
+in the `content/calendar/` folder (right besides the `calendar.2.6.csv` file).
 
 ## Troubleshooting
 Report bugs and ask for support either on [Github](https://github.com/cmb69/calendar_xh/issues)

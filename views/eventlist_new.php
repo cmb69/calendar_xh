@@ -34,7 +34,8 @@ if (!defined("CMSIMPLE_XH_VERSION")) {header("404 Not found"); exit;}
       </p>
       <p class="event_data event_summary" itemprop="name"><?=$this->esc($row->summary)?> <?=$this->plural('age', $row->age)?></p>
       <p class="event_data event_location"><?=$this->text('birthday_text')?></p>
-      <p class="event_data event_link" itemprop="url"><?=$this->raw($row->link)?></p>
+      <meta itemprop="url" content="<?=$this->esc($row->url)?>">
+      <div class="event_data event_link" itemprop="description"><?=$this->raw($row->link)?></div>
     </li>
 <?    else:?>
   <?      assert($row instanceof EventRow)?>
@@ -47,7 +48,8 @@ if (!defined("CMSIMPLE_XH_VERSION")) {header("404 Not found"); exit;}
       </p>
       <p class="event_data event_summary" itemprop="name"><?=$this->esc($row->summary)?></p>
       <p class="event_data event_location" itemprop="location"><?=$this->esc($row->location)?></p>
-      <p class="event_data event_link" itemprop="url"><?=$this->raw($row->link)?></p>
+      <meta itemprop="url" content="<?=$this->esc($row->url)?>">
+      <div class="event_data event_link" itemprop="description"><?=$this->raw($row->link)?></div>
     </li>
 <?    endif?>
 <?  endforeach?>

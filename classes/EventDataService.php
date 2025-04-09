@@ -45,7 +45,7 @@ class EventDataService
     {
         $this->dataFolder = $dataFolder;
         $this->separator = $separator;
-        $this->eventfile = "{$dataFolder}calendar.csv";
+        $this->eventfile = "{$dataFolder}calendar.2.6.csv";
     }
 
     public function getFilename(): string
@@ -61,17 +61,29 @@ class EventDataService
 
     public function readEvents(): Calendar
     {
-        $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".csv");
-        if (!is_file("{$eventfile}.csv")) {
-            if (is_file("{$eventfile}.txt")) {
-                $events = $this->readOldEvents("{$eventfile}.txt");
+        $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".2.6.csv");
+        if (!is_file("{$eventfile}.2.6.csv")) {
+            if (!is_file("{$eventfile}.csv")) {
+                if (is_file("{$eventfile}.txt")) {
+                    $events = $this->readOldEvents("{$eventfile}.txt");
+                    $this->writeEvents($events);
+                }
+            } else {
+                $events = $this->doReadEvents("{$eventfile}.csv", true);
                 $this->writeEvents($events);
             }
         }
+        $events = $this->doReadEvents($this->getFilename());
+        return new Calendar($events);
+    }
+
+    /** @return array<string,Event> */
+    private function doReadEvents(string $filename, bool $convertToHtml = false): array
+    {
         $result = array();
-        if ($stream = fopen($this->getFilename(), 'r')) {
+        if ($stream = fopen($filename, "r")) {
             flock($stream, LOCK_SH);
-            while (($record = fgetcsv($stream, 0, ';', '"', "\0")) !== false) {
+            while (($record = fgetcsv($stream, 0, ";", '"', "\0")) !== false) {
                 if (!$this->validateRecord($record)) {
                     continue;
                 }
@@ -83,6 +95,17 @@ class EventDataService
                 }
                 if (!$endtime) {
                     $endtime = null;
+                }
+                if ($convertToHtml) {
+                    $linktxt = XH_hsc($linktxt);
+                    if ($linkadr) {
+                        $target = (strpos($linkadr, "://") === false) ? "_self" : "_blank";
+                        $title = XH_hsc($event);
+                        $text = $linktxt ?: XH_hsc($linkadr);
+                        $url = XH_hsc($linkadr);
+                        $linktxt = "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
+                            . "{$text}</a>";
+                    }
                 }
                 if ($datestart != '' && $event != '') {
                     $maybeEvent = Event::create(
@@ -103,9 +126,8 @@ class EventDataService
             flock($stream, LOCK_UN);
             fclose($stream);
         }
-        return new Calendar($result);
+        return $result;
     }
-
     /**
      * @param ?list<?string> $record
      * @phpstan-assert-if-true list<string> $record

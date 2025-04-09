@@ -119,9 +119,7 @@ p.event_summary {
 p.event_location {
     text-align: center;
 }
-p.event_link {
-    text-align: right;
-}
+div.event_link {}
 
 /*
  * nextevent
@@ -177,6 +175,9 @@ p.event_link {
 }
 .calendar_input_event { /* summary, location, link, link text */
     width: 30em;
+}
+.calendar_textarea_description {
+    height: 200px;
 }
 .calendar_buttons {
     text-align: center;

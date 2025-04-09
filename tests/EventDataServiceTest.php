@@ -34,14 +34,14 @@ class EventDataServiceTest extends TestCase
         $root = vfsStream::setup("root");
         $subject = new EventDataService(vfsStream::url("root/"), "-");
         $subject->readEvents();
-        $this->assertTrue($root->hasChild("calendar.csv"));
-        $this->assertSame(0, $root->getChild("calendar.csv")->size());
+        $this->assertTrue($root->hasChild("calendar.2.6.csv"));
+        $this->assertSame(0, $root->getChild("calendar.2.6.csv")->size());
     }
 
     public function testEmptyEventFileReadsEmptyArray()
     {
         vfsStream::setup("root");
-        vfsStream::newFile("root/calendar.csv");
+        vfsStream::newFile("root/calendar.2.6.csv");
         $subject = new EventDataService(vfsStream::url("root/"), "-");
         $events = $subject->readEvents()->events();
         $this->assertIsArray($events);
@@ -55,7 +55,7 @@ class EventDataServiceTest extends TestCase
 1971-04-02;;;;markus;###;;
 CSV;
         vfsStream::setup("root");
-        file_put_contents(vfsStream::url("root/calendar.csv"), $csv);
+        file_put_contents(vfsStream::url("root/calendar.2.6.csv"), $csv);
         $subject = new EventDataService(vfsStream::url("root/"), "-");
         $events = array_values($subject->readEvents()->eventsDuring(2021, 4));
         $this->assertCount(2, $events);
@@ -75,7 +75,7 @@ CSV;
 2021-04-21;10:30;2021-04-21;10:30;instant;;;
 CSV;
         vfsStream::setup("root");
-        file_put_contents(vfsStream::url("root/calendar.csv"), $csv);
+        file_put_contents(vfsStream::url("root/calendar.2.6.csv"), $csv);
         $subject = new EventDataService(vfsStream::url("root/"), "-");
         $nextevent = $subject->readEvents()->nextEvent($now);
         if ($expected !== null) {

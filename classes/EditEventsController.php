@@ -43,6 +43,9 @@ class EditEventsController
     /** @var CsrfProtector */
     private $csrfProtector;
 
+    /** @var Editor */
+    private $editor;
+
     /** @var View */
     private $view;
 
@@ -50,11 +53,13 @@ class EditEventsController
         string $pluginFolder,
         EventDataService $eventDataService,
         CsrfProtector $csrfProtector,
+        Editor $editor,
         View $view
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->eventDataService = $eventDataService;
         $this->csrfProtector = $csrfProtector;
+        $this->editor = $editor;
         $this->view = $view;
     }
 
@@ -123,6 +128,7 @@ class EditEventsController
 
     private function renderEditForm(Request $request, Event $event, ?string $id, string $action): string
     {
+        $this->editor->init(["calendar_textarea_description"], "minimal");
         $url = $request->url()->with("admin", "plugin_main")->with("action", $action);
         if ($id !== null) {
             $url = $url->with("event_id", $id);

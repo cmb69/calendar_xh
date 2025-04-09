@@ -21,30 +21,11 @@
 
 namespace Calendar;
 
-use Calendar\Model\Calendar;
-
-class ICalendarWriter
+class Editor
 {
-    /** @var string */
-    private $folder;
-
-    /** @var Html2Text */
-    private $converter;
-
-    public function __construct(string $folder, Html2Text $converter)
+    /** @param list<string> $elementClasses */
+    public function init(array $elementClasses, ?string $initFile = null): void
     {
-        $this->folder = $folder;
-        $this->converter = $converter;
-    }
-
-    public function write(Calendar $calendar): bool
-    {
-        $stream = fopen($this->folder . "calendar.ics", "w");
-        if ($stream === false) {
-            return false;
-        }
-        $written = fwrite($stream, $calendar->toICalendarString($this->converter));
-        fclose($stream);
-        return $written !== false;
+        init_editor($elementClasses, $initFile ?? false);
     }
 }

@@ -91,6 +91,7 @@
 <pre><code>{{{editevents()}}}</code></pre>
 <p>Embedding the event editor on a page should only be done if access to this page requires authorization via <a href="https://github.com/cmb69/register_xh">Register_XH</a> or <a href="https://github.com/cmsimple-xh/memberpages">Memberpages</a>.</p>
 <p>Besides normal events, it is also possible to define <em>birthdays</em> by entering <code>###</code> as location, the name of the birthday child as event and the date of birth as start date.</p>
+<p>As of Calendar_XH 2.6, the <code>description</code> field (still called <code>link</code> in the front-end for backward compatibility reasons), accepts arbitrary HTML. It is strongly recommended to keep the descriptions short, and use HTML markup sparingly; otherwise the event list may look ugly.</p>
 <h3 id="calendars">Calendars</h3>
 <p>You can show the event calendar either from the template:</p>
 <pre><code>&lt;?=calendar()?&gt;</code></pre>
@@ -109,8 +110,8 @@
 <p>or on a page:</p>
 <pre><code>{{{nextevent()}}}</code></pre>
 <h3 id="importexport">Import/Export</h3>
-<p>To import existing <code>.ics</code> files (iCalendar format), you have to put them in the <code>content/calendar/</code>/<code>folder (right besides the</code>calendar.csv<code>file). Then navigate to</code>Plugins<code>→</code>Calendar<code>→</code>Import/Export` where you can actually import the desired file(s). Note that only a very minimalistic import is implemented so far. Also note that no synchronization is being done on import.</p>
-<p>Under <code>Plugins</code> → <code>Calendar</code> → <code>Import/Export</code> you can also export the calendar to calendar.ics (iCalendar format). The file will be created in the <code>content/calendar/</code> folder (right besides the <code>calendar.csv</code> file).</p>
+<p>To import existing <code>.ics</code> files (iCalendar format), you have to put them in the <code>content/calendar/</code> folder (right besides the <code>calendar.2.6.csv</code> file). Then navigate to <code>Plugins</code> → <code>Calendar</code> → <code>Import/Export</code> where you can actually import the desired file(s). Note that only a very minimalistic import is implemented so far. Also note that no synchronization is being done on import.</p>
+<p>Under <code>Plugins</code> → <code>Calendar</code> → <code>Import/Export</code> you can also export the calendar to calendar.ics (iCalendar format). The file will be created in the <code>content/calendar/</code> folder (right besides the <code>calendar.2.6.csv</code> file).</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>Report bugs and ask for support either on <a href="https://github.com/cmb69/calendar_xh/issues">Github</a> or in the <a href="https://cmsimpleforum.com/">CMSimple_XH Forum</a>.</p>
 <h2 id="license">License</h2>

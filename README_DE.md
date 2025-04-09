@@ -116,6 +116,12 @@ Zusätzlich zu normalen Veranstaltungen können ebenfalls *Geburtstage*
 definiert werden, indem `###` als Ort, der Name des Geburtstagskinds als
 Veranstaltung, und das Geburtsdatum als Anfangsdatum eingetragen wird.
 
+Von Calendar_XH 2.6 an akzeptiert das `description` Feld (das aus Gründen
+der Abwärtskompatibilität im Frontend weiterhin als `link` bezeichnet wird),
+beliebiges HTML. Es wird unbedingt empfohlen die Beschreibungen kurz zu
+halten, und HTML Markup sparsam zu verwenden; andernfalls kann die
+Veranstaltungsliste fürchterlich aussehen.
+
 ### Kalender
 
 Veranstaltungskalender können vom Template aus angezeigt werden:
@@ -169,7 +175,7 @@ oder auf einer Seite:
 ### Import/Export
 
 Um vorhandene `.ics` Dateien (iCalendar-Format) zu importieren, müssen
-diese zunächst im `content/calendar/` Ordner (neben der `calendar.csv` Datei)
+diese zunächst im `content/calendar/` Ordner (neben der `calendar.2.6.csv` Datei)
 abgelegt werden. Unter `Plugins` → `Calendar` → `Import` kann dann der
 eigentliche Import der Datei(en) durchgeführt werden.
 Es ist zu beachten, dass bislang nur ein sehr minimalistischer Import implementiert ist.
@@ -177,7 +183,7 @@ Es ist ebenfalls zu beachten, dass beim Import keine Synchronisation durchgefüh
 
 Unter `Plugins` → `Calendar` → `Import/Export` können Sie ebenfalls den
 Kalender nach calendar.ics (iCalendar-Format) exportieren.  Die Datei wird
-im `content/calendar/` Ordner (neben der `calendar.csv` Datei) angelegt.
+im `content/calendar/` Ordner (neben der `calendar.2.6.csv` Datei) angelegt.
 
 ## Fehlerbehebung
 

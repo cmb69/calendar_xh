@@ -5,6 +5,8 @@ parameters:
     - views/
     - admin.php
     - index.php
+  excludePaths:
+    - classes/Html2Text.php
   bootstrapFiles:
     - phpstan.php
   scanFiles:
@@ -12,5 +14,6 @@ parameters:
     - ../../cmsimple/classes/CSRFProtection.php
     - ../../cmsimple/adminfuncs.php
     - ../../cmsimple/functions.php
+    - classes/Html2Text.php
   scanDirectories:
     - ../plib/classes

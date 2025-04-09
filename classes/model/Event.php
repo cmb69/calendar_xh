@@ -26,6 +26,8 @@
 
 namespace Calendar\Model;
 
+use Calendar\Html2Text;
+
 class Event
 {
     /** @var LocalDateTime */
@@ -202,7 +204,7 @@ class Event
             || $this->end->compareDate($day) === 0;
     }
 
-    public function toICalendarString(string $id): string
+    public function toICalendarString(string $id, Html2Text $converter): string
     {
         $res = "BEGIN:VEVENT\r\n"
             . "UID:$id\r\n";
@@ -215,7 +217,10 @@ class Event
             $res .= "URL:" . $this->linkadr . "\r\n";
         }
         if ($this->linktxt !== "") {
-            $res .= "DESCRIPTION:" . $this->linktxt . "\r\n";
+            $converter->setHtml($this->linktxt);
+            $text = $converter->getText();
+            $text = str_replace(["\\", ";", ",", "\r", "\n"], ["\\\\", "\\;", "\\,", "", "\\n\r\n "], $text);
+            $res .= "DESCRIPTION:" . rtrim($text) . "\r\n";
         }
         if ($this->isBirthday()) {
             $res .= "RRULE:FREQ=YEARLY\r\n";

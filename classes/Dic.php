@@ -77,6 +77,7 @@ class Dic
             "{$pth['folder']['plugins']}calendar/",
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new CsrfProtector(),
+            new Editor(),
             self::view()
         );
     }
@@ -98,7 +99,7 @@ class Dic
         return new IcalImportExportController(
             new IcsFileFinder(self::getDataFolder()),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            new ICalendarWriter(self::getDataFolder()),
+            new ICalendarWriter(self::getDataFolder(), new Html2Text()),
             self::view()
         );
     }
