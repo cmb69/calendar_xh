@@ -27,7 +27,7 @@
 use Calendar\Dic;
 use Plib\Request;
 
-const CALENDAR_VERSION = "2.6-dev";
+const CALENDAR_VERSION = "2.6";
 
 /** @return string|never */
 function calendar(int $year = 0, int $month = 0, string $eventpage = '')
