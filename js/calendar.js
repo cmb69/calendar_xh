@@ -25,30 +25,34 @@ class CalendarWidget {
      */
     constructor (element) {
         this.element = element;
+        this.init();
+        history.replaceState({calendar: this.element.innerHTML}, document.title, location.href);
+        window.addEventListener("popstate", event => this.onPopState(event));
+    }
+
+    init() {
         let anchors = /** @type {NodeListOf<HTMLAnchorElement>} */
-            (element.querySelectorAll(".calendar_monthyear a"));
+            (this.element.querySelectorAll(".calendar_monthyear a"));
         anchors.forEach(anchor => {
             anchor.onclick = event => {
-                this.retrieveCalendar(anchor.href, false);
+                this.retrieveCalendar(anchor.href);
                 event.preventDefault();
             };
         });
-        history.replaceState({calendar_url: location.href}, document.title, location.href);
-        window.addEventListener("popstate", event => this.onPopState(event));
     }
 
     /**
      * @param {string} url
-     * @param {boolean} isPop
      */
-    retrieveCalendar(url, isPop) {
+    retrieveCalendar(url) {
         var request = new XMLHttpRequest();
         this.element.classList.add("calendar_loading");
         request.open("GET", url);
         request.setRequestHeader("X-CMSimple-XH-Request", "calendar");
         request.onload = () => {
             if (request.status >= 200 && request.status < 300) {
-                this.replaceCalendar(request.response, url, isPop);
+                this.replaceCalendar(request.response);
+                history.pushState({calendar: request.response}, document.title, url);
             }
             this.element.classList.remove("calendar_loading");
         };
@@ -57,23 +61,18 @@ class CalendarWidget {
 
     /**
      * @param {string} response
-     * @param {string} url
-     * @param {boolean} isPop
      */
-    replaceCalendar(response, url, isPop) {
+    replaceCalendar(response) {
         this.element.innerHTML = response;
-        new CalendarWidget(this.element);
-        if (!isPop) {
-            history.pushState({calendar_url: url}, document.title, url);
-        }
+        this.init();
     }
 
     /**
      * @param {PopStateEvent} event
      */
     onPopState(event) {
-        if (event.state && "calendar_url" in event.state) {
-            this.retrieveCalendar(event.state.calendar_url, true);
+        if (event.state && event.state.calendar) {
+            this.replaceCalendar(event.state.calendar);
         }
     }
 }
