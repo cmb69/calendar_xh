@@ -128,20 +128,49 @@ div.event_link {}
 .nextevent_date {
     text-align: center;
 }
+.nextevent_event {}
+.nextevent_location {}
+
+/* marquee */
+
 .calendar_marquee_outer {
     overflow: hidden;
 }
+.calendar_marquee:hover {
+  animation-play-state: paused; /* Pause on hover */
+  cursor: wait;
+}
+
+/* vertical marquee */
+
 .calendar_marquee {
     width: 100%;
     text-align: center;
-    animation: calendar_marquee 15s linear infinite;
+    animation: calendar_marquee 10s linear infinite;
 }
 @keyframes calendar_marquee {
     0%   { transform: translateY(+150%); }
     100% { transform: translateY(-250%); }
 }
-.nextevent_event {}
-.nextevent_location {}
+
+/* horizontal marquee */
+
+.calendar_horizontal .calendar_marquee {
+    animation: calendar_marquee_horizontal 15s linear infinite;
+    display: flex;
+    padding: 0.5em 0;
+}
+.calendar_horizontal .calendar_marquee div {
+    margin: 0 2em 0 0;
+    white-space: nowrap;
+}
+.calendar_horizontal .calendar_marquee .nextevent_event + .nextevent_date {
+    margin: 0 0.25em 0 0;
+}
+@keyframes calendar_marquee_horizontal {
+    0% {transform: translateX(+100%);}
+    100% {transform: translateX(-100%);}
+}
 
 /*
  * edit events overview

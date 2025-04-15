@@ -74,6 +74,7 @@ $plugin_tx['calendar']['syscheck_xhversion']="die CMSimple_XH-Version ≥ %s";
 $plugin_tx['calendar']['cf_week_starts_mon']="Ob die Kalenderwoche am Montag beginnt. Andernfalls beginnt sie am Sonntag.";
 $plugin_tx['calendar']['cf_prev_next_button']="Ob beim Kalender Navigationsmöglichkeiten für einen Monat vor/zurück angezeigt werden sollen.";
 $plugin_tx['calendar']['cf_eventlist_template']="Das Template, das für die Veranstaltungsliste verwendet wird. 'eventlist' ist das klassische Tabellen-Layout; 'eventlist_new' hat ein div basiertes Layout (per Voreinstellung vertikal).";
+$plugin_tx['calendar']['cf_nextevent_orientation']="Die Rollrichtung der Laufschrift für die nächste Veranstaltung. Entweder 'vertical' für vertikalen Bildlauf, oder 'horizontal' für horizontalen Bildlauf.";
 $plugin_tx['calendar']['cf_show_days_between_dates']="Ob im Kalender bei mehrtägigen Veranstaltungen alle Tage eingefärbt werden.";
 $plugin_tx['calendar']['cf_date_delimiter']="Zeichen zwischen den Datumsziffern, also zwischen Tag und Monat und Monat und Jahr. Möglich sind \".\", \"-\", \"/\". Dies wird nur für den Import der alten calendar.txt Dateien verwendet.";
 $plugin_tx['calendar']['cf_show_event_time']="Ob die Spalte Uhrzeit in der klassischen Veranstaltungsliste angezeigt werden soll";

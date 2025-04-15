@@ -50,11 +50,12 @@ class NextEventControllerTest extends TestCase
     {
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $lang = $plugin_tx['calendar'];
+        $orientation = XH_includeVar("./config/config.php", "plugin_cf")["calendar"]["nextevent_orientation"];
         $event = Event::create("1969-03-24", null, "", null, "cmb", "", "", "###");
         $eventDataService = $this->createStub(EventDataService::class);
         $eventDataService->method("readEvents")->willReturn(new Calendar([$event]));
         $dateTimeFormatter = new DateTimeFormatter($lang);
         $view = new View("./views/", $lang);
-        return new NextEventController($eventDataService, $dateTimeFormatter, $view);
+        return new NextEventController($orientation, $eventDataService, $dateTimeFormatter, $view);
     }
 }

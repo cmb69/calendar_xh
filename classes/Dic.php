@@ -61,9 +61,10 @@ class Dic
 
     public static function makeNextEventController(): NextEventController
     {
-        global $plugin_tx;
+        global $plugin_cf, $plugin_tx;
 
         return new NextEventController(
+            $plugin_cf["calendar"]["nextevent_orientation"],
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()

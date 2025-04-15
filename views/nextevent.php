@@ -3,17 +3,21 @@
 if (!isset($this)) {header("404 Not found"); exit;}
 
 /**
+ * @var bool $has_next_event
  * @var string $date
+ * @var string $summary
  * @var string $event_text
+ * @var ?string $event_text_2
  * @var string $location
+ * @var string $class
  */
 ?>
 
 <div class="nextevent_date">
-<?if (isset($summary)):?>
+<?if ($has_next_event):?>
   <?=$this->esc($date)?>
 </div>
-<div class="calendar_marquee_outer">
+<div class="calendar_marquee_outer <?=$this->esc($class)?>">
   <div class="calendar_marquee">
     <div class="nextevent_event"><?=$this->esc($summary)?></div>
     <div class="nextevent_date"><?=$this->raw($event_text)?></div>
