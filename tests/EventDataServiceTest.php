@@ -29,13 +29,13 @@ use PHPUnit\Framework\TestCase;
 
 class EventDataServiceTest extends TestCase
 {
-    public function testMissingEventFileIsCreated()
+    public function testMissingEventFileReadsEmptyArray()
     {
         $root = vfsStream::setup("root");
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $subject->readEvents();
-        $this->assertTrue($root->hasChild("calendar.2.6.csv"));
-        $this->assertSame(0, $root->getChild("calendar.2.6.csv")->size());
+        $events = $subject->readEvents()->events();
+        $this->assertIsArray($events);
+        $this->assertEmpty($events);
     }
 
     public function testEmptyEventFileReadsEmptyArray()

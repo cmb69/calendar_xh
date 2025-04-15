@@ -53,9 +53,6 @@ class EventDataService
         if (!is_dir($this->dataFolder) && mkdir($this->dataFolder, 0777)) {
             chmod($this->dataFolder, 0777);
         }
-        if (!file_exists($this->eventfile)) {
-            touch($this->eventfile);
-        }
         return $this->eventfile;
     }
 
@@ -81,7 +78,7 @@ class EventDataService
     private function doReadEvents(string $filename, bool $convertToHtml = false): array
     {
         $result = array();
-        if ($stream = fopen($filename, "r")) {
+        if (is_readable($filename) && $stream = fopen($filename, "r")) {
             flock($stream, LOCK_SH);
             while (($record = fgetcsv($stream, 0, ";", '"', "\0")) !== false) {
                 if (!$this->validateRecord($record)) {

@@ -66,7 +66,7 @@ class InfoController
                 $this->checkWritability("{$this->pluginFolder}css/"),
                 $this->checkWritability("{$this->pluginFolder}config/"),
                 $this->checkWritability("{$this->pluginFolder}languages/"),
-                $this->checkWritability($this->dataService->getFilename()),
+                $this->checkWritability(dirname($this->dataService->getFilename())),
             ],
         ]))->withTitle("Calendar " . $this->view->esc(CALENDAR_VERSION));
     }
