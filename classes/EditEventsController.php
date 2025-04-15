@@ -37,6 +37,9 @@ class EditEventsController
     /** @var string */
     private $pluginFolder;
 
+    /** @var array<string,string> */
+    private $config;
+
     /** @var EventDataService */
     private $eventDataService;
 
@@ -49,14 +52,17 @@ class EditEventsController
     /** @var View */
     private $view;
 
+    /** @param array<string,string> $config */
     public function __construct(
         string $pluginFolder,
+        array $config,
         EventDataService $eventDataService,
         CsrfProtector $csrfProtector,
         Editor $editor,
         View $view
     ) {
         $this->pluginFolder = $pluginFolder;
+        $this->config = $config;
         $this->eventDataService = $eventDataService;
         $this->csrfProtector = $csrfProtector;
         $this->editor = $editor;
@@ -128,7 +134,7 @@ class EditEventsController
 
     private function renderEditForm(Request $request, Event $event, ?string $id, string $action): string
     {
-        $this->editor->init(["calendar_textarea_description"], "minimal");
+        $this->editor->init(["calendar_textarea_description"], $this->config["edit_editor_init"]);
         $url = $request->url()->with("admin", "plugin_main")->with("action", $action);
         if ($id !== null) {
             $url = $url->with("event_id", $id);

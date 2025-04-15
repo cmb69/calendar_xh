@@ -73,10 +73,11 @@ class Dic
 
     public static function makeEditEventController(): EditEventsController
     {
-        global $pth;
+        global $pth, $plugin_cf;
 
         return new EditEventsController(
             "{$pth['folder']['plugins']}calendar/",
+            $plugin_cf["calendar"],
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new CsrfProtector(),
             new Editor(),

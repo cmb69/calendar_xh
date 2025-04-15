@@ -54,6 +54,7 @@ class EditEventsControllerTest extends TestCase
         $view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
         $this->sut = new EditEventsController(
             "./",
+            XH_includeVar("./config/config.php", "plugin_cf")["calendar"],
             $this->eventDataService,
             $this->csrfProtector,
             $this->editor,
