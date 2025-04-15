@@ -46,6 +46,9 @@ class CalendarController
     /** @var DateTimeFormatter */
     private $dateTimeFormatter;
 
+    /** @var int */
+    private $widgetNum;
+
     /** @var Counter */
     private $counter;
 
@@ -58,6 +61,7 @@ class CalendarController
         array $conf,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
+        int $widgetNum,
         Counter $counter,
         View $view
     ) {
@@ -65,12 +69,16 @@ class CalendarController
         $this->conf = $conf;
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
+        $this->widgetNum = $widgetNum;
         $this->counter = $counter;
         $this->view = $view;
     }
 
     public function defaultAction(int $year, int $month, string $eventpage, Request $request): Response
     {
+        if ($this->xhr($request) === false) {
+            return Response::create();
+        }
         if ($eventpage == '') {
             $eventpage = $this->view->plain("event_page");
         }
@@ -100,12 +108,12 @@ class CalendarController
             'rows' => $rows,
             'jsUrl' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
         ];
-        if ($request->header("X-CMSimple-XH-Request") === "calendar") {
+        if ($this->xhr($request)) {
             return Response::create($this->view->render('calendar', $data))->withContentType("text/html");
         }
-        $output = '<div class="calendar_calendar">'
+        $output = "<div class=\"calendar_calendar\" data-num=\"$this->widgetNum\">"
             . $this->view->render('calendar', $data)
-            . '</div>';
+            . "</div>";
         return Response::create($output);
     }
 
@@ -246,5 +254,17 @@ class CalendarController
             ];
         }
         return $row;
+    }
+
+    private function xhr(Request $request): ?bool
+    {
+        $header = $request->header("X-CMSimple-XH-Request");
+        if ($header === null) {
+            return null;
+        }
+        if (strncmp($header, "calendar-", strlen("calendar-")) !== 0) {
+            return null;
+        }
+        return (int) substr($header, strlen("calendar-")) === $this->widgetNum;
     }
 }

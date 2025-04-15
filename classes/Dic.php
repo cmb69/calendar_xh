@@ -35,12 +35,13 @@ class Dic
     public static function makeCalendarController(): CalendarController
     {
         global $pth, $plugin_cf, $plugin_tx;
-
+        static $num = 0;
         return new CalendarController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
+            ++$num,
             self::counter(),
             self::view()
         );

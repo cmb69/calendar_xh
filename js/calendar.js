@@ -24,9 +24,16 @@ class CalendarWidget {
      * @param {Element} element
      */
     constructor (element) {
+        if (!(element instanceof HTMLElement)) return;
         this.element = element;
+        this.name = "calendar-" + parseInt(element.dataset.num || "");
         this.init();
-        history.replaceState({calendar: this.element.innerHTML}, document.title, location.href);
+        let state = history.state;
+        if (!state) {
+            state = {};
+        }
+        state[this.name] = this.element.innerHTML;
+        history.replaceState(state, document.title, location.href);
         window.addEventListener("popstate", event => this.onPopState(event));
     }
 
@@ -48,11 +55,13 @@ class CalendarWidget {
         var request = new XMLHttpRequest();
         this.element.classList.add("calendar_loading");
         request.open("GET", url);
-        request.setRequestHeader("X-CMSimple-XH-Request", "calendar");
+        request.setRequestHeader("X-CMSimple-XH-Request", this.name);
         request.onload = () => {
             if (request.status >= 200 && request.status < 300) {
                 this.replaceCalendar(request.response);
-                history.pushState({calendar: request.response}, document.title, url);
+                let state = history.state;
+                state[this.name] = request.response;
+                history.pushState(state, document.title, url);
             }
             this.element.classList.remove("calendar_loading");
         };
@@ -71,8 +80,8 @@ class CalendarWidget {
      * @param {PopStateEvent} event
      */
     onPopState(event) {
-        if (event.state && event.state.calendar) {
-            this.replaceCalendar(event.state.calendar);
+        if (event.state && event.state[this.name] !== undefined) {
+            this.replaceCalendar(event.state[this.name]);
         }
     }
 }

@@ -47,6 +47,7 @@ class CalendarControllerTest extends TestCase
             $conf,
             $eventDataService,
             $dateTimeFormatter,
+            1,
             new Counter(1),
             $view
         );
