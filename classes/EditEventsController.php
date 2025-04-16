@@ -88,8 +88,12 @@ class EditEventsController
     {
         $calendar = $this->eventDataService->readEvents();
         $events = array_map(function (Event $event): array {
+            $startDate = $event->getIsoStartDate();
+            if (!$event->isFullDay()) {
+                $startDate .= " " . $event->getIsoStartTime();
+            }
             return [
-                "start_date" => $event->getIsoStartDate() . " " . $event->getIsoStartTime(),
+                "start_date" => $startDate,
                 "summary" => $event->summary(),
             ];
         }, $calendar->events());

@@ -218,6 +218,8 @@ class CalendarController
                         $this->dateTimeFormatter->formatTime($event->start()),
                         $this->dateTimeFormatter->formatTime($event->end())
                     );
+                } elseif ($event->isFullDay()) {
+                    $time = "";
                 } else {
                     $time = $this->view->esc($this->dateTimeFormatter->formatTime($event->start()));
                 }
