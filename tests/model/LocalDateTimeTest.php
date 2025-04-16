@@ -23,6 +23,7 @@ namespace Calendar\Model;
 
 use PHPUnit\Framework\TestCase;
 
+/** @small */
 class LocalDateTimeTest extends TestCase
 {
     /**

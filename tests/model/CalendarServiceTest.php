@@ -23,6 +23,7 @@ namespace Calendar\Model;
 
 use PHPUnit\Framework\TestCase;
 
+/** @small */
 class CalendarServiceTest extends TestCase
 {
     public function testMonthMatrixForMarch2021()
