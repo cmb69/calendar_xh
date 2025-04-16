@@ -230,7 +230,7 @@ class CalendarController
                 $titles[] = "{$text} {$age}";
             }
         }
-        return implode(" | ", $titles);
+        return implode(" <br> ", $titles);
     }
 
     private function isWeekEnd(int $dayOfWeek): bool
