@@ -50,19 +50,9 @@ class Calendar
         $nextevent = null;
         $nextldt = null;
         foreach ($this->events as $event) {
-            if ($event->isBirthday()) {
-                $ldt = $event->start()->withYear($now->year());
-                if ($ldt->compare($now) < 0) {
-                    $ldt = $event->start()->withYear($now->year() + 1);
-                }
-            } else {
-                $ldt = $event->start();
-                if ($ldt->compare($now) < 0) {
-                    $ldt = $event->end();
-                    if ($ldt->compare($now) < 0) {
-                        continue;
-                    }
-                }
+            $ldt = $event->after($now);
+            if ($ldt === null) {
+                continue;
             }
             if ($nextldt === null || $ldt->compare($nextldt) < 0) {
                 $nextevent = $event;

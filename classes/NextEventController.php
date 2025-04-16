@@ -68,7 +68,7 @@ class NextEventController
         }
         if ($nextevent->isBirthday()) {
             $ldt = $nextevent->start()->withYear($now->year());
-            if ($ldt->compare($now) < 0) {
+            if ($ldt->compareDate($now) < 0) {
                 $ldt = $nextevent->start()->withYear($now->year() + 1);
             }
             $age = $now->year() - $nextevent->start()->year();

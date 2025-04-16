@@ -206,6 +206,28 @@ class Event
             || $this->end->compareDate($day) === 0;
     }
 
+    public function after(LocalDateTime $date): ?LocalDateTime
+    {
+        if ($this->isBirthday()) {
+            $ldt = $this->start()->withYear($date->year());
+            if ($ldt->compare($date) < 0) {
+                $ldt = $this->end();
+                if ($ldt->compare($date) < 0) {
+                    $ldt = $this->start()->withYear($date->year() + 1);
+                }
+            }
+        } else {
+            $ldt = $this->start();
+            if ($ldt->compare($date) < 0) {
+                $ldt = $this->end();
+                if ($ldt->compare($date) < 0) {
+                    return null;
+                }
+            }
+        }
+        return $ldt;
+    }
+
     public function toICalendarString(string $id, Html2Text $converter, string $host): string
     {
         $res = "BEGIN:VEVENT\r\n"
