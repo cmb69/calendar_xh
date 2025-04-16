@@ -211,23 +211,23 @@ class CalendarController
                 $text = $event->summary();
             }
             $text = $this->view->esc($text);
-            if (!$event->isBirthday()) {
-                if (!$event->isFullDay() && !$event->isMultiDay()) {
-                    $time = $this->view->text(
-                        "format_time_interval",
-                        $this->dateTimeFormatter->formatTime($event->start()),
-                        $this->dateTimeFormatter->formatTime($event->end())
-                    );
-                } elseif ($event->isFullDay()) {
-                    $time = "";
-                } else {
-                    $time = $this->view->esc($this->dateTimeFormatter->formatTime($event->start()));
-                }
-                $titles[] = $time . " " . $text;
-            } else {
+            if ($event->isBirthday()) {
                 $age = $year - $event->start()->year();
                 $age = $this->view->plural("age", $age);
-                $titles[] = "{$text} {$age}";
+                $titles[] = $text . " " . $age;
+            } elseif ($event->isFullDay()) {
+                $time = "";
+                $titles[] = $time . " " . $text;
+            } elseif ($event->isMultiDay()) {
+                $time = $this->view->esc($this->dateTimeFormatter->formatTime($event->start()));
+                $titles[] = $time . " " . $text;
+            } else {
+                $time = $this->view->text(
+                    "format_time_interval",
+                    $this->dateTimeFormatter->formatTime($event->start()),
+                    $this->dateTimeFormatter->formatTime($event->end())
+                );
+                $titles[] = $time . " " . $text;
             }
         }
         return implode(" <br> ", $titles);
