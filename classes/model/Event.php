@@ -192,7 +192,8 @@ class Event
     {
         assert($day->hour() === 0 && $day->minute() === 0);
         if ($this->isBirthday()) {
-            return $this->start->month() === $day->month()
+            return $this->start->year() <= $day->year()
+                && $this->start->month() === $day->month()
                 && $this->start->day() === $day->day();
         }
         if (!$this->isMultiDay()) {

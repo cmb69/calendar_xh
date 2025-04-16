@@ -30,4 +30,11 @@ class EventTest extends TestCase
         $subject = Event::create("2021-04-04", "", "", "", "Easter", "", "", "");
         $this->assertTrue($subject->isFullDay());
     }
+
+    public function testGH98()
+    {
+        $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###");
+        $now = new LocalDateTime(2025, 4, 16, 0, 0);
+        $this->assertFalse($sut->occursOn($now, true));
+    }
 }
