@@ -35,6 +35,8 @@ class EventTest extends TestCase
     {
         $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###");
         $now = new LocalDateTime(2025, 4, 16, 0, 0);
+        $this->assertFalse($sut->occursDuring(2025, 4));
         $this->assertFalse($sut->occursOn($now, true));
+        $this->assertNull($sut->after($now));
     }
 }

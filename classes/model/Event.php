@@ -210,12 +210,16 @@ class Event
     public function after(LocalDateTime $date): ?LocalDateTime
     {
         if ($this->isBirthday()) {
-            $ldt = $this->start()->withYear($date->year());
-            if ($ldt->compare($date) < 0) {
-                $ldt = $this->end();
+            if ($this->start->year() <= $date->year()) {
+                $ldt = $this->start()->withYear($date->year());
                 if ($ldt->compare($date) < 0) {
-                    $ldt = $this->start()->withYear($date->year() + 1);
+                    $ldt = $this->end();
+                    if ($ldt->compare($date) < 0) {
+                        $ldt = $this->start()->withYear($date->year() + 1);
+                    }
                 }
+            } else {
+                $ldt = null;
             }
         } else {
             $ldt = $this->start();
