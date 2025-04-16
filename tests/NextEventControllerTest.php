@@ -24,38 +24,121 @@ namespace Calendar;
 use ApprovalTests\Approvals;
 use Calendar\Model\Calendar;
 use Calendar\Model\Event;
+use Calendar\Model\LocalDateTime;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
 use Plib\View;
 
 class NextEventControllerTest extends TestCase
 {
-    public function testIssue51()
+    /** @var EventDataService&Stub */
+    private $eventDataService;
+
+    public function setUp(): void
     {
-        $subject = $this->makeNextEventController();
-        $request = new FakeRequest(["time" => 1616502840]);
-        $response = $subject->defaultAction($request);
+        $this->eventDataService = $this->createStub(EventDataService::class);
+    }
+
+    public function testRendersNoEvent(): void
+    {
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->cmb()]));
+        $request = new FakeRequest(["time" => strtotime("1965-04-16T20:38:00+02:00")]);
+        $response = $this->sut()->defaultAction($request);
+        $this->assertStringContainsString("No further event scheduled.", $response);
+    }
+
+    public function testRendersEventBeforeStart(): void
+    {
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->intfcb()]));
+        $request = new FakeRequest(["time" => strtotime("2025-04-16T20:38:00+00:00")]);
+        $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
     }
 
-    public function testIssue70()
+    public function testRendersMultidayEventBeforeStart(): void
     {
-        $subject = $this->makeNextEventController();
-        $request = new FakeRequest(["time" => 1616675640]);
-        $response = $subject->defaultAction($request);
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->easter()]));
+        $request = new FakeRequest(["time" => strtotime("2025-04-16T20:38:00+00:00")]);
+        $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
     }
 
-    private function makeNextEventController(): NextEventController
+    public function testRendersRunningEvent(): void
+    {
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->intfcb()]));
+        $request = new FakeRequest(["time" => strtotime("2025-04-16T21:38:00+00:00")]);
+        $response = $this->sut()->defaultAction($request);
+        Approvals::verifyHtml($response);
+    }
+
+    public function testRendersRunningMultidayEvent(): void
+    {
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->easter()]));
+        $request = new FakeRequest(["time" => strtotime("2025-04-20T20:38:00+00:00")]);
+        $response = $this->sut()->defaultAction($request);
+        Approvals::verifyHtml($response);
+    }
+
+    public function testIssue51(): void
+    {
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->cmb()]));
+        $request = new FakeRequest(["time" => strtotime("2021-03-23T12:34:00+00:00")]);
+        $response = $this->sut()->defaultAction($request);
+        Approvals::verifyHtml($response);
+    }
+
+    public function testIssue70(): void
+    {
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->cmb()]));
+        $request = new FakeRequest(["time" => strtotime("2021-03-25T12:34:00+00:00")]);
+        $response = $this->sut()->defaultAction($request);
+        Approvals::verifyHtml($response);
+    }
+
+    private function sut(): NextEventController
     {
         $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
         $lang = $plugin_tx['calendar'];
         $orientation = XH_includeVar("./config/config.php", "plugin_cf")["calendar"]["nextevent_orientation"];
-        $event = Event::create("1969-03-24", null, "", null, "cmb", "", "", "###");
-        $eventDataService = $this->createStub(EventDataService::class);
-        $eventDataService->method("readEvents")->willReturn(new Calendar([$event]));
         $dateTimeFormatter = new DateTimeFormatter($lang);
         $view = new View("./views/", $lang);
-        return new NextEventController($orientation, $eventDataService, $dateTimeFormatter, $view);
+        return new NextEventController($orientation, $this->eventDataService, $dateTimeFormatter, $view);
+    }
+
+    private function cmb(): Event
+    {
+        return new Event(
+            new LocalDateTime(1969, 3, 24, 0, 0),
+            new LocalDateTime(1969, 3, 24, 23, 59),
+            "cmb",
+            "",
+            "",
+            "###"
+        );
+    }
+
+    private function intfcb(): Event
+    {
+        return new Event(
+            new LocalDateTime(2025, 4, 16, 21, 0),
+            new LocalDatetime(2025, 4, 16, 22, 45),
+            "#INTFCB",
+            "",
+            "",
+            "Guiseppe-Meazza-Stadion"
+        );
+    }
+
+    private function easter(): Event
+    {
+        return new Event(
+            new LocalDateTime(2025, 4, 20, 0, 0),
+            new LocalDateTime(2025, 4, 21, 23, 59),
+            "easter",
+            "",
+            "",
+            ""
+        );
     }
 }

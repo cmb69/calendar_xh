@@ -85,7 +85,7 @@ class Event
         return new self($start, $end, $summary, $linkadr, $linktxt, $location);
     }
 
-    private function __construct(
+    public function __construct(
         LocalDateTime $start,
         LocalDateTime $end,
         string $summary,
