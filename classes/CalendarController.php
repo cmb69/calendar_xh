@@ -27,6 +27,7 @@
 namespace Calendar;
 
 use Calendar\Model\Calendar;
+use Calendar\Model\CalendarService;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Plib\Request;
