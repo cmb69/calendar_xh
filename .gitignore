@@ -3,5 +3,4 @@
 /vendor
 /.phpunit.result.cache
 /composer.lock
-/js/overview.min.js
-/js/calendar.min.js
+/js/*.min.js

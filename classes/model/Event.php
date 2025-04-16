@@ -67,14 +67,16 @@ class Event
                 return null;
             }
         } else {
-            if (!$endtime) {
+            if (trim($location) === "###") {
+                $endtime = "23:59";
+            } elseif (!$endtime) {
                 $endtime = $starttime ? $starttime : "23:59";
             }
             if (($end = LocalDateTime::fromIsoString("{$dateend}T{$endtime}")) === null) {
                 return null;
             }
         }
-        if ($starttime === '') {
+        if (trim($location) === "###" || $starttime === '') {
             $starttime = "00:00";
         }
         if (($start = LocalDateTime::fromIsoString("{$datestart}T{$starttime}")) === null) {

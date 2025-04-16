@@ -139,8 +139,14 @@ class EditEventsController
         if ($id !== null) {
             $url = $url->with("event_id", $id);
         }
+        $js = $this->pluginFolder . "js/event_editor.min.js";
+        if (!is_file($js)) {
+            $js = $this->pluginFolder . "js/event_editor.js";
+        }
         return $this->view->render('edit-form', [
+            'js_url' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
             'action' => $url->relative(),
+            'full_day' => $event->isFullDay() ? "checked" : "",
             'event' => [
                 "start_date" => $event->getIsoStartDate() . "T" . $event->getIsoStartTime(),
                 "end_date" => $event->getIsoEndDate() . "T" . $event->getIsoEndTime(),
@@ -214,6 +220,10 @@ class EditEventsController
         $datetime = explode("T", $request->post("dateend") ?? "", 2);
         $dateend = $datetime[0];
         $endtime = $datetime[1] ?? "";
+        if ($request->post("full_day")) {
+            $starttime = "00:00";
+            $endtime = "23:59";
+        }
         return [
             "datestart" => $datestart,
             "dateend" => $dateend,

@@ -51,6 +51,7 @@ $plugin_tx['calendar']['label_save']="Speichern";
 $plugin_tx['calendar']['label_import_export']="Import/Export";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_export']="Export";
+$plugin_tx['calendar']['label_full_day']="ganztägig";
 
 $plugin_tx['calendar']['message_ignored_0']="Alle Veranstaltungen wurden importiert!";
 $plugin_tx['calendar']['message_ignored_1']="Eine Veranstaltung konnte nicht importiert werden!";

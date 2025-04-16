@@ -3,18 +3,24 @@
 if (!isset($this)) {header("404 Not found"); exit;}
 
 /**
+ * @var string $js_url
  * @var string $action
- * @var bool $showEventTime
- * @var bool $showEventLocation
- * @var bool $showEventLink
+ * @var string $full_day
  * @var array{start_date:string,start_time:string,end_date:string,end_time:string,summary:string,linkadr:string,linktxt:string,location:string} $event
  * @var string $button_label
  * @var string $csrf_token
  */
 ?>
 
+<script type="module" src="<?=$this->esc($js_url)?>"></script>
 <form method="post" action="<?=$this->esc($action)?>" class="calendar_input">
   <div>
+    <p>
+      <label>
+        <input type="checkbox" name="full_day" <?=$this->esc($full_day)?>>
+        <span><?=$this->text('label_full_day')?></span>
+      </label>
+    </p>
     <p>
       <label>
         <span><?=$this->text('event_date_start')?></span>

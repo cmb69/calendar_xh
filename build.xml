@@ -42,14 +42,18 @@
   <target name="tsc" description="runs tsc">
     <exec executable="tsc" passthru="true" checkreturn="true">
       <arg line="--allowJs --lib es6,dom --noEmit --noImplicitAny"/>
-      <arg file="js/calendar.min.js"/>
-      <arg file="js/overview.min.js"/>
+      <arg file="js/calendar.js"/>
+      <arg file="js/event_editor.js"/>
+      <arg file="js/overview.js"/>
     </exec>
   </target>
 
   <target name="minify" description="minifies JS">
     <exec executable="uglifyjs" checkreturn="true" dir="${dir}">
       <arg line="js/calendar.js --module --compress --mangle --output js/calendar.min.js"/>
+    </exec>
+    <exec executable="uglifyjs" checkreturn="true" dir="${dir}">
+      <arg line="js/event_editor.js --module --compress --mangle --output js/event_editor.min.js"/>
     </exec>
     <exec executable="uglifyjs" checkreturn="true" dir="${dir}">
       <arg line="js/overview.js --module --compress --mangle --output js/overview.min.js"/>

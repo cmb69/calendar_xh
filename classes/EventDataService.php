@@ -236,9 +236,9 @@ class EventDataService
     {
         $record = [
             $event->getIsoStartDate(),
-            $event->getIsoStartTime(),
+            $event->isFullDay() ? "" : $event->getIsoStartTime(),
             $event->getIsoEndDate(),
-            $event->getIsoEndTime(),
+            $event->isFullDay() ? "" : $event->getIsoEndTime(),
             $event->summary(),
             $event->location(),
             $event->linkadr(),
