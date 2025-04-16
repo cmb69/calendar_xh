@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Plib\Request;
@@ -83,10 +84,11 @@ class CalendarController
             $eventpage = $this->view->plain("event_page");
         }
         $this->determineYearAndMonth($request, $year, $month);
-        $calendar = new CalendarService((bool) $this->conf['week_starts_mon']);
+        $calendar = $this->eventDataService->readEvents();
+        $calendarService = new CalendarService((bool) $this->conf['week_starts_mon']);
         $rows = [];
-        foreach ($calendar->getMonthMatrix($year, $month) as $columns) {
-            $rows[] = $this->getRowData($request, $columns, $year, $month, $eventpage);
+        foreach ($calendarService->getMonthMatrix($year, $month) as $columns) {
+            $rows[] = $this->getRowData($request, $calendar, $columns, $year, $month, $eventpage);
         }
         $js = $this->pluginFolder . "js/calendar.min.js";
         if (!is_file($js)) {
@@ -135,9 +137,14 @@ class CalendarController
      * @param array<int|null> $columns
      * @return list<array{classname:string,content:string,href?:string,title?:string}>
      */
-    private function getRowData(Request $request, array $columns, int $year, int $month, string $eventpage): array
-    {
-        $calendar = $this->eventDataService->readEvents();
+    private function getRowData(
+        Request $request,
+        Calendar $calendar,
+        array $columns,
+        int $year,
+        int $month,
+        string $eventpage
+    ): array {
         $today = ($month === idate("n", $request->time()) && $year === idate("Y", $request->time()))
             ? idate("j", $request->time())
             : 32;
