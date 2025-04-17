@@ -28,6 +28,7 @@ namespace Calendar\Model;
 
 use Calendar\Html2Text;
 
+/** @phpstan-consistent-constructor */
 class Event
 {
     /** @var LocalDateTime */
@@ -216,6 +217,14 @@ class Event
             }
         }
         return [$this, $ldt];
+    }
+
+    /** @return static */
+    protected function occurrenceStartingAt(LocalDateTime $start)
+    {
+        $duration = $this->end()->minus($this->start());
+        $end = $start->plus($duration);
+        return new static($start, $end, $this->summary(), $this->linkadr(), $this->linktxt(), $this->location());
     }
 
     public function toICalendarString(string $id, Html2Text $converter, string $host): string

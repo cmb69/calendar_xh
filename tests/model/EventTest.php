@@ -94,7 +94,7 @@ class EventTest extends TestCase
         $event = Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###");
         assert($event instanceof BirthdayEvent);
         if ($year !== 1969) {
-            $event = $event->birthdayOccurrenceIn($year);
+            $event = $event->occurrenceStartingAt($this->ldt($year, 3, 24, 0, 0));
         }
         return $event;
     }

@@ -57,17 +57,18 @@ class BirthdayEvent extends Event
         if (empty($matches)) {
             return null;
         }
-        return $this->birthdayOccurrenceIn($year);
+        assert(count($matches) === 1);
+        return $this->occurrenceStartingAt($matches[0]);
     }
 
     public function occurrenceOn(LocalDateTime $day, bool $daysBetween): ?self
     {
         assert($day->hour() === 0 && $day->minute() === 0);
-        $matches = $this->recurrence->matchOnDay($day->year(), $day->month(), $day->day());
-        if ($matches === null) {
+        $match = $this->recurrence->matchOnDay($day->year(), $day->month(), $day->day());
+        if ($match === null) {
             return null;
         }
-        return $this->birthdayOccurrenceIn($day->year());
+        return $this->occurrenceStartingAt($match);
     }
 
     /** @return array{?self,?LocalDateTime} */
@@ -77,20 +78,13 @@ class BirthdayEvent extends Event
         if ($match === null) {
             return [null, null];
         }
-        return [$this->birthdayOccurrenceIn($match->year()), $match];
+        return [$this->occurrenceStartingAt($match), $match];
     }
 
-    public function birthdayOccurrenceIn(int $year): self
+    public function occurrenceStartingAt(LocalDateTime $start): self
     {
-        $that = new self(
-            $this->start()->withYear($year),
-            $this->end()->withYear($year),
-            $this->summary(),
-            $this->linkadr(),
-            $this->linktxt(),
-            $this->location()
-        );
-        $that->age = $year - $this->start()->year();
+        $that = parent::occurrenceStartingAt($start);
+        $that->age = $start->year() - $this->start()->year();
         return $that;
     }
 
