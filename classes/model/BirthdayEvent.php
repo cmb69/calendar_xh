@@ -28,8 +28,23 @@ namespace Calendar\Model;
 
 class BirthdayEvent extends Event
 {
+    /** @var YearlyRecurrence */
+    private $recurrence;
+
     /** @var int */
     private $age = 0;
+
+    public function __construct(
+        LocalDateTime $start,
+        LocalDateTime $end,
+        string $summary,
+        string $linkadr,
+        string $linktxt,
+        string $location
+    ) {
+        parent::__construct($start, $end, $summary, $linkadr, $linktxt, $location);
+        $this->recurrence = new YearlyRecurrence($start, $end);
+    }
 
     public function age(): int
     {
@@ -38,40 +53,31 @@ class BirthdayEvent extends Event
 
     public function occurrenceDuring(int $year, int $month): ?self
     {
-        if (
-            $this->start()->month() === $month
-            && $this->start()->year() <= $year
-        ) {
-            return $this->birthdayOccurrenceIn($year);
+        $matches = $this->recurrence->matchesInMonth($year, $month);
+        if (empty($matches)) {
+            return null;
         }
-        return null;
+        return $this->birthdayOccurrenceIn($year);
     }
 
     public function occurrenceOn(LocalDateTime $day, bool $daysBetween): ?self
     {
         assert($day->hour() === 0 && $day->minute() === 0);
-        $start = $this->start();
-        if ($start->year() <= $day->year() && $start->month() === $day->month() && $start->day() === $day->day()) {
-            return $this->birthdayOccurrenceIn($day->year());
+        $matches = $this->recurrence->matchOnDay($day->year(), $day->month(), $day->day());
+        if ($matches === null) {
+            return null;
         }
-        return null;
+        return $this->birthdayOccurrenceIn($day->year());
     }
 
     /** @return array{?self,?LocalDateTime} */
     public function earliestOccurrenceAfter(LocalDateTime $date): array
     {
-        if ($this->start()->year() <= $date->year()) {
-            $ldt = $this->start()->withYear($date->year());
-            if ($ldt->compare($date) < 0) {
-                $ldt = $this->end();
-                if ($ldt->compare($date) < 0) {
-                    $ldt = $this->start()->withYear($date->year() + 1);
-                }
-            }
-        } else {
-            $ldt = null;
+        $match = $this->recurrence->firstMatchAfter($date);
+        if ($match === null) {
+            return [null, null];
         }
-        return [$ldt === null ? null : $this->birthdayOccurrenceIn($ldt->year()), $ldt];
+        return [$this->birthdayOccurrenceIn($match->year()), $match];
     }
 
     public function birthdayOccurrenceIn(int $year): self
