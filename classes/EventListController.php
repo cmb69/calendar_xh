@@ -150,8 +150,9 @@ class EventListController
 
     private function getBirthdayRowView(Event $event, int $year): BirthdayRow
     {
+        assert($event->age() !== null);
         return new BirthdayRow(
-            $year - $event->start()->year(),
+            $event->age(),
             $event->summary(),
             $event->location(),
             $event->start()->withYear($year)->getIsoDate(),

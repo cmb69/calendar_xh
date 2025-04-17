@@ -48,6 +48,9 @@ class Event
     /** @var string */
     private $location;
 
+    /** @var ?int */
+    private $age = null;
+
     public static function create(
         string $datestart,
         ?string $dateend,
@@ -131,6 +134,11 @@ class Event
         return $this->location;
     }
 
+    public function age(): ?int
+    {
+        return $this->age;
+    }
+
     public function getIsoStartDate(): string
     {
         return $this->start->getIsoDate();
@@ -181,33 +189,55 @@ class Event
         return trim($this->location) === '###';
     }
 
-    public function occursDuring(int $year, int $month): bool
+    public function occurrenceDuring(int $year, int $month): ?Event
     {
-        return ($this->start->month() === $month)
-            && ($this->start->year() === $year
-            || $this->isBirthday() && $this->start->year() < $year);
+        if (
+            $this->isBirthday()
+            && $this->start->month() === $month
+            && $this->start->year() <= $year
+        ) {
+            return $this->birthdayOccurrenceIn($year);
+        } elseif (
+            $this->start->month() === $month
+            && $this->start->year() === $year
+        ) {
+            return $this;
+        }
+        return null;
     }
 
-    public function occursOn(LocalDateTime $day, bool $daysBetween): bool
+    public function occurrenceOn(LocalDateTime $day, bool $daysBetween): ?Event
     {
         assert($day->hour() === 0 && $day->minute() === 0);
-        if ($this->isBirthday()) {
-            return $this->start->year() <= $day->year()
-                && $this->start->month() === $day->month()
-                && $this->start->day() === $day->day();
+        if (
+            $this->isBirthday()
+            && $this->start->year() <= $day->year()
+            && $this->start->month() === $day->month()
+            && $this->start->day() === $day->day()
+        ) {
+            return $this->birthdayOccurrenceIn($day->year());
         }
-        if (!$this->isMultiDay()) {
-            return $this->start->compareDate($day) === 0;
+        if (!$this->isMultiDay() && $this->start->compareDate($day) === 0) {
+            return $this;
         }
-        if ($daysBetween) {
-            return $this->start->compareDate($day) <= 0
-                && $this->end->compareDate($day) >= 0;
+        if (
+            $daysBetween
+            && $this->start->compareDate($day) <= 0
+            && $this->end->compareDate($day) >= 0
+        ) {
+            return $this;
         }
-        return $this->start->compareDate($day) === 0
-            || $this->end->compareDate($day) === 0;
+        if (
+            $this->start->compareDate($day) === 0
+            || $this->end->compareDate($day) === 0
+        ) {
+            return $this;
+        }
+        return null;
     }
 
-    public function after(LocalDateTime $date): ?LocalDateTime
+    /** @return array{?Event,?LocalDateTime} */
+    public function earliestOccurrenceAfter(LocalDateTime $date): array
     {
         if ($this->isBirthday()) {
             if ($this->start->year() <= $date->year()) {
@@ -221,16 +251,27 @@ class Event
             } else {
                 $ldt = null;
             }
+            return [$ldt === null ? null : $this->birthdayOccurrenceIn($ldt->year()), $ldt];
         } else {
             $ldt = $this->start();
             if ($ldt->compare($date) < 0) {
                 $ldt = $this->end();
                 if ($ldt->compare($date) < 0) {
-                    return null;
+                    return [null, null];
                 }
             }
+            return [$this, $ldt];
         }
-        return $ldt;
+    }
+
+    public function birthdayOccurrenceIn(int $year): Event
+    {
+        assert($this->isBirthday());
+        $that = clone $this;
+        $that->age = $year - $this->start->year();
+        $that->start = $that->start->withYear($year);
+        $that->end = $that->end->withYear($year);
+        return $that;
     }
 
     public function toICalendarString(string $id, Html2Text $converter, string $host): string

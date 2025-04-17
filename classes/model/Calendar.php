@@ -50,12 +50,12 @@ class Calendar
         $nextevent = null;
         $nextldt = null;
         foreach ($this->events as $event) {
-            $ldt = $event->after($now);
+            [$occurrence, $ldt] = $event->earliestOccurrenceAfter($now);
             if ($ldt === null) {
                 continue;
             }
             if ($nextldt === null || $ldt->compare($nextldt) < 0) {
-                $nextevent = $event;
+                $nextevent = $occurrence;
                 $nextldt = $ldt;
             }
         }
@@ -67,14 +67,12 @@ class Calendar
     {
         $result = [];
         foreach ($this->events as $event) {
-            if ($event->occursDuring($year, $month)) {
-                $result[] = $event;
+            if (($occurrence = $event->occurrenceDuring($year, $month)) !== null) {
+                $result[] = $occurrence;
             }
         }
-        uasort($result, function (Event $a, Event $b) use ($year): int {
-            $dt1 = $a->isBirthday() ? $a->start()->withYear($year) : $a->start();
-            $dt2 = $b->isBirthday() ? $b->start()->withYear($year) : $b->start();
-            return $dt1->compare($dt2);
+        uasort($result, function (Event $a, Event $b): int {
+            return $a->start()->compare($b->start());
         });
         return $result;
     }
@@ -85,8 +83,8 @@ class Calendar
         assert($day->hour() === 0 && $day->minute() === 0);
         $result = [];
         foreach ($this->events as $event) {
-            if ($event->occursOn($day, $daysBetween)) {
-                $result[] = $event;
+            if (($occurrence = $event->occurrenceOn($day, $daysBetween)) !== null) {
+                $result[] = $occurrence;
             }
         }
         return $result;

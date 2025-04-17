@@ -62,17 +62,16 @@ class NextEventController
         assert($now !== null);
         $calendar = $this->eventDataService->readEvents();
         $nextevent = $calendar->nextEvent($now);
-        $data = [];
         if ($nextevent === null) {
             return $this->view->render('nextevent', ["has_next_event" => false]);
         }
         if ($nextevent->isBirthday()) {
+            assert($nextevent->age() !== null);
             $ldt = $nextevent->start()->withYear($now->year());
             if ($ldt->compareDate($now) < 0) {
                 $ldt = $nextevent->start()->withYear($now->year() + 1);
             }
-            $age = $now->year() - $nextevent->start()->year();
-            $nexteventtext = $this->view->plural("age", $age);
+            $nexteventtext = $this->view->plural("age", $nextevent->age());
             $nexteventtext2 = null;
         } elseif ($nextevent->start()->compare($now) >= 0) {
             $ldt = $nextevent->start();

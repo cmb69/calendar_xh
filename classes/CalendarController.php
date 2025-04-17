@@ -213,8 +213,8 @@ class CalendarController
             }
             $text = $this->view->esc($text);
             if ($event->isBirthday()) {
-                $age = $year - $event->start()->year();
-                $age = $this->view->plural("age", $age);
+                assert($event->age() !== null);
+                $age = $this->view->plural("age", $event->age());
                 $titles[] = $text . " " . $age;
             } elseif ($event->isFullDay()) {
                 $time = "";

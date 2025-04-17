@@ -32,78 +32,84 @@ class EventTest extends TestCase
         $this->assertTrue($subject->isFullDay());
     }
 
-    /** @dataProvider occursDuringData */
-    public function testOccursDuring(Event $sut, int $year, int $month, bool $expected): void
+    /** @dataProvider occurrenceDuringData */
+    public function testoccurrenceDuring(Event $sut, int $year, int $month, ?Event $expected): void
     {
-        $this->assertSame($expected, $sut->occursDuring($year, $month));
+        $this->assertEquals($expected, $sut->occurrenceDuring($year, $month));
     }
 
-    public function occursDuringData(): array
+    public function occurrenceDuringData(): array
     {
         return [
-            [$this->intfcb(), 2025, 4, true],
-            [$this->easter(), 2025, 4, true],
+            [$this->cmb(), 2025, 3, $this->cmb(2025)],
+            [$this->intfcb(), 2025, 4, $this->intfcb()],
+            [$this->easter(), 2025, 4, $this->easter()],
         ];
     }
 
-    /** @dataProvider occursOnData */
-    public function testOccursOn(Event $sut, LocalDateTime $day, bool $daysBetween, bool $expected): void
+    /** @dataProvider occurrenceOnData */
+    public function testoccurrenceOn(Event $sut, LocalDateTime $day, bool $daysBetween, ?Event $expected): void
     {
-        $this->assertSame($expected, $sut->occursOn($day, $daysBetween));
+        $this->assertEquals($expected, $sut->occurrenceOn($day, $daysBetween));
     }
 
-    public function occursOnData(): array
+    public function occurrenceOnData(): array
     {
         return [
-            [$this->intfcb(), new LocalDateTime(2025, 4, 16, 0, 0), true, true],
-            [$this->easter(), new LocalDateTime(2025, 4, 20, 0, 0), true, true],
-            [$this->easter(), new LocalDateTime(2025, 4, 20, 0, 0), false, true],
+            [$this->cmb(), $this->ldt(2025, 3, 24, 0, 0), true, $this->cmb(2025)],
+            [$this->intfcb(), $this->ldt(2025, 4, 16, 0, 0), true, $this->intfcb()],
+            [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), true, $this->easter()],
+            [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), false, $this->easter()],
         ];
     }
 
-    /** @dataProvider afterData */
-    public function testAfter(Event $sut, LocalDateTime $date, ?LocalDateTime $expected): void
+    /** @dataProvider earliestOccurrenceAfterData */
+    public function testearliestOccurrenceAfter(Event $sut, LocalDateTime $date, array $expected): void
     {
-        $this->assertEquals($expected, $sut->after($date));
+        $this->assertEquals($expected, $sut->earliestOccurrenceAfter($date));
     }
 
-    public function afterData(): array
+    public function earliestOccurrenceAfterData(): array
     {
         return [
-            [$this->cmb(), new LocalDateTime(2025, 3, 20, 0, 0), new LocalDateTime(2025, 3, 24, 0, 0)],
-            [$this->cmb(), new LocalDateTime(2025, 3, 25, 0, 0), new LocalDateTime(2026, 3, 24, 0, 0)],
-            [$this->easter(), new LocalDateTime(2025, 4, 20, 0, 0), new LocalDateTime(2025, 4, 20, 0, 0)],
-            [$this->easter(), new LocalDateTime(2025, 4, 21, 0, 0), new LocalDateTime(2025, 4, 21, 23, 59)],
-            [$this->easter(), new LocalDateTime(2025, 4, 22, 0, 0), null],
+            [$this->cmb(), $this->ldt(2025, 3, 20, 0, 0), [$this->cmb(2025), $this->ldt(2025, 3, 24, 0, 0)]],
+            [$this->cmb(), $this->ldt(2025, 3, 25, 0, 0), [$this->cmb(2026), $this->ldt(2026, 3, 24, 0, 0)]],
+            [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), [$this->easter(), $this->ldt(2025, 4, 20, 0, 0)]],
+            [$this->easter(), $this->ldt(2025, 4, 21, 0, 0), [$this->easter(), $this->ldt(2025, 4, 21, 23, 59)]],
+            [$this->easter(), $this->ldt(2025, 4, 22, 0, 0), [null, null]],
         ];
     }
 
     public function testGH98()
     {
         $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###");
-        $now = new LocalDateTime(2025, 4, 16, 0, 0);
-        $this->assertFalse($sut->occursDuring(2025, 4));
-        $this->assertFalse($sut->occursOn($now, true));
-        $this->assertNull($sut->after($now));
+        $now = $this->ldt(2025, 4, 16, 0, 0);
+        $this->assertNull($sut->occurrenceDuring(2025, 4));
+        $this->assertNull($sut->occurrenceOn($now, true));
+        $this->assertEquals([null, null], $sut->earliestOccurrenceAfter($now));
     }
 
-    private function cmb(): Event
+    private function cmb(int $year = 1969): Event
     {
-        return new Event(
-            new LocalDateTime(1969, 3, 24, 0, 0),
-            new LocalDateTime(1969, 3, 24, 23, 59),
+        $event = new Event(
+            $this->ldt(1969, 3, 24, 0, 0),
+            $this->ldt(1969, 3, 24, 23, 59),
             "cmb",
             "",
             "",
             "###"
         );
+        if ($year !== 1969) {
+            $event = $event->birthdayOccurrenceIn($year);
+        }
+        return $event;
     }
 
     private function intfcb(): Event
     {
         return new Event(
-            new LocalDateTime(2025, 4, 16, 21, 0),
-            new LocalDatetime(2025, 4, 16, 22, 45),
+            $this->ldt(2025, 4, 16, 21, 0),
+            $this->ldt(2025, 4, 16, 22, 45),
             "#INTFCB",
             "",
             "",
@@ -114,12 +120,17 @@ class EventTest extends TestCase
     private function easter(): Event
     {
         return new Event(
-            new LocalDateTime(2025, 4, 20, 0, 0),
-            new LocalDateTime(2025, 4, 21, 23, 59),
+            $this->ldt(2025, 4, 20, 0, 0),
+            $this->ldt(2025, 4, 21, 23, 59),
             "easter",
             "",
             "",
             ""
         );
+    }
+
+    private function ldt(int $year, int $month, int $day, int $hour, int $minute): LocalDateTime
+    {
+        return new LocalDateTime($year, $month, $day, $hour, $minute);
     }
 }
