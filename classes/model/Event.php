@@ -48,9 +48,6 @@ class Event
     /** @var string */
     private $location;
 
-    /** @var ?int */
-    private $age = null;
-
     public static function create(
         string $datestart,
         ?string $dateend,
@@ -85,10 +82,13 @@ class Event
         if (($start = LocalDateTime::fromIsoString("{$datestart}T{$starttime}")) === null) {
             return null;
         }
+        if (trim($location) === "###") {
+            return new BirthdayEvent($start, $end, $summary, $linkadr, $linktxt, $location);
+        }
         return new self($start, $end, $summary, $linkadr, $linktxt, $location);
     }
 
-    public function __construct(
+    protected function __construct(
         LocalDateTime $start,
         LocalDateTime $end,
         string $summary,
@@ -132,11 +132,6 @@ class Event
     public function location(): string
     {
         return $this->location;
-    }
-
-    public function age(): ?int
-    {
-        return $this->age;
     }
 
     public function getIsoStartDate(): string
@@ -184,20 +179,9 @@ class Event
             && $this->end->hour() === 23 && $this->end->minute() === 59;
     }
 
-    public function isBirthday(): bool
-    {
-        return trim($this->location) === '###';
-    }
-
-    public function occurrenceDuring(int $year, int $month): ?Event
+    public function occurrenceDuring(int $year, int $month): ?self
     {
         if (
-            $this->isBirthday()
-            && $this->start->month() === $month
-            && $this->start->year() <= $year
-        ) {
-            return $this->birthdayOccurrenceIn($year);
-        } elseif (
             $this->start->month() === $month
             && $this->start->year() === $year
         ) {
@@ -206,72 +190,32 @@ class Event
         return null;
     }
 
-    public function occurrenceOn(LocalDateTime $day, bool $daysBetween): ?Event
+    public function occurrenceOn(LocalDateTime $day, bool $daysBetween): ?self
     {
         assert($day->hour() === 0 && $day->minute() === 0);
-        if (
-            $this->isBirthday()
-            && $this->start->year() <= $day->year()
-            && $this->start->month() === $day->month()
-            && $this->start->day() === $day->day()
-        ) {
-            return $this->birthdayOccurrenceIn($day->year());
-        }
         if (!$this->isMultiDay() && $this->start->compareDate($day) === 0) {
             return $this;
         }
-        if (
-            $daysBetween
-            && $this->start->compareDate($day) <= 0
-            && $this->end->compareDate($day) >= 0
-        ) {
+        if ($daysBetween && $this->start->compareDate($day) <= 0 && $this->end->compareDate($day) >= 0) {
             return $this;
         }
-        if (
-            $this->start->compareDate($day) === 0
-            || $this->end->compareDate($day) === 0
-        ) {
+        if ($this->start->compareDate($day) === 0 || $this->end->compareDate($day) === 0) {
             return $this;
         }
         return null;
     }
 
-    /** @return array{?Event,?LocalDateTime} */
+    /** @return array{?self,?LocalDateTime} */
     public function earliestOccurrenceAfter(LocalDateTime $date): array
     {
-        if ($this->isBirthday()) {
-            if ($this->start->year() <= $date->year()) {
-                $ldt = $this->start()->withYear($date->year());
-                if ($ldt->compare($date) < 0) {
-                    $ldt = $this->end();
-                    if ($ldt->compare($date) < 0) {
-                        $ldt = $this->start()->withYear($date->year() + 1);
-                    }
-                }
-            } else {
-                $ldt = null;
-            }
-            return [$ldt === null ? null : $this->birthdayOccurrenceIn($ldt->year()), $ldt];
-        } else {
-            $ldt = $this->start();
+        $ldt = $this->start();
+        if ($ldt->compare($date) < 0) {
+            $ldt = $this->end();
             if ($ldt->compare($date) < 0) {
-                $ldt = $this->end();
-                if ($ldt->compare($date) < 0) {
-                    return [null, null];
-                }
+                return [null, null];
             }
-            return [$this, $ldt];
         }
-    }
-
-    public function birthdayOccurrenceIn(int $year): Event
-    {
-        assert($this->isBirthday());
-        $that = clone $this;
-        $that->age = $year - $this->start->year();
-        $that->start = $that->start->withYear($year);
-        $that->end = $that->end->withYear($year);
-        return $that;
+        return [$this, $ldt];
     }
 
     public function toICalendarString(string $id, Html2Text $converter, string $host): string
@@ -292,13 +236,17 @@ class Event
             $text = str_replace(["\\", ";", ",", "\r", "\n"], ["\\\\", "\\;", "\\,", "", "\\n\r\n "], $text);
             $res .= "DESCRIPTION:" . rtrim($text) . "\r\n";
         }
-        if ($this->isBirthday()) {
-            $res .= "RRULE:FREQ=YEARLY\r\n";
-        } elseif ($this->location() !== "") {
-            $res .= "LOCATION:" . $this->location . "\r\n";
-        }
+        $res .= $this->locationToICalendarString();
         $res .= "END:VEVENT\r\n";
         return $res;
+    }
+
+    protected function locationToICalendarString(): string
+    {
+        if ($this->location === "") {
+            return "";
+        }
+        return "LOCATION:" . $this->location . "\r\n";
     }
 
     private function getDtstart(): string

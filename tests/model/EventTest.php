@@ -91,14 +91,8 @@ class EventTest extends TestCase
 
     private function cmb(int $year = 1969): Event
     {
-        $event = new Event(
-            $this->ldt(1969, 3, 24, 0, 0),
-            $this->ldt(1969, 3, 24, 23, 59),
-            "cmb",
-            "",
-            "",
-            "###"
-        );
+        $event = Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###");
+        assert($event instanceof BirthdayEvent);
         if ($year !== 1969) {
             $event = $event->birthdayOccurrenceIn($year);
         }
@@ -107,9 +101,11 @@ class EventTest extends TestCase
 
     private function intfcb(): Event
     {
-        return new Event(
-            $this->ldt(2025, 4, 16, 21, 0),
-            $this->ldt(2025, 4, 16, 22, 45),
+        return Event::create(
+            "2025-04-16",
+            "2025-04-16",
+            "21:00",
+            "22:45",
             "#INTFCB",
             "",
             "",
@@ -119,14 +115,7 @@ class EventTest extends TestCase
 
     private function easter(): Event
     {
-        return new Event(
-            $this->ldt(2025, 4, 20, 0, 0),
-            $this->ldt(2025, 4, 21, 23, 59),
-            "easter",
-            "",
-            "",
-            ""
-        );
+        return Event::create("2025-04-20", "2025-04-21", "", "", "easter", "", "", "");
     }
 
     private function ldt(int $year, int $month, int $day, int $hour, int $minute): LocalDateTime
