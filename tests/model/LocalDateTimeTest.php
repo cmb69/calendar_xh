@@ -77,6 +77,32 @@ class LocalDateTimeTest extends TestCase
         ];
     }
 
+    /** @dataProvider arithmeticData */
+    public function testPlus(LocalDateTime $ldt, Duration $duration, LocalDateTime $expected): void
+    {
+        $this->assertEquals($expected, $ldt->plus($duration));
+    }
+
+    /** @dataProvider arithmeticData */
+    public function testMinus(LocalDateTime $ldt1, Duration $expected, LocalDateTime $ldt2): void
+    {
+        $this->assertEquals($expected, $ldt2->minus($ldt1));
+    }
+
+    public function arithmeticData(): array
+    {
+        return [
+            [$this->ldt(2025, 4, 17, 0, 0), new Duration(1, 1, 1), $this->ldt(2025, 4, 18, 1, 1)],
+            [$this->ldt(2025, 4, 17, 0, 1), new Duration(1, 1, 59), $this->ldt(2025, 4, 18, 2, 0)],
+            [$this->ldt(2025, 4, 17, 0, 1), new Duration(1, 23, 59), $this->ldt(2025, 4, 19, 0, 0)],
+            [$this->ldt(2025, 4, 17, 0, 1), new Duration(13, 23, 59), $this->ldt(2025, 5, 1, 0, 0)],
+            [$this->ldt(2025, 4, 17, 0, 1), new Duration(44, 23, 59), $this->ldt(2025, 6, 1, 0, 0)],
+            [$this->ldt(2025, 12, 31, 0, 1), new Duration(1, 23, 59), $this->ldt(2026, 1, 2, 0, 0)],
+            [$this->ldt(2025, 12, 31, 0, 1), new Duration(365, 23, 59), $this->ldt(2027, 1, 1, 0, 0)],
+            [$this->ldt(2024, 2, 28, 0, 1), new Duration(0, 23, 59), $this->ldt(2024, 2, 29, 0, 0)],
+        ];
+    }
+
     /** @dataProvider plusMonthsData */
     public function testPlusMonths(LocalDateTime $now, int $months, LocalDateTime $expected): void
     {
@@ -96,5 +122,10 @@ class LocalDateTimeTest extends TestCase
             [new LocalDateTime(2025, 4, 1, 0, 0), 9, new LocalDateTime(2026, 1, 1, 0, 0)],
             [new LocalDateTime(2025, 4, 1, 0, 0), 21, new LocalDateTime(2027, 1, 1, 0, 0)],
         ];
+    }
+
+    private function ldt(int $year, int $month, int $day, int $hour, int $minute): LocalDateTime
+    {
+        return new LocalDateTime($year, $month, $day, $hour, $minute);
     }
 }
