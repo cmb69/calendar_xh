@@ -21,8 +21,11 @@
 
 namespace Calendar\Model;
 
-class Duration
+class Interval
 {
+    /** @var bool */
+    private $negative = false;
+
     /** @var int */
     private $days;
 
@@ -55,5 +58,17 @@ class Duration
     public function minutes(): int
     {
         return $this->minutes;
+    }
+
+    public function negative(): bool
+    {
+        return $this->negative;
+    }
+
+    public function negate(): self
+    {
+        $that = clone $this;
+        $that->negative = !$that->negative;
+        return $that;
     }
 }

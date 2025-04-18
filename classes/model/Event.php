@@ -222,7 +222,7 @@ class Event
     /** @return static */
     protected function occurrenceStartingAt(LocalDateTime $start)
     {
-        $duration = $this->end()->minus($this->start());
+        $duration = $this->end()->diff($this->start());
         $end = $start->plus($duration);
         return new static($start, $end, $this->summary(), $this->linkadr(), $this->linktxt(), $this->location());
     }

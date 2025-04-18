@@ -78,28 +78,37 @@ class LocalDateTimeTest extends TestCase
     }
 
     /** @dataProvider arithmeticData */
-    public function testPlus(LocalDateTime $ldt, Duration $duration, LocalDateTime $expected): void
+    public function testPlus(LocalDateTime $ldt1, Interval $interval, LocalDateTime $ldt2): void
     {
-        $this->assertEquals($expected, $ldt->plus($duration));
+        $this->assertEquals($ldt2, $ldt1->plus($interval));
+        $this->assertEquals($ldt1, $ldt2->plus($interval->negate()));
     }
 
     /** @dataProvider arithmeticData */
-    public function testMinus(LocalDateTime $ldt1, Duration $expected, LocalDateTime $ldt2): void
+    public function testMinus(LocalDateTime $ldt1, Interval $interval, LocalDateTime $ldt2): void
     {
-        $this->assertEquals($expected, $ldt2->minus($ldt1));
+        $this->assertEquals($ldt1, $ldt2->minus($interval));
+        $this->assertEquals($ldt1, $ldt2->minus($interval->negate()));
+    }
+
+    /** @dataProvider arithmeticData */
+    public function testDiff(LocalDateTime $ldt1, Interval $interval, LocalDateTime $ldt2): void
+    {
+        $this->assertEquals($interval, $ldt2->diff($ldt1));
+        $this->assertEquals($interval->negate(), $ldt1->diff($ldt2));
     }
 
     public function arithmeticData(): array
     {
         return [
-            [$this->ldt(2025, 4, 17, 0, 0), new Duration(1, 1, 1), $this->ldt(2025, 4, 18, 1, 1)],
-            [$this->ldt(2025, 4, 17, 0, 1), new Duration(1, 1, 59), $this->ldt(2025, 4, 18, 2, 0)],
-            [$this->ldt(2025, 4, 17, 0, 1), new Duration(1, 23, 59), $this->ldt(2025, 4, 19, 0, 0)],
-            [$this->ldt(2025, 4, 17, 0, 1), new Duration(13, 23, 59), $this->ldt(2025, 5, 1, 0, 0)],
-            [$this->ldt(2025, 4, 17, 0, 1), new Duration(44, 23, 59), $this->ldt(2025, 6, 1, 0, 0)],
-            [$this->ldt(2025, 12, 31, 0, 1), new Duration(1, 23, 59), $this->ldt(2026, 1, 2, 0, 0)],
-            [$this->ldt(2025, 12, 31, 0, 1), new Duration(365, 23, 59), $this->ldt(2027, 1, 1, 0, 0)],
-            [$this->ldt(2024, 2, 28, 0, 1), new Duration(0, 23, 59), $this->ldt(2024, 2, 29, 0, 0)],
+            [$this->ldt(2025, 4, 17, 0, 0), new Interval(1, 1, 1), $this->ldt(2025, 4, 18, 1, 1)],
+            [$this->ldt(2025, 4, 17, 0, 1), new Interval(1, 1, 59), $this->ldt(2025, 4, 18, 2, 0)],
+            [$this->ldt(2025, 4, 17, 0, 1), new Interval(1, 23, 59), $this->ldt(2025, 4, 19, 0, 0)],
+            [$this->ldt(2025, 4, 17, 0, 1), new Interval(13, 23, 59), $this->ldt(2025, 5, 1, 0, 0)],
+            [$this->ldt(2025, 4, 17, 0, 1), new Interval(44, 23, 59), $this->ldt(2025, 6, 1, 0, 0)],
+            [$this->ldt(2025, 12, 31, 0, 1), new Interval(1, 23, 59), $this->ldt(2026, 1, 2, 0, 0)],
+            [$this->ldt(2025, 12, 31, 0, 1), new Interval(365, 23, 59), $this->ldt(2027, 1, 1, 0, 0)],
+            [$this->ldt(2024, 2, 28, 0, 1), new Interval(0, 23, 59), $this->ldt(2024, 2, 29, 0, 0)],
         ];
     }
 
