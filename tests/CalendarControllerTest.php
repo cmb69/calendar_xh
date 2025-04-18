@@ -70,6 +70,7 @@ class CalendarControllerTest extends TestCase
             "http://example.com/lunchbreak",
             "Tips for lunch breaks",
             "whereever I am",
+            "",
             ""
         );
     }
@@ -82,6 +83,7 @@ class CalendarControllerTest extends TestCase
             "",
             "",
             "Weekend",
+            "",
             "",
             "",
             "",
@@ -100,6 +102,7 @@ class CalendarControllerTest extends TestCase
             "",
             "",
             "###",
+            "",
             ""
         );
     }

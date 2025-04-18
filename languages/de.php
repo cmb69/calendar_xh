@@ -56,6 +56,7 @@ $plugin_tx['calendar']['label_recur']="Wiederholen";
 $plugin_tx['calendar']['label_recur_none']="nein";
 $plugin_tx['calendar']['label_recur_weekly']="wöchentlich";
 $plugin_tx['calendar']['label_recur_yearly']="jährlich";
+$plugin_tx['calendar']['label_recur_until']="bis";
 
 $plugin_tx['calendar']['message_ignored_0']="Alle Veranstaltungen wurden importiert!";
 $plugin_tx['calendar']['message_ignored_1']="Eine Veranstaltung konnte nicht importiert werden!";

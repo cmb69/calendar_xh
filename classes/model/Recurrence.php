@@ -25,6 +25,8 @@ interface Recurrence
 {
     public function name(): string;
 
+    public function until(): ?LocalDateTime;
+
     /** @return list<LocalDateTime> */
     public function matchesInMonth(int $year, int $month): array;
 

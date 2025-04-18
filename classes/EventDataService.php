@@ -93,6 +93,7 @@ class EventDataService
                     $endtime = null;
                 }
                 $recurrenceRule = count($record) > 8 ? $record[8] : "";
+                $until = count($record) > 9 ? $record[9] : "";
                 if ($convertToHtml) {
                     $linktxt = XH_hsc($linktxt);
                     if ($linkadr) {
@@ -114,7 +115,8 @@ class EventDataService
                         $linkadr,
                         $linktxt,
                         $location,
-                        $recurrenceRule
+                        $recurrenceRule,
+                        $until
                     );
                     if ($maybeEvent !== null) {
                         $result[$id] = $maybeEvent;
@@ -189,6 +191,7 @@ class EventDataService
                         $linkadr,
                         $linktxt,
                         $location,
+                        "",
                         ""
                     );
                     if ($maybeEvent !== null) {
@@ -246,6 +249,7 @@ class EventDataService
             $event->linkadr(),
             $event->linktxt(),
             $event->recurrence()->name(),
+            $event->recurrence()->until() !== null ? $event->recurrence()->until()->getIsoDate() : "",
         ];
         return fputcsv($fp, $record, ';', '"', "\0") !== false;
     }

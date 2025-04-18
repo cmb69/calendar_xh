@@ -29,10 +29,14 @@ class YearlyRecurrence implements Recurrence
     /** @var LocalDateTime */
     private $end;
 
-    public function __construct(LocalDateTime $start, LocalDateTime $end)
+    /** @var ?LocalDateTime */
+    private $until;
+
+    public function __construct(LocalDateTime $start, LocalDateTime $end, ?LocalDateTime $until)
     {
         $this->start = $start;
         $this->end = $end;
+        $this->until = $until;
     }
 
     public function name(): string
@@ -40,9 +44,17 @@ class YearlyRecurrence implements Recurrence
         return "yearly";
     }
 
+    public function until(): ?LocalDateTime
+    {
+        return $this->until;
+    }
+
     /** @return list<LocalDateTime> */
     public function matchesInMonth(int $year, int $month): array
     {
+        if ($this->until && $this->until->year() < $year) {
+            return [];
+        }
         if ($this->start->month() !== $month || $this->start->year() > $year) {
             return [];
         }
@@ -54,19 +66,24 @@ class YearlyRecurrence implements Recurrence
         if ($this->start->compareDate($day) > 0) {
             return null;
         }
-        $start = $this->start->withYear($day->year());
         $duration = $this->end->diff($this->start);
-        $end = $start->plus($duration);
-        $candidate = new NoRecurrence($start, $end);
-        $match = $candidate->matchOnDay($day, $daysBetween);
-        if ($match !== null) {
-            return $match;
+        $start = $this->start->withYear($day->year());
+        if ($this->until === null || $start->compare($this->until) <= 0) {
+            $end = $start->plus($duration);
+            $candidate = new NoRecurrence($start, $end);
+            $match = $candidate->matchOnDay($day, $daysBetween);
+            if ($match !== null) {
+                return $match;
+            }
         }
         $end = $this->end->withYear($day->year());
         $start = $end->minus($duration);
-        $candidate = new NoRecurrence($start, $end);
-        $match = $candidate->matchOnDay($day, $daysBetween);
-        return $match;
+        if ($this->until === null || $start->compare($this->until) <= 0) {
+            $candidate = new NoRecurrence($start, $end);
+            $match = $candidate->matchOnDay($day, $daysBetween);
+            return $match;
+        }
+        return null;
     }
 
     /** @return ?array{LocalDateTime,LocalDateTime} */
@@ -78,15 +95,19 @@ class YearlyRecurrence implements Recurrence
         $duration = $this->end->diff($this->start);
         $end = $this->end->withYear($date->year());
         $start = $end->minus($duration);
-        $candidate = new NoRecurrence($start, $end);
-        $match = $candidate->firstMatchAfter($date);
-        if ($match !== null) {
-            return $match;
+        if ($this->until === null || $start->compare($this->until) <= 0) {
+            $candidate = new NoRecurrence($start, $end);
+            $match = $candidate->firstMatchAfter($date);
+            if ($match !== null) {
+                return $match;
+            }
         }
         $end = $this->end->withYear($date->year() + 1);
         $start = $end->minus($duration);
-        $candidate = new NoRecurrence($start, $end);
-        $candidate = new NoRecurrence($start, $end);
-        return $candidate->firstMatchAfter($date);
+        if ($this->until === null || $start->compare($this->until) <= 0) {
+            $candidate = new NoRecurrence($start, $end);
+            return $candidate->firstMatchAfter($date);
+        }
+        return null;
     }
 }

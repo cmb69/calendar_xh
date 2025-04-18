@@ -199,9 +199,12 @@ div.event_link {}
  */
 
 .calendar_input {}
-.calendar_input label span {
+.calendar_input p > label > span {
     display: inline-block;
     width: 10em;
+}
+.calendar_input p > label > label > span {
+    margin: 0 0.5em 0 1em;
 }
 .calendar_input_event { /* summary, location, link, link text */
     width: 30em;

@@ -61,7 +61,8 @@ class Event
         string $linkadr,
         string $linktxt,
         string $location,
-        string $recurrenceRule
+        string $recurrenceRule,
+        string $until
     ): ?self {
         if (!$dateend) {
             if ($endtime) {
@@ -90,14 +91,25 @@ class Event
         if (trim($location) === "###") {
             return new BirthdayEvent($start, $end, $summary, $linkadr, $linktxt, $location);
         }
+        $recurrence = self::createRecurrence($recurrenceRule, $start, $end, $until);
+        return new self($start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
+    }
+
+    private static function createRecurrence(
+        string $recurrenceRule,
+        LocalDateTime $start,
+        LocalDateTime $end,
+        string $until
+    ): Recurrence {
+        $until = LocalDateTime::fromIsoString("{$until}T23:59");
         if ($recurrenceRule === "yearly") {
-            $recurrence = new YearlyRecurrence($start, $end);
+            $recurrence = new YearlyRecurrence($start, $end, $until);
         } elseif ($recurrenceRule === "weekly") {
-            $recurrence = new WeeklyRecurrence($start, $end);
+            $recurrence = new WeeklyRecurrence($start, $end, $until);
         } else {
             $recurrence = new NoRecurrence($start, $end);
         }
-        return new self($start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
+        return $recurrence;
     }
 
     protected function __construct(
@@ -252,7 +264,24 @@ class Event
         $res .= $this->getDtend() . "\r\n";
         if (!($this->recurrence() instanceof NoRecurrence)) {
             $freq = strtoupper($this->recurrence()->name());
-            $res .= "RRULE:FREQ={$freq}\r\n";
+            $res .= "RRULE:FREQ={$freq}";
+            $until = $this->recurrence()->until();
+            if ($until !== null) {
+                if ($this->isFullDay()) {
+                    $until = sprintf("%04d%02d%02d", $until->year(), $until->month(), $until->day());
+                } else {
+                    $until = sprintf(
+                        "%04d%02d%02dT%02d%02d00",
+                        $until->year(),
+                        $until->month(),
+                        $until->day(),
+                        $this->start->hour(),
+                        $this->start->minute()
+                    );
+                }
+                $res .= ";UNTIL=" . $until;
+            }
+            $res .= "\r\n";
         }
         if ($this->summary !== "") {
             $res .= "SUMMARY:" . $this->summary . "\r\n";

@@ -29,15 +29,24 @@ class WeeklyRecurrence implements Recurrence
     /** @var LocalDateTime */
     private $end;
 
-    public function __construct(LocalDateTime $start, LocalDateTime $end)
+    /** @var ?LocalDateTime */
+    private $until;
+
+    public function __construct(LocalDateTime $start, LocalDateTime $end, ?LocalDateTime $until)
     {
         $this->start = $start;
         $this->end = $end;
+        $this->until = $until;
     }
 
     public function name(): string
     {
         return "weekly";
+    }
+
+    public function until(): ?LocalDateTime
+    {
+        return $this->until;
     }
 
     /** @return list<LocalDateTime> */
@@ -46,6 +55,7 @@ class WeeklyRecurrence implements Recurrence
         $res = [];
         $firstDayOfMonth = new LocalDateTime($year, $month, 1, 0, 0);
         $nextMonth = $firstDayOfMonth->plusMonths(1);
+        $until = $this->until !== null && $this->until->compare($nextMonth) <= 0 ? $this->until : $nextMonth;
         $interval = $firstDayOfMonth->diff($this->start);
         $week = new Interval(7, 0, 0);
         if ($interval->negative()) {
@@ -54,7 +64,7 @@ class WeeklyRecurrence implements Recurrence
             $days = 7 * (int) ceil($interval->days() / 7);
             $start = $this->start->plus(new Interval($days, 0, 0));
         }
-        while ($start->compare($nextMonth) < 0) {
+        while ($start->compare($until) < 0) {
             $res[] = $start;
             $start = $start->plus($week);
         }
@@ -68,8 +78,15 @@ class WeeklyRecurrence implements Recurrence
         if ($interval->negative()) {
             return null;
         }
-        if ($interval->days() % 7 === 0) {
-            return $this->start->plus(new Interval($interval->days(), 0, 0));
+        $days = $this->end->date()->diff($this->start->date())->days();
+        if ($interval->days() % 7 <= $days) {
+            $start = $this->start->plus(new Interval(7 * (int) floor($interval->days() / 7), 0, 0));
+            if ($this->until !== null && $start->compare($this->until) > 0) {
+                return null;
+            }
+            $end = $start->plus($interval);
+            $candidate = new NoRecurrence($start, $end);
+            return $candidate->matchOnDay($day, $daysBetween);
         }
         return null;
     }
@@ -86,9 +103,13 @@ class WeeklyRecurrence implements Recurrence
         while ($end->compare($date) < 0) {
             $end = $end->plus($week);
         }
-        if ($start->compare($end) <= 0) {
+        if (($this->until === null || $start->compare($this->until) <= 0) && $start->compare($end) <= 0) {
             return [$start, $start];
         }
-        return [$start->plus($week->negate()), $end];
+        $start = $start->plus($week->negate());
+        if ($this->until !== null && $start->compare($this->until) > 0) {
+            return null;
+        }
+        return [$start, $end];
     }
 }

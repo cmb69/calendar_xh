@@ -59,6 +59,7 @@ class ICalendarWriterTest extends TestCase
             "http://example.com/lunchbreak",
             "Tips for lunch breaks",
             "whereever I am",
+            "",
             ""
         );
     }
@@ -71,6 +72,7 @@ class ICalendarWriterTest extends TestCase
             "",
             "",
             "Weekend",
+            "",
             "",
             "",
             "",
@@ -89,6 +91,7 @@ class ICalendarWriterTest extends TestCase
             "",
             "",
             "###",
+            "",
             ""
         );
     }

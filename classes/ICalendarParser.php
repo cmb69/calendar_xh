@@ -86,6 +86,7 @@ class ICalendarParser
                         '',
                         $this->currentEvent['location'] ?? "", // @phpstan-ignore-line,
                         $this->currentEvent['recur'] ?? "", // @phpstan-ignore-line
+                        $this->currentEvent['until'] ?? "", // @phpstan-ignore-line
                     );
                     if ($maybeEvent !== null) {
                         $this->events[] = $maybeEvent;
@@ -181,6 +182,9 @@ class ICalendarParser
                 break;
             default:
                 $this->currentEvent["recur"] = "";
+        }
+        if (array_key_exists("UNTIL", $ps)) {
+            $this->currentEvent["until"] = $this->parseDate($ps["UNTIL"]) ?? "";
         }
     }
 

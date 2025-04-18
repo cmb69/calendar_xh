@@ -160,6 +160,7 @@ class EditEventsController
                 "location" => $event->location(),
             ],
             'recur_options' => $this->recurOptions($event),
+            'until' => $event->recurrence()->until() !== null ? $event->recurrence()->until()->getIsoDate() : "",
             'button_label' => $action === "delete" ? "label_delete" : "label_save",
             'csrf_token' => $this->csrfProtector->token(),
         ]);
@@ -226,7 +227,7 @@ class EditEventsController
         }
     }
 
-    /** @return array{datestart:string,dateend:string,starttime:string,endtime:string,event:string,linkadr:string,linktxt:string,location:string,recur:string} */
+    /** @return array{datestart:string,dateend:string,starttime:string,endtime:string,event:string,linkadr:string,linktxt:string,location:string,recur:string,until:string} */
     private function eventPost(Request $request): array
     {
         $datetime = explode("T", $request->post("datestart") ?? "", 2);
@@ -249,6 +250,7 @@ class EditEventsController
             "linktxt" => $request->post("linktxt") ?? "",
             "location" => $request->post("location") ?? "",
             "recur" => $request->post("recur") ?? "",
+            "until" => $request->post("until") ?? "",
         ];
     }
 
@@ -306,6 +308,7 @@ class EditEventsController
             '',
             '',
             '',
+            "",
             ""
         );
         assert($event !== null);

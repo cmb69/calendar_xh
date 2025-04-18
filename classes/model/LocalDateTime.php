@@ -99,6 +99,14 @@ class LocalDateTime
         return $this->minute;
     }
 
+    public function date(): self
+    {
+        $that = clone $this;
+        $that->hour = 0;
+        $that->minute = 0;
+        return $that;
+    }
+
     public function withYear(int $year): self
     {
         $localDateTime = clone $this;

@@ -40,6 +40,11 @@ class NoRecurrence implements Recurrence
         return "none";
     }
 
+    public function until(): ?LocalDateTime
+    {
+        return null;
+    }
+
     /** @return list<LocalDateTime> */
     public function matchesInMonth(int $year, int $month): array
     {

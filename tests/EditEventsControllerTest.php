@@ -245,6 +245,7 @@ class EditEventsControllerTest extends TestCase
             "http://example.com/lunchbreak",
             "Tips for lunch breaks",
             "whereever I am",
+            "",
             ""
         );
     }

@@ -28,7 +28,7 @@ class EventTest extends TestCase
 {
     public function testIsFullDay()
     {
-        $subject = Event::create("2021-04-04", "", "", "", "Easter", "", "", "", "");
+        $subject = Event::create("2021-04-04", "", "", "", "Easter", "", "", "", "", "");
         $this->assertTrue($subject->isFullDay());
     }
 
@@ -48,8 +48,7 @@ class EventTest extends TestCase
             [$this->turnOfTheYear(), 2025, 12, [$this->turnOfTheYear(2025)]],
             [$this->cards(), 2025, 3, []],
             [$this->cards(), 2025, 4, [$this->cards(2025, 4, 17), $this->cards(2025, 4, 24)]],
-            [$this->cards(), 2025, 6, [$this->cards(2025, 6, 5), $this->cards(2025, 6, 12),
-                $this->cards(2025, 6, 19), $this->cards(2025, 6, 26)]],
+            [$this->cards(), 2025, 6, [$this->cards(2025, 6, 5), $this->cards(2025, 6, 12)]],
         ];
     }
 
@@ -74,6 +73,7 @@ class EventTest extends TestCase
             [$this->cards(), $this->ldt(2025, 4, 1, 0, 0), false, null],
             [$this->cards(), $this->ldt(2025, 5, 1, 0, 0), false, $this->cards(2025, 5, 1, 19, 45)],
             [$this->cards(), $this->ldt(2025, 4, 18, 0, 0), false, null],
+            [$this->cards(), $this->ldt(2025, 6, 19, 0, 0), false, null],
         ];
     }
 
@@ -121,7 +121,7 @@ class EventTest extends TestCase
 
     public function testGH98()
     {
-        $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###", "");
+        $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###", "", "");
         $now = $this->ldt(2025, 4, 16, 0, 0);
         $this->assertEmpty($sut->occurrencesDuring(2025, 4));
         $this->assertNull($sut->occurrenceOn($now, true));
@@ -130,7 +130,7 @@ class EventTest extends TestCase
 
     private function cmb(int $year = 1969): Event
     {
-        $event = Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###", "");
+        $event = Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###", "", "");
         assert($event instanceof BirthdayEvent);
         if ($year !== 1969) {
             $event = $event->occurrenceStartingAt($this->ldt($year, 3, 24, 0, 0));
@@ -149,39 +149,51 @@ class EventTest extends TestCase
             "",
             "",
             "Guiseppe-Meazza-Stadion",
+            "",
             ""
         );
     }
 
     private function easter(): Event
     {
-        return Event::create("2025-04-20", "2025-04-21", "", "", "easter", "", "", "", "");
+        return Event::create("2025-04-20", "2025-04-21", "", "", "easter", "", "", "", "", "");
     }
 
     private function christmas(?int $year = null): Event
     {
         if ($year === null) {
-            return Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly");
+            return Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "");
         }
-        return Event::create("$year-12-24", "$year-12-26", "", "", "Christmas", "", "", "", "");
+        return Event::create("$year-12-24", "$year-12-26", "", "", "Christmas", "", "", "", "", "");
     }
 
     private function turnOfTheYear(?int $year = null): Event
     {
         if ($year === null) {
-            return Event::create("2000-12-31", "2001-01-01", "", "", "Turn of the year", "", "", "", "yearly");
+            return Event::create("2000-12-31", "2001-01-01", "", "", "Turn of the year", "", "", "", "yearly", "");
         }
         $nextYear = $year + 1;
-        return Event::create("$year-12-31", "{$nextYear}-01-01", "", "", "Turn of the year", "", "", "", "");
+        return Event::create("$year-12-31", "{$nextYear}-01-01", "", "", "Turn of the year", "", "", "", "", "");
     }
 
     private function cards(?int $year = null, ?int $month = null, ?int $day = null): Event
     {
         if ($year === null && $month === null && $day === null) {
-            return Event::create("2025-04-17", "2025-04-17", "19:45", "22:15", "Cards", "", "", "", "weekly");
+            return Event::create(
+                "2025-04-17",
+                "2025-04-17",
+                "19:45",
+                "22:15",
+                "Cards",
+                "",
+                "",
+                "",
+                "weekly",
+                "2025-06-12"
+            );
         }
         $date = sprintf("%04d-%02d-%02d", $year, $month, $day);
-        return Event::create($date, $date, "19:45", "22:15", "Cards", "", "", "", "");
+        return Event::create($date, $date, "19:45", "22:15", "Cards", "", "", "", "", "");
     }
 
     private function ldt(int $year, int $month, int $day, int $hour, int $minute): LocalDateTime

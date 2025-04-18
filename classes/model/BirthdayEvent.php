@@ -39,7 +39,15 @@ class BirthdayEvent extends Event
         string $linktxt,
         string $location
     ) {
-        parent::__construct($start, $end, $summary, $linkadr, $linktxt, $location, new YearlyRecurrence($start, $end));
+        parent::__construct(
+            $start,
+            $end,
+            $summary,
+            $linkadr,
+            $linktxt,
+            $location,
+            new YearlyRecurrence($start, $end, null)
+        );
     }
 
     public function age(): int
