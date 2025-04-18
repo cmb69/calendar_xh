@@ -21,7 +21,7 @@
 
 namespace Calendar\Model;
 
-class YearlyRecurrence
+class YearlyRecurrence implements Recurrence
 {
     /** @var LocalDateTime */
     private $start;
@@ -35,6 +35,11 @@ class YearlyRecurrence
         $this->end = $end;
     }
 
+    public function name(): string
+    {
+        return "yearly";
+    }
+
     /** @return list<LocalDateTime> */
     public function matchesInMonth(int $year, int $month): array
     {
@@ -44,27 +49,44 @@ class YearlyRecurrence
         return [$this->start->withYear($year)];
     }
 
-    public function matchOnDay(int $year, int $month, int $day): ?LocalDateTime
+    public function matchOnDay(LocalDateTime $day, bool $daysBetween): ?LocalDateTime
     {
-        if ($this->start->year() > $year || $this->start->month() !== $month || $this->start->day() !== $day) {
+        if ($this->start->compareDate($day) > 0) {
             return null;
         }
-        return $this->start->withYear($year);
+        $start = $this->start->withYear($day->year());
+        $duration = $this->end->diff($this->start);
+        $end = $start->plus($duration);
+        $candidate = new NoRecurrence($start, $end);
+        $match = $candidate->matchOnDay($day, $daysBetween);
+        if ($match !== null) {
+            return $match;
+        }
+        $end = $this->end->withYear($day->year());
+        $start = $end->minus($duration);
+        $candidate = new NoRecurrence($start, $end);
+        $match = $candidate->matchOnDay($day, $daysBetween);
+        return $match;
     }
 
-    public function firstMatchAfter(LocalDateTime $date): ?LocalDateTime
+    /** @return ?array{LocalDateTime,LocalDateTime} */
+    public function firstMatchAfter(LocalDateTime $date): ?array
     {
-        if ($this->start->year() <= $date->year()) {
-            $ldt = $this->start->withYear($date->year());
-            if ($ldt->compare($date) < 0) {
-                $ldt = $this->end;
-                if ($ldt->compare($date) < 0) {
-                    $ldt = $this->start->withYear($date->year() + 1);
-                }
-            }
-        } else {
-            $ldt = null;
+        if ($this->start->year() > $date->year()) {
+            return null;
         }
-        return $ldt;
+        $duration = $this->end->diff($this->start);
+        $end = $this->end->withYear($date->year());
+        $start = $end->minus($duration);
+        $candidate = new NoRecurrence($start, $end);
+        $match = $candidate->firstMatchAfter($date);
+        if ($match !== null) {
+            return $match;
+        }
+        $end = $this->end->withYear($date->year() + 1);
+        $start = $end->minus($duration);
+        $candidate = new NoRecurrence($start, $end);
+        $candidate = new NoRecurrence($start, $end);
+        return $candidate->firstMatchAfter($date);
     }
 }

@@ -85,14 +85,14 @@ class EventDataService
                     continue;
                 }
                 $id = md5(serialize($record));
-                list($datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt)
-                    = $record;
+                [$datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt] = $record;
                 if (!$dateend) {
                     $dateend = null;
                 }
                 if (!$endtime) {
                     $endtime = null;
                 }
+                $recurrenceRule = count($record) > 8 ? $record[8] : "";
                 if ($convertToHtml) {
                     $linktxt = XH_hsc($linktxt);
                     if ($linkadr) {
@@ -113,7 +113,8 @@ class EventDataService
                         $event,
                         $linkadr,
                         $linktxt,
-                        $location
+                        $location,
+                        $recurrenceRule
                     );
                     if ($maybeEvent !== null) {
                         $result[$id] = $maybeEvent;
@@ -187,7 +188,8 @@ class EventDataService
                         $event,
                         $linkadr,
                         $linktxt,
-                        $location
+                        $location,
+                        ""
                     );
                     if ($maybeEvent !== null) {
                         $result[] = $maybeEvent;
@@ -242,7 +244,8 @@ class EventDataService
             $event->summary(),
             $event->location(),
             $event->linkadr(),
-            $event->linktxt()
+            $event->linktxt(),
+            $event->recurrence()->name(),
         ];
         return fputcsv($fp, $record, ';', '"', "\0") !== false;
     }

@@ -28,7 +28,7 @@ class EventTest extends TestCase
 {
     public function testIsFullDay()
     {
-        $subject = Event::create("2021-04-04", "", "", "", "Easter", "", "", "");
+        $subject = Event::create("2021-04-04", "", "", "", "Easter", "", "", "", "");
         $this->assertTrue($subject->isFullDay());
     }
 
@@ -44,6 +44,8 @@ class EventTest extends TestCase
             [$this->cmb(), 2025, 3, $this->cmb(2025)],
             [$this->intfcb(), 2025, 4, $this->intfcb()],
             [$this->easter(), 2025, 4, $this->easter()],
+            [$this->christmas(), 2025, 12, $this->christmas(2025)],
+            [$this->turnOfTheYear(), 2025, 12, $this->turnOfTheYear(2025)],
         ];
     }
 
@@ -60,6 +62,11 @@ class EventTest extends TestCase
             [$this->intfcb(), $this->ldt(2025, 4, 16, 0, 0), true, $this->intfcb()],
             [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), true, $this->easter()],
             [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), false, $this->easter()],
+            [$this->christmas(), $this->ldt(2025, 12, 24, 0, 0), false, $this->christmas(2025)],
+            [$this->christmas(), $this->ldt(2025, 12, 25, 0, 0), true, $this->christmas(2025)],
+            [$this->christmas(), $this->ldt(2025, 12, 26, 0, 0), false, $this->christmas(2025)],
+            [$this->turnOfTheYear(), $this->ldt(2025, 12, 31, 0, 0), false, $this->turnOfTheYear(2025)],
+            [$this->turnOfTheYear(), $this->ldt(2026, 1, 1, 0, 0), false, $this->turnOfTheYear(2025)],
         ];
     }
 
@@ -77,12 +84,29 @@ class EventTest extends TestCase
             [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), [$this->easter(), $this->ldt(2025, 4, 20, 0, 0)]],
             [$this->easter(), $this->ldt(2025, 4, 21, 0, 0), [$this->easter(), $this->ldt(2025, 4, 21, 23, 59)]],
             [$this->easter(), $this->ldt(2025, 4, 22, 0, 0), [null, null]],
+            [
+                $this->christmas(),
+                $this->ldt(2025, 12, 24, 0, 0),
+                [$this->christmas(2025), $this->ldt(2025, 12, 24, 0, 0)],
+            ], [
+                $this->christmas(),
+                $this->ldt(2025, 12, 26, 0, 0),
+                [$this->christmas(2025), $this->ldt(2025, 12, 26, 23, 59)],
+            ], [
+                $this->christmas(),
+                $this->ldt(2025, 12, 27, 0, 0),
+                [$this->christmas(2026), $this->ldt(2026, 12, 24, 0, 0)],
+            ], [
+                $this->turnOfTheYear(),
+                $this->ldt(2026, 1, 1, 0, 0),
+                [$this->turnofTheYear(2025), $this->ldt(2026, 1, 1, 23, 59)],
+            ]
         ];
     }
 
     public function testGH98()
     {
-        $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###");
+        $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###", "");
         $now = $this->ldt(2025, 4, 16, 0, 0);
         $this->assertNull($sut->occurrenceDuring(2025, 4));
         $this->assertNull($sut->occurrenceOn($now, true));
@@ -91,7 +115,7 @@ class EventTest extends TestCase
 
     private function cmb(int $year = 1969): Event
     {
-        $event = Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###");
+        $event = Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###", "");
         assert($event instanceof BirthdayEvent);
         if ($year !== 1969) {
             $event = $event->occurrenceStartingAt($this->ldt($year, 3, 24, 0, 0));
@@ -109,13 +133,31 @@ class EventTest extends TestCase
             "#INTFCB",
             "",
             "",
-            "Guiseppe-Meazza-Stadion"
+            "Guiseppe-Meazza-Stadion",
+            ""
         );
     }
 
     private function easter(): Event
     {
-        return Event::create("2025-04-20", "2025-04-21", "", "", "easter", "", "", "");
+        return Event::create("2025-04-20", "2025-04-21", "", "", "easter", "", "", "", "");
+    }
+
+    private function christmas(?int $year = null): Event
+    {
+        if ($year === null) {
+            return Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly");
+        }
+        return Event::create("$year-12-24", "$year-12-26", "", "", "Christmas", "", "", "", "");
+    }
+
+    private function turnOfTheYear(?int $year = null): Event
+    {
+        if ($year === null) {
+            return Event::create("2000-12-31", "2001-01-01", "", "", "Turn of the year", "", "", "", "yearly");
+        }
+        $nextYear = $year + 1;
+        return Event::create("$year-12-31", "{$nextYear}-01-01", "", "", "Turn of the year", "", "", "", "");
     }
 
     private function ldt(int $year, int $month, int $day, int $hour, int $minute): LocalDateTime

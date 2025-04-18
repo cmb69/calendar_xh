@@ -159,9 +159,20 @@ class EditEventsController
                 "linktxt" => $event->linktxt(),
                 "location" => $event->location(),
             ],
+            'recur_options' => $this->recurOptions($event),
             'button_label' => $action === "delete" ? "label_delete" : "label_save",
             'csrf_token' => $this->csrfProtector->token(),
         ]);
+    }
+
+    /** @return array<string,string> */
+    private function recurOptions(Event $event): array
+    {
+        $res = [];
+        foreach (["none", "yearly"] as $recur) {
+            $res[$recur] = $event->recurrence()->name() === $recur ? "selected" : "";
+        }
+        return $res;
     }
 
     private function doCreateAction(Request $request): Response
@@ -215,7 +226,7 @@ class EditEventsController
         }
     }
 
-    /** @return array{datestart:string,dateend:string,starttime:string,endtime:string,event:string,linkadr:string,linktxt:string,location:string} */
+    /** @return array{datestart:string,dateend:string,starttime:string,endtime:string,event:string,linkadr:string,linktxt:string,location:string,recur:string} */
     private function eventPost(Request $request): array
     {
         $datetime = explode("T", $request->post("datestart") ?? "", 2);
@@ -237,6 +248,7 @@ class EditEventsController
             "linkadr" => $request->post("linkadr") ?? "",
             "linktxt" => $request->post("linktxt") ?? "",
             "location" => $request->post("location") ?? "",
+            "recur" => $request->post("recur") ?? "",
         ];
     }
 
@@ -293,7 +305,8 @@ class EditEventsController
             $this->view->plain("event_summary"),
             '',
             '',
-            ''
+            '',
+            ""
         );
         assert($event !== null);
         return $event;

@@ -45,6 +45,8 @@ require_once './classes/model/Event.php';
 require_once "./classes/model/BirthdayEvent.php";
 require_once "./classes/model/Interval.php";
 require_once './classes/model/LocalDateTime.php';
+require_once "./classes/model/Recurrence.php";
+require_once "./classes/model/NoRecurrence.php";
 require_once "./classes/model/YearlyRecurrence.php";
 require_once './classes/CalendarController.php';
 require_once "./classes/Counter.php";

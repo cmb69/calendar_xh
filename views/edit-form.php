@@ -7,6 +7,7 @@ if (!isset($this)) {header("404 Not found"); exit;}
  * @var string $action
  * @var string $full_day
  * @var array{start_date:string,start_time:string,end_date:string,end_time:string,summary:string,linkadr:string,linktxt:string,location:string} $event
+ * @var array<string,string> $recur_options
  * @var string $button_label
  * @var string $csrf_token
  */
@@ -31,6 +32,16 @@ if (!isset($this)) {header("404 Not found"); exit;}
       <label>
         <span><?=$this->text('event_date_end')?></span>
         <input type="datetime-local" class="calendar_input_date" maxlength="10" name="dateend" value="<?=$this->esc($event['end_date'])?>">
+      </label>
+    </p>
+    <p>
+      <label>
+        <span><?=$this->text('label_recur')?></span>
+        <select name="recur">
+<?foreach ($recur_options as $key => $selected):?>
+          <option value="<?=$this->esc($key)?>" <?=$this->esc($selected)?>><?=$this->text("label_recur_$key")?></option>
+<?endforeach?>
+        </select>
       </label>
     </p>
     <p>

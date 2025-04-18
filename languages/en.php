@@ -52,6 +52,9 @@ $plugin_tx['calendar']['label_import_export']="Import/Export";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_export']="Export";
 $plugin_tx['calendar']['label_full_day']="full-day";
+$plugin_tx['calendar']['label_recur']="Recur";
+$plugin_tx['calendar']['label_recur_none']="none";
+$plugin_tx['calendar']['label_recur_yearly']="yearly";
 
 $plugin_tx['calendar']['message_ignored_0']="All events have been imported!";
 $plugin_tx['calendar']['message_ignored_1']="One event could not be imported!";

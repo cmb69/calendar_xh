@@ -103,14 +103,11 @@ class LocalDateTime
     {
         $localDateTime = clone $this;
         $localDateTime->year = $year;
-        if (
-            $localDateTime->month === 2 && $localDateTime->day === 29
-            && !checkdate($localDateTime->month, $localDateTime->day, $localDateTime->year)
-        ) {
-            $localDateTime->month = 3;
-            $localDateTime->day = 1;
+        $diff = $localDateTime->day - $this->daysInMonth($year, $localDateTime->month);
+        if ($diff > 0) {
+            $localDateTime->month++;
+            $localDateTime->day = $diff;
         }
-        assert(checkdate($localDateTime->month, $localDateTime->day, $localDateTime->year));
         return $localDateTime;
     }
 

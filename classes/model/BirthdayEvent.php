@@ -28,9 +28,6 @@ namespace Calendar\Model;
 
 class BirthdayEvent extends Event
 {
-    /** @var YearlyRecurrence */
-    private $recurrence;
-
     /** @var int */
     private $age = 0;
 
@@ -42,8 +39,7 @@ class BirthdayEvent extends Event
         string $linktxt,
         string $location
     ) {
-        parent::__construct($start, $end, $summary, $linkadr, $linktxt, $location);
-        $this->recurrence = new YearlyRecurrence($start, $end);
+        parent::__construct($start, $end, $summary, $linkadr, $linktxt, $location, new YearlyRecurrence($start, $end));
     }
 
     public function age(): int
@@ -53,7 +49,7 @@ class BirthdayEvent extends Event
 
     public function occurrenceDuring(int $year, int $month): ?self
     {
-        $matches = $this->recurrence->matchesInMonth($year, $month);
+        $matches = $this->recurrence()->matchesInMonth($year, $month);
         if (empty($matches)) {
             return null;
         }
@@ -64,7 +60,7 @@ class BirthdayEvent extends Event
     public function occurrenceOn(LocalDateTime $day, bool $daysBetween): ?self
     {
         assert($day->hour() === 0 && $day->minute() === 0);
-        $match = $this->recurrence->matchOnDay($day->year(), $day->month(), $day->day());
+        $match = $this->recurrence()->matchOnDay($day, $daysBetween);
         if ($match === null) {
             return null;
         }
@@ -74,11 +70,11 @@ class BirthdayEvent extends Event
     /** @return array{?self,?LocalDateTime} */
     public function earliestOccurrenceAfter(LocalDateTime $date): array
     {
-        $match = $this->recurrence->firstMatchAfter($date);
+        $match = $this->recurrence()->firstMatchAfter($date);
         if ($match === null) {
             return [null, null];
         }
-        return [$this->occurrenceStartingAt($match), $match];
+        return [$this->occurrenceStartingAt($match[0]), $match[1]];
     }
 
     public function occurrenceStartingAt(LocalDateTime $start): self
@@ -90,6 +86,6 @@ class BirthdayEvent extends Event
 
     protected function locationToICalendarString(): string
     {
-        return "RRULE:FREQ=YEARLY\r\n";
+        return "";
     }
 }

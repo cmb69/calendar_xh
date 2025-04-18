@@ -108,7 +108,7 @@ class NextEventControllerTest extends TestCase
 
     private function cmb(): Event
     {
-        return Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###");
+        return Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###", "");
     }
 
     private function intfcb(): Event
@@ -121,12 +121,13 @@ class NextEventControllerTest extends TestCase
             "#INTFCB",
             "",
             "",
-            "Guiseppe-Meazza-Stadion"
+            "Guiseppe-Meazza-Stadion",
+            ""
         );
     }
 
     private function easter(): Event
     {
-        return Event::create("2025-04-20", "2025-04-21", "", "", "easter", "", "", "");
+        return Event::create("2025-04-20", "2025-04-21", "", "", "easter", "", "", "", "");
     }
 }
