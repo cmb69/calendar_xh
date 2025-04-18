@@ -67,8 +67,8 @@ class Calendar
     {
         $result = [];
         foreach ($this->events as $event) {
-            if (($occurrence = $event->occurrenceDuring($year, $month)) !== null) {
-                $result[] = $occurrence;
+            if (($occurrences = $event->occurrencesDuring($year, $month)) !== null) {
+                array_push($result, ...$occurrences);
             }
         }
         uasort($result, function (Event $a, Event $b): int {

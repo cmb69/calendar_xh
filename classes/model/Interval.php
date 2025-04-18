@@ -35,11 +35,12 @@ class Interval
     /** @var int */
     private $minutes;
 
-    public function __construct(int $days, int $hours, int $minutes)
+    public function __construct(int $days, int $hours, int $minutes, bool $negative = false)
     {
         assert($days >= 0);
         assert($hours >= 0 && $hours < 24);
         assert($minutes >= 0 && $minutes < 60);
+        $this->negative = $negative;
         $this->days = $days;
         $this->hours = $hours;
         $this->minutes = $minutes;
@@ -69,6 +70,33 @@ class Interval
     {
         $that = clone $this;
         $that->negative = !$that->negative;
+        return $that;
+    }
+
+    public function plus(int $days): self
+    {
+        $that = clone $this;
+        if ($this->negative) {
+            $that->days -= $days;
+            if ($that->days < 0) {
+                $that->days = -$that->days;
+                if ($that->hours > 0) {
+                    $that->hours = 24 - $that->hours;
+                    $that->days -= 1;
+                }
+                if ($that->minutes > 0) {
+                    $that->minutes = 60 - $that->minutes;
+                    $that->hours -= 1;
+                }
+                if ($that->hours < 0) {
+                    $that->hours += 24;
+                    $that->days -= 1;
+                }
+                $that->negative = false;
+            }
+        } else {
+            $that->days += $days;
+        }
         return $that;
     }
 }

@@ -32,20 +32,24 @@ class EventTest extends TestCase
         $this->assertTrue($subject->isFullDay());
     }
 
-    /** @dataProvider occurrenceDuringData */
-    public function testoccurrenceDuring(Event $sut, int $year, int $month, ?Event $expected): void
+    /** @dataProvider occurrencesDuringData */
+    public function testoccurrencesDuring(Event $sut, int $year, int $month, array $expected): void
     {
-        $this->assertEquals($expected, $sut->occurrenceDuring($year, $month));
+        $this->assertEquals($expected, $sut->occurrencesDuring($year, $month));
     }
 
-    public function occurrenceDuringData(): array
+    public function occurrencesDuringData(): array
     {
         return [
-            [$this->cmb(), 2025, 3, $this->cmb(2025)],
-            [$this->intfcb(), 2025, 4, $this->intfcb()],
-            [$this->easter(), 2025, 4, $this->easter()],
-            [$this->christmas(), 2025, 12, $this->christmas(2025)],
-            [$this->turnOfTheYear(), 2025, 12, $this->turnOfTheYear(2025)],
+            [$this->cmb(), 2025, 3, [$this->cmb(2025)]],
+            [$this->intfcb(), 2025, 4, [$this->intfcb()]],
+            [$this->easter(), 2025, 4, [$this->easter()]],
+            [$this->christmas(), 2025, 12, [$this->christmas(2025)]],
+            [$this->turnOfTheYear(), 2025, 12, [$this->turnOfTheYear(2025)]],
+            [$this->cards(), 2025, 3, []],
+            [$this->cards(), 2025, 4, [$this->cards(2025, 4, 17), $this->cards(2025, 4, 24)]],
+            [$this->cards(), 2025, 6, [$this->cards(2025, 6, 5), $this->cards(2025, 6, 12),
+                $this->cards(2025, 6, 19), $this->cards(2025, 6, 26)]],
         ];
     }
 
@@ -67,6 +71,9 @@ class EventTest extends TestCase
             [$this->christmas(), $this->ldt(2025, 12, 26, 0, 0), false, $this->christmas(2025)],
             [$this->turnOfTheYear(), $this->ldt(2025, 12, 31, 0, 0), false, $this->turnOfTheYear(2025)],
             [$this->turnOfTheYear(), $this->ldt(2026, 1, 1, 0, 0), false, $this->turnOfTheYear(2025)],
+            [$this->cards(), $this->ldt(2025, 4, 1, 0, 0), false, null],
+            [$this->cards(), $this->ldt(2025, 5, 1, 0, 0), false, $this->cards(2025, 5, 1, 19, 45)],
+            [$this->cards(), $this->ldt(2025, 4, 18, 0, 0), false, null],
         ];
     }
 
@@ -100,6 +107,14 @@ class EventTest extends TestCase
                 $this->turnOfTheYear(),
                 $this->ldt(2026, 1, 1, 0, 0),
                 [$this->turnofTheYear(2025), $this->ldt(2026, 1, 1, 23, 59)],
+            ], [
+                $this->cards(),
+                $this->ldt(2025, 4, 24, 0, 0),
+                [$this->cards(2025, 4, 24), $this->ldt(2025, 4, 24, 19, 45)],
+            ], [
+                $this->cards(),
+                $this->ldt(2025, 4, 24, 21, 0),
+                [$this->cards(2025, 4, 24), $this->ldt(2025, 4, 24, 22, 15)],
             ]
         ];
     }
@@ -108,7 +123,7 @@ class EventTest extends TestCase
     {
         $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###", "");
         $now = $this->ldt(2025, 4, 16, 0, 0);
-        $this->assertNull($sut->occurrenceDuring(2025, 4));
+        $this->assertEmpty($sut->occurrencesDuring(2025, 4));
         $this->assertNull($sut->occurrenceOn($now, true));
         $this->assertEquals([null, null], $sut->earliestOccurrenceAfter($now));
     }
@@ -158,6 +173,15 @@ class EventTest extends TestCase
         }
         $nextYear = $year + 1;
         return Event::create("$year-12-31", "{$nextYear}-01-01", "", "", "Turn of the year", "", "", "", "");
+    }
+
+    private function cards(?int $year = null, ?int $month = null, ?int $day = null): Event
+    {
+        if ($year === null && $month === null && $day === null) {
+            return Event::create("2025-04-17", "2025-04-17", "19:45", "22:15", "Cards", "", "", "", "weekly");
+        }
+        $date = sprintf("%04d-%02d-%02d", $year, $month, $day);
+        return Event::create($date, $date, "19:45", "22:15", "Cards", "", "", "", "");
     }
 
     private function ldt(int $year, int $month, int $day, int $hour, int $minute): LocalDateTime

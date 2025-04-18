@@ -92,6 +92,8 @@ class Event
         }
         if ($recurrenceRule === "yearly") {
             $recurrence = new YearlyRecurrence($start, $end);
+        } elseif ($recurrenceRule === "weekly") {
+            $recurrence = new WeeklyRecurrence($start, $end);
         } else {
             $recurrence = new NoRecurrence($start, $end);
         }
@@ -196,14 +198,14 @@ class Event
             && $this->end->hour() === 23 && $this->end->minute() === 59;
     }
 
-    public function occurrenceDuring(int $year, int $month): ?self
+    /** @return list<Event> */
+    public function occurrencesDuring(int $year, int $month): array
     {
-        $matches = $this->recurrence->matchesInMonth($year, $month);
-        if (empty($matches)) {
-            return null;
+        $res = [];
+        foreach ($this->recurrence->matchesInMonth($year, $month) as $match) {
+            $res[] = $this->occurrenceStartingAt($match);
         }
-        assert(count($matches) === 1);
-        return $this->occurrenceStartingAt($matches[0]);
+        return $res;
     }
 
     public function occurrenceOn(LocalDateTime $day, bool $daysBetween): ?self

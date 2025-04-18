@@ -54,6 +54,7 @@ $plugin_tx['calendar']['label_export']="Export";
 $plugin_tx['calendar']['label_full_day']="ganztägig";
 $plugin_tx['calendar']['label_recur']="Wiederholen";
 $plugin_tx['calendar']['label_recur_none']="nein";
+$plugin_tx['calendar']['label_recur_weekly']="wöchentlich";
 $plugin_tx['calendar']['label_recur_yearly']="jährlich";
 
 $plugin_tx['calendar']['message_ignored_0']="Alle Veranstaltungen wurden importiert!";

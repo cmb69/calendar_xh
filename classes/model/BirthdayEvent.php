@@ -47,36 +47,6 @@ class BirthdayEvent extends Event
         return $this->age;
     }
 
-    public function occurrenceDuring(int $year, int $month): ?self
-    {
-        $matches = $this->recurrence()->matchesInMonth($year, $month);
-        if (empty($matches)) {
-            return null;
-        }
-        assert(count($matches) === 1);
-        return $this->occurrenceStartingAt($matches[0]);
-    }
-
-    public function occurrenceOn(LocalDateTime $day, bool $daysBetween): ?self
-    {
-        assert($day->hour() === 0 && $day->minute() === 0);
-        $match = $this->recurrence()->matchOnDay($day, $daysBetween);
-        if ($match === null) {
-            return null;
-        }
-        return $this->occurrenceStartingAt($match);
-    }
-
-    /** @return array{?self,?LocalDateTime} */
-    public function earliestOccurrenceAfter(LocalDateTime $date): array
-    {
-        $match = $this->recurrence()->firstMatchAfter($date);
-        if ($match === null) {
-            return [null, null];
-        }
-        return [$this->occurrenceStartingAt($match[0]), $match[1]];
-    }
-
     public function occurrenceStartingAt(LocalDateTime $start): self
     {
         $that = parent::occurrenceStartingAt($start);
