@@ -100,7 +100,7 @@ class EditEventsController
             return [
                 "start_date" => $startDate,
                 "summary" => $event->summary(),
-                "recurring" => !($event->recurrence() instanceof NoRecurrence || $event instanceof BirthdayEvent),
+                "recurring" => !($event->recurrence() === "none" || $event instanceof BirthdayEvent),
             ];
         }, $calendar->events());
         $js = $this->pluginFolder . "js/overview.min.js";
@@ -129,7 +129,7 @@ class EditEventsController
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        if ($event->recurrence() instanceof NoRecurrence || $event instanceof BirthdayEvent) {
+        if ($event->recurrence() === "none" || $event instanceof BirthdayEvent) {
             return $this->redirectToOverviewResponse($request);
         }
         return $this->respondWith($request, $this->renderEditSingleForm($request, $event, $id));
@@ -179,7 +179,7 @@ class EditEventsController
                 "location" => $event->location(),
             ],
             'recur_options' => $this->recurOptions($event),
-            'until' => $event->recurrence()->until() !== null ? $event->recurrence()->until()->getIsoDate() : "",
+            'until' => $event->recursUntil() !== null ? $event->recursUntil()->getIsoDate() : "",
             'button_label' => $action === "delete" ? "label_delete" : "label_save",
             'csrf_token' => $this->csrfProtector->token(),
         ]);
@@ -190,7 +190,7 @@ class EditEventsController
     {
         $res = [];
         foreach (["none", "weekly", "yearly"] as $recur) {
-            $res[$recur] = $event->recurrence()->name() === $recur ? "selected" : "";
+            $res[$recur] = $event->recurrence() === $recur ? "selected" : "";
         }
         return $res;
     }
@@ -209,13 +209,11 @@ class EditEventsController
         } else {
             $date = "";
         }
-        $recurrence = $event->recurrence();
-        assert($recurrence !== null);
         return $this->view->render("edit_single", [
             "action" => $url->relative(),
             "start_date" => $event->start()->getIsoDate(),
-            "recurring" => $recurrence->name(),
-            "until" => $recurrence->until() !== null ? $recurrence->until()->getIsoDate() : "",
+            "recurring" => $event->recurrence(),
+            "until" => $event->recursUntil() !== null ? $event->recursUntil()->getIsoDate() : "",
             "summary" => $event->summary(),
             "date" => $date,
             "csrf_token" => $this->csrfProtector->token(),

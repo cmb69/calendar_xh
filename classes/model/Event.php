@@ -160,9 +160,14 @@ class Event
         return $this->location;
     }
 
-    public function recurrence(): Recurrence
+    public function recurrence(): string
     {
-        return $this->recurrence;
+        return $this->recurrence->name();
+    }
+
+    public function recursUntil(): ?LocalDateTime
+    {
+        return $this->recurrence->until();
     }
 
     public function getIsoStartDate(): string
@@ -259,7 +264,7 @@ class Event
     /** @return array{?Event,?Event,?Event} */
     public function split(LocalDateTime $date): array
     {
-        [$prevrec, $rec, $nextrec] = $this->recurrence()->split($date);
+        [$prevrec, $rec, $nextrec] = $this->recurrence->split($date);
         if ($prevrec !== null) {
             $prevevent = clone $this;
             $prevevent->start = $prevrec->start();
@@ -293,10 +298,10 @@ class Event
             . "UID:$id@$host\r\n";
         $res .= $this->getDtstart() . "\r\n";
         $res .= $this->getDtend() . "\r\n";
-        if (!($this->recurrence() instanceof NoRecurrence)) {
-            $freq = strtoupper($this->recurrence()->name());
+        if (!($this->recurrence() === "none")) {
+            $freq = strtoupper($this->recurrence());
             $res .= "RRULE:FREQ={$freq}";
-            $until = $this->recurrence()->until();
+            $until = $this->recursUntil();
             if ($until !== null) {
                 if ($this->isFullDay()) {
                     $until = sprintf("%04d%02d%02d", $until->year(), $until->month(), $until->day());

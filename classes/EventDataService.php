@@ -248,8 +248,8 @@ class EventDataService
             $event->location(),
             $event->linkadr(),
             $event->linktxt(),
-            $event->recurrence()->name(),
-            $event->recurrence()->until() !== null ? $event->recurrence()->until()->getIsoDate() : "",
+            $event->recurrence() === "none" ? "" : $event->recurrence(),
+            $event->recursUntil() !== null ? $event->recursUntil()->getIsoDate() : "",
         ];
         return fputcsv($fp, $record, ';', '"', "\0") !== false;
     }
