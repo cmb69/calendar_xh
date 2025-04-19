@@ -50,12 +50,12 @@ class Calendar
         $nextevent = null;
         $nextldt = null;
         foreach ($this->events as $event) {
-            $ldt = $event->after($now);
+            [$occurrence, $ldt] = $event->earliestOccurrenceAfter($now);
             if ($ldt === null) {
                 continue;
             }
             if ($nextldt === null || $ldt->compare($nextldt) < 0) {
-                $nextevent = $event;
+                $nextevent = $occurrence;
                 $nextldt = $ldt;
             }
         }
@@ -67,14 +67,12 @@ class Calendar
     {
         $result = [];
         foreach ($this->events as $event) {
-            if ($event->occursDuring($year, $month)) {
-                $result[] = $event;
+            if (($occurrences = $event->occurrencesDuring($year, $month)) !== null) {
+                array_push($result, ...$occurrences);
             }
         }
-        uasort($result, function (Event $a, Event $b) use ($year): int {
-            $dt1 = $a->isBirthday() ? $a->start()->withYear($year) : $a->start();
-            $dt2 = $b->isBirthday() ? $b->start()->withYear($year) : $b->start();
-            return $dt1->compare($dt2);
+        uasort($result, function (Event $a, Event $b): int {
+            return $a->start()->compare($b->start());
         });
         return $result;
     }
@@ -85,11 +83,30 @@ class Calendar
         assert($day->hour() === 0 && $day->minute() === 0);
         $result = [];
         foreach ($this->events as $event) {
-            if ($event->occursOn($day, $daysBetween)) {
-                $result[] = $event;
+            if (($occurrence = $event->occurrenceOn($day, $daysBetween)) !== null) {
+                $result[] = $occurrence;
             }
         }
         return $result;
+    }
+
+    public function split(string $id, LocalDateTime $split): bool
+    {
+        assert(array_key_exists($id, $this->events));
+        $event = $this->events[$id];
+        [$prevevent, $event, $nextevent] = $event->split($split);
+        if ($event === null) {
+            return false;
+        }
+        unset($this->events[$id]);
+        if ($prevevent !== null) {
+            $this->events[uniqid()] = $prevevent;
+        }
+        $this->events[uniqid()] = $event;
+        if ($nextevent !== null) {
+            $this->events[uniqid()] = $nextevent;
+        }
+        return true;
     }
 
     public function delete(string $id): void

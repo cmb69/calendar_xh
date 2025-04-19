@@ -39,8 +39,8 @@ class ICalendarWriterTest extends TestCase
             UID:2@example.com
             DTSTART:20000101T000000
             DTEND;VALUE=DATE:20000101
-            SUMMARY:Millenium
             RRULE:FREQ=YEARLY
+            SUMMARY:Millenium
             END:VEVENT
             END:VCALENDAR
             EOS;
@@ -58,7 +58,9 @@ class ICalendarWriterTest extends TestCase
             "Lunch break",
             "http://example.com/lunchbreak",
             "Tips for lunch breaks",
-            "whereever I am"
+            "whereever I am",
+            "",
+            ""
         );
     }
 
@@ -70,6 +72,8 @@ class ICalendarWriterTest extends TestCase
             "",
             "",
             "Weekend",
+            "",
+            "",
             "",
             "",
             ""
@@ -86,7 +90,9 @@ class ICalendarWriterTest extends TestCase
             "Millenium",
             "",
             "",
-            "###"
+            "###",
+            "",
+            ""
         );
     }
 }

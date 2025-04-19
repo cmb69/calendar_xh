@@ -24,11 +24,13 @@ class OverviewWidget {
      * @param {Element} element
      */
     constructor (element) {
+        this.splitButton = element.querySelector("button[value='edit_single']");
         this.editButton = element.querySelector("button[value='update']");
         this.deleteButton = element.querySelector("button[value='delete']");
         let radios = /** @type {NodeListOf<HTMLInputElement>}} */
             (element.querySelectorAll("tr input[type='radio']"));
         radios.forEach(radio => this.replaceRadiosWithButtons(radio));
+        this.splitButton.parentNode.removeChild(this.splitButton);
         this.editButton.parentNode.removeChild(this.editButton);
         this.deleteButton.parentNode.removeChild(this.deleteButton);
         element.querySelectorAll("tr").forEach(tr =>
@@ -45,6 +47,9 @@ class OverviewWidget {
      */
     replaceRadiosWithButtons(radio) {
         var col = radio.parentNode;
+        if (col?.parentNode.dataset.recurring) {
+            col.appendChild(this.splitButton.cloneNode(true));
+        }
         col.appendChild(this.editButton.cloneNode(true));
         col.appendChild(this.deleteButton.cloneNode(true));
         radio.style.display = "none";

@@ -81,7 +81,9 @@ class EventListControllerTest extends TestCase
             "Lunch break",
             "http://example.com/lunchbreak",
             "<a href=\"http://example.com/lunchbreak\">Tips for lunch breaks</a>",
-            "whereever I am"
+            "whereever I am",
+            "",
+            ""
         );
     }
 
@@ -95,7 +97,9 @@ class EventListControllerTest extends TestCase
             "Easter",
             "",
             "",
-            "almost everywhere"
+            "almost everywhere",
+            "",
+            ""
         );
     }
 
@@ -109,7 +113,9 @@ class EventListControllerTest extends TestCase
             "Christoph M. Becker",
             "",
             "",
-            "###"
+            "###",
+            "",
+            ""
         );
     }
 }

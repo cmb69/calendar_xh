@@ -27,6 +27,10 @@
     const dateStart = form.elements.namedItem("datestart");
     const dateEnd = form.elements.namedItem("dateend");
     if (!(dateStart instanceof HTMLInputElement && dateEnd instanceof HTMLInputElement)) return;
+    const recur = form.elements.namedItem("recur");
+    if (!(recur instanceof HTMLSelectElement)) return;
+    const until = form.elements.namedItem("until");
+    if (!(until instanceof HTMLInputElement)) return;
     let date = "";
     let [, dateStartTime] = dateStart.value.split("T", 2);
     let [, dateEndTime] = dateEnd.value.split("T", 2);
@@ -53,4 +57,17 @@
     }
     fullDay.onclick = convert;
     convert();
+    if (recur.value === "none") {
+        until.style.display = "none";
+        if (until.previousElementSibling instanceof HTMLSpanElement) {
+            until.previousElementSibling.style.display = "none";
+        }
+    }
+    recur.oninput = location.oninput = () => {
+        const display = recur.value === "none" ? "none" : "";
+        until.style.display = display;
+        if (until.previousElementSibling instanceof HTMLSpanElement) {
+            until.previousElementSibling.style.display = display;
+        }
+    }
 })();

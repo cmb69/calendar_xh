@@ -99,18 +99,31 @@ class LocalDateTime
         return $this->minute;
     }
 
+    public function date(): self
+    {
+        $that = clone $this;
+        $that->hour = 0;
+        $that->minute = 0;
+        return $that;
+    }
+
+    public function endOfDay(): self
+    {
+        $that = clone $this;
+        $that->hour = 23;
+        $that->minute = 59;
+        return $that;
+    }
+
     public function withYear(int $year): self
     {
         $localDateTime = clone $this;
         $localDateTime->year = $year;
-        if (
-            $localDateTime->month === 2 && $localDateTime->day === 29
-            && !checkdate($localDateTime->month, $localDateTime->day, $localDateTime->year)
-        ) {
-            $localDateTime->month = 3;
-            $localDateTime->day = 1;
+        $diff = $localDateTime->day - $this->daysInMonth($year, $localDateTime->month);
+        if ($diff > 0) {
+            $localDateTime->month++;
+            $localDateTime->day = $diff;
         }
-        assert(checkdate($localDateTime->month, $localDateTime->day, $localDateTime->year));
         return $localDateTime;
     }
 
@@ -145,6 +158,97 @@ class LocalDateTime
             return $this->month - $other->month;
         }
         return $this->day - $other->day;
+    }
+
+    public function plus(Interval $interval): self
+    {
+        if ($interval->negative()) {
+            return $this->minus($interval->negate());
+        }
+        $that = clone $this;
+        $that->day += $interval->days();
+        $that->hour += $interval->hours();
+        $that->minute += $interval->minutes();
+        if ($that->minute >= 60) {
+            $that->minute -= 60;
+            $that->hour += 1;
+        }
+        if ($that->hour >= 24) {
+            $that->hour -= 24;
+            $that->day += 1;
+        }
+        while ($that->day > $this->daysInMonth($that->year, $that->month)) {
+            $that->day -= $this->daysInMonth($that->year, $that->month);
+            $that->month += 1;
+            if ($that->month > 12) {
+                $that->month -= 12;
+                $that->year += 1;
+            }
+        }
+        return $that;
+    }
+
+    public function minus(Interval $interval): self
+    {
+        $that = clone $this;
+        $that->day -= $interval->days();
+        $that->hour -= $interval->hours();
+        $that->minute -= $interval->minutes();
+        if ($that->minute < 0) {
+            $that->minute += 60;
+            $that->hour -= 1;
+        }
+        if ($that->hour < 0) {
+            $that->hour += 24;
+            $that->day -= 1;
+        }
+        while ($that->day < 1) {
+            $that->month -= 1;
+            if ($that->month < 1) {
+                $that->month += 12;
+                $that->year -= 1;
+            }
+            $that->day += $this->daysInMonth($that->year, $that->month);
+        }
+        return $that;
+    }
+
+    public function diff(LocalDateTime $other): Interval
+    {
+        if ($this->compare($other) < 0) {
+            return $other->diff($this)->negate();
+        }
+        $month = new self($this->year, $this->month, 1, 0, 0);
+        $minutes = $this->minute - $other->minute;
+        $hours = $this->hour - $other->hour;
+        $days = $this->day - $other->day;
+        if ($minutes < 0) {
+            $minutes += 60;
+            $hours -= 1;
+        }
+        if ($hours < 0) {
+            $hours += 24;
+            $days -= 1;
+        }
+        if ($days < 0) {
+            $month = $month->plusMonths(-1);
+            $days += $this->daysInMonth($month->year, $month->month);
+        }
+        while ($month->compareDate($other) > 0) {
+            $month = $month->plusMonths(-1);
+            $days += $this->daysInMonth($month->year, $month->month);
+        }
+        return new Interval($days, $hours, $minutes);
+    }
+
+    private function daysInMonth(int $year, int $month): int
+    {
+        assert($month >= 1 && $month <= 12);
+        $res = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][$month - 1];
+        if ($month === 2 && ($year % 400 === 0 || ($year % 4 === 0 && $year % 100 !== 0))) {
+            $res++; // leap day
+        }
+        return $res;
     }
 
     public function plusMonths(int $months): self

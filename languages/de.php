@@ -45,6 +45,7 @@ $plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen k
 
 $plugin_tx['calendar']['label_new']="Neu";
 $plugin_tx['calendar']['label_edit']="Bearbeiten";
+$plugin_tx['calendar']['label_edit_single']="Einzel-Veranstaltung bearbeiten";
 $plugin_tx['calendar']['label_delete']="Löschen";
 $plugin_tx['calendar']['label_description']="Beschreibung";
 $plugin_tx['calendar']['label_save']="Speichern";
@@ -52,6 +53,13 @@ $plugin_tx['calendar']['label_import_export']="Import/Export";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_export']="Export";
 $plugin_tx['calendar']['label_full_day']="ganztägig";
+$plugin_tx['calendar']['label_occurrence']="Einzel-Veranstaltung";
+$plugin_tx['calendar']['label_recur']="Wiederholen";
+$plugin_tx['calendar']['label_recur_none']="nein";
+$plugin_tx['calendar']['label_recur_weekly']="täglich";
+$plugin_tx['calendar']['label_recur_weekly']="wöchentlich";
+$plugin_tx['calendar']['label_recur_yearly']="jährlich";
+$plugin_tx['calendar']['label_recur_until']="bis";
 
 $plugin_tx['calendar']['message_ignored_0']="Alle Veranstaltungen wurden importiert!";
 $plugin_tx['calendar']['message_ignored_1']="Eine Veranstaltung konnte nicht importiert werden!";
@@ -60,6 +68,7 @@ $plugin_tx['calendar']['message_ignored_5']="%d Veranstaltungen konnten nicht im
 
 $plugin_tx['calendar']['error_export']="Konnte nicht nach calendar.ics exportieren!";
 $plugin_tx['calendar']['error_unauthorized']="Sie sind nicht befugt diese Aktion auszuführen!";
+$plugin_tx['calendar']['error_split']="Die Veranstaltung findet an diesem Tag nicht statt!";
 
 $plugin_tx['calendar']['syscheck_extension']="die PHP-Erweiterung '%s' geladen ist";
 $plugin_tx['calendar']['syscheck_fail']="Fehler";

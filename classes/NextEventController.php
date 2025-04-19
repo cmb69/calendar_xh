@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Calendar\Model\BirthdayEvent;
 use Calendar\Model\LocalDateTime;
 use Plib\Request;
 use Plib\View;
@@ -62,17 +63,15 @@ class NextEventController
         assert($now !== null);
         $calendar = $this->eventDataService->readEvents();
         $nextevent = $calendar->nextEvent($now);
-        $data = [];
         if ($nextevent === null) {
             return $this->view->render('nextevent', ["has_next_event" => false]);
         }
-        if ($nextevent->isBirthday()) {
+        if ($nextevent instanceof BirthdayEvent) {
             $ldt = $nextevent->start()->withYear($now->year());
             if ($ldt->compareDate($now) < 0) {
                 $ldt = $nextevent->start()->withYear($now->year() + 1);
             }
-            $age = $now->year() - $nextevent->start()->year();
-            $nexteventtext = $this->view->plural("age", $age);
+            $nexteventtext = $this->view->plural("age", $nextevent->age());
             $nexteventtext2 = null;
         } elseif ($nextevent->start()->compare($now) >= 0) {
             $ldt = $nextevent->start();
@@ -103,7 +102,9 @@ class NextEventController
             'event_text' => $nexteventtext,
             'event_text_2' => $nexteventtext2,
             'date' => $date,
-            'location' => $nextevent->isBirthday() ? $this->view->plain("birthday_text") : $nextevent->location(),
+            'location' => $nextevent instanceof BirthdayEvent
+                ? $this->view->plain("birthday_text")
+                : $nextevent->location(),
             'class' => $this->orientation === "horizontal" ? "calendar_horizontal" : "",
         ]);
     }

@@ -69,7 +69,9 @@ class CalendarControllerTest extends TestCase
             "Lunch break",
             "http://example.com/lunchbreak",
             "Tips for lunch breaks",
-            "whereever I am"
+            "whereever I am",
+            "",
+            ""
         );
     }
 
@@ -81,6 +83,8 @@ class CalendarControllerTest extends TestCase
             "",
             "",
             "Weekend",
+            "",
+            "",
             "",
             "",
             ""
@@ -97,7 +101,9 @@ class CalendarControllerTest extends TestCase
             "Millenium",
             "",
             "",
-            "###"
+            "###",
+            "",
+            ""
         );
     }
 }

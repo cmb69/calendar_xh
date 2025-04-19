@@ -28,6 +28,7 @@ namespace Calendar\Model;
 
 use Calendar\Html2Text;
 
+/** @phpstan-consistent-constructor */
 class Event
 {
     /** @var LocalDateTime */
@@ -48,6 +49,9 @@ class Event
     /** @var string */
     private $location;
 
+    /** @var Recurrence */
+    private $recurrence;
+
     public static function create(
         string $datestart,
         ?string $dateend,
@@ -56,7 +60,9 @@ class Event
         string $summary,
         string $linkadr,
         string $linktxt,
-        string $location
+        string $location,
+        string $recurrenceRule,
+        string $until
     ): ?self {
         if (!$dateend) {
             if ($endtime) {
@@ -82,7 +88,30 @@ class Event
         if (($start = LocalDateTime::fromIsoString("{$datestart}T{$starttime}")) === null) {
             return null;
         }
-        return new self($start, $end, $summary, $linkadr, $linktxt, $location);
+        if (trim($location) === "###") {
+            return new BirthdayEvent($start, $end, $summary, $linkadr, $linktxt, $location);
+        }
+        $recurrence = self::createRecurrence($recurrenceRule, $start, $end, $until);
+        return new self($start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
+    }
+
+    private static function createRecurrence(
+        string $recurrenceRule,
+        LocalDateTime $start,
+        LocalDateTime $end,
+        string $until
+    ): Recurrence {
+        $until = LocalDateTime::fromIsoString("{$until}T23:59");
+        if ($recurrenceRule === "yearly") {
+            $recurrence = new YearlyRecurrence($start, $end, $until);
+        } elseif ($recurrenceRule === "weekly") {
+            $recurrence = new WeeklyRecurrence($start, $end, $until);
+        } elseif ($recurrenceRule === "daily") {
+            $recurrence = new DailyRecurrence($start, $end, $until);
+        } else {
+            $recurrence = new NoRecurrence($start, $end);
+        }
+        return $recurrence;
     }
 
     public function __construct(
@@ -91,7 +120,8 @@ class Event
         string $summary,
         string $linkadr,
         string $linktxt,
-        string $location
+        string $location,
+        Recurrence $recurrence
     ) {
         $this->start = $start;
         $this->end = $end;
@@ -99,6 +129,7 @@ class Event
         $this->linkadr = $linkadr;
         $this->linktxt = $linktxt;
         $this->location = $location;
+        $this->recurrence = $recurrence;
     }
 
     public function start(): LocalDateTime
@@ -129,6 +160,16 @@ class Event
     public function location(): string
     {
         return $this->location;
+    }
+
+    public function recurrence(): string
+    {
+        return $this->recurrence->name();
+    }
+
+    public function recursUntil(): ?LocalDateTime
+    {
+        return $this->recurrence->until();
     }
 
     public function getIsoStartDate(): string
@@ -176,61 +217,81 @@ class Event
             && $this->end->hour() === 23 && $this->end->minute() === 59;
     }
 
-    public function isBirthday(): bool
+    /** @return list<Event> */
+    public function occurrencesDuring(int $year, int $month): array
     {
-        return trim($this->location) === '###';
+        $res = [];
+        foreach ($this->recurrence->matchesInMonth($year, $month) as $match) {
+            $res[] = $this->occurrenceStartingAt($match);
+        }
+        return $res;
     }
 
-    public function occursDuring(int $year, int $month): bool
-    {
-        return ($this->start->month() === $month)
-            && ($this->start->year() === $year
-            || $this->isBirthday() && $this->start->year() < $year);
-    }
-
-    public function occursOn(LocalDateTime $day, bool $daysBetween): bool
+    public function occurrenceOn(LocalDateTime $day, bool $daysBetween): ?self
     {
         assert($day->hour() === 0 && $day->minute() === 0);
-        if ($this->isBirthday()) {
-            return $this->start->year() <= $day->year()
-                && $this->start->month() === $day->month()
-                && $this->start->day() === $day->day();
+        $match = $this->recurrence->matchOnDay($day, $daysBetween);
+        if ($match === null) {
+            return null;
         }
-        if (!$this->isMultiDay()) {
-            return $this->start->compareDate($day) === 0;
-        }
-        if ($daysBetween) {
-            return $this->start->compareDate($day) <= 0
-                && $this->end->compareDate($day) >= 0;
-        }
-        return $this->start->compareDate($day) === 0
-            || $this->end->compareDate($day) === 0;
+        return $this->occurrenceStartingAt($match);
     }
 
-    public function after(LocalDateTime $date): ?LocalDateTime
+    /** @return array{?self,?LocalDateTime} */
+    public function earliestOccurrenceAfter(LocalDateTime $date): array
     {
-        if ($this->isBirthday()) {
-            if ($this->start->year() <= $date->year()) {
-                $ldt = $this->start()->withYear($date->year());
-                if ($ldt->compare($date) < 0) {
-                    $ldt = $this->end();
-                    if ($ldt->compare($date) < 0) {
-                        $ldt = $this->start()->withYear($date->year() + 1);
-                    }
-                }
-            } else {
-                $ldt = null;
-            }
-        } else {
-            $ldt = $this->start();
-            if ($ldt->compare($date) < 0) {
-                $ldt = $this->end();
-                if ($ldt->compare($date) < 0) {
-                    return null;
-                }
-            }
+        $match = $this->recurrence->firstMatchAfter($date);
+        if ($match === null) {
+            return [null, null];
         }
-        return $ldt;
+        return [$this->occurrenceStartingAt($match[0]), $match[1]];
+    }
+
+    /** @return static */
+    public function occurrenceStartingAt(LocalDateTime $start)
+    {
+        $duration = $this->end()->diff($this->start());
+        $end = $start->plus($duration);
+        return new static(
+            $start,
+            $end,
+            $this->summary,
+            $this->linkadr,
+            $this->linktxt,
+            $this->location,
+            new NoRecurrence($start, $end)
+        );
+    }
+
+    /** @return array{?Event,?Event,?Event} */
+    public function split(LocalDateTime $date): array
+    {
+        [$prevrec, $rec, $nextrec] = $this->recurrence->split($date);
+        if ($prevrec !== null) {
+            $prevevent = clone $this;
+            $prevevent->start = $prevrec->start();
+            $prevevent->end = $prevrec->end();
+            $prevevent->recurrence = $prevrec;
+        } else {
+            $prevevent = null;
+        }
+        if ($rec !== null) {
+            $event = clone $this;
+            $event->start = $rec->start();
+            $event->end = $rec->end();
+            $event->recurrence = $rec;
+        } else {
+            $event = null;
+        }
+        if ($nextrec !== null) {
+            $nextevent = clone $this;
+            $nextevent->start = $nextrec->start();
+            $nextevent->end = $nextrec->end();
+            $nextevent->recurrence = $nextrec;
+        } else {
+            $nextevent = null;
+        }
+        return [$prevevent, $event, $nextevent];
     }
 
     public function toICalendarString(string $id, Html2Text $converter, string $host): string
@@ -239,6 +300,27 @@ class Event
             . "UID:$id@$host\r\n";
         $res .= $this->getDtstart() . "\r\n";
         $res .= $this->getDtend() . "\r\n";
+        if (!($this->recurrence() === "none")) {
+            $freq = strtoupper($this->recurrence());
+            $res .= "RRULE:FREQ={$freq}";
+            $until = $this->recursUntil();
+            if ($until !== null) {
+                if ($this->isFullDay()) {
+                    $until = sprintf("%04d%02d%02d", $until->year(), $until->month(), $until->day());
+                } else {
+                    $until = sprintf(
+                        "%04d%02d%02dT%02d%02d00",
+                        $until->year(),
+                        $until->month(),
+                        $until->day(),
+                        $this->start->hour(),
+                        $this->start->minute()
+                    );
+                }
+                $res .= ";UNTIL=" . $until;
+            }
+            $res .= "\r\n";
+        }
         if ($this->summary !== "") {
             $res .= "SUMMARY:" . $this->summary . "\r\n";
         }
@@ -251,13 +333,17 @@ class Event
             $text = str_replace(["\\", ";", ",", "\r", "\n"], ["\\\\", "\\;", "\\,", "", "\\n\r\n "], $text);
             $res .= "DESCRIPTION:" . rtrim($text) . "\r\n";
         }
-        if ($this->isBirthday()) {
-            $res .= "RRULE:FREQ=YEARLY\r\n";
-        } elseif ($this->location() !== "") {
-            $res .= "LOCATION:" . $this->location . "\r\n";
-        }
+        $res .= $this->locationToICalendarString();
         $res .= "END:VEVENT\r\n";
         return $res;
+    }
+
+    protected function locationToICalendarString(): string
+    {
+        if ($this->location === "") {
+            return "";
+        }
+        return "LOCATION:" . $this->location . "\r\n";
     }
 
     private function getDtstart(): string

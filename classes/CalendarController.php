@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\CalendarService;
 use Calendar\Model\Event;
@@ -165,7 +166,7 @@ class CalendarController
                 $field['href'] = $request->url()->page($eventpage)
                     ->with("month", (string) $month)->with("year", (string) $year)
                     ->relative();
-                $field['title'] = $this->getEventsTitle($dayEvents, $year);
+                $field['title'] = $this->getEventsTitle($dayEvents);
                 $classes[] = "calendar_eventday";
                 foreach ($dayEvents as $dayEvent) {
                     if ($dayEvent->startsOn($currentDay)) {
@@ -197,7 +198,7 @@ class CalendarController
     /**
      * @param Event[] $events
      */
-    private function getEventsTitle(array $events, int $year): string
+    private function getEventsTitle(array $events): string
     {
         $titles = [];
         foreach ($events as $event) {
@@ -212,9 +213,8 @@ class CalendarController
                 $text = $event->summary();
             }
             $text = $this->view->esc($text);
-            if ($event->isBirthday()) {
-                $age = $year - $event->start()->year();
-                $age = $this->view->plural("age", $age);
+            if ($event instanceof BirthdayEvent) {
+                $age = $this->view->plural("age", $event->age());
                 $titles[] = $text . " " . $age;
             } elseif ($event->isFullDay()) {
                 $time = "";

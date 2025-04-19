@@ -84,7 +84,9 @@ class ICalendarParser
                         $this->currentEvent['event'] ?? "", // @phpstan-ignore-line
                         $this->currentEvent['linkadr'] ?? "", // @phpstan-ignore-line
                         '',
-                        $this->currentEvent['location'] ?? "" // @phpstan-ignore-line
+                        $this->currentEvent['location'] ?? "", // @phpstan-ignore-line,
+                        $this->currentEvent['recur'] ?? "", // @phpstan-ignore-line
+                        $this->currentEvent['until'] ?? "", // @phpstan-ignore-line
                     );
                     if ($maybeEvent !== null) {
                         $this->events[] = $maybeEvent;
@@ -123,6 +125,9 @@ class ICalendarParser
             case 'DTEND':
                 $this->processDtEnd($params, $value);
                 return;
+            case 'RRULE':
+                $this->processRrule($value);
+                return;
         }
     }
 
@@ -157,6 +162,32 @@ class ICalendarParser
                     $this->currentEvent['dateend'] = $date;
                 }
                 break;
+        }
+    }
+
+    private function processRrule(string $value): void
+    {
+        $parts = explode(";", $value);
+        $ps = [];
+        foreach ($parts as $part) {
+            [$key, $value] = explode("=", $part, 2);
+            $ps[$key] = $value;
+        }
+        switch ($ps["FREQ"] ?? "") {
+            case "YEARLY":
+                $this->currentEvent["recur"] = "yearly";
+                break;
+            case "WEEKLY":
+                $this->currentEvent["recur"] = "weekly";
+                break;
+            case "DAILY":
+                $this->currentEvent["recur"] = "daily";
+                break;
+            default:
+                $this->currentEvent["recur"] = "";
+        }
+        if (array_key_exists("UNTIL", $ps)) {
+            $this->currentEvent["until"] = $this->parseDate($ps["UNTIL"]) ?? "";
         }
     }
 
