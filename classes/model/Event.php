@@ -106,6 +106,8 @@ class Event
             $recurrence = new YearlyRecurrence($start, $end, $until);
         } elseif ($recurrenceRule === "weekly") {
             $recurrence = new WeeklyRecurrence($start, $end, $until);
+        } elseif ($recurrenceRule === "daily") {
+            $recurrence = new DailyRecurrence($start, $end, $until);
         } else {
             $recurrence = new NoRecurrence($start, $end);
         }

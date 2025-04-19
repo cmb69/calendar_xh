@@ -180,6 +180,9 @@ class ICalendarParser
             case "WEEKLY":
                 $this->currentEvent["recur"] = "weekly";
                 break;
+            case "DAILY":
+                $this->currentEvent["recur"] = "daily";
+                break;
             default:
                 $this->currentEvent["recur"] = "";
         }

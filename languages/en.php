@@ -56,6 +56,7 @@ $plugin_tx['calendar']['label_full_day']="full-day";
 $plugin_tx['calendar']['label_occurrence']="Occurrence";
 $plugin_tx['calendar']['label_recur']="Recur";
 $plugin_tx['calendar']['label_recur_none']="none";
+$plugin_tx['calendar']['label_recur_daily']="daily";
 $plugin_tx['calendar']['label_recur_weekly']="weekly";
 $plugin_tx['calendar']['label_recur_yearly']="yearly";
 $plugin_tx['calendar']['label_recur_until']="until";

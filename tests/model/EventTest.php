@@ -49,6 +49,12 @@ class EventTest extends TestCase
             [$this->cards(), 2025, 3, []],
             [$this->cards(), 2025, 4, [$this->cards(2025, 4, 17), $this->cards(2025, 4, 24)]],
             [$this->cards(), 2025, 6, [$this->cards(2025, 6, 5), $this->cards(2025, 6, 12)]],
+            [$this->lunchBreak(), 2025, 4,
+                $this->lunchBreaks($this->ldt(2025, 4, 25, 0, 0), $this->ldt(2025, 4, 30, 0, 0))
+            ],
+            [$this->lunchBreak(), 2025, 5,
+                $this->lunchBreaks($this->ldt(2025, 5, 1, 0, 0), $this->ldt(2025, 5, 3, 0, 0))
+            ],
         ];
     }
 
@@ -74,7 +80,11 @@ class EventTest extends TestCase
             [$this->cards(), $this->ldt(2025, 5, 1, 0, 0), false, $this->cards(2025, 5, 1, 19, 45)],
             [$this->cards(), $this->ldt(2025, 4, 18, 0, 0), false, null],
             [$this->cards(), $this->ldt(2025, 6, 19, 0, 0), false, null],
-        ];
+            [$this->lunchBreak(), $this->ldt(2025, 4, 29, 0, 0), false,
+                Event::create("2025-04-29", "2025-04-29", "12:00", "13:00", "Lunch break", "", "", "", "", "")],
+                [$this->lunchBreak(), $this->ldt(2025, 4, 24, 0, 0), false, null],
+                [$this->lunchBreak(), $this->ldt(2025, 5, 4, 0, 0), false, null],
+            ];
     }
 
     /** @dataProvider earliestOccurrenceAfterData */
@@ -115,7 +125,20 @@ class EventTest extends TestCase
                 $this->cards(),
                 $this->ldt(2025, 4, 24, 21, 0),
                 [$this->cards(2025, 4, 24), $this->ldt(2025, 4, 24, 22, 15)],
-            ]
+            ],
+            [$this->lunchBreak(), $this->ldt(2025, 4, 25, 0, 0), [
+                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "", ""),
+                $this->ldt(2025, 4, 25, 12, 0),
+            ]],
+            [$this->lunchBreak(), $this->ldt(2025, 4, 25, 12, 30), [
+                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "", ""),
+                $this->ldt(2025, 4, 25, 13, 0),
+            ]],
+            [$this->lunchBreak(), $this->ldt(2025, 4, 26, 0, 0), [
+                Event::create("2025-04-26", "2025-04-26", "12:00", "13:00", "Lunch break", "", "", "", "", ""),
+                $this->ldt(2025, 4, 26, 12, 0),
+            ]],
+            [$this->lunchBreak(), $this->ldt(2025, 5, 5, 0, 0), [null, null]],
         ];
     }
 
@@ -167,6 +190,22 @@ class EventTest extends TestCase
                 null,
             ]],
             [$this->cards(), $this->ldt(2025, 4, 18, 0, 0), [null, null, null]],
+            [$this->lunchBreak(), $this->ldt(2025, 4, 30, 0, 0), [
+                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-04-29"),
+                Event::create("2025-04-30", "2025-04-30", "12:00", "13:00", "Lunch break", "", "", "", "", ""),
+                Event::create("2025-05-01", "2025-05-01", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-05-03"),
+            ]],
+            [$this->lunchBreak(), $this->ldt(2025, 4, 25, 0, 0), [
+                null,
+                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "", ""),
+                Event::create("2025-04-26", "2025-04-26", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-05-03"),
+            ]],
+            [$this->lunchBreak(), $this->ldt(2025, 5, 3, 0, 0), [
+                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-05-02"),
+                Event::create("2025-05-03", "2025-05-03", "12:00", "13:00", "Lunch break", "", "", "", "", ""),
+                null,
+            ]],
+            [$this->lunchBreak(), $this->ldt(2025, 5, 4, 0, 0), [null, null, null]],
         ];
     }
 
@@ -245,6 +284,23 @@ class EventTest extends TestCase
         }
         $date = sprintf("%04d-%02d-%02d", $year, $month, $day);
         return Event::create($date, $date, "19:45", "22:15", "Cards", "", "", "", "", "");
+    }
+
+    private function lunchBreak(): Event
+    {
+        return Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-05-03");
+    }
+
+    private function lunchBreaks(LocalDateTime $from, LocalDateTime $to): array
+    {
+        $res = [];
+        $day = new Interval(1, 0, 0);
+        while ($from->compareDate($to) <= 0) {
+            $date = $from->getIsoDate();
+            $res[] = Event::create($date, $date, "12:00", "13:00", "Lunch break", "", "", "", "", "");
+            $from = $from->plus($day);
+        }
+        return $res;
     }
 
     private function ldt(int $year, int $month, int $day, int $hour, int $minute): LocalDateTime

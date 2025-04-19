@@ -189,7 +189,7 @@ class EditEventsController
     private function recurOptions(Event $event): array
     {
         $res = [];
-        foreach (["none", "weekly", "yearly"] as $recur) {
+        foreach (["none", "daily", "weekly", "yearly"] as $recur) {
             $res[$recur] = $event->recurrence() === $recur ? "selected" : "";
         }
         return $res;
