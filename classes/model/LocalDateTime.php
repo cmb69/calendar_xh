@@ -107,6 +107,14 @@ class LocalDateTime
         return $that;
     }
 
+    public function endOfDay(): self
+    {
+        $that = clone $this;
+        $that->hour = 23;
+        $that->minute = 59;
+        return $that;
+    }
+
     public function withYear(int $year): self
     {
         $localDateTime = clone $this;

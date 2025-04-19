@@ -44,6 +44,16 @@ class WeeklyRecurrence implements Recurrence
         return "weekly";
     }
 
+    public function start(): LocalDateTime
+    {
+        return $this->start;
+    }
+
+    public function end(): LocalDateTime
+    {
+        return $this->end;
+    }
+
     public function until(): ?LocalDateTime
     {
         return $this->until;
@@ -111,5 +121,42 @@ class WeeklyRecurrence implements Recurrence
             return null;
         }
         return [$start, $end];
+    }
+
+    /** @return array{?Recurrence,?NoRecurrence,?Recurrence} */
+    public function split(LocalDateTime $date): array
+    {
+        if (
+            $date->compareDate($this->start) < 0
+            || $this->until !== null && $date->compareDate($this->until) > 0
+            || $date->diff($this->start->date())->days() % 7 !== 0
+        ) {
+            return [null, null, null];
+        }
+        $week = new Interval(7, 0, 0);
+        $duration = $this->end->diff($this->start);
+        $start = new LocalDateTime(
+            $date->year(),
+            $date->month(),
+            $date->day(),
+            $this->start->hour(),
+            $this->start->minute()
+        );
+        $rec = new NoRecurrence($start, $start->plus($duration));
+        if ($this->start->compare($start) >= 0) {
+            $prev = null;
+        } else {
+            $prev = clone $this;
+            $prev->until = $start->minus($week)->endOfDay();
+        }
+        $nextstart = $start->plus($week);
+        if ($this->until !== null && $nextstart->compareDate($this->until) > 0) {
+            $next = null;
+        } else {
+            $next = clone $this;
+            $next->start = $nextstart;
+            $next->end = $next->start->plus($duration);
+        }
+        return [$prev, $rec, $next];
     }
 }

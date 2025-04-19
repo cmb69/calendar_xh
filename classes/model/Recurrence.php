@@ -25,6 +25,10 @@ interface Recurrence
 {
     public function name(): string;
 
+    public function start(): LocalDateTime;
+
+    public function end(): LocalDateTime;
+
     public function until(): ?LocalDateTime;
 
     /** @return list<LocalDateTime> */
@@ -34,4 +38,7 @@ interface Recurrence
 
     /** @return ?array{LocalDateTime,LocalDateTime} */
     public function firstMatchAfter(LocalDateTime $date): ?array;
+
+    /** @return array{?Recurrence,?NoRecurrence,?Recurrence} */
+    public function split(LocalDateTime $date): array;
 }

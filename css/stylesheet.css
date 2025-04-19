@@ -190,7 +190,7 @@ div.event_link {}
     text-overflow: ellipsis;
 }
 .calendar_overview td:nth-child(3) { /* buttons */
-    width: 5em;
+    width: 7em;
     text-align: right;
 }
 

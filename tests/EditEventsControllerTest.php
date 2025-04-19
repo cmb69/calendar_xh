@@ -24,6 +24,7 @@ namespace Calendar;
 use ApprovalTests\Approvals;
 use Calendar\Model\Calendar;
 use Calendar\Model\Event;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Plib\CsrfProtector;
 use Plib\FakeRequest;
@@ -31,9 +32,6 @@ use Plib\View;
 
 class EditEventsControllerTest extends TestCase
 {
-    /** @var EditEventsController */
-    private $sut;
-
     /** @var EventDataService&MockObject */
     private $eventDataService;
 
@@ -51,8 +49,12 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->method("token")->willReturn("42881056d048537da0e061f7f672854b");
         $this->csrfProtector->method("check")->willReturn(true);
         $this->editor = $this->createMock(Editor::class);
+    }
+
+    private function sut(): EditEventsController
+    {
         $view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
-        $this->sut = new EditEventsController(
+        return new EditEventsController(
             "./",
             XH_includeVar("./config/config.php", "plugin_cf")["calendar"],
             $this->eventDataService,
@@ -64,7 +66,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testDefaultActionRendersHtml()
     {
-        $response = ($this->sut)(new FakeRequest(["time" => 1675088820]));
+        $response = $this->sut()(new FakeRequest(["time" => 1675088820]));
         Approvals::verifyHtml($response->output());
     }
 
@@ -74,7 +76,38 @@ class EditEventsControllerTest extends TestCase
             "url" => "http://example.com/?&admin=plugin_main&action=create",
             "time" => 1675088820,
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
+        Approvals::verifyHtml($response->output());
+    }
+
+    public function testSingleActionRedirectsOnUnknownEvent()
+    {
+        $this->eventDataService = $this->createMock(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $request = new FakeRequest([
+            "url" => "http://example.com/?&admin=plugin_main&action=edit_single&event_id=invalid%20id",
+        ]);
+        $response = $this->sut()($request);
+        $this->assertSame("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testSingleActionRedirectsOnNonRecurringEvent()
+    {
+        $request = new FakeRequest([
+            "url" => "http://example.com/?&admin=plugin_main&action=edit_single&event_id=111",
+        ]);
+        $response = $this->sut()($request);
+        $this->assertSame("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testSingleActionRendersEditSingleForm()
+    {
+        $this->eventDataService = $this->createMock(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $request = new FakeRequest([
+            "url" => "http://example.com/?&admin=plugin_main&action=edit_single&event_id=222",
+        ]);
+        $response = $this->sut()($request);
         Approvals::verifyHtml($response->output());
     }
 
@@ -84,7 +117,7 @@ class EditEventsControllerTest extends TestCase
             "url" => "http://example.com/?calendar&admin=plugin_main&action=update&event_id=invalid%20id",
             "time" => 1675088820,
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -94,7 +127,7 @@ class EditEventsControllerTest extends TestCase
             "url" => "http://example.com/?&admin=plugin_main&action=update&event_id=111",
             "time" => 1675088820,
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         Approvals::verifyHtml($response->output());
     }
 
@@ -104,7 +137,7 @@ class EditEventsControllerTest extends TestCase
             "url" => "http://example.com/?calendar&admin=plugin_main&action=delete&event_id=invalid%20id",
             "time" => 1675088820,
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -114,7 +147,7 @@ class EditEventsControllerTest extends TestCase
             "url" => "http://example.com/?&admin=plugin_main&action=delete&event_id=111",
             "time" => 1675088820,
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         Approvals::verifyHtml($response->output());
     }
 
@@ -128,8 +161,82 @@ class EditEventsControllerTest extends TestCase
                 "calendar_do" => "",
             ],
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testDoEditSingleActionIsCsrfProtected(): void
+    {
+        $this->csrfProtector = $this->createStub(CsrfProtector::class);
+        $this->csrfProtector->method("check")->willReturn(false);
+        $request = new FakeRequest([
+            "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single",
+            "post" => [
+                "calendar_do" => "",
+            ],
+        ]);
+        $response = $this->sut()($request);
+        $this->assertStringContainsString("You are not authorized for this action!", $response->output());
+    }
+
+    public function testDoEditSingleActionRedirectsOnInvalidEvent(): void
+    {
+        $this->eventDataService = $this->createMock(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $request = new FakeRequest([
+            "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=invalid%20id",
+            "post" => [
+                "calendar_do" => "",
+            ],
+        ]);
+        $response = $this->sut()($request);
+        $this->assertSame("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testDoEditSingleActionReportsFailureToSplit(): void
+    {
+        $this->eventDataService = $this->createMock(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $request = new FakeRequest([
+            "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
+            "post" => [
+                "calendar_do" => "",
+            ],
+        ]);
+        $response = $this->sut()($request);
+        $this->assertStringContainsString("There is no occurrence of the event on this date!", $response->output());
+    }
+
+    public function testDoEditSingleActionReportsFailureToSave(): void
+    {
+        $this->eventDataService = $this->createMock(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $this->eventDataService->method("writeEvents")->willReturn(false);
+        $request = new FakeRequest([
+            "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
+            "post" => [
+                "editdate" => "2025-12-25",
+                "calendar_do" => "",
+            ],
+        ]);
+        $response = $this->sut()($request);
+        $this->assertStringContainsString("ERROR: could not save event data.", $response->output());
+    }
+
+    public function testDoEditSingleActionRedirectsOnSuccess(): void
+    {
+        $this->eventDataService = $this->createMock(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $this->eventDataService->method("writeEvents")->willReturn(true);
+        $request = new FakeRequest([
+            "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
+            "post" => [
+                "editdate" => "2025-12-25",
+                "calendar_do" => "",
+            ],
+        ]);
+        $response = $this->sut()($request);
+        $this->assertSame("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoUpdateActionRedirectsOnInvalidEvent()
@@ -142,7 +249,7 @@ class EditEventsControllerTest extends TestCase
                 "calendar_do" => "",
             ],
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -164,7 +271,7 @@ class EditEventsControllerTest extends TestCase
                 "location" => "whereever I am",
             ],
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -186,7 +293,7 @@ class EditEventsControllerTest extends TestCase
                 "location" => "whereever I am",
             ],
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         Approvals::verifyHtml($response->output());
     }
 
@@ -200,7 +307,7 @@ class EditEventsControllerTest extends TestCase
                 "calendar_do" => "",
             ],
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -215,7 +322,7 @@ class EditEventsControllerTest extends TestCase
                 "calendar_do" => "",
             ],
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -230,7 +337,7 @@ class EditEventsControllerTest extends TestCase
                 "calendar_do" => "",
             ],
         ]);
-        $response = ($this->sut)($request);
+        $response = $this->sut()($request);
         Approvals::verifyHtml($response->output());
     }
 
@@ -248,5 +355,10 @@ class EditEventsControllerTest extends TestCase
             "",
             ""
         );
+    }
+
+    private function christmas(): Event
+    {
+        return Event::create("2020-12-25", "2020-12-26", "", "", "Christmas", "", "", "", "yearly", "");
     }
 }

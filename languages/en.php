@@ -45,6 +45,7 @@ $plugin_tx['calendar']['eventfile_not_saved']="ERROR: could not save event data.
 
 $plugin_tx['calendar']['label_new']="New";
 $plugin_tx['calendar']['label_edit']="Edit";
+$plugin_tx['calendar']['label_edit_single']="Edit single occurrence";
 $plugin_tx['calendar']['label_delete']="Delete";
 $plugin_tx['calendar']['label_description']="Description";
 $plugin_tx['calendar']['label_save']="Save";
@@ -52,6 +53,7 @@ $plugin_tx['calendar']['label_import_export']="Import/Export";
 $plugin_tx['calendar']['label_import']="Import";
 $plugin_tx['calendar']['label_export']="Export";
 $plugin_tx['calendar']['label_full_day']="full-day";
+$plugin_tx['calendar']['label_occurrence']="Occurrence";
 $plugin_tx['calendar']['label_recur']="Recur";
 $plugin_tx['calendar']['label_recur_none']="none";
 $plugin_tx['calendar']['label_recur_weekly']="weekly";
@@ -65,6 +67,7 @@ $plugin_tx['calendar']['message_ignored_5']="%d events could not be imported!";
 
 $plugin_tx['calendar']['error_export']="Could not export to calendar.ics!";
 $plugin_tx['calendar']['error_unauthorized']="You are not authorized for this action!";
+$plugin_tx['calendar']['error_split']="There is no occurrence of the event on this date!";
 
 $plugin_tx['calendar']['syscheck_extension']="the PHP extension '%s' is loaded";
 $plugin_tx['calendar']['syscheck_fail']="failure";

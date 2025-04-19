@@ -119,6 +119,57 @@ class EventTest extends TestCase
         ];
     }
 
+    /** @dataProvider splitData */
+    public function testSplit(Event $event, LocalDateTime $ldt, array $expected): void
+    {
+        $this->assertEquals($expected, $event->split($ldt));
+    }
+
+    public function splitData(): array
+    {
+        return [
+            [$this->christmas(), $this->ldt(2025, 12, 24, 0, 0), [
+                Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "2024-12-24"),
+                $this->christmas(2025),
+                Event::create("2026-12-24", "2026-12-26", "", "", "Christmas", "", "", "", "yearly", ""),
+            ]],
+            [$this->christmas(), $this->ldt(2000, 12, 24, 0, 0), [
+                null,
+                $this->christmas(2000),
+                Event::create("2001-12-24", "2001-12-26", "", "", "Christmas", "", "", "", "yearly", ""),
+            ]],
+            [
+                Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "2024-12-24"),
+                $this->ldt(2024, 12, 24, 0, 0), [
+                Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "2023-12-24"),
+                $this->christmas(2024),
+                null]
+            ],
+            [
+                Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "2024-12-24"),
+                $this->ldt(2025, 12, 24, 0, 0), [null, null, null,]
+            ],
+            [$this->christmas(), $this->ldt(2025, 12, 23, 0, 0), [null, null, null]],
+            [$this->intfcb(), $this->ldt(2025, 4, 16, 22, 0), [null, null, null]],
+            [$this->cards(), $this->ldt(2025, 5, 1, 0, 0), [
+                Event::create("2025-04-17", "2025-04-17", "19:45", "22:15", "Cards", "", "", "", "weekly", "2025-04-24"),
+                $this->cards(2025, 5, 1),
+                Event::create("2025-05-08", "2025-05-08", "19:45", "22:15", "Cards", "", "", "", "weekly", "2025-06-12"),
+            ]],
+            [$this->cards(), $this->ldt(2025, 4, 17, 0, 0), [
+                null,
+                $this->cards(2025, 4, 17),
+                Event::create("2025-04-24", "2025-04-24", "19:45", "22:15", "Cards", "", "", "", "weekly", "2025-06-12"),
+            ]],
+            [$this->cards(), $this->ldt(2025, 6, 12, 0, 0), [
+                Event::create("2025-04-17", "2025-04-17", "19:45", "22:15", "Cards", "", "", "", "weekly", "2025-06-05"),
+                $this->cards(2025, 6, 12),
+                null,
+            ]],
+            [$this->cards(), $this->ldt(2025, 4, 18, 0, 0), [null, null, null]],
+        ];
+    }
+
     public function testGH98()
     {
         $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###", "", "");

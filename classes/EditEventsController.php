@@ -26,7 +26,10 @@
 
 namespace Calendar;
 
+use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Event;
+use Calendar\Model\LocalDateTime;
+use Calendar\Model\NoRecurrence;
 use Plib\CsrfProtector;
 use Plib\Request;
 use Plib\Response;
@@ -75,6 +78,8 @@ class EditEventsController
         switch ($request->get("action") ?? "") {
             case "create":
                 return !$do ? $this->createAction($request) : $this->doCreateAction($request);
+            case "edit_single":
+                return !$do ? $this->editSingleAction($request) : $this->doEditSingleAction($request);
             case "update":
                 return !$do ? $this->updateAction($request) : $this->doUpdateAction($request);
             case "delete":
@@ -95,6 +100,7 @@ class EditEventsController
             return [
                 "start_date" => $startDate,
                 "summary" => $event->summary(),
+                "recurring" => !($event->recurrence() instanceof NoRecurrence || $event instanceof BirthdayEvent),
             ];
         }, $calendar->events());
         $js = $this->pluginFolder . "js/overview.min.js";
@@ -114,6 +120,19 @@ class EditEventsController
     {
         $event = $this->createDefaultEvent($request);
         return $this->respondWith($request, $this->renderEditForm($request, $event, null, "create"));
+    }
+
+    private function editSingleAction(Request $request): Response
+    {
+        $calendar = $this->eventDataService->readEvents();
+        $id = $request->get("event_id");
+        if ($id === null || ($event = $calendar->event($id)) === null) {
+            return $this->redirectToOverviewResponse($request);
+        }
+        if ($event->recurrence() instanceof NoRecurrence || $event instanceof BirthdayEvent) {
+            return $this->redirectToOverviewResponse($request);
+        }
+        return $this->respondWith($request, $this->renderEditSingleForm($request, $event, $id));
     }
 
     private function updateAction(Request $request): Response
@@ -176,6 +195,33 @@ class EditEventsController
         return $res;
     }
 
+    private function renderEditSingleForm(Request $request, Event $event, string $id): string
+    {
+        $url = $request->url()->with("admin", "plugin_main")->with("action", "edit_single")->with("event_id", $id);
+        $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
+        if ($now !== null) {
+            [$occurrence, ] = $event->earliestOccurrenceAfter($now);
+            if ($occurrence !== null) {
+                $date = $occurrence->start()->getIsoDate();
+            } else {
+                $date = "";
+            }
+        } else {
+            $date = "";
+        }
+        $recurrence = $event->recurrence();
+        assert($recurrence !== null);
+        return $this->view->render("edit_single", [
+            "action" => $url->relative(),
+            "start_date" => $event->start()->getIsoDate(),
+            "recurring" => $recurrence->name(),
+            "until" => $recurrence->until() !== null ? $recurrence->until()->getIsoDate() : "",
+            "summary" => $event->summary(),
+            "date" => $date,
+            "csrf_token" => $this->csrfProtector->token(),
+        ]);
+    }
+
     private function doCreateAction(Request $request): Response
     {
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
@@ -183,6 +229,29 @@ class EditEventsController
         }
         $calendar = $this->eventDataService->readEvents();
         return $this->upsert($request, $calendar->events(), null);
+    }
+
+    private function doEditSingleAction(Request $request): Response
+    {
+        if (!$this->csrfProtector->check($request->post("calendar_token"))) {
+            return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
+        }
+        $calendar = $this->eventDataService->readEvents();
+        $id = $request->get("event_id");
+        if ($id === null || ($event = $calendar->event($id)) === null) {
+            return $this->redirectToOverviewResponse($request);
+        }
+        $date = LocalDateTime::fromIsoString($request->post("editdate") . "T00:00");
+        if ($date === null || !$calendar->split($id, $date)) {
+            return $this->respondWith($request, $this->view->message("fail", "error_split")
+                . $this->renderEditSingleForm($request, $event, $id));
+        }
+        if (!$this->eventDataService->writeEvents($calendar->events())) {
+            return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
+                . $this->renderEditSingleForm($request, $event, $id));
+        }
+        // TODO redirect to split event?
+        return $this->redirectToOverviewResponse($request);
     }
 
     private function doUpdateAction(Request $request): Response

@@ -90,6 +90,25 @@ class Calendar
         return $result;
     }
 
+    public function split(string $id, LocalDateTime $split): bool
+    {
+        assert(array_key_exists($id, $this->events));
+        $event = $this->events[$id];
+        [$prevevent, $event, $nextevent] = $event->split($split);
+        if ($event === null) {
+            return false;
+        }
+        unset($this->events[$id]);
+        if ($prevevent !== null) {
+            $this->events[uniqid()] = $prevevent;
+        }
+        $this->events[uniqid()] = $event;
+        if ($nextevent !== null) {
+            $this->events[uniqid()] = $nextevent;
+        }
+        return true;
+    }
+
     public function delete(string $id): void
     {
         assert(array_key_exists($id, $this->events));

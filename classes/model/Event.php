@@ -112,7 +112,7 @@ class Event
         return $recurrence;
     }
 
-    protected function __construct(
+    public function __construct(
         LocalDateTime $start,
         LocalDateTime $end,
         string $summary,
@@ -254,6 +254,37 @@ class Event
             $this->location,
             new NoRecurrence($start, $end)
         );
+    }
+
+    /** @return array{?Event,?Event,?Event} */
+    public function split(LocalDateTime $date): array
+    {
+        [$prevrec, $rec, $nextrec] = $this->recurrence()->split($date);
+        if ($prevrec !== null) {
+            $prevevent = clone $this;
+            $prevevent->start = $prevrec->start();
+            $prevevent->end = $prevrec->end();
+            $prevevent->recurrence = $prevrec;
+        } else {
+            $prevevent = null;
+        }
+        if ($rec !== null) {
+            $event = clone $this;
+            $event->start = $rec->start();
+            $event->end = $rec->end();
+            $event->recurrence = $rec;
+        } else {
+            $event = null;
+        }
+        if ($nextrec !== null) {
+            $nextevent = clone $this;
+            $nextevent->start = $nextrec->start();
+            $nextevent->end = $nextrec->end();
+            $nextevent->recurrence = $nextrec;
+        } else {
+            $nextevent = null;
+        }
+        return [$prevevent, $event, $nextevent];
     }
 
     public function toICalendarString(string $id, Html2Text $converter, string $host): string

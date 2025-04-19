@@ -44,6 +44,16 @@ class YearlyRecurrence implements Recurrence
         return "yearly";
     }
 
+    public function start(): LocalDateTime
+    {
+        return $this->start;
+    }
+
+    public function end(): LocalDateTime
+    {
+        return $this->end;
+    }
+
     public function until(): ?LocalDateTime
     {
         return $this->until;
@@ -109,5 +119,35 @@ class YearlyRecurrence implements Recurrence
             return $candidate->firstMatchAfter($date);
         }
         return null;
+    }
+
+    /** @return array{?Recurrence,?NoRecurrence,?Recurrence} */
+    public function split(LocalDateTime $date): array
+    {
+        if (
+            $this->start->year() > $date->year()
+            || $this->until !== null && $this->until->year() < $date->year()
+            || $date->withYear($this->start->year())->compareDate($this->start) !== 0
+        ) {
+            return [null, null, null];
+        }
+        $duration = $this->end->diff($this->start);
+        $start = $this->start->withYear($date->year());
+        $end = $start->plus($duration);
+        $rec = new NoRecurrence($start, $end);
+        if ($this->start->compare($start) >= 0) {
+            $prevrec = null;
+        } else {
+            $prevuntil = $this->start->withYear($date->year() - 1)->endOfDay();
+            $prevrec = new YearlyRecurrence($this->start, $this->end, $prevuntil);
+        }
+        $nextstart = $this->start->withYear($date->year() + 1);
+        if ($this->until !== null && $nextstart->compareDate($this->until) > 0) {
+            $nextrec = null;
+        } else {
+            $nextend = $nextstart->plus($duration);
+            $nextrec = new YearlyRecurrence($nextstart, $nextend, $this->until);
+        }
+        return [$prevrec, $rec, $nextrec];
     }
 }

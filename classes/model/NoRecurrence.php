@@ -40,6 +40,16 @@ class NoRecurrence implements Recurrence
         return "none";
     }
 
+    public function start(): LocalDateTime
+    {
+        return $this->start;
+    }
+
+    public function end(): LocalDateTime
+    {
+        return $this->end;
+    }
+
     public function until(): ?LocalDateTime
     {
         return null;
@@ -78,5 +88,11 @@ class NoRecurrence implements Recurrence
             return [$this->start, $this->end];
         }
         return null;
+    }
+
+    /** @return array{?Recurrence,?NoRecurrence,?Recurrence} */
+    public function split(LocalDateTime $date): array
+    {
+        return [null, null, null];
     }
 }
