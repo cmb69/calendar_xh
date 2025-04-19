@@ -97,8 +97,8 @@ Folgende Platzhalter werden unterstützt:
 
 ### Veranstaltungs-Editor
 
-Die Administration der Veranstaltungen erfolgt im Backend (*Plugins* →
-*Calendar* → *Events bearbeiten*).
+Die Administration der Veranstaltungen erfolgt im Backend (`Plugins` →
+`Calendar` → `Events bearbeiten`).
 
 Alternativ kann der Veranstaltungs-Editor auf einer normalen
 CMSimple\_XH Seite eingebettet werden, so dass die Veranstaltungen
@@ -112,9 +112,20 @@ erfolgen, wenn der Zugriff auf diese Seite Authorisierung durch
 [Register\_XH](https://github.com/cmb69/register_xh) oder
 [Memberpages](https://github.com/cmsimple-xh/memberpages) erfordert.
 
-Zusätzlich zu normalen Veranstaltungen können ebenfalls *Geburtstage*
-definiert werden, indem `###` als Ort, der Name des Geburtstagskinds als
-Veranstaltung, und das Geburtsdatum als Anfangsdatum eingetragen wird.
+Zusätzlich zu normalen Veranstaltungen werden täglich, wöchentlich und
+monatlich wiederkehrende Veranstaltungen unterstützt. Wiederkehrende
+Veranstaltungen können begrenzt (d.h. sie wiederholen sich für immer) oder
+bis zu einem bestimmten Datum begrenzt sein, das das letzte Startdatum in einer
+*inklusiven* Weise markiert. Wird eine wiederkehrende Veranstaltung bearbeitet,
+werden alle ihre Einzel-Veranstaltungen modifiziert, es sei denn Sie wählen
+`Einzel-Veranstaltung bearbeiten` was dazu führt, dass die wiederkehrende
+Veranstaltung in bis zu drei Teile aufgeteilt wird, die dann individuell
+bearbeitet werden können.
+
+Darüber hinaus können *Geburtstage* definiert werden, indem `###` als Ort,
+der Name des Geburtstagskinds als Veranstaltung, und das Geburtsdatum als
+Anfangsdatum eingetragen wird. Dabei handelt es sich um Sonderfälle von
+jährlich wiederkehrenden Veranstaltungen.
 
 Von Calendar_XH 2.6 an akzeptiert das `description` Feld (das aus Gründen
 der Abwärtskompatibilität im Frontend weiterhin als `link` bezeichnet wird),

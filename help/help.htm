@@ -86,11 +86,12 @@
 <li><code>%i</code>: minutes with leading zeros, 2 digits</li>
 </ul>
 <h3 id="event-editor">Event Editor</h3>
-<p>The administration of the events is done in the back-end (<em>Plugins</em> → <em>Calendar</em> → <em>Edit Events</em>).</p>
+<p>The administration of the events is done in the back-end (<code>Plugins</code> → <code>Calendar</code> → <code>Edit Events</code>).</p>
 <p>Alternatively, you can embed the event editor on a normal CMSimple_XH page, so the events can be edited by non-admins also. Use the following plugin call:</p>
 <pre><code>{{{editevents()}}}</code></pre>
 <p>Embedding the event editor on a page should only be done if access to this page requires authorization via <a href="https://github.com/cmb69/register_xh">Register_XH</a> or <a href="https://github.com/cmsimple-xh/memberpages">Memberpages</a>.</p>
-<p>Besides normal events, it is also possible to define <em>birthdays</em> by entering <code>###</code> as location, the name of the birthday child as event and the date of birth as start date.</p>
+<p>Besides simple events, daily, weekly and monthly recurring events are supported. Recurring events can be unbounded (that means they recur forever), or bounded to a given date, which marks the last start date in an <em>inclusive</em> manner. When editing a recurring event, all its occurrences are modified, unless you choose <code>edit single occurrence</code> what causes the recurring event to be split in up to three parts which can be edited individually.</p>
+<p>Additionally it is also possible to define <em>birthdays</em> by entering <code>###</code> as location, the name of the birthday child as event and the date of birth as start date. These are a special case of yearly recurring events.</p>
 <p>As of Calendar_XH 2.6, the <code>description</code> field (still called <code>link</code> in the front-end for backward compatibility reasons), accepts arbitrary HTML. It is strongly recommended to keep the descriptions short, and use HTML markup sparingly; otherwise the event list may look ugly.</p>
 <h3 id="calendars">Calendars</h3>
 <p>You can show the event calendar either from the template:</p>

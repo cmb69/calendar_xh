@@ -94,8 +94,8 @@ The following placeholders are supported:
 
 ### Event Editor
 
-The administration of the events is done in the back-end (*Plugins* →
-*Calendar* → *Edit Events*).
+The administration of the events is done in the back-end (`Plugins` →
+`Calendar` → `Edit Events`).
 
 Alternatively, you can embed the event editor on a normal CMSimple\_XH
 page, so the events can be edited by non-admins also. Use the following
@@ -108,9 +108,17 @@ this page requires authorization via
 [Register\_XH](https://github.com/cmb69/register_xh) or
 [Memberpages](https://github.com/cmsimple-xh/memberpages).
 
-Besides normal events, it is also possible to define *birthdays* by
+Besides simple events, daily, weekly and monthly recurring events are supported.
+Recurring events can be unbounded (that means they recur forever), or bounded
+to a given date, which marks the last start date in an *inclusive* manner.
+When editing a recurring event, all its occurrences are modified, unless you
+choose `edit single occurrence` what causes the recurring event to be split in
+up to three parts which can be edited individually.
+
+Additionally it is also possible to define *birthdays* by
 entering `###` as location, the name of the birthday child as event and
-the date of birth as start date.
+the date of birth as start date.  These are a special case of yearly recurring
+events.
 
 As of Calendar_XH 2.6, the `description` field (still called `link`
 in the front-end for backward compatibility reasons), accepts arbitrary
