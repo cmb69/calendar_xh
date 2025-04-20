@@ -1,40 +1,20 @@
 <?php
 
-/**
- * Copyright 2021-2023 Christoph M. Becker
- *
- * This file is part of Calendar_XH.
- *
- * Calendar_XH is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Calendar_XH is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
- */
+namespace Calendar\Model;
 
-namespace Calendar;
-
-use Calendar\Model\Event;
-use Calendar\Model\LocalDateTime;
 use PHPUnit\Framework\TestCase;
 
-class ICalendarParserTest extends TestCase
+class CalendarTest extends TestCase
 {
     public function testRead()
     {
-        $lines = file(__DIR__ . '/ics/basic.ics', FILE_IGNORE_NEW_LINES);
-        $actual = ICalendarParser::parse($lines, $count);
+        $lines = file(__DIR__ . '/../ics/basic.ics', FILE_IGNORE_NEW_LINES);
+        $calendar = Calendar::fromICalendar($lines, $count);
+        $actual = $calendar->events();
         $this->assertContainsOnlyInstancesOf(Event::class, $actual);
         $this->assertCount(3, $actual);
 
-        $first = $actual[0];
+        $first = reset($actual);
         $this->assertSame(0, (new LocalDateTime(1997, 7, 14, 17, 0))->compare($first->start()));
         $this->assertSame(0, (new LocalDateTime(1997, 7, 15, 3, 59))->compare($first->end()));
         $this->assertSame("Bastille Day Party", $first->summary());
@@ -42,7 +22,7 @@ class ICalendarParserTest extends TestCase
         $this->assertSame("", $first->linktxt());
         $this->assertSame("Place de la Bastille", $first->location());
 
-        $second = $actual[1];
+        $second = next($actual);
         $this->assertSame(0, (new LocalDateTime(1969, 3, 24, 0, 0))->compare($second->start()));
         $this->assertSame(0, (new LocalDateTime(1969, 3, 24, 23, 59))->compare($second->end()));
         $this->assertSame("cmb", $second->summary());
@@ -50,7 +30,7 @@ class ICalendarParserTest extends TestCase
         $this->assertSame("", $second->linktxt());
         $this->assertSame("a\\\\b;c,d\ne\nf", $second->location());
 
-        $third = $actual[2];
+        $third = next($actual);
         $this->assertSame(0, (new LocalDateTime(2024, 1, 23, 15, 0))->compare($third->start()));
         $this->assertSame(0, (new LocalDateTime(2024, 1, 23, 17, 0))->compare($third->end()));
         $this->assertSame("Digitale Reise Bubenheim", $third->summary());

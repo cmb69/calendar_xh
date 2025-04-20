@@ -62,7 +62,6 @@ require_once "./classes/Editor.php";
 require_once './classes/EventDataService.php';
 require_once './classes/EventListController.php';
 require_once './classes/IcalImportExportController.php';
-require_once './classes/ICalendarParser.php';
 require_once './classes/ICalendarWriter.php';
 require_once './classes/IcsFileFinder.php';
 require_once './classes/InfoController.php';

@@ -21,6 +21,7 @@
 
 namespace Calendar;
 
+use Calendar\Model\Calendar;
 use Plib\Request;
 use Plib\Response;
 use Plib\View;
@@ -85,7 +86,8 @@ class IcalImportExportController
         if ($request->post("calendar_ics") === null) {
             return $this->defaultAction($request);
         }
-        $events = ICalendarParser::parse($this->icsFileFinder->read($request->post("calendar_ics")), $eventCount);
+        $calendar = Calendar::fromICalendar($this->icsFileFinder->read($request->post("calendar_ics")), $eventCount);
+        $events = $calendar->events();
         $ignored = $eventCount - count($events);
         $events = array_merge($this->eventDataService->readEvents()->events(), $events);
         $this->eventDataService->writeEvents($events);
