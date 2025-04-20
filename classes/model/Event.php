@@ -26,11 +26,11 @@
 
 namespace Calendar\Model;
 
-use Calendar\Html2Text;
-
 /** @phpstan-consistent-constructor */
 class Event
 {
+    use ICalendarEvent;
+
     /** @var LocalDateTime */
     private $start;
 
@@ -292,99 +292,5 @@ class Event
             $nextevent = null;
         }
         return [$prevevent, $event, $nextevent];
-    }
-
-    public function toICalendarString(string $id, Html2Text $converter, string $host): string
-    {
-        $res = "BEGIN:VEVENT\r\n"
-            . "UID:$id@$host\r\n";
-        $res .= $this->getDtstart() . "\r\n";
-        $res .= $this->getDtend() . "\r\n";
-        if (!($this->recurrence() === "none")) {
-            $freq = strtoupper($this->recurrence());
-            $res .= "RRULE:FREQ={$freq}";
-            $until = $this->recursUntil();
-            if ($until !== null) {
-                if ($this->isFullDay()) {
-                    $until = sprintf("%04d%02d%02d", $until->year(), $until->month(), $until->day());
-                } else {
-                    $until = sprintf(
-                        "%04d%02d%02dT%02d%02d00",
-                        $until->year(),
-                        $until->month(),
-                        $until->day(),
-                        $this->start->hour(),
-                        $this->start->minute()
-                    );
-                }
-                $res .= ";UNTIL=" . $until;
-            }
-            $res .= "\r\n";
-        }
-        if ($this->summary !== "") {
-            $res .= "SUMMARY:" . $this->summary . "\r\n";
-        }
-        if ($this->linkadr !== "") {
-            $res .= "URL:" . $this->linkadr . "\r\n";
-        }
-        if ($this->linktxt !== "") {
-            $converter->setHtml($this->linktxt);
-            $text = $converter->getText();
-            $text = str_replace(["\\", ";", ",", "\r", "\n"], ["\\\\", "\\;", "\\,", "", "\\n\r\n "], $text);
-            $res .= "DESCRIPTION:" . rtrim($text) . "\r\n";
-        }
-        $res .= $this->locationToICalendarString();
-        $res .= "END:VEVENT\r\n";
-        return $res;
-    }
-
-    protected function locationToICalendarString(): string
-    {
-        if ($this->location === "") {
-            return "";
-        }
-        return "LOCATION:" . $this->location . "\r\n";
-    }
-
-    private function getDtstart(): string
-    {
-        if ($this->isFullDay()) {
-            return sprintf(
-                "DTSTART;VALUE=DATE:%04d%02d%02d",
-                $this->start->year(),
-                $this->start->month(),
-                $this->start->day()
-            );
-        } else {
-            return sprintf(
-                "DTSTART:%04d%02d%02dT%02d%02d00",
-                $this->start->year(),
-                $this->start->month(),
-                $this->start->day(),
-                $this->start->hour(),
-                $this->start->minute()
-            );
-        }
-    }
-
-    private function getDtend(): string
-    {
-        if ($this->isFullDay()) {
-            return sprintf(
-                "DTEND;VALUE=DATE:%04d%02d%02d",
-                $this->end->year(),
-                $this->end->month(),
-                $this->end->day()
-            );
-        } else {
-            return sprintf(
-                "DTEND:%04d%02d%02dT%02d%02d00",
-                $this->end->year(),
-                $this->end->month(),
-                $this->end->day(),
-                $this->end->hour(),
-                $this->end->minute()
-            );
-        }
     }
 }
