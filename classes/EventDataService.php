@@ -61,16 +61,17 @@ class EventDataService
         $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".2.6.csv");
         if (!is_file("{$eventfile}.2.6.csv")) {
             if (!is_file("{$eventfile}.csv")) {
-                if (is_file("{$eventfile}.txt")) {
+                if (!is_file("{$eventfile}.txt")) {
+                    $events = [];
+                } else {
                     $events = $this->readOldEvents("{$eventfile}.txt");
-                    $this->writeEvents($events);
                 }
             } else {
                 $events = $this->doReadEvents("{$eventfile}.csv", true);
-                $this->writeEvents($events);
             }
+        } else {
+            $events = $this->doReadEvents($this->getFilename());
         }
-        $events = $this->doReadEvents($this->getFilename());
         return new Calendar($events);
     }
 
@@ -145,13 +146,14 @@ class EventDataService
         return true;
     }
 
-    /** @return list<Event> */
+    /** @return array<string,Event> */
     private function readOldEvents(string $eventfile): array
     {
         $result = array();
         if ($stream = fopen($eventfile, 'r')) {
             flock($stream, LOCK_SH);
             while (($line = fgets($stream)) !== false) {
+                $id = md5($line);
                 list($eventdates, $event, $location, $link, $starttime) = explode(';', rtrim($line));
                 if (strpos($eventdates, ',') !== false) {
                     list($datestart, $dateend, $endtime) = explode(',', $eventdates);
@@ -195,7 +197,7 @@ class EventDataService
                         ""
                     );
                     if ($maybeEvent !== null) {
-                        $result[] = $maybeEvent;
+                        $result[$id] = $maybeEvent;
                     }
                 }
             }
