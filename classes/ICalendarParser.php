@@ -83,7 +83,7 @@ class ICalendarParser
                         $this->currentEvent['endtime'] ?? "", // @phpstan-ignore-line
                         $this->currentEvent['event'] ?? "", // @phpstan-ignore-line
                         $this->currentEvent['linkadr'] ?? "", // @phpstan-ignore-line
-                        '',
+                        $this->currentEvent['description'] ?? "", // @phpstan-ignore-line
                         $this->currentEvent['location'] ?? "", // @phpstan-ignore-line,
                         $this->currentEvent['recur'] ?? "", // @phpstan-ignore-line
                         $this->currentEvent['until'] ?? "", // @phpstan-ignore-line
@@ -115,6 +115,9 @@ class ICalendarParser
                 return;
             case 'LOCATION':
                 $this->currentEvent['location'] = $value;
+                return;
+            case 'DESCRIPTION':
+                $this->currentEvent['description'] = $value;
                 return;
             case 'URL':
                 $this->currentEvent['linkadr'] = $value;

@@ -56,7 +56,7 @@ class ICalendarParserTest extends TestCase
         $this->assertSame(0, (new LocalDateTime(2024, 1, 23, 17, 0))->compare($third->end()));
         $this->assertSame("Digitale Reise Bubenheim", $third->summary());
         $this->assertSame("https://www.digibos.org", $third->linkadr());
-        $this->assertSame("", $third->linktxt());
+        $this->assertSame("Digitale Reise Bubenheim", $third->linktxt());
         $this->assertSame("55270 Bubenheim Schulstraße 2 Dorfgemeinschaftshaus ", $third->location());
     }
 }
