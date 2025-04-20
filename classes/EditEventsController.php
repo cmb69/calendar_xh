@@ -110,7 +110,6 @@ class EditEventsController
         $output = $this->view->render('event-table', [
             'selected' => $request->selected() ? $request->selected() : 'calendar',
             'events' => $events,
-            'hash' => sha1(serialize($events)),
             'jsUrl' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
         ]);
         return $this->respondWith($request, $output);
