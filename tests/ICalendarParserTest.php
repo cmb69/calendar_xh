@@ -30,8 +30,7 @@ class ICalendarParserTest extends TestCase
     public function testRead()
     {
         $lines = file(__DIR__ . '/ics/basic.ics', FILE_IGNORE_NEW_LINES);
-        $subject = new ICalendarParser();
-        $actual = $subject->parse($lines);
+        $actual = ICalendarParser::parse($lines, $count);
         $this->assertContainsOnlyInstancesOf(Event::class, $actual);
         $this->assertCount(3, $actual);
 

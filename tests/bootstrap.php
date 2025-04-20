@@ -37,6 +37,7 @@ require_once "../plib/classes/FakeRequest.php";
 require_once "../plib/classes/FakeSystemChecker.php";
 
 require_once "./classes/dto/BirthdayRow.php";
+require_once "./classes/dto/Event.php";
 require_once "./classes/dto/EventRow.php";
 require_once "./classes/dto/HeaderRow.php";
 require_once "./classes/model/ICalendar.php";

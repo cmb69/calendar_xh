@@ -85,9 +85,8 @@ class IcalImportExportController
         if ($request->post("calendar_ics") === null) {
             return $this->defaultAction($request);
         }
-        $reader = new ICalendarParser();
-        $events = $reader->parse($this->icsFileFinder->read($request->post("calendar_ics")));
-        $ignored = $reader->eventCount() - count($events);
+        $events = ICalendarParser::parse($this->icsFileFinder->read($request->post("calendar_ics")), $eventCount);
+        $ignored = $eventCount - count($events);
         $events = array_merge($this->eventDataService->readEvents()->events(), $events);
         $this->eventDataService->writeEvents($events);
         $url = $request->url()->page("calendar")->with("admin", "import_export")->with("calendar_ignored", (string) $ignored);

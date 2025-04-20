@@ -21,6 +21,7 @@
 
 namespace Calendar;
 
+use Calendar\Dto\Event as EventDto;
 use Calendar\Model\Event;
 
 /**
@@ -30,145 +31,139 @@ use Calendar\Model\Event;
  */
 class ICalendarParser
 {
-    /** @var list<string> */
-    private $lines = [];
+    /**
+     * @param list<string> $lines
+     * @param mixed $count
+     * @param-out int $count
+     * @return list<Event>
+     */
+    public static function parse(array $lines, &$count): array
+    {
+        $events = [];
+        $count = 0;
+        self::unfold($lines);
+        self::doParse($lines, $events, $count);
+        return $events;
+    }
 
-    /** @var string */
-    private $currentLine = "";
-
-    /** @var array<Event> */
-    private $events = [];
-
-    /** @var array<string,string> */
-    private $currentEvent = [];
-
-    /** @var int */
-    private $eventCount;
+    /** @param list<string> $lines */
+    private static function unfold(array &$lines): void
+    {
+        for ($i = count($lines) - 1; $i > 0; $i--) {
+            if (in_array(substr($lines[$i], 0, 1), [' ', "\t"])) {
+                $lines[$i - 1] .= substr($lines[$i], 1);
+                unset($lines[$i]);
+            }
+        }
+    }
 
     /**
      * @param list<string> $lines
-     * @return array<Event>
+     * @param list<Event> $events
+     * @param mixed $count
+     * @param-out int $count
      */
-    public function parse(array $lines): array
+    private static function doParse(array $lines, array &$events, &$count): void
     {
-        $this->lines = $lines;
-        $this->eventCount = 0;
-        $this->unfold();
-        $this->doParse();
-        return $this->events;
-    }
-
-    private function unfold(): void
-    {
-        for ($i = count($this->lines) - 1; $i > 0; $i--) {
-            if (in_array(substr($this->lines[$i], 0, 1), [' ', "\t"])) {
-                $this->lines[$i - 1] .= substr($this->lines[$i], 1);
-                unset($this->lines[$i]);
-            }
-        }
-    }
-
-    private function doParse(): void
-    {
-        $this->currentEvent = [];
+        $event = new EventDto();
         $isInEvent = false;
-        foreach ($this->lines as $this->currentLine) {
+        foreach ($lines as $currentLine) {
             if ($isInEvent) {
-                if ($this->currentLine === 'END:VEVENT') {
+                if ($currentLine === 'END:VEVENT') {
                     $isInEvent = false;
                     $maybeEvent = Event::create(
-                        $this->currentEvent['datestart'] ?? "", // @phpstan-ignore-line
-                        $this->currentEvent['dateend'] ?? "", // @phpstan-ignore-line
-                        $this->currentEvent['starttime'] ?? "", // @phpstan-ignore-line
-                        $this->currentEvent['endtime'] ?? "", // @phpstan-ignore-line
-                        $this->currentEvent['event'] ?? "", // @phpstan-ignore-line
-                        $this->currentEvent['linkadr'] ?? "", // @phpstan-ignore-line
-                        $this->currentEvent['description'] ?? "", // @phpstan-ignore-line
-                        $this->currentEvent['location'] ?? "", // @phpstan-ignore-line,
-                        $this->currentEvent['recur'] ?? "", // @phpstan-ignore-line
-                        $this->currentEvent['until'] ?? "", // @phpstan-ignore-line
+                        $event->datestart,
+                        $event->dateend,
+                        $event->starttime,
+                        $event->endtime,
+                        $event->event,
+                        $event->linkadr,
+                        $event->description,
+                        $event->location,
+                        $event->recur,
+                        $event->until,
                     );
                     if ($maybeEvent !== null) {
-                        $this->events[] = $maybeEvent;
+                        $events[] = $maybeEvent;
                     }
                 } else {
-                    $this->processPropertyLine();
+                    self::processPropertyLine($currentLine, $event);
                 }
             } else {
-                if ($this->currentLine === 'BEGIN:VEVENT') {
-                    $this->eventCount++;
+                if ($currentLine === 'BEGIN:VEVENT') {
+                    $count++;
                     $isInEvent = true;
-                    $this->currentEvent = [];
+                    $event = new EventDto();
                 }
             }
         }
     }
 
-    private function processPropertyLine(): void
+    private static function processPropertyLine(string $line, EventDto $event): void
     {
-        ["property" => $property, "params" => $params, "value" => $value] = $this->parseLine();
+        ["property" => $property, "params" => $params, "value" => $value] = self::parseLine($line);
         assert($property !== null);
         assert($value !== null);
         switch ($property) {
             case 'SUMMARY':
-                $this->currentEvent['event'] = $value;
+                $event->event = $value;
                 return;
             case 'LOCATION':
-                $this->currentEvent['location'] = $value;
+                $event->location = $value;
                 return;
             case 'DESCRIPTION':
-                $this->currentEvent['description'] = $value;
+                $event->description = $value;
                 return;
             case 'URL':
-                $this->currentEvent['linkadr'] = $value;
+                $event->linkadr = $value;
                 return;
             case 'DTSTART':
-                $this->processDtStart($params, $value);
+                self::processDtStart($params, $value, $event);
                 return;
             case 'DTEND':
-                $this->processDtEnd($params, $value);
+                self::processDtEnd($params, $value, $event);
                 return;
             case 'RRULE':
-                $this->processRrule($value);
+                self::processRrule($value, $event);
                 return;
         }
     }
 
     /** @param array<string,string> $params */
-    private function processDtStart(array $params, string $value): void
+    private static function processDtStart(array $params, string $value, EventDto $event): void
     {
         switch ($params["VALUE"] ?? "DATE-TIME") {
             case "DATE-TIME":
-                if (($datetime = $this->parseDateTime($value))) {
-                    list($this->currentEvent['datestart'], $this->currentEvent['starttime']) = $datetime;
+                if (($datetime = self::parseDateTime($value))) {
+                    list($event->datestart, $event->starttime) = $datetime;
                 }
                 break;
             case "DATE":
-                if (($date = $this->parseDate($value))) {
-                    $this->currentEvent['datestart'] = $date;
+                if (($date = self::parseDate($value))) {
+                    $event->datestart = $date;
                 }
                 break;
         }
     }
 
     /** @param array<string,string> $params */
-    private function processDtEnd(array $params, string $value): void
+    private static function processDtEnd(array $params, string $value, EventDto $event): void
     {
         switch ($params["VALUE"] ?? "DATE-TIME") {
             case "DATE-TIME":
-                if (($datetime = $this->parseDateTime($value))) {
-                    list($this->currentEvent['dateend'], $this->currentEvent['endtime']) = $datetime;
+                if (($datetime = self::parseDateTime($value))) {
+                    list($event->dateend, $event->endtime) = $datetime;
                 }
                 break;
             case "DATE":
-                if (($date = $this->parseDate($value))) {
-                    $this->currentEvent['dateend'] = $date;
+                if (($date = self::parseDate($value))) {
+                    $event->dateend = $date;
                 }
                 break;
         }
     }
 
-    private function processRrule(string $value): void
+    private static function processRrule(string $value, EventDto $event): void
     {
         $parts = explode(";", $value);
         $ps = [];
@@ -178,26 +173,26 @@ class ICalendarParser
         }
         switch ($ps["FREQ"] ?? "") {
             case "YEARLY":
-                $this->currentEvent["recur"] = "yearly";
+                $event->recur = "yearly";
                 break;
             case "WEEKLY":
-                $this->currentEvent["recur"] = "weekly";
+                $event->recur = "weekly";
                 break;
             case "DAILY":
-                $this->currentEvent["recur"] = "daily";
+                $event->recur = "daily";
                 break;
             default:
-                $this->currentEvent["recur"] = "";
+                $event->recur = "";
         }
         if (array_key_exists("UNTIL", $ps)) {
-            $this->currentEvent["until"] = $this->parseDate($ps["UNTIL"]) ?? "";
+            $event->until = self::parseDate($ps["UNTIL"]) ?? "";
         }
     }
 
     /** @return array{property:string,params:array<string,string>,value:string} */
-    private function parseLine(): array
+    private static function parseLine(string $line): array
     {
-        list($property, $value) = explode(':', $this->currentLine, 2);
+        list($property, $value) = explode(':', $line, 2);
         $parts = explode(';', $property);
         $property = $parts[0];
         $params = [];
@@ -216,7 +211,7 @@ class ICalendarParser
      *
      * @return ?array{string,string}
      */
-    private function parseDateTime(string $value): ?array
+    private static function parseDateTime(string $value): ?array
     {
         if (preg_match('/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/', $value, $matches)) {
             return ["$matches[1]-$matches[2]-$matches[3]", "$matches[4]:$matches[5]"];
@@ -227,16 +222,11 @@ class ICalendarParser
     /**
      * ignores the timezone
      */
-    private function parseDate(string $value): ?string
+    private static function parseDate(string $value): ?string
     {
         if (preg_match('/^(\d{4})(\d{2})(\d{2})/', $value, $matches)) {
             return "$matches[1]-$matches[2]-$matches[3]";
         }
         return null;
-    }
-
-    public function eventCount(): int
-    {
-        return $this->eventCount;
     }
 }
