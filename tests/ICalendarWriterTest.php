@@ -31,13 +31,13 @@ class ICalendarWriterTest extends TestCase
             END:VEVENT
             BEGIN:VEVENT
             UID:1@example.com
-            DTSTART:20230107T000000
+            DTSTART;VALUE=DATE:20230107
             DTEND;VALUE=DATE:20230108
             SUMMARY:Weekend
             END:VEVENT
             BEGIN:VEVENT
             UID:2@example.com
-            DTSTART:20000101T000000
+            DTSTART;VALUE=DATE:20000101
             DTEND;VALUE=DATE:20000101
             RRULE:FREQ=YEARLY
             SUMMARY:Millenium

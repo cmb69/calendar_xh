@@ -348,7 +348,7 @@ class Event
 
     private function getDtstart(): string
     {
-        if ($this->start->hour() === 23 && $this->start->minute() === 59) {
+        if ($this->isFullDay()) {
             return sprintf(
                 "DTSTART;VALUE=DATE:%04d%02d%02d",
                 $this->start->year(),
@@ -369,7 +369,7 @@ class Event
 
     private function getDtend(): string
     {
-        if ($this->end->hour() === 23 && $this->end->minute() === 59) {
+        if ($this->isFullDay()) {
             return sprintf(
                 "DTEND;VALUE=DATE:%04d%02d%02d",
                 $this->end->year(),
