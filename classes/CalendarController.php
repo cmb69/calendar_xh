@@ -28,9 +28,9 @@ namespace Calendar;
 
 use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
-use Calendar\Infra\EventDataService;
 use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
+use Calendar\Model\CalendarRepo;
 use Calendar\Model\CalendarService;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
@@ -46,8 +46,8 @@ class CalendarController
     /** @var array<string,string> */
     private $conf;
 
-    /** @var EventDataService */
-    private $eventDataService;
+    /** @var CalendarRepo */
+    private $calendarRepo;
 
     /** @var DateTimeFormatter */
     private $dateTimeFormatter;
@@ -65,7 +65,7 @@ class CalendarController
     public function __construct(
         string $pluginFolder,
         array $conf,
-        EventDataService $eventDataService,
+        CalendarRepo $calendarRepo,
         DateTimeFormatter $dateTimeFormatter,
         int $widgetNum,
         Counter $counter,
@@ -73,7 +73,7 @@ class CalendarController
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->conf = $conf;
-        $this->eventDataService = $eventDataService;
+        $this->calendarRepo = $calendarRepo;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->widgetNum = $widgetNum;
         $this->counter = $counter;
@@ -89,7 +89,7 @@ class CalendarController
             $eventpage = $this->view->plain("event_page");
         }
         $this->determineYearAndMonth($request, $year, $month);
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         $calendarService = new CalendarService((bool) $this->conf['week_starts_mon']);
         $rows = [];
         foreach ($calendarService->getMonthMatrix($year, $month) as $columns) {

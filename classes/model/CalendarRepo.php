@@ -24,12 +24,9 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Calendar\Infra;
+namespace Calendar\Model;
 
-use Calendar\Model\Calendar;
-use Calendar\Model\Event;
-
-class EventDataService
+class CalendarRepo
 {
     /** @var string */
     private $dataFolder;
@@ -56,28 +53,22 @@ class EventDataService
         return $this->eventfile;
     }
 
-    /** @return array<string,Event> */
-    public function readEvents(): array
+    public function find(): Calendar
     {
         $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".2.6.csv");
-        if (!is_file("{$eventfile}.2.6.csv")) {
-            if (!is_file("{$eventfile}.csv")) {
-                if (!is_file("{$eventfile}.txt")) {
-                    $events = [];
-                } else {
-                    $events = $this->readOldEvents("{$eventfile}.txt");
-                }
-            } else {
-                $events = $this->doReadEvents("{$eventfile}.csv", true);
-            }
-        } else {
-            $events = $this->doReadEvents($this->getFilename());
+        if (file_exists("{$eventfile}.2.6.csv")) {
+            return $this->findCalendar($this->getFilename());
         }
-        return $events;
+        if (file_exists("{$eventfile}.csv")) {
+            return $this->findCalendar("{$eventfile}.csv", true);
+        }
+        if (file_exists("{$eventfile}.txt")) {
+            return $this->findOldCalendar("{$eventfile}.txt");
+        }
+        return Calendar::fromEvents([]);
     }
 
-    /** @return array<string,Event> */
-    private function doReadEvents(string $filename, bool $convertToHtml = false): array
+    private function findCalendar(string $filename, bool $convertToHtml = false): Calendar
     {
         $contents = "";
         if (is_readable($filename) && $stream = fopen($filename, "r")) {
@@ -86,11 +77,10 @@ class EventDataService
             flock($stream, LOCK_UN);
             fclose($stream);
         }
-        return Calendar::fromCsv($contents, $convertToHtml)->events();
+        return Calendar::fromCsv($contents, $convertToHtml);
     }
 
-    /** @return array<string,Event> */
-    private function readOldEvents(string $eventfile): array
+    private function findOldCalendar(string $eventfile): Calendar
     {
         $contents = "";
         if ($stream = fopen($eventfile, 'r')) {
@@ -99,14 +89,12 @@ class EventDataService
             flock($stream, LOCK_UN);
             fclose($stream);
         }
-        return Calendar::fromText($contents, $this->separator)->events();
+        return Calendar::fromText($contents, $this->separator);
     }
 
-    /** @param array<Event> $events */
-    public function writeEvents(array $events): bool
+    public function save(Calendar $calendar): bool
     {
         $eventfile = $this->getFilename();
-
         // remove old backup
         if (is_file("{$eventfile}.bak")) {
             unlink("{$eventfile}.bak");
@@ -115,12 +103,11 @@ class EventDataService
         if (is_file($eventfile)) {
             rename($eventfile, "{$eventfile}.bak");
         }
-
         $fp = fopen($eventfile, "c");
         if ($fp === false) {
             return false;
         }
-        $contents = Calendar::fromEvents($events)->toCsvString();
+        $contents = $calendar->toCsvString();
         flock($fp, LOCK_EX);
         $ok = fwrite($fp, $contents) === strlen($contents);
         flock($fp, LOCK_UN);

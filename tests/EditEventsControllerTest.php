@@ -23,7 +23,8 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use Calendar\Infra\Editor;
-use Calendar\Infra\EventDataService;
+use Calendar\Model\Calendar;
+use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -39,8 +40,8 @@ class EditEventsControllerTest extends TestCase
     /** @var array<string,string> */
     private $conf;
 
-    /** @var EventDataService */
-    private $eventDataService;
+    /** @var CalendarRepo */
+    private $calendarRepo;
 
     /** @var CsrfProtector&MockObject */
     private $csrfProtector;
@@ -58,8 +59,8 @@ class EditEventsControllerTest extends TestCase
     {
         vfsStream::setup("root");
         $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
-        $this->eventDataService = new EventDataService(vfsStream::url("root/"), ".");
-        $this->eventDataService->writeEvents(["111" => $this->lunchBreak()]);
+        $this->calendarRepo = new CalendarRepo(vfsStream::url("root/"), ".");
+        $this->calendarRepo->save(Calendar::fromEvents(["111" => $this->lunchBreak()]));
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
         $this->csrfProtector->method("token")->willReturn("42881056d048537da0e061f7f672854b");
         $this->csrfProtector->method("check")->willReturn(true);
@@ -73,7 +74,7 @@ class EditEventsControllerTest extends TestCase
         return new EditEventsController(
             "./",
             $this->conf,
-            $this->eventDataService,
+            $this->calendarRepo,
             $this->csrfProtector,
             $this->random,
             $this->editor,
@@ -99,7 +100,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testGenerateIdsActionRendersForm()
     {
-        $this->eventDataService->writeEvents([$this->christmas()]);
+        $this->calendarRepo->save(Calendar::fromEvents([$this->christmas()]));
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=generate_ids",
         ]);
@@ -127,7 +128,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testSingleActionRendersEditSingleForm()
     {
-        $this->eventDataService->writeEvents(["222" => $this->christmas("222")]);
+        $this->calendarRepo->save(Calendar::fromEvents(["222" => $this->christmas("222")]));
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=edit_single&event_id=222",
         ]);
@@ -268,7 +269,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoEditSingleActionReportsFailureToSave(): void
     {
-        $this->eventDataService->writeEvents(["222" => $this->christmas("222")]);
+        $this->calendarRepo->save(Calendar::fromEvents(["222" => $this->christmas("222")]));
         vfsStream::setQuota(0);
         $this->random->method("bytes")->willReturnOnConsecutiveCalls("11111", "11112", "11113");
         $request = new FakeRequest([
@@ -284,7 +285,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoEditSingleActionRedirectsOnSuccess(): void
     {
-        $this->eventDataService->writeEvents(["222" => $this->christmas("222")]);
+        $this->calendarRepo->save(Calendar::fromEvents(["222" => $this->christmas("222")]));
         $this->random->method("bytes")->willReturnOnConsecutiveCalls("11111", "11112", "11113");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
@@ -331,7 +332,7 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
-        $this->assertArrayHasKey("111", $this->eventDataService->readEvents());
+        $this->assertArrayHasKey("111", $this->calendarRepo->find()->events());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
@@ -381,14 +382,14 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
-        $this->assertEmpty($this->eventDataService->readEvents());
+        $this->assertEmpty($this->calendarRepo->find()->events());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoDeleteActionShowsErrorOnFailureToDeleteEvent()
     {
         $this->csrfProtector->expects($this->once())->method("check");
-        $this->eventDataService->writeEvents(["111" => $this->lunchBreak(), "222" => $this->christmas()]);
+        $this->calendarRepo->save(Calendar::fromEvents(["111" => $this->lunchBreak(), "222" => $this->christmas()]));
         vfsStream::setQuota(0);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=delete&event_id=111",

@@ -27,9 +27,9 @@
 namespace Calendar;
 
 use Calendar\Infra\Editor;
-use Calendar\Infra\EventDataService;
 use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
+use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Plib\Codec;
@@ -47,8 +47,8 @@ class EditEventsController
     /** @var array<string,string> */
     private $config;
 
-    /** @var EventDataService */
-    private $eventDataService;
+    /** @var CalendarRepo */
+    private $calendarRepo;
 
     /** @var CsrfProtector */
     private $csrfProtector;
@@ -66,7 +66,7 @@ class EditEventsController
     public function __construct(
         string $pluginFolder,
         array $config,
-        EventDataService $eventDataService,
+        CalendarRepo $calendarRepo,
         CsrfProtector $csrfProtector,
         Random $random,
         Editor $editor,
@@ -74,7 +74,7 @@ class EditEventsController
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->config = $config;
-        $this->eventDataService = $eventDataService;
+        $this->calendarRepo = $calendarRepo;
         $this->csrfProtector = $csrfProtector;
         $this->random = $random;
         $this->editor = $editor;
@@ -102,7 +102,7 @@ class EditEventsController
 
     private function defaultAction(Request $request): Response
     {
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         $events = array_map(function (Event $event): array {
             $startDate = $event->getIsoStartDate();
             if (!$event->isFullDay()) {
@@ -134,13 +134,13 @@ class EditEventsController
 
     private function generateIds(Request $request): Response
     {
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         return $this->respondWith($request, $this->renderGenerateIdsForm($request, $calendar));
     }
 
     private function editSingleAction(Request $request): Response
     {
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
@@ -153,7 +153,7 @@ class EditEventsController
 
     private function updateAction(Request $request): Response
     {
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
@@ -163,7 +163,7 @@ class EditEventsController
 
     private function deleteAction(Request $request): Response
     {
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
@@ -249,7 +249,7 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         return $this->upsert($request, $calendar->events(), null);
     }
 
@@ -258,11 +258,11 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         $calendar->generateIds(function (): string {
             return Codec::encodeBase32hex($this->random->bytes(15));
         });
-        if (!$this->eventDataService->writeEvents($calendar->events())) {
+        if (!$this->calendarRepo->save($calendar)) {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderGenerateIdsForm($request, $calendar));
         }
@@ -274,7 +274,7 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
@@ -287,7 +287,7 @@ class EditEventsController
             return $this->respondWith($request, $this->view->message("fail", "error_split")
                 . $this->renderEditSingleForm($request, $event, $id));
         }
-        if (!$this->eventDataService->writeEvents($calendar->events())) {
+        if (!$this->calendarRepo->save($calendar)) {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderEditSingleForm($request, $event, $id));
         }
@@ -303,7 +303,7 @@ class EditEventsController
         }
         $id = $request->get("event_id");
         assert($id !== null); // TODO invalid assertion
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         return $this->upsert($request, $calendar->events(), array_key_exists($id, $calendar->events()) ? $id : null);
     }
 
@@ -319,21 +319,19 @@ class EditEventsController
         }
         if ($id !== null) {
             $post["id"] = $id;
+        } else {
+            $post["id"] = Codec::encodeBase32hex($this->random->bytes(15));
         }
         $maybeEvent = Event::create(...array_values($post));
         if ($maybeEvent === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        if ($id !== null) {
-            $events[$id] = $maybeEvent;
-        } else {
-            $events[] = $maybeEvent;
-        }
+        $events[$id] = $maybeEvent;
         // sorting new event inputs, idea of manu, forum-message
         uasort($events, function (Event $a, Event $b): int {
             return $a->start()->compare($b->start());
         });
-        if ($this->eventDataService->writeEvents($events)) {
+        if ($this->calendarRepo->save(Calendar::fromEvents($events))) {
             return $this->redirectToOverviewResponse($request);
         } else {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
@@ -374,13 +372,13 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
         $calendar->delete($id);
-        if ($this->eventDataService->writeEvents($calendar->events())) {
+        if ($this->calendarRepo->save($calendar)) {
             return $this->redirectToOverviewResponse($request);
         } else {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")

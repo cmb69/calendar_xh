@@ -22,9 +22,9 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
-use Calendar\Infra\EventDataService;
 use Calendar\Infra\ICalendarRepo;
 use Calendar\Model\Calendar;
+use Calendar\Model\CalendarRepo;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
@@ -36,8 +36,8 @@ class IcalImportControllerTest extends TestCase
     /** @var ICalendarRepo&Stub */
     private $iCalendarRepo;
 
-    /** @var EventDataService */
-    private $eventDataService;
+    /** @var CalendarRepo */
+    private $CalendarRepo;
 
     /** @var View */
     private $view;
@@ -46,7 +46,7 @@ class IcalImportControllerTest extends TestCase
     {
         vfsStream::setup("root");
         $this->iCalendarRepo = $this->createStub(ICalendarRepo::class);
-        $this->eventDataService = new EventDataService(vfsStream::url("root/"), ".");
+        $this->CalendarRepo = new CalendarRepo(vfsStream::url("root/"), ".");
         $this->view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")['calendar']);
     }
 
@@ -54,7 +54,7 @@ class IcalImportControllerTest extends TestCase
     {
         return new IcalImportExportController(
             $this->iCalendarRepo,
-            $this->eventDataService,
+            $this->CalendarRepo,
             $this->view
         );
     }

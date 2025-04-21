@@ -24,6 +24,8 @@ namespace Calendar;
 use ApprovalTests\Approvals;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\EventDataService;
+use Calendar\Model\Calendar;
+use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
@@ -38,8 +40,8 @@ class NextEventControllerTest extends TestCase
     /** @var array<string,string> */
     private $lang;
 
-    /** @var EventDataService */
-    private $eventDataService;
+    /** @var CalendarRepo */
+    private $calendarRepo;
 
     /** @var DateTimeFormatter */
     private $dateTimeFormatter;
@@ -52,19 +54,19 @@ class NextEventControllerTest extends TestCase
         vfsStream::setup("root");
         $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->lang = XH_includeVar("./languages/en.php", 'plugin_tx')["calendar"];
-        $this->eventDataService = new EventDataService(vfsStream::url("root/"), ".");
+        $this->calendarRepo = new CalendarRepo(vfsStream::url("root/"), ".");
         $this->dateTimeFormatter = new DateTimeFormatter($this->lang);
         $this->view = new View("./views/", $this->lang);
     }
 
     private function sut(): NextEventController
     {
-        return new NextEventController($this->conf, $this->eventDataService, $this->dateTimeFormatter, $this->view);
+        return new NextEventController($this->conf, $this->calendarRepo, $this->dateTimeFormatter, $this->view);
     }
 
     public function testRendersNoEvent(): void
     {
-        $this->eventDataService->writeEvents([$this->cmb()]);
+        $this->calendarRepo->save(Calendar::fromEvents([$this->cmb()]));
         $request = new FakeRequest(["time" => strtotime("1965-04-16T20:38:00+02:00")]);
         $response = $this->sut()->defaultAction($request);
         $this->assertStringContainsString("No further event scheduled.", $response);
@@ -72,7 +74,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersEventBeforeStart(): void
     {
-        $this->eventDataService->writeEvents([$this->intfcb()]);
+        $this->calendarRepo->save(Calendar::fromEvents([$this->intfcb()]));
         $request = new FakeRequest(["time" => strtotime("2025-04-16T20:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -80,7 +82,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersMultidayEventBeforeStart(): void
     {
-        $this->eventDataService->writeEvents([$this->easter()]);
+        $this->calendarRepo->save(Calendar::fromEvents([$this->easter()]));
         $request = new FakeRequest(["time" => strtotime("2025-04-16T20:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -88,7 +90,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersRunningEvent(): void
     {
-        $this->eventDataService->writeEvents([$this->intfcb()]);
+        $this->calendarRepo->save(Calendar::fromEvents([$this->intfcb()]));
         $request = new FakeRequest(["time" => strtotime("2025-04-16T21:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -96,7 +98,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersRunningMultidayEvent(): void
     {
-        $this->eventDataService->writeEvents([$this->easter()]);
+        $this->calendarRepo->save(Calendar::fromEvents([$this->easter()]));
         $request = new FakeRequest(["time" => strtotime("2025-04-20T20:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -104,7 +106,7 @@ class NextEventControllerTest extends TestCase
 
     public function testIssue51(): void
     {
-        $this->eventDataService->writeEvents([$this->cmb()]);
+        $this->calendarRepo->save(Calendar::fromEvents([$this->cmb()]));
         $request = new FakeRequest(["time" => strtotime("2021-03-23T12:34:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -112,7 +114,7 @@ class NextEventControllerTest extends TestCase
 
     public function testIssue70(): void
     {
-        $this->eventDataService->writeEvents([$this->cmb()]);
+        $this->calendarRepo->save(Calendar::fromEvents([$this->cmb()]));
         $request = new FakeRequest(["time" => strtotime("2021-03-25T12:34:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);

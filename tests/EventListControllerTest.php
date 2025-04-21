@@ -24,6 +24,8 @@ namespace Calendar;
 use ApprovalTests\Approvals;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\EventDataService;
+use Calendar\Model\Calendar;
+use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
@@ -38,8 +40,8 @@ class EventListControllerTest extends TestCase
     /** @var array<string,string> */
     private $lang;
 
-    /** @var EventDataService */
-    private $eventDataService;
+    /** @var CalendarRepo */
+    private $calendarRepo;
 
     /** @var DateTimeFormatter */
     private $dateTimeFormatter;
@@ -52,10 +54,10 @@ class EventListControllerTest extends TestCase
         vfsStream::setup("root");
         $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
-        $this->eventDataService = new EventDataService(vfsStream::url("root/"), ".");
-        $this->eventDataService->writeEvents([
+        $this->calendarRepo = new CalendarRepo(vfsStream::url("root/"), ".");
+        $this->calendarRepo->save(Calendar::fromEvents([
             $this->lunchBreak(), $this->easter(), $this->birthday()
-        ]);
+        ]));
         $this->dateTimeFormatter = new DateTimeFormatter($this->lang);
         $this->view = new View("./views/", $this->lang);
     }
@@ -64,7 +66,7 @@ class EventListControllerTest extends TestCase
     {
         return new EventListController(
             $this->conf,
-            $this->eventDataService,
+            $this->calendarRepo,
             $this->dateTimeFormatter,
             $this->view
         );

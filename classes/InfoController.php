@@ -26,7 +26,7 @@
 
 namespace Calendar;
 
-use Calendar\Infra\EventDataService;
+use Calendar\Model\CalendarRepo;
 use Plib\Response;
 use Plib\SystemChecker;
 use Plib\View;
@@ -36,8 +36,8 @@ class InfoController
     /** @var string */
     private $pluginFolder;
 
-    /** @var EventDataService */
-    private $dataService;
+    /** @var CalendarRepo */
+    private $calendarRepo;
 
     /** @var SystemChecker */
     private $systemChecker;
@@ -47,12 +47,12 @@ class InfoController
 
     public function __construct(
         string $pluginFolder,
-        EventDataService $dataService,
+        CalendarRepo $calendarRepo,
         SystemChecker $systemChecker,
         View $view
     ) {
         $this->pluginFolder = $pluginFolder;
-        $this->dataService = $dataService;
+        $this->calendarRepo = $calendarRepo;
         $this->systemChecker = $systemChecker;
         $this->view = $view;
     }
@@ -67,7 +67,7 @@ class InfoController
                 $this->checkWritability("{$this->pluginFolder}css/"),
                 $this->checkWritability("{$this->pluginFolder}config/"),
                 $this->checkWritability("{$this->pluginFolder}languages/"),
-                $this->checkWritability(dirname($this->dataService->getFilename())),
+                $this->checkWritability(dirname($this->calendarRepo->getFilename())),
             ],
         ]))->withTitle("Calendar " . $this->view->esc(CALENDAR_VERSION));
     }

@@ -29,9 +29,9 @@ namespace Calendar;
 use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\Editor;
-use Calendar\Infra\EventDataService;
 use Calendar\Infra\Html2Text;
 use Calendar\Infra\ICalendarRepo;
+use Calendar\Model\CalendarRepo;
 use Plib\CsrfProtector;
 use Plib\Random;
 use Plib\SystemChecker;
@@ -46,7 +46,7 @@ class Dic
         return new CalendarController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             ++$num,
             self::counter(),
@@ -60,7 +60,7 @@ class Dic
 
         return new EventListController(
             $plugin_cf['calendar'],
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
         );
@@ -72,7 +72,7 @@ class Dic
 
         return new NextEventController(
             $plugin_cf["calendar"],
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
         );
@@ -85,7 +85,7 @@ class Dic
         return new EditEventsController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf["calendar"],
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
             new CsrfProtector(),
             new Random(),
             new Editor(),
@@ -99,7 +99,7 @@ class Dic
 
         return new InfoController(
             "{$pth['folder']['plugins']}calendar/",
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
             new SystemChecker(),
             self::view()
         );
@@ -109,7 +109,7 @@ class Dic
     {
         return new IcalImportExportController(
             new ICalendarRepo(self::getDataFolder(), $_SERVER["HTTP_HOST"], new Html2Text()),
-            new EventDataService(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
             self::view()
         );
     }

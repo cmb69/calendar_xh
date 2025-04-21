@@ -21,9 +21,8 @@
 
 namespace Calendar;
 
-use Calendar\Infra\EventDataService;
 use Calendar\Infra\ICalendarRepo;
-use Calendar\Model\Calendar;
+use Calendar\Model\CalendarRepo;
 use Plib\Request;
 use Plib\Response;
 use Plib\View;
@@ -33,20 +32,20 @@ class IcalImportExportController
     /** @var ICalendarRepo */
     private $iCalendarRepo;
 
-    /** @var EventDataService */
-    private $eventDataService;
+    /** @var CalendarRepo */
+    private $calendarRepo;
 
     /** @var View */
     private $view;
 
     public function __construct(
         ICalendarRepo $iCalendarRepo,
-        EventDataService $eventDataService,
+        CalendarRepo $calendarRepo,
         View $view
     ) {
         $this->view = $view;
         $this->iCalendarRepo = $iCalendarRepo;
-        $this->eventDataService = $eventDataService;
+        $this->calendarRepo = $calendarRepo;
     }
 
     public function __invoke(Request $request): Response
@@ -83,11 +82,11 @@ class IcalImportExportController
         if ($request->post("calendar_ics") === null) {
             return $this->defaultAction($request);
         }
-        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
+        $calendar = $this->calendarRepo->find();
         $import = $this->iCalendarRepo->find($request->post("calendar_ics"), $eventCount);
         $ignored = $eventCount - count($import->events());
         $calendar->import($import);
-        $this->eventDataService->writeEvents($calendar->events());
+        $this->calendarRepo->save($calendar);
         $url = $request->url()->page("calendar")->with("admin", "import_export")->with("calendar_ignored", (string) $ignored);
         return Response::redirect($url->absolute());
     }
@@ -97,7 +96,7 @@ class IcalImportExportController
         if ($request->post("calendar_ics") !== "calendar.ics") {
             return $this->defaultAction($request);
         }
-        if (!$this->iCalendarRepo->write("calendar", Calendar::fromEvents($this->eventDataService->readEvents()))) {
+        if (!$this->iCalendarRepo->write("calendar", $this->calendarRepo->find())) {
             return Response::create($this->view->message("fail", "error_export"))
                 ->withTitle("Calendar – " . $this->view->text("label_import_export"));
         }
