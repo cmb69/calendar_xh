@@ -21,6 +21,8 @@
 
 namespace Calendar\Model;
 
+use Calendar\Dto\Event as EventDto;
+
 class Calendar
 {
     use CsvCalendar;
@@ -107,6 +109,33 @@ class Calendar
             }
         }
         return $res;
+    }
+
+    public function addEvent(EventDto $dto): ?Event
+    {
+        $event = Event::fromDto($dto);
+        if ($event === null) {
+            return null;
+        }
+        $this->events[$event->id()] = $event;
+        return $event;
+    }
+
+    public function updateEvent(EventDto $dto): ?Event
+    {
+        $event = Event::fromDto($dto);
+        if (!array_key_exists($dto->id, $this->events) || $event === null) {
+            return null;
+        }
+        $this->events[$event->id()] = $event;
+        return $event;
+    }
+
+    private function sort(): void
+    {
+        uasort($this->events, function (Event $a, Event $b): int {
+            return $a->start()->compare($b->start());
+        });
     }
 
     /** @param callable():string $generateId */

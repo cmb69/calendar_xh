@@ -71,6 +71,7 @@ trait CsvCalendar
 
     public function toCsvString(): string
     {
+        $this->sort();
         $contents = "";
         $stream = fopen("php://memory", "w+");
         if ($stream === false) {
