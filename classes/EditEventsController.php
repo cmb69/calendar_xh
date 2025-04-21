@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Calendar\Dto\Event as EventDto;
 use Calendar\Infra\Editor;
 use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
@@ -158,7 +159,7 @@ class EditEventsController
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        return $this->respondWith($request, $this->renderEditForm($request, $event, $id, "update"));
+        return $this->respondWith($request, $this->renderEditForm($request, $event->toDto(), $id, "update"));
     }
 
     private function deleteAction(Request $request): Response
@@ -168,10 +169,10 @@ class EditEventsController
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        return $this->respondWith($request, $this->renderEditForm($request, $event, $id, "delete"));
+        return $this->respondWith($request, $this->renderEditForm($request, $event->toDto(), $id, "delete"));
     }
 
-    private function renderEditForm(Request $request, Event $event, ?string $id, string $action): string
+    private function renderEditForm(Request $request, EventDto $event, ?string $id, string $action): string
     {
         $this->editor->init(["calendar_textarea_description"], $this->config["edit_editor_init"]);
         $url = $request->url()->with("admin", "plugin_main")->with("action", $action);
@@ -182,31 +183,34 @@ class EditEventsController
         if (!is_file($js)) {
             $js = $this->pluginFolder . "js/event_editor.js";
         }
+        $isFullDay = ($event->starttime === "00:00" || $event->starttime === "")
+            && ($event->endtime === "23:59" || $event->endtime === "");
         return $this->view->render('edit-form', [
             'js_url' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
             'action' => $url->relative(),
-            'full_day' => $event->isFullDay() ? "checked" : "",
+            'full_day' => $isFullDay ? "checked" : "",
             'event' => [
-                "start_date" => $event->getIsoStartDate() . "T" . $event->getIsoStartTime(),
-                "end_date" => $event->getIsoEndDate() . "T" . $event->getIsoEndTime(),
-                "summary" => $event->summary(),
-                "linkadr" => $event->linkadr(),
-                "linktxt" => $event->linktxt(),
-                "location" => $event->location(),
+                "start_date" => $event->datestart ? $event->datestart . "T" . ($event->starttime ?: "00:00") : "",
+                "end_date" => ($event->dateend ?: $event->datestart) . "T" . ($event->endtime ?: "23:59"),
+                "summary" => $event->event,
+                "linkadr" => $event->linkadr,
+                "linktxt" => $event->description,
+                "location" => $event->location,
             ],
             'recur_options' => $this->recurOptions($event),
-            'until' => $event->recursUntil() !== null ? $event->recursUntil()->getIsoDate() : "",
+            'until' => $event->until,
             'button_label' => $action === "delete" ? "label_delete" : "label_save",
             'csrf_token' => $this->csrfProtector->token(),
         ]);
     }
 
     /** @return array<string,string> */
-    private function recurOptions(Event $event): array
+    private function recurOptions(EventDto $event): array
     {
         $res = [];
+        $event->recur = $event->recur === "" ? "none" : $event->recur;
         foreach (["none", "daily", "weekly", "yearly"] as $recur) {
-            $res[$recur] = $event->recurrence() === $recur ? "selected" : "";
+            $res[$recur] = $event->recur === $recur ? "selected" : "";
         }
         return $res;
     }
@@ -310,23 +314,23 @@ class EditEventsController
     /** @param array<string,Event> $events */
     private function upsert(Request $request, array $events, ?string $id): Response
     {
-        $post = $this->eventPost($request);
-        if (!$this->isValidDate($post["datestart"])) {
-            $post["datestart"] = "";
+        $dto = $this->eventPost($request);
+        if (!$this->isValidDate($dto->datestart)) {
+            $dto->datestart = "";
         }
-        if (!$this->isValidDate($post["dateend"])) {
-            $post["dateend"] = "";
+        if (!$this->isValidDate($dto->dateend)) {
+            $dto->dateend = "";
         }
         if ($id !== null) {
-            $post["id"] = $id;
+            $dto->id = $id;
         } else {
-            $post["id"] = Codec::encodeBase32hex($this->random->bytes(15));
+            $dto->id = Codec::encodeBase32hex($this->random->bytes(15));
         }
-        $maybeEvent = Event::create(...array_values($post));
-        if ($maybeEvent === null) {
+        $event = Event::fromDto($dto);
+        if ($event === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        $events[$id] = $maybeEvent;
+        $events[$id] = $event;
         // sorting new event inputs, idea of manu, forum-message
         uasort($events, function (Event $a, Event $b): int {
             return $a->start()->compare($b->start());
@@ -335,12 +339,11 @@ class EditEventsController
             return $this->redirectToOverviewResponse($request);
         } else {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
-                . $this->renderEditForm($request, $maybeEvent, $id, $id !== null ? "create" : "update"));
+                . $this->renderEditForm($request, $event->toDto(), $id, $id !== null ? "create" : "update"));
         }
     }
 
-    /** @return array{datestart:string,dateend:string,starttime:string,endtime:string,event:string,linkadr:string,linktxt:string,location:string,recur:string,until:string,id:string} */
-    private function eventPost(Request $request): array
+    private function eventPost(Request $request): EventDto
     {
         $datetime = explode("T", $request->post("datestart") ?? "", 2);
         $datestart = $datetime[0];
@@ -352,19 +355,19 @@ class EditEventsController
             $starttime = "00:00";
             $endtime = "23:59";
         }
-        return [
-            "datestart" => $datestart,
-            "dateend" => $dateend,
-            "starttime" => $starttime,
-            "endtime" => $endtime,
-            "event" => $request->post("event") ?? "",
-            "linkadr" => $request->post("linkadr") ?? "",
-            "linktxt" => $request->post("linktxt") ?? "",
-            "location" => $request->post("location") ?? "",
-            "recur" => $request->post("recur") ?? "",
-            "until" => $request->post("until") ?? "",
-            "id" => "",
-        ];
+        $dto = new EventDto();
+        $dto->datestart = $datestart;
+        $dto->dateend = $dateend;
+        $dto->starttime = $starttime;
+        $dto->endtime = $endtime;
+        $dto->event = $request->post("event") ?? "";
+        $dto->description = $request->post("linktxt") ?? "";
+        $dto->linkadr = $request->post("linkadr") ?? "";
+        $dto->location = $request->post("location") ?? "";
+        $dto->recur = $request->post("recur") ?? "";
+        $dto->until = $request->post("until") ?? "";
+        $dto->id = "";
+        return $dto;
     }
 
     private function doDeleteAction(Request $request): Response
@@ -382,7 +385,7 @@ class EditEventsController
             return $this->redirectToOverviewResponse($request);
         } else {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
-                . $this->renderEditForm($request, $event, $id, "delete"));
+                . $this->renderEditForm($request, $event->toDto(), $id, "delete"));
         }
     }
 
@@ -410,22 +413,11 @@ class EditEventsController
         return (bool) preg_match('/^\d{4}-\d\d-(?:\d\d|\?{1-2}|\-{1-2})$/', $date);
     }
 
-    private function createDefaultEvent(Request $request): Event
+    private function createDefaultEvent(Request $request): EventDto
     {
-        $event = Event::create(
-            date("Y-m-d", $request->time()),
-            '',
-            '',
-            '',
-            $this->view->plain("event_summary"),
-            '',
-            '',
-            '',
-            "",
-            "",
-            ""
-        );
-        assert($event !== null);
-        return $event;
+        $dto = new EventDto();
+        $dto->datestart = date("Y-m-d", $request->time());
+        $dto->event = $this->view->plain("event_summary");
+        return $dto;
     }
 }

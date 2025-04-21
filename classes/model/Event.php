@@ -26,6 +26,8 @@
 
 namespace Calendar\Model;
 
+use Calendar\Dto\Event as EventDto;
+
 /** @phpstan-consistent-constructor */
 class Event
 {
@@ -100,6 +102,23 @@ class Event
         return new self($id, $start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
     }
 
+    public static function fromDto(EventDto $dto): ?self
+    {
+        return self::create(
+            $dto->datestart,
+            $dto->dateend,
+            $dto->starttime,
+            $dto->endtime,
+            $dto->event,
+            $dto->linkadr,
+            $dto->description,
+            $dto->location,
+            $dto->recur,
+            $dto->until,
+            $dto->id
+        );
+    }
+
     private static function createRecurrence(
         string $recurrenceRule,
         LocalDateTime $start,
@@ -137,6 +156,23 @@ class Event
         $this->linktxt = $linktxt;
         $this->location = $location;
         $this->recurrence = $recurrence;
+    }
+
+    public function toDto(): EventDto
+    {
+        $dto = new EventDto();
+        $dto->id = $this->id();
+        $dto->datestart = $this->getIsoStartDate();
+        $dto->dateend = $this->getIsoEndDate();
+        $dto->starttime = $this->getIsoStartTime();
+        $dto->endtime = $this->getIsoEndTime();
+        $dto->event = $this->summary;
+        $dto->linkadr = $this->linkadr;
+        $dto->description = $this->linktxt;
+        $dto->location = $this->location;
+        $dto->recur = $this->recurrence();
+        $dto->until = $this->recursUntil() !== null ? $this->recursUntil()->getIsoDate() : "";
+        return $dto;
     }
 
     public function id(): string
