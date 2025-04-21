@@ -31,8 +31,7 @@ use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\Editor;
 use Calendar\Infra\EventDataService;
 use Calendar\Infra\Html2Text;
-use Calendar\Infra\ICalendarWriter;
-use Calendar\Infra\IcsFileFinder;
+use Calendar\Infra\ICalendarRepo;
 use Plib\CsrfProtector;
 use Plib\Random;
 use Plib\SystemChecker;
@@ -109,9 +108,8 @@ class Dic
     public static function makeIcalImportExportController(): IcalImportExportController
     {
         return new IcalImportExportController(
-            new IcsFileFinder(self::getDataFolder()),
+            new ICalendarRepo(self::getDataFolder(), $_SERVER["HTTP_HOST"], new Html2Text()),
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
-            new ICalendarWriter(self::getDataFolder(), $_SERVER["HTTP_HOST"], new Html2Text()),
             self::view()
         );
     }

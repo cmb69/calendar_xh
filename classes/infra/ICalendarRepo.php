@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) Christoph M. Becker
+ * Copyright 2023 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -21,10 +21,10 @@
 
 namespace Calendar\Infra;
 
-use Calendar\Infra\Html2Text;
 use Calendar\Model\Calendar;
+use DirectoryIterator;
 
-class ICalendarWriter
+class ICalendarRepo
 {
     /** @var string */
     private $folder;
@@ -42,9 +42,40 @@ class ICalendarWriter
         $this->converter = $converter;
     }
 
-    public function write(Calendar $calendar): bool
+    /** @return list<string> */
+    public function all(): array
     {
-        $stream = fopen($this->folder . "calendar.ics", "w");
+        $result = [];
+        foreach (new DirectoryIterator($this->folder) as $file) {
+            if ($file->isFile() && $file->getExtension() === 'ics') {
+                $result[] = $file->getFilename();
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param mixed $count
+     * @phpstan-param-out int $count
+     */
+    public function find(string $name, &$count): Calendar
+    {
+        return Calendar::fromICalendar($this->read($name), $count);
+    }
+
+    /** @return list<string> */
+    private function read(string $filename): array
+    {
+        $lines = file("{$this->folder}$filename", FILE_IGNORE_NEW_LINES);
+        if ($lines === false) {
+            return [];
+        }
+        return $lines;
+    }
+
+    public function write(string $name, Calendar $calendar): bool
+    {
+        $stream = fopen($this->folder . "$name.ics", "w");
         if ($stream === false) {
             return false;
         }

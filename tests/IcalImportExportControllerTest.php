@@ -23,8 +23,8 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use Calendar\Infra\EventDataService;
-use Calendar\Infra\ICalendarWriter;
-use Calendar\Infra\IcsFileFinder;
+use Calendar\Infra\ICalendarRepo;
+use Calendar\Model\Calendar;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
@@ -33,14 +33,11 @@ use Plib\View;
 
 class IcalImportControllerTest extends TestCase
 {
-    /** @var IcsFileFinder&Stub */
-    private $icsFileFinder;
+    /** @var ICalendarRepo&Stub */
+    private $iCalendarRepo;
 
     /** @var EventDataService */
     private $eventDataService;
-
-    /** @var ICalendarWriter&Stub */
-    private $iCalendarWriter;
 
     /** @var View */
     private $view;
@@ -48,25 +45,23 @@ class IcalImportControllerTest extends TestCase
     public function setUp(): void
     {
         vfsStream::setup("root");
-        $this->icsFileFinder = $this->createStub(IcsFileFinder::class);
+        $this->iCalendarRepo = $this->createStub(ICalendarRepo::class);
         $this->eventDataService = new EventDataService(vfsStream::url("root/"), ".");
-        $this->iCalendarWriter = $this->createStub(ICalendarWriter::class);
         $this->view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")['calendar']);
     }
 
     private function sut(): IcalImportExportController
     {
         return new IcalImportExportController(
-            $this->icsFileFinder,
+            $this->iCalendarRepo,
             $this->eventDataService,
-            $this->iCalendarWriter,
             $this->view
         );
     }
 
     public function testDefaultActionsRendersForms()
     {
-        $this->icsFileFinder->method('all')->willReturn(["cal1.ics", "cal2.ics"]);
+        $this->iCalendarRepo->method('all')->willReturn(["cal1.ics", "cal2.ics"]);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&calendar_ignored=2",
         ]);
@@ -77,7 +72,7 @@ class IcalImportControllerTest extends TestCase
 
     public function testImportActionRedirects()
     {
-        $this->icsFileFinder->method('read')->willReturn([]);
+        $this->iCalendarRepo->method('find')->willReturn(new Calendar([]));
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=import_export&action=import",
             "post" => ["calendar_ics" => "foo.ics"],
@@ -91,7 +86,7 @@ class IcalImportControllerTest extends TestCase
 
     public function testSuccessfulExportRedirects()
     {
-        $this->iCalendarWriter->method("write")->willReturn(true);
+        $this->iCalendarRepo->method("write")->willReturn(true);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=import_export&action=export",
             "post" => ["calendar_ics" => "calendar.ics"],
@@ -105,7 +100,7 @@ class IcalImportControllerTest extends TestCase
 
     public function testFailedExportShowsMessage()
     {
-        $this->iCalendarWriter->method("write")->willReturn(false);
+        $this->iCalendarRepo->method("write")->willReturn(false);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=import_export&action=export",
             "post" => ["calendar_ics" => "calendar.ics"],
