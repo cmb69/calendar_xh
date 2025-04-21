@@ -55,7 +55,7 @@ class EventListControllerTest extends TestCase
         $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
         $this->calendarRepo = new CalendarRepo(vfsStream::url("root/"), ".");
-        $this->calendarRepo->save(Calendar::fromEvents([
+        $this->calendarRepo->save(new Calendar([
             $this->lunchBreak(), $this->easter(), $this->birthday()
         ]));
         $this->dateTimeFormatter = new DateTimeFormatter($this->lang);

@@ -65,7 +65,7 @@ class CalendarRepo
         if (file_exists("{$eventfile}.txt")) {
             return $this->findOldCalendar("{$eventfile}.txt");
         }
-        return Calendar::fromEvents([]);
+        return Calendar::fromCsv("", false);
     }
 
     private function findCalendar(string $filename, bool $convertToHtml = false): Calendar
