@@ -19,7 +19,7 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Calendar;
+namespace Calendar\Infra;
 
 class Counter
 {

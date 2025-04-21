@@ -26,6 +26,13 @@
 
 namespace Calendar;
 
+use Calendar\Infra\Counter;
+use Calendar\Infra\DateTimeFormatter;
+use Calendar\Infra\Editor;
+use Calendar\Infra\EventDataService;
+use Calendar\Infra\Html2Text;
+use Calendar\Infra\ICalendarWriter;
+use Calendar\Infra\IcsFileFinder;
 use Plib\CsrfProtector;
 use Plib\Random;
 use Plib\SystemChecker;

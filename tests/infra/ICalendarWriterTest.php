@@ -1,6 +1,6 @@
 <?php
 
-namespace Calendar;
+namespace Calendar\Infra;
 
 use Calendar\Model\Calendar;
 use Calendar\Model\Event;

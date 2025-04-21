@@ -29,6 +29,8 @@ namespace Calendar;
 use Calendar\Dto\BirthdayRow;
 use Calendar\Dto\EventRow;
 use Calendar\Dto\HeaderRow;
+use Calendar\Infra\DateTimeFormatter;
+use Calendar\Infra\EventDataService;
 use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\Event;

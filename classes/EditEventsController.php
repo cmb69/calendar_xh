@@ -26,6 +26,8 @@
 
 namespace Calendar;
 
+use Calendar\Infra\Editor;
+use Calendar\Infra\EventDataService;
 use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\Event;

@@ -22,6 +22,8 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use Calendar\Infra\DateTimeFormatter;
+use Calendar\Infra\EventDataService;
 use Calendar\Model\Event;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;

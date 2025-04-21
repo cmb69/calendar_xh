@@ -24,9 +24,8 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Calendar;
+namespace Calendar\Infra;
 
-use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 
 class EventDataService

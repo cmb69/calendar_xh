@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Calendar\Infra\EventDataService;
 use Plib\Response;
 use Plib\SystemChecker;
 use Plib\View;

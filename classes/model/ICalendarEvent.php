@@ -21,7 +21,7 @@
 
 namespace Calendar\Model;
 
-use Calendar\Html2Text;
+use Calendar\Infra\Html2Text;
 
 trait ICalendarEvent
 {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) Christoph M. Becker
+ * Copyright 2023 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -19,36 +19,39 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Calendar;
+namespace Calendar\Infra;
 
-use Calendar\Model\Calendar;
+use DirectoryIterator;
 
-class ICalendarWriter
+class IcsFileFinder
 {
     /** @var string */
     private $folder;
 
-    /** @var string */
-    private $host;
-
-    /** @var Html2Text */
-    private $converter;
-
-    public function __construct(string $folder, string $host, Html2Text $converter)
+    public function __construct(string $folder)
     {
         $this->folder = $folder;
-        $this->host = $host;
-        $this->converter = $converter;
     }
 
-    public function write(Calendar $calendar): bool
+    /** @return list<string> */
+    public function all(): array
     {
-        $stream = fopen($this->folder . "calendar.ics", "w");
-        if ($stream === false) {
-            return false;
+        $result = [];
+        foreach (new DirectoryIterator($this->folder) as $file) {
+            if ($file->isFile() && $file->getExtension() === 'ics') {
+                $result[] = $file->getFilename();
+            }
         }
-        $written = fwrite($stream, $calendar->toICalendarString($this->converter, $this->host));
-        fclose($stream);
-        return $written !== false;
+        return $result;
+    }
+
+    /** @return list<string> */
+    public function read(string $filename): array
+    {
+        $lines = file("{$this->folder}$filename", FILE_IGNORE_NEW_LINES);
+        if ($lines === false) {
+            return [];
+        }
+        return $lines;
     }
 }

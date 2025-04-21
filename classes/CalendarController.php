@@ -26,6 +26,9 @@
 
 namespace Calendar;
 
+use Calendar\Infra\Counter;
+use Calendar\Infra\DateTimeFormatter;
+use Calendar\Infra\EventDataService;
 use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\CalendarService;

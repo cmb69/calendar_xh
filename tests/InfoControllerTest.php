@@ -22,6 +22,7 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use Calendar\Infra\EventDataService;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeSystemChecker;

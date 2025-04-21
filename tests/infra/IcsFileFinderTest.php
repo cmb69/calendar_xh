@@ -19,7 +19,7 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Calendar;
+namespace Calendar\Infra;
 
 use PHPUnit\Framework\TestCase;
 
@@ -27,14 +27,14 @@ class IcsFileFinderTest extends TestCase
 {
     public function testFindsAllFiles(): void
     {
-        $sut = new IcsFileFinder(__DIR__ . "/ics/");
+        $sut = new IcsFileFinder(__DIR__ . "/../ics/");
         $files = $sut->all();
         $this->assertEquals(["basic.ics"], $files);
     }
 
     public function testReadsLines(): void
     {
-        $sut = new IcsFileFinder(__DIR__ . "/ics/");
+        $sut = new IcsFileFinder(__DIR__ . "/../ics/");
         $lines = $sut->read("basic.ics");
         $expected = [
             'BEGIN:VCALENDAR',

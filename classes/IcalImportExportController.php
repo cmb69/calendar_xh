@@ -21,6 +21,9 @@
 
 namespace Calendar;
 
+use Calendar\Infra\EventDataService;
+use Calendar\Infra\ICalendarWriter;
+use Calendar\Infra\IcsFileFinder;
 use Calendar\Model\Calendar;
 use Plib\Request;
 use Plib\Response;
