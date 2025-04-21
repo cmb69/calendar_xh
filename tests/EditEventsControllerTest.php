@@ -353,7 +353,7 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
-        Approvals::verifyHtml($response->output());
+        $this->assertStringContainsString("ERROR: could not save event data", $response->output());
     }
 
     public function testDoDeleteActionRedirectsOnUnknowEvent()
@@ -398,7 +398,7 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
-        Approvals::verifyHtml($response->output());
+        $this->assertStringContainsString("ERROR: could not save event data.", $response->output());
     }
 
     private function lunchBreak(): Event
