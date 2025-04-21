@@ -72,6 +72,7 @@ $plugin_tx['calendar']['message_ignored_1']="One event could not be imported!";
 $plugin_tx['calendar']['message_ignored_2_4']="%d events could not be imported!";
 $plugin_tx['calendar']['message_ignored_5']="%d events could not be imported!";
 
+$plugin_tx['calendar']['error_invalid_event']="The event is invalid!";
 $plugin_tx['calendar']['error_export']="Could not export to calendar.ics!";
 $plugin_tx['calendar']['error_unauthorized']="You are not authorized for this action!";
 $plugin_tx['calendar']['error_split']="There is no occurrence of the event on this date!";

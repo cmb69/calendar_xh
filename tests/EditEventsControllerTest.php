@@ -184,6 +184,12 @@ class EditEventsControllerTest extends TestCase
             "time" => 1675088820,
             "post" => [
                 "calendar_do" => "",
+                "datestart" => "2023-01-04T12:00",
+                "dateend" => "2023-01-04T13:00",
+                "event" => "Lunch break",
+                "linkadr" => "http://example.com/lunchbreak",
+                "linktxt" => "Tips for lunch breaks",
+                "location" => "whereever I am",
             ],
         ]);
         $response = $this->sut()($request);
@@ -313,6 +319,20 @@ class EditEventsControllerTest extends TestCase
         ]);
         $response = $this->sut()($request);
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+    }
+
+    public function testDoUpdateActionReportsInvalidSubmission()
+    {
+        $this->csrfProtector->expects($this->once())->method("check");
+        $request = new FakeRequest([
+            "url" => "http://example.com/?calendar&admin=plugin_main&action=update&event_id=111",
+            "time" => 1675088820,
+            "post" => [
+                "calendar_do" => "",
+            ],
+        ]);
+        $response = $this->sut()($request);
+        $this->assertStringContainsString("The event is invalid!", $response->output());
     }
 
     public function testDoUpdateActionSavesEventAndRedirectsOnSuccess()

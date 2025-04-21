@@ -306,8 +306,10 @@ class EditEventsController
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
         $id = $request->get("event_id");
-        assert($id !== null); // TODO invalid assertion
         $calendar = $this->calendarRepo->find();
+        if ($id === null || ($calendar->event($id)) === null) {
+            return $this->redirectToOverviewResponse($request);
+        }
         return $this->upsert($request, $calendar->events(), array_key_exists($id, $calendar->events()) ? $id : null);
     }
 
@@ -328,7 +330,8 @@ class EditEventsController
         }
         $event = Event::fromDto($dto);
         if ($event === null) {
-            return $this->redirectToOverviewResponse($request);
+            return $this->respondWith($request, $this->view->message("fail", "error_invalid_event")
+                . $this->renderEditForm($request, $dto, $id, $id !== null ? "create" : "update"));
         }
         $events[$id] = $event;
         // sorting new event inputs, idea of manu, forum-message
