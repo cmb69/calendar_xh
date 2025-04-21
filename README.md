@@ -178,22 +178,12 @@ or on a page:
 To import existing `.ics` files (iCalendar format), you have to put them
 in the `content/calendar/` folder (right besides the `calendar.2.6.csv` file).
 Then navigate to `Plugins` → `Calendar` → `Import/Export` where you can actually
-import the desired file(s). Note that only a very minimalistic import is
-implemented so far.
+import the desired file(s). Note that only a minimal set of iCalendar features
+is supported, roughly matching those of Calendar_XH.
 
 Under `Plugins` → `Calendar` → `Import/Export` you can also export the
 calendar to calendar.ics (iCalendar format).  The file will be created
 in the `content/calendar/` folder (right besides the `calendar.2.6.csv` file).
-
-A serious issue regarding iCalendar import/export is that Calendar_XH does
-not maintain persistent UIDs for the events. When importing, the UIDs of
-iCalendar are ignored, so no synchronization will happen. For instance,
-if you import the same iCalendar twice, all events will be duplicated.
-When exporting, UIDs will be created on the fly; these may, or may not be
-unique. But worse, whenever you edit an event, its UID will change,
-so snychronization will not properly work for users importing your
-`calendar.ics`. Therefore it might be best not to publish exported
-iCalendar files.
 
 ## Troubleshooting
 Report bugs and ask for support either on [Github](https://github.com/cmb69/calendar_xh/issues)

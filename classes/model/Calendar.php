@@ -90,28 +90,57 @@ class Calendar
         return $result;
     }
 
-    public function split(string $id, LocalDateTime $split): bool
+    public function numberOfEventsWithoutId(): int
     {
-        assert(array_key_exists($id, $this->events));
+        $res = 0;
+        foreach ($this->events as $event) {
+            if ($event->id() === "") {
+                $res++;
+            }
+        }
+        return $res;
+    }
+
+    /** @param callable():string $generateId */
+    public function generateIds(callable $generateId): void
+    {
+        foreach ($this->events as $event) {
+            if ($event->id() === "") {
+                $event->setId($generateId());
+            }
+        }
+    }
+
+    /** @param callable():string $generateId */
+    public function split(string $id, ?LocalDateTime $split, callable $generateId): ?string
+    {
+        if (!array_key_exists($id, $this->events) || $split === null) {
+            return null;
+        }
         $event = $this->events[$id];
-        [$prevevent, $event, $nextevent] = $event->split($split);
+        [$prevevent, $event, $nextevent] = $event->split($split, $generateId);
         if ($event === null) {
-            return false;
+            return null;
         }
         unset($this->events[$id]);
         if ($prevevent !== null) {
-            $this->events[uniqid()] = $prevevent;
+            $this->events[$prevevent->id()] = $prevevent;
         }
-        $this->events[uniqid()] = $event;
+        $this->events[$event->id()] = $event;
         if ($nextevent !== null) {
-            $this->events[uniqid()] = $nextevent;
+            $this->events[$nextevent->id()] = $nextevent;
         }
-        return true;
+        return $event->id();
     }
 
     public function delete(string $id): void
     {
         assert(array_key_exists($id, $this->events));
         unset($this->events[$id]);
+    }
+
+    public function import(Calendar $other): void
+    {
+        $this->events = array_replace($this->events, $other->events);
     }
 }

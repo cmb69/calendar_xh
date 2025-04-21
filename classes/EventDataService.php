@@ -85,7 +85,6 @@ class EventDataService
                 if (!$this->validateRecord($record)) {
                     continue;
                 }
-                $id = md5(serialize($record));
                 [$datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt] = $record;
                 if (!$dateend) {
                     $dateend = null;
@@ -95,6 +94,8 @@ class EventDataService
                 }
                 $recurrenceRule = count($record) > 8 ? $record[8] : "";
                 $until = count($record) > 9 ? $record[9] : "";
+                $uid = count($record) > 10 && trim($record[10]) !== "" ? $record[10] : "";
+                $id = $uid ?: sha1(serialize($record));
                 if ($convertToHtml) {
                     $linktxt = XH_hsc($linktxt);
                     if ($linkadr) {
@@ -117,7 +118,8 @@ class EventDataService
                         $linktxt,
                         $location,
                         $recurrenceRule,
-                        $until
+                        $until,
+                        $uid
                     );
                     if ($maybeEvent !== null) {
                         $result[$id] = $maybeEvent;
@@ -153,7 +155,7 @@ class EventDataService
         if ($stream = fopen($eventfile, 'r')) {
             flock($stream, LOCK_SH);
             while (($line = fgets($stream)) !== false) {
-                $id = md5($line);
+                $id = sha1($line);
                 list($eventdates, $event, $location, $link, $starttime) = explode(';', rtrim($line));
                 if (strpos($eventdates, ',') !== false) {
                     list($datestart, $dateend, $endtime) = explode(',', $eventdates);
@@ -193,6 +195,7 @@ class EventDataService
                         $linkadr,
                         $linktxt,
                         $location,
+                        "",
                         "",
                         ""
                     );
@@ -252,6 +255,7 @@ class EventDataService
             $event->linktxt(),
             $event->recurrence() === "none" ? "" : $event->recurrence(),
             $event->recursUntil() !== null ? $event->recursUntil()->getIsoDate() : "",
+            $event->id(),
         ];
         return fputcsv($fp, $record, ';', '"', "\0") !== false;
     }

@@ -60,6 +60,7 @@ class ICalendarWriterTest extends TestCase
             "Tips for lunch breaks",
             "whereever I am",
             "",
+            "",
             ""
         );
     }
@@ -72,6 +73,7 @@ class ICalendarWriterTest extends TestCase
             "",
             "",
             "Weekend",
+            "",
             "",
             "",
             "",
@@ -91,6 +93,7 @@ class ICalendarWriterTest extends TestCase
             "",
             "",
             "###",
+            "",
             "",
             ""
         );

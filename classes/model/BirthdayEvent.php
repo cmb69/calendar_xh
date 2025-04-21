@@ -32,6 +32,7 @@ class BirthdayEvent extends Event
     private $age = 0;
 
     public function __construct(
+        string $id,
         LocalDateTime $start,
         LocalDateTime $end,
         string $summary,
@@ -40,6 +41,7 @@ class BirthdayEvent extends Event
         string $location
     ) {
         parent::__construct(
+            $id,
             $start,
             $end,
             $summary,

@@ -27,6 +27,7 @@
 namespace Calendar;
 
 use Plib\CsrfProtector;
+use Plib\Random;
 use Plib\SystemChecker;
 use Plib\View;
 
@@ -80,6 +81,7 @@ class Dic
             $plugin_cf["calendar"],
             new EventDataService(self::getDataFolder(), self::getDpSeparator()),
             new CsrfProtector(),
+            new Random(),
             new Editor(),
             self::view()
         );

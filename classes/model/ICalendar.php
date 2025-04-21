@@ -65,9 +65,11 @@ trait ICalendar
                         $event->location,
                         $event->recur,
                         $event->until,
+                        $event->id
                     );
                     if ($maybeEvent !== null) {
-                        $that->events[md5(serialize($event))] = $maybeEvent;
+                        $id = $event->id ?: sha1(serialize($event));
+                        $that->events[$id] = $maybeEvent;
                     }
                 } else {
                     self::processPropertyLine($currentLine, $event);
@@ -89,6 +91,9 @@ trait ICalendar
         assert($property !== null);
         assert($value !== null);
         switch ($property) {
+            case 'UID':
+                $event->id = $value;
+                return;
             case 'SUMMARY':
                 $event->event = $value;
                 return;

@@ -189,7 +189,8 @@ Um vorhandene `.ics` Dateien (iCalendar-Format) zu importieren, müssen
 diese zunächst im `content/calendar/` Ordner (neben der `calendar.2.6.csv` Datei)
 abgelegt werden. Unter `Plugins` → `Calendar` → `Import` kann dann der
 eigentliche Import der Datei(en) durchgeführt werden.
-Es ist zu beachten, dass bislang nur ein sehr minimalistischer Import implementiert ist.
+Es ist zu beachten, dass nur eine kleiner Teil der iCalendar-Features
+unterstützt wird, in etwa das, was Calendar_XH bietet.
 
 Unter `Plugins` → `Calendar` → `Import/Export` können Sie ebenfalls den
 Kalender nach calendar.ics (iCalendar-Format) exportieren.  Die Datei wird

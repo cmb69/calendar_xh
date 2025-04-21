@@ -27,7 +27,9 @@ require_once './vendor/autoload.php';
 
 require_once '../../cmsimple/functions.php';
 
+require_once "../plib/classes/Codec.php";
 require_once "../plib/classes/CsrfProtector.php";
+require_once "../plib/classes/Random.php";
 require_once "../plib/classes/Request.php";
 require_once "../plib/classes/Response.php";
 require_once "../plib/classes/SystemChecker.php";

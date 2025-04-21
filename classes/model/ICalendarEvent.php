@@ -27,8 +27,9 @@ trait ICalendarEvent
 {
     public function toICalendarString(string $id, Html2Text $converter, string $host): string
     {
+        $id = $this->id !== "" ? $this->id : "$id@$host";
         $res = "BEGIN:VEVENT\r\n"
-            . "UID:$id@$host\r\n";
+            . "UID:$id\r\n";
         $res .= $this->getDtstart() . "\r\n";
         $res .= $this->getDtend() . "\r\n";
         if (!($this->recurrence() === "none")) {

@@ -44,6 +44,7 @@ $plugin_tx['calendar']['eventfile_saved']="Changes in event data saved . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="ERROR: could not save event data.";
 
 $plugin_tx['calendar']['label_new']="New";
+$plugin_tx['calendar']['label_ids']="Generate IDs";
 $plugin_tx['calendar']['label_edit']="Edit";
 $plugin_tx['calendar']['label_edit_single']="Edit single occurrence";
 $plugin_tx['calendar']['label_delete']="Delete";
@@ -61,6 +62,11 @@ $plugin_tx['calendar']['label_recur_weekly']="weekly";
 $plugin_tx['calendar']['label_recur_yearly']="yearly";
 $plugin_tx['calendar']['label_recur_until']="until";
 
+$plugin_tx['calendar']['message_ids_0']="All events have an ID.";
+$plugin_tx['calendar']['message_ids_1']="There is one event without ID.";
+$plugin_tx['calendar']['message_ids_2_4']="There are %d events without ID.";
+$plugin_tx['calendar']['message_ids_5']="There are %d events without ID.";
+$plugin_tx['calendar']['message_generate_ids']="Do you want to generate the missing IDs?";
 $plugin_tx['calendar']['message_ignored_0']="All events have been imported!";
 $plugin_tx['calendar']['message_ignored_1']="One event could not be imported!";
 $plugin_tx['calendar']['message_ignored_2_4']="%d events could not be imported!";

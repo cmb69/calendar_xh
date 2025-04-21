@@ -44,6 +44,7 @@ $plugin_tx['calendar']['eventfile_saved']="Geänderte Veranstaltungsdaten gespei
 $plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen konnten NICHT gespeichert werden.";
 
 $plugin_tx['calendar']['label_new']="Neu";
+$plugin_tx['calendar']['label_ids']="IDs erzeugen";
 $plugin_tx['calendar']['label_edit']="Bearbeiten";
 $plugin_tx['calendar']['label_edit_single']="Einzel-Veranstaltung bearbeiten";
 $plugin_tx['calendar']['label_delete']="Löschen";
@@ -61,6 +62,11 @@ $plugin_tx['calendar']['label_recur_weekly']="wöchentlich";
 $plugin_tx['calendar']['label_recur_yearly']="jährlich";
 $plugin_tx['calendar']['label_recur_until']="bis";
 
+$plugin_tx['calendar']['message_ids_0']="Alle Veranstaltungen haben eine ID.";
+$plugin_tx['calendar']['message_ids_1']="Eine Veranstaltung hat keine ID.";
+$plugin_tx['calendar']['message_ids_2_4']="%d Veranstaltungen haben keine ID.";
+$plugin_tx['calendar']['message_ids_5']="%d Veranstaltungen haben keine ID.";
+$plugin_tx['calendar']['message_generate_ids']="Möchten Sie die fehlenden IDs erzeugen?";
 $plugin_tx['calendar']['message_ignored_0']="Alle Veranstaltungen wurden importiert!";
 $plugin_tx['calendar']['message_ignored_1']="Eine Veranstaltung konnte nicht importiert werden!";
 $plugin_tx['calendar']['message_ignored_2_4']="%d Veranstaltungen konnten nicht importiert werden!";

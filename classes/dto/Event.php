@@ -24,6 +24,9 @@ namespace Calendar\Dto;
 class Event
 {
     /** @var string */
+    public $id = "";
+
+    /** @var string */
     public $datestart = "";
 
     /** @var string */

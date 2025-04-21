@@ -31,6 +31,9 @@ class Event
 {
     use ICalendarEvent;
 
+    /** @var string */
+    private $id = "";
+
     /** @var LocalDateTime */
     private $start;
 
@@ -62,7 +65,8 @@ class Event
         string $linktxt,
         string $location,
         string $recurrenceRule,
-        string $until
+        string $until,
+        string $id
     ): ?self {
         if (!$dateend) {
             if ($endtime) {
@@ -89,10 +93,10 @@ class Event
             return null;
         }
         if (trim($location) === "###") {
-            return new BirthdayEvent($start, $end, $summary, $linkadr, $linktxt, $location);
+            return new BirthdayEvent($id, $start, $end, $summary, $linkadr, $linktxt, $location);
         }
         $recurrence = self::createRecurrence($recurrenceRule, $start, $end, $until);
-        return new self($start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
+        return new self($id, $start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
     }
 
     private static function createRecurrence(
@@ -115,6 +119,7 @@ class Event
     }
 
     public function __construct(
+        string $id,
         LocalDateTime $start,
         LocalDateTime $end,
         string $summary,
@@ -123,6 +128,7 @@ class Event
         string $location,
         Recurrence $recurrence
     ) {
+        $this->id = $id;
         $this->start = $start;
         $this->end = $end;
         $this->summary = $summary;
@@ -130,6 +136,16 @@ class Event
         $this->linktxt = $linktxt;
         $this->location = $location;
         $this->recurrence = $recurrence;
+    }
+
+    public function id(): string
+    {
+        return $this->id;
+    }
+
+    public function setId(string $id): void
+    {
+        $this->id = $id;
     }
 
     public function start(): LocalDateTime
@@ -253,6 +269,7 @@ class Event
         $duration = $this->end()->diff($this->start());
         $end = $start->plus($duration);
         return new static(
+            "",
             $start,
             $end,
             $this->summary,
@@ -263,12 +280,16 @@ class Event
         );
     }
 
-    /** @return array{?Event,?Event,?Event} */
-    public function split(LocalDateTime $date): array
+    /**
+     * @param callable():string $generateId
+     * @return array{?Event,?Event,?Event}
+     */
+    public function split(LocalDateTime $date, callable $generateId): array
     {
         [$prevrec, $rec, $nextrec] = $this->recurrence->split($date);
         if ($prevrec !== null) {
             $prevevent = clone $this;
+            $prevevent->id = $generateId();
             $prevevent->start = $prevrec->start();
             $prevevent->end = $prevrec->end();
             $prevevent->recurrence = $prevrec;
@@ -277,6 +298,7 @@ class Event
         }
         if ($rec !== null) {
             $event = clone $this;
+            $event->id = $generateId();
             $event->start = $rec->start();
             $event->end = $rec->end();
             $event->recurrence = $rec;
@@ -285,6 +307,7 @@ class Event
         }
         if ($nextrec !== null) {
             $nextevent = clone $this;
+            $nextevent->id = $generateId();
             $nextevent->start = $nextrec->start();
             $nextevent->end = $nextrec->end();
             $nextevent->recurrence = $nextrec;

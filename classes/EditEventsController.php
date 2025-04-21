@@ -27,10 +27,13 @@
 namespace Calendar;
 
 use Calendar\Model\BirthdayEvent;
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Calendar\Model\NoRecurrence;
+use Plib\Codec;
 use Plib\CsrfProtector;
+use Plib\Random;
 use Plib\Request;
 use Plib\Response;
 use Plib\View;
@@ -49,6 +52,9 @@ class EditEventsController
     /** @var CsrfProtector */
     private $csrfProtector;
 
+    /** @var Random */
+    private $random;
+
     /** @var Editor */
     private $editor;
 
@@ -61,6 +67,7 @@ class EditEventsController
         array $config,
         EventDataService $eventDataService,
         CsrfProtector $csrfProtector,
+        Random $random,
         Editor $editor,
         View $view
     ) {
@@ -68,6 +75,7 @@ class EditEventsController
         $this->config = $config;
         $this->eventDataService = $eventDataService;
         $this->csrfProtector = $csrfProtector;
+        $this->random = $random;
         $this->editor = $editor;
         $this->view = $view;
     }
@@ -78,6 +86,8 @@ class EditEventsController
         switch ($request->get("action") ?? "") {
             case "create":
                 return !$do ? $this->createAction($request) : $this->doCreateAction($request);
+            case "generate_ids":
+                return !$do ? $this->generateIds($request) : $this->doGenerateIdsAction($request);
             case "edit_single":
                 return !$do ? $this->editSingleAction($request) : $this->doEditSingleAction($request);
             case "update":
@@ -119,6 +129,12 @@ class EditEventsController
     {
         $event = $this->createDefaultEvent($request);
         return $this->respondWith($request, $this->renderEditForm($request, $event, null, "create"));
+    }
+
+    private function generateIds(Request $request): Response
+    {
+        $calendar = $this->eventDataService->readEvents();
+        return $this->respondWith($request, $this->renderGenerateIdsForm($request, $calendar));
     }
 
     private function editSingleAction(Request $request): Response
@@ -194,6 +210,14 @@ class EditEventsController
         return $res;
     }
 
+    private function renderGenerateIdsForm(Request $request, Calendar $calendar): string
+    {
+        return $this->view->render("generate_ids", [
+            "csrf_token" => $this->csrfProtector->token(),
+            "count" => $calendar->numberOfEventsWithoutId(),
+        ]);
+    }
+
     private function renderEditSingleForm(Request $request, Event $event, string $id): string
     {
         $url = $request->url()->with("admin", "plugin_main")->with("action", "edit_single")->with("event_id", $id);
@@ -228,6 +252,22 @@ class EditEventsController
         return $this->upsert($request, $calendar->events(), null);
     }
 
+    private function doGenerateIdsAction(Request $request): Response
+    {
+        if (!$this->csrfProtector->check($request->post("calendar_token"))) {
+            return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
+        }
+        $calendar = $this->eventDataService->readEvents();
+        $calendar->generateIds(function (): string {
+            return Codec::encodeBase32hex($this->random->bytes(15));
+        });
+        if (!$this->eventDataService->writeEvents($calendar->events())) {
+            return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
+                . $this->renderGenerateIdsForm($request, $calendar));
+        }
+        return $this->redirectToOverviewResponse($request);
+    }
+
     private function doEditSingleAction(Request $request): Response
     {
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
@@ -239,7 +279,10 @@ class EditEventsController
             return $this->redirectToOverviewResponse($request);
         }
         $date = LocalDateTime::fromIsoString($request->post("editdate") . "T00:00");
-        if ($date === null || !$calendar->split($id, $date)) {
+        $splitId = $calendar->split($id, $date, function (): string {
+            return Codec::encodeBase32hex($this->random->bytes(15));
+        });
+        if (!$splitId) {
             return $this->respondWith($request, $this->view->message("fail", "error_split")
                 . $this->renderEditSingleForm($request, $event, $id));
         }
@@ -248,7 +291,8 @@ class EditEventsController
                 . $this->renderEditSingleForm($request, $event, $id));
         }
         // TODO redirect to split event?
-        return $this->redirectToOverviewResponse($request);
+        $url = $request->url()->with("action", "update")->with("event_id", $splitId);
+        return Response::redirect($url->absolute());
     }
 
     private function doUpdateAction(Request $request): Response
@@ -293,7 +337,7 @@ class EditEventsController
         }
     }
 
-    /** @return array{datestart:string,dateend:string,starttime:string,endtime:string,event:string,linkadr:string,linktxt:string,location:string,recur:string,until:string} */
+    /** @return array{datestart:string,dateend:string,starttime:string,endtime:string,event:string,linkadr:string,linktxt:string,location:string,recur:string,until:string,id:string} */
     private function eventPost(Request $request): array
     {
         $datetime = explode("T", $request->post("datestart") ?? "", 2);
@@ -317,6 +361,7 @@ class EditEventsController
             "location" => $request->post("location") ?? "",
             "recur" => $request->post("recur") ?? "",
             "until" => $request->post("until") ?? "",
+            "id" => "",
         ];
     }
 
@@ -374,6 +419,7 @@ class EditEventsController
             '',
             '',
             '',
+            "",
             "",
             ""
         );

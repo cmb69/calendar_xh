@@ -111,9 +111,8 @@
 <p>or on a page:</p>
 <pre><code>{{{nextevent()}}}</code></pre>
 <h3 id="importexport">Import/Export</h3>
-<p>To import existing <code>.ics</code> files (iCalendar format), you have to put them in the <code>content/calendar/</code> folder (right besides the <code>calendar.2.6.csv</code> file). Then navigate to <code>Plugins</code> → <code>Calendar</code> → <code>Import/Export</code> where you can actually import the desired file(s). Note that only a very minimalistic import is implemented so far.</p>
+<p>To import existing <code>.ics</code> files (iCalendar format), you have to put them in the <code>content/calendar/</code> folder (right besides the <code>calendar.2.6.csv</code> file). Then navigate to <code>Plugins</code> → <code>Calendar</code> → <code>Import/Export</code> where you can actually import the desired file(s). Note that only a minimal set of iCalendar features is supported, roughly matching those of Calendar_XH.</p>
 <p>Under <code>Plugins</code> → <code>Calendar</code> → <code>Import/Export</code> you can also export the calendar to calendar.ics (iCalendar format). The file will be created in the <code>content/calendar/</code> folder (right besides the <code>calendar.2.6.csv</code> file).</p>
-<p>A serious issue regarding iCalendar import/export is that Calendar_XH does not maintain persistent UIDs for the events. When importing, the UIDs of iCalendar are ignored, so no synchronization will happen. For instance, if you import the same iCalendar twice, all events will be duplicated. When exporting, UIDs will be created on the fly; these may, or may not be unique. But worse, whenever you edit an event, its UID will change, so snychronization will not properly work for users importing your <code>calendar.ics</code>. Therefore it might be best not to publish exported iCalendar files.</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>Report bugs and ask for support either on <a href="https://github.com/cmb69/calendar_xh/issues">Github</a> or in the <a href="https://cmsimpleforum.com/">CMSimple_XH Forum</a>.</p>
 <h2 id="license">License</h2>
