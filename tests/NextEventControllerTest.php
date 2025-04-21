@@ -31,6 +31,9 @@ use Plib\View;
 class NextEventControllerTest extends TestCase
 {
     /** @var array<string,string> */
+    private $conf;
+
+    /** @var array<string,string> */
     private $lang;
 
     /** @var EventDataService&Stub */
@@ -44,6 +47,7 @@ class NextEventControllerTest extends TestCase
 
     public function setUp(): void
     {
+        $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->lang = XH_includeVar("./languages/en.php", 'plugin_tx')["calendar"];
         $this->eventDataService = $this->createStub(EventDataService::class);
         $this->dateTimeFormatter = new DateTimeFormatter($this->lang);
@@ -52,8 +56,7 @@ class NextEventControllerTest extends TestCase
 
     private function sut(): NextEventController
     {
-        $orientation = XH_includeVar("./config/config.php", "plugin_cf")["calendar"]["nextevent_orientation"];
-        return new NextEventController($orientation, $this->eventDataService, $this->dateTimeFormatter, $this->view);
+        return new NextEventController($this->conf, $this->eventDataService, $this->dateTimeFormatter, $this->view);
     }
 
     public function testRendersNoEvent(): void

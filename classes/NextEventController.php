@@ -34,8 +34,8 @@ use Plib\View;
 
 class NextEventController
 {
-    /** @var string */
-    private $orientation;
+    /** @var array<string,string> */
+    private $conf;
 
     /** @var EventDataService */
     private $eventDataService;
@@ -46,13 +46,14 @@ class NextEventController
     /** @var View */
     private $view;
 
+    /** @param array<string,string> $conf */
     public function __construct(
-        string $orientation,
+        array $conf,
         EventDataService $eventDataService,
         DateTimeFormatter $dateTimeFormatter,
         View $view
     ) {
-        $this->orientation = $orientation;
+        $this->conf = $conf;
         $this->eventDataService = $eventDataService;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
@@ -106,7 +107,7 @@ class NextEventController
             'location' => $nextevent instanceof BirthdayEvent
                 ? $this->view->plain("birthday_text")
                 : $nextevent->location(),
-            'class' => $this->orientation === "horizontal" ? "calendar_horizontal" : "",
+            'class' => $this->conf["nextevent_orientation"] === "horizontal" ? "calendar_horizontal" : "",
         ]);
     }
 }
