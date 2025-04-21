@@ -25,7 +25,7 @@ trait CsvCalendar
 {
     public static function fromCsv(string $contents, bool $convertToHtml): self
     {
-        $that = new Calendar([]);
+        $that = new self([]);
         $stream = fopen("php://memory", "w+");
         if ($stream === false) {
             return $that;

@@ -26,7 +26,7 @@ trait TextCalendar
     /** @param non-empty-string $separator */
     public static function fromText(string $contents, string $separator): self
     {
-        $that = new Calendar([]);
+        $that = new self([]);
         $lines = explode("\n", $contents);
         foreach ($lines as $line) {
             $line = rtrim($line);
