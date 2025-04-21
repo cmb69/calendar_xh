@@ -38,4 +38,21 @@ class CalendarTest extends TestCase
         $this->assertSame("Digitale Reise Bubenheim", $third->linktxt());
         $this->assertSame("55270 Bubenheim Schulstraße 2 Dorfgemeinschaftshaus ", $third->location());
     }
+
+    public function testConvertLegacyFormat(): void
+    {
+        $text = <<<EOT
+            04.03.2025,04.03.2025,13:00;Lunch Break;here;http://example.com/,Lunch break tips;12:00
+            05.03.2025;Calendar_XH Release;Wonderland;int:Start;
+            06.03.1950;Schorsch;###;ext:example.com/Schorsch;
+            EOT;
+        $csv = <<<EOT
+            2025-03-04;12:00;2025-03-04;13:00;"Lunch Break";here;http://example.com/;"http://example.com/;Lunch break tips";;;
+            2025-03-05;;2025-03-05;;"Calendar_XH Release";Wonderland;?Start;;;;
+            1950-03-06;;1950-03-06;;Schorsch;###;http://example.com/Schorsch;;yearly;;
+
+            EOT;
+        $actual = Calendar::fromText($text, ".")->toCsvString();
+        $this->assertSame($csv, $actual);
+    }
 }
