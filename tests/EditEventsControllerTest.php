@@ -39,7 +39,7 @@ class EditEventsControllerTest extends TestCase
     /** @var array<string,string> */
     private $conf;
 
-    /** @var EventDataService|EventDataService&MockObject */
+    /** @var EventDataService */
     private $eventDataService;
 
     /** @var CsrfProtector&MockObject */
@@ -127,8 +127,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testSingleActionRendersEditSingleForm()
     {
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
+        $this->eventDataService->writeEvents(["222" => $this->christmas("222")]);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=edit_single&event_id=222",
         ]);
@@ -206,8 +205,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoGenerateIdsActionReportsFailureToSave(): void
     {
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("writeEvents")->willReturn(false);
+        vfsStream::setQuota(0);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=generate_ids",
             "post" => [
@@ -270,9 +268,8 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoEditSingleActionReportsFailureToSave(): void
     {
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
-        $this->eventDataService->method("writeEvents")->willReturn(false);
+        $this->eventDataService->writeEvents(["222" => $this->christmas("222")]);
+        vfsStream::setQuota(0);
         $this->random->method("bytes")->willReturnOnConsecutiveCalls("11111", "11112", "11113");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
@@ -287,9 +284,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoEditSingleActionRedirectsOnSuccess(): void
     {
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
-        $this->eventDataService->method("writeEvents")->willReturn(true);
+        $this->eventDataService->writeEvents(["222" => $this->christmas("222")]);
         $this->random->method("bytes")->willReturnOnConsecutiveCalls("11111", "11112", "11113");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
@@ -343,10 +338,7 @@ class EditEventsControllerTest extends TestCase
     public function testDoUpdateActionShowsErrorOnFailureToUpdateEvent()
     {
         $this->csrfProtector->expects($this->once())->method("check");
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
-        $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
-            ->willReturn(false);
+        vfsStream::setQuota(0);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=update&event_id=111",
             "time" => 1675088820,
@@ -396,9 +388,8 @@ class EditEventsControllerTest extends TestCase
     public function testDoDeleteActionShowsErrorOnFailureToDeleteEvent()
     {
         $this->csrfProtector->expects($this->once())->method("check");
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
-        $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(false);
+        $this->eventDataService->writeEvents(["111" => $this->lunchBreak(), "222" => $this->christmas()]);
+        vfsStream::setQuota(0);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=delete&event_id=111",
             "time" => 1675088820,
@@ -427,8 +418,8 @@ class EditEventsControllerTest extends TestCase
         );
     }
 
-    private function christmas(): Event
+    private function christmas(string $id = ""): Event
     {
-        return Event::create("2020-12-25", "2020-12-26", "", "", "Christmas", "", "", "", "yearly", "", "");
+        return Event::create("2020-12-25", "2020-12-26", "", "", "Christmas", "", "", "", "yearly", "", $id);
     }
 }
