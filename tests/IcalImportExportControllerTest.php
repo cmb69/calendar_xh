@@ -25,6 +25,7 @@ use ApprovalTests\Approvals;
 use Calendar\Infra\EventDataService;
 use Calendar\Infra\ICalendarWriter;
 use Calendar\Infra\IcsFileFinder;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
@@ -35,7 +36,7 @@ class IcalImportControllerTest extends TestCase
     /** @var IcsFileFinder&Stub */
     private $icsFileFinder;
 
-    /** @var EventDataService&Stub */
+    /** @var EventDataService */
     private $eventDataService;
 
     /** @var ICalendarWriter&Stub */
@@ -46,9 +47,9 @@ class IcalImportControllerTest extends TestCase
 
     public function setUp(): void
     {
+        vfsStream::setup("root");
         $this->icsFileFinder = $this->createStub(IcsFileFinder::class);
-        $this->eventDataService = $this->createStub(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn([]);
+        $this->eventDataService = new EventDataService(vfsStream::url("root/"), ".");
         $this->iCalendarWriter = $this->createStub(ICalendarWriter::class);
         $this->view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")['calendar']);
     }

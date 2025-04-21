@@ -26,7 +26,7 @@ use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\EventDataService;
 use Calendar\Model\Event;
-use PHPUnit\Framework\MockObject\Stub;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
 use Plib\View;
@@ -39,7 +39,7 @@ class CalendarControllerTest extends TestCase
     /** @var array<string,string */
     private $lang;
 
-    /** @var EventDataService&Stub */
+    /** @var EventDataService */
     private $eventDataService;
 
     /** @var DateTimeFormatter */
@@ -53,10 +53,11 @@ class CalendarControllerTest extends TestCase
 
     public function setUp(): void
     {
+        vfsStream::setup();
         $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
-        $this->eventDataService = $this->createStub(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn([
+        $this->eventDataService = new EventDataService(vfsStream::url("root/"), ".");
+        $this->eventDataService->writeEvents([
             $this->lunchBreak(), $this->weekend(), $this->birthday()
         ]);
         $this->dateTimeFormatter = new DateTimeFormatter($this->lang);

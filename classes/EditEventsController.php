@@ -317,6 +317,9 @@ class EditEventsController
         if (!$this->isValidDate($post["dateend"])) {
             $post["dateend"] = "";
         }
+        if ($id !== null) {
+            $post["id"] = $id;
+        }
         $maybeEvent = Event::create(...array_values($post));
         if ($maybeEvent === null) {
             return $this->redirectToOverviewResponse($request);

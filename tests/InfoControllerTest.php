@@ -23,7 +23,7 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use Calendar\Infra\EventDataService;
-use PHPUnit\Framework\MockObject\Stub;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeSystemChecker;
 use Plib\SystemChecker;
@@ -31,7 +31,7 @@ use Plib\View;
 
 class InfoControllerTest extends TestCase
 {
-    /** @var EventDataService&Stub */
+    /** @var EventDataService */
     private $dataService;
 
     /** @var SystemChecker */
@@ -42,8 +42,8 @@ class InfoControllerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->dataService = $this->createStub(EventDataService::class);
-        $this->dataService->method("getFilename")->willReturn("./content/calendar/calendar.csv");
+        vfsStream::setup("root");
+        $this->dataService = new EventDataService(vfsStream::url("root/"), ".");
         $this->systemChecker = new FakeSystemChecker(true);
         $this->view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
     }

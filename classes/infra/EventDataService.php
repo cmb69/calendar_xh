@@ -26,6 +26,7 @@
 
 namespace Calendar\Infra;
 
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 
 class EventDataService

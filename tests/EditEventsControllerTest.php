@@ -25,6 +25,7 @@ use ApprovalTests\Approvals;
 use Calendar\Infra\Editor;
 use Calendar\Infra\EventDataService;
 use Calendar\Model\Event;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +39,7 @@ class EditEventsControllerTest extends TestCase
     /** @var array<string,string> */
     private $conf;
 
-    /** @var EventDataService&MockObject */
+    /** @var EventDataService|EventDataService&MockObject */
     private $eventDataService;
 
     /** @var CsrfProtector&MockObject */
@@ -55,9 +56,10 @@ class EditEventsControllerTest extends TestCase
 
     public function setUp(): void
     {
+        vfsStream::setup("root");
         $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
+        $this->eventDataService = new EventDataService(vfsStream::url("root/"), ".");
+        $this->eventDataService->writeEvents(["111" => $this->lunchBreak()]);
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
         $this->csrfProtector->method("token")->willReturn("42881056d048537da0e061f7f672854b");
         $this->csrfProtector->method("check")->willReturn(true);
@@ -97,6 +99,7 @@ class EditEventsControllerTest extends TestCase
 
     public function testGenerateIdsActionRendersForm()
     {
+        $this->eventDataService->writeEvents([$this->christmas()]);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=generate_ids",
         ]);
@@ -106,8 +109,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testSingleActionRedirectsOnUnknownEvent()
     {
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=edit_single&event_id=invalid%20id",
         ]);
@@ -206,7 +207,6 @@ class EditEventsControllerTest extends TestCase
     public function testDoGenerateIdsActionReportsFailureToSave(): void
     {
         $this->eventDataService = $this->createMock(EventDataService::class);
-        // $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
         $this->eventDataService->method("writeEvents")->willReturn(false);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=generate_ids",
@@ -220,9 +220,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoGenerateIdsActionRedirectsOnSuccess(): void
     {
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        // $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
-        $this->eventDataService->method("writeEvents")->willReturn(true);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=generate_ids",
             "post" => [
@@ -249,8 +246,6 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoEditSingleActionRedirectsOnInvalidEvent(): void
     {
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=invalid%20id",
             "post" => [
@@ -263,10 +258,8 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoEditSingleActionReportsFailureToSplit(): void
     {
-        $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
         $request = new FakeRequest([
-            "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
+            "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=111",
             "post" => [
                 "calendar_do" => "",
             ],
@@ -329,8 +322,6 @@ class EditEventsControllerTest extends TestCase
     public function testDoUpdateActionSavesEventAndRedirectsOnSuccess()
     {
         $this->csrfProtector->expects($this->once())->method("check");
-        $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
-            ->willReturn(true);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=update&event_id=111",
             "time" => 1675088820,
@@ -345,12 +336,15 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
+        $this->assertArrayHasKey("111", $this->eventDataService->readEvents());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoUpdateActionShowsErrorOnFailureToUpdateEvent()
     {
         $this->csrfProtector->expects($this->once())->method("check");
+        $this->eventDataService = $this->createMock(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
         $this->eventDataService->expects($this->once())->method("writeEvents")->with(["111" => $this->lunchBreak()])
             ->willReturn(false);
         $request = new FakeRequest([
@@ -387,7 +381,6 @@ class EditEventsControllerTest extends TestCase
     public function testDoDeleteActionDeletesEventAndRedirectsOnSuccess()
     {
         $this->csrfProtector->expects($this->once())->method("check");
-        $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(true);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=delete&event_id=111",
             "time" => 1675088820,
@@ -396,12 +389,15 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
+        $this->assertEmpty($this->eventDataService->readEvents());
         $this->assertEquals("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
     }
 
     public function testDoDeleteActionShowsErrorOnFailureToDeleteEvent()
     {
         $this->csrfProtector->expects($this->once())->method("check");
+        $this->eventDataService = $this->createMock(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
         $this->eventDataService->expects($this->once())->method("writeEvents")->with([])->willReturn(false);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=delete&event_id=111",
@@ -427,7 +423,7 @@ class EditEventsControllerTest extends TestCase
             "whereever I am",
             "",
             "",
-            ""
+            "111"
         );
     }
 
