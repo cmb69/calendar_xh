@@ -22,9 +22,7 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
-use Calendar\Model\Calendar;
 use Calendar\Model\Event;
-use Calendar\Model\LocalDateTime;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
@@ -32,12 +30,30 @@ use Plib\View;
 
 class NextEventControllerTest extends TestCase
 {
+    /** @var array<string,string> */
+    private $lang;
+
     /** @var EventDataService&Stub */
     private $eventDataService;
 
+    /** @var DateTimeFormatter */
+    private $dateTimeFormatter;
+
+    /** @var View */
+    private $view;
+
     public function setUp(): void
     {
+        $this->lang = XH_includeVar("./languages/en.php", 'plugin_tx')["calendar"];
         $this->eventDataService = $this->createStub(EventDataService::class);
+        $this->dateTimeFormatter = new DateTimeFormatter($this->lang);
+        $this->view = new View("./views/", $this->lang);
+    }
+
+    private function sut(): NextEventController
+    {
+        $orientation = XH_includeVar("./config/config.php", "plugin_cf")["calendar"]["nextevent_orientation"];
+        return new NextEventController($orientation, $this->eventDataService, $this->dateTimeFormatter, $this->view);
     }
 
     public function testRendersNoEvent(): void
@@ -94,16 +110,6 @@ class NextEventControllerTest extends TestCase
         $request = new FakeRequest(["time" => strtotime("2021-03-25T12:34:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
-    }
-
-    private function sut(): NextEventController
-    {
-        $plugin_tx = XH_includeVar("./languages/en.php", 'plugin_tx');
-        $lang = $plugin_tx['calendar'];
-        $orientation = XH_includeVar("./config/config.php", "plugin_cf")["calendar"]["nextevent_orientation"];
-        $dateTimeFormatter = new DateTimeFormatter($lang);
-        $view = new View("./views/", $lang);
-        return new NextEventController($orientation, $this->eventDataService, $dateTimeFormatter, $view);
     }
 
     private function cmb(): Event

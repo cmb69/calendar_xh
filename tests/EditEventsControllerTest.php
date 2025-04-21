@@ -22,7 +22,6 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
-use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
@@ -34,6 +33,9 @@ use Plib\View;
 
 class EditEventsControllerTest extends TestCase
 {
+    /** @var array<string,string> */
+    private $conf;
+
     /** @var EventDataService&MockObject */
     private $eventDataService;
 
@@ -46,8 +48,12 @@ class EditEventsControllerTest extends TestCase
     /** @var Editor&MockObject */
     private $editor;
 
+    /** @var View */
+    private $view;
+
     public function setUp(): void
     {
+        $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->eventDataService = $this->createMock(EventDataService::class);
         $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
@@ -55,19 +61,19 @@ class EditEventsControllerTest extends TestCase
         $this->csrfProtector->method("check")->willReturn(true);
         $this->random = $this->createStub(Random::class);
         $this->editor = $this->createMock(Editor::class);
+        $this->view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
     }
 
     private function sut(): EditEventsController
     {
-        $view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
         return new EditEventsController(
             "./",
-            XH_includeVar("./config/config.php", "plugin_cf")["calendar"],
+            $this->conf,
             $this->eventDataService,
             $this->csrfProtector,
             $this->random,
             $this->editor,
-            $view
+            $this->view
         );
     }
 

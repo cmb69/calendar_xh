@@ -22,53 +22,62 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
-use Calendar\Model\Calendar;
 use Calendar\Model\Event;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
 use Plib\View;
 
 class EventListControllerTest extends TestCase
 {
-    public function testRendersClassicEventListByDefault()
+    /** @var array<string,string> */
+    private $conf;
+
+    /** @var array<string,string> */
+    private $lang;
+
+    /** @var EventDataService&Stub */
+    private $eventDataService;
+
+    /** @var DateTimeFormatter */
+    private $dateTimeFormatter;
+
+    /** @var View */
+    private $view;
+
+    public function setUp(): void
     {
-        $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
-        $conf = $plugin_cf['calendar'];
-        $lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
-        $eventDataService = $this->createStub(EventDataService::class);
-        $eventDataService->method("readEvents")->willReturn([
+        $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
+        $this->lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
+        $this->eventDataService = $this->createStub(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn([
             $this->lunchBreak(), $this->easter(), $this->birthday()
         ]);
-        $view = new View("./views/", $lang);
-        $sut = new EventListController(
-            $conf,
-            $eventDataService,
-            new DateTimeFormatter($lang),
-            $view
+        $this->dateTimeFormatter = new DateTimeFormatter($this->lang);
+        $this->view = new View("./views/", $this->lang);
+    }
+
+    private function sut(): EventListController
+    {
+        return new EventListController(
+            $this->conf,
+            $this->eventDataService,
+            $this->dateTimeFormatter,
+            $this->view
         );
+    }
+
+    public function testRendersClassicEventListByDefault()
+    {
         $request = new FakeRequest(["time" => 1675088820]);
-        Approvals::verifyHtml($sut->defaultAction(0, 0, 0, 0, $request));
+        Approvals::verifyHtml($this->sut()->defaultAction(0, 0, 0, 0, $request));
     }
 
     public function testRendersNewStyleEventListIfConfigured(): void
     {
-        $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
-        $conf = $plugin_cf['calendar'];
-        $conf["eventlist_template"] = "eventlist_new";
-        $lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
-        $eventDataService = $this->createStub(EventDataService::class);
-        $eventDataService->method("readEvents")->willReturn([
-            $this->lunchBreak(), $this->easter(), $this->birthday()
-        ]);
-        $view = new View("./views/", $lang);
-        $sut = new EventListController(
-            $conf,
-            $eventDataService,
-            new DateTimeFormatter($lang),
-            $view
-        );
+        $this->conf["eventlist_template"] = "eventlist_new";
         $request = new FakeRequest(["time" => 1675088820]);
-        Approvals::verifyHtml($sut->defaultAction(0, 0, 0, 0, $request));
+        Approvals::verifyHtml($this->sut()->defaultAction(0, 0, 0, 0, $request));
     }
 
     private function lunchBreak(): Event

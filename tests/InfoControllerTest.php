@@ -22,23 +22,44 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeSystemChecker;
+use Plib\SystemChecker;
 use Plib\View;
 
 class InfoControllerTest extends TestCase
 {
+    /** @var EventDataService&Stub */
+    private $dataService;
+
+    /** @var SystemChecker */
+    private $systemChecker;
+
+    /** @var View */
+    private $view;
+
+    public function setUp(): void
+    {
+        $this->dataService = $this->createStub(EventDataService::class);
+        $this->dataService->method("getFilename")->willReturn("./content/calendar/calendar.csv");
+        $this->systemChecker = new FakeSystemChecker(true);
+        $this->view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
+    }
+
+    private function sut(): InfoController
+    {
+        return new InfoController(
+            "./",
+            $this->dataService,
+            $this->systemChecker,
+            $this->view
+        );
+    }
+
     public function testDefaultActionRendersPluginInfo(): void
     {
-        $dataService = $this->createStub(EventDataService::class);
-        $dataService->method("getFilename")->willReturn("./content/calendar/calendar.csv");
-        $sut = new InfoController(
-            "./",
-            $dataService,
-            new FakeSystemChecker(true),
-            new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"])
-        );
-        $response = $sut->defaultAction();
+        $response = $this->sut()->defaultAction();
         Approvals::verifyHtml($response->output());
     }
 }

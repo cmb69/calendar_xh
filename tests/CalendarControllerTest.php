@@ -23,38 +23,64 @@ namespace Calendar;
 
 use ApprovalTests\Approvals;
 use Calendar\Model\Event;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
 use Plib\View;
 
 class CalendarControllerTest extends TestCase
 {
-    public function testDefaultActionRendersHtml()
+    /** @var array<string,string> */
+    private $conf;
+
+    /** @var array<string,string */
+    private $lang;
+
+    /** @var EventDataService&Stub */
+    private $eventDataService;
+
+    /** @var DateTimeFormatter */
+    private $dateTimeFormatter;
+
+    /** @var Counter */
+    private $counter;
+
+    /** @var View */
+    private $view;
+
+    public function setUp(): void
     {
-        $plugin_cf = XH_includeVar("./config/config.php", 'plugin_cf');
-        $conf = $plugin_cf['calendar'];
-        $lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
-        $eventDataService = $this->createStub(EventDataService::class);
-        $eventDataService->method("readEvents")->willReturn([
+        $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
+        $this->lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
+        $this->eventDataService = $this->createStub(EventDataService::class);
+        $this->eventDataService->method("readEvents")->willReturn([
             $this->lunchBreak(), $this->weekend(), $this->birthday()
         ]);
-        $dateTimeFormatter = new DateTimeFormatter($lang);
+        $this->dateTimeFormatter = new DateTimeFormatter($this->lang);
+        $this->view = new View("./views/", $this->lang);
+        $this->counter = new Counter(1);
+    }
 
-        $view = new View("./views/", $lang);
-        $sut = new CalendarController(
+    private function sut(): CalendarController
+    {
+        return new CalendarController(
             "./",
-            $conf,
-            $eventDataService,
-            $dateTimeFormatter,
+            $this->conf,
+            $this->eventDataService,
+            $this->dateTimeFormatter,
             1,
-            new Counter(1),
-            $view
+            $this->counter,
+            $this->view
         );
+    }
+
+    public function testDefaultActionRendersHtml()
+    {
         $request = new FakeRequest([
             "url" => "http://example.com/?page",
             "time" => 1675088820,
         ]);
-        $response = $sut->defaultAction(0, 0, "", $request);
+        $response = $this->sut()->defaultAction(0, 0, "", $request);
         Approvals::verifyHtml($response->output());
     }
 
