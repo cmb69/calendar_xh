@@ -23,7 +23,9 @@ namespace Calendar\Model;
 
 class Calendar
 {
+    use CsvCalendar;
     use ICalendar;
+    use TextCalendar;
 
     /** @var array<string,Event> */
     private $events;

@@ -79,136 +79,27 @@ class EventDataService
     /** @return array<string,Event> */
     private function doReadEvents(string $filename, bool $convertToHtml = false): array
     {
-        $result = array();
+        $contents = "";
         if (is_readable($filename) && $stream = fopen($filename, "r")) {
             flock($stream, LOCK_SH);
-            while (($record = fgetcsv($stream, 0, ";", '"', "\0")) !== false) {
-                if (!$this->validateRecord($record)) {
-                    continue;
-                }
-                [$datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt] = $record;
-                if (!$dateend) {
-                    $dateend = null;
-                }
-                if (!$endtime) {
-                    $endtime = null;
-                }
-                $recurrenceRule = count($record) > 8 ? $record[8] : "";
-                $until = count($record) > 9 ? $record[9] : "";
-                $uid = count($record) > 10 && trim($record[10]) !== "" ? $record[10] : "";
-                $id = $uid ?: sha1(serialize($record));
-                if ($convertToHtml) {
-                    $linktxt = XH_hsc($linktxt);
-                    if ($linkadr) {
-                        $target = (strpos($linkadr, "://") === false) ? "_self" : "_blank";
-                        $title = XH_hsc($event);
-                        $text = $linktxt ?: XH_hsc($linkadr);
-                        $url = XH_hsc($linkadr);
-                        $linktxt = "<a href=\"{$url}\" target=\"{$target}\" title=\"{$title}\">"
-                            . "{$text}</a>";
-                    }
-                }
-                if ($datestart != '' && $event != '') {
-                    $maybeEvent = Event::create(
-                        $datestart,
-                        $dateend,
-                        $starttime,
-                        $endtime,
-                        $event,
-                        $linkadr,
-                        $linktxt,
-                        $location,
-                        $recurrenceRule,
-                        $until,
-                        $uid
-                    );
-                    if ($maybeEvent !== null) {
-                        $result[$id] = $maybeEvent;
-                    }
-                }
-            }
+            $contents = (string) stream_get_contents($stream);
             flock($stream, LOCK_UN);
             fclose($stream);
         }
-        return $result;
-    }
-    /**
-     * @param ?list<?string> $record
-     * @phpstan-assert-if-true list<string> $record
-     */
-    private function validateRecord(?array $record): bool
-    {
-        if ($record === null) {
-            return false;
-        }
-        foreach ($record as $field) {
-            if (!is_string($field)) {
-                return false;
-            }
-        }
-        return true;
+        return Calendar::fromCsv($contents, $convertToHtml)->events();
     }
 
     /** @return array<string,Event> */
     private function readOldEvents(string $eventfile): array
     {
-        $result = array();
+        $contents = "";
         if ($stream = fopen($eventfile, 'r')) {
             flock($stream, LOCK_SH);
-            while (($line = fgets($stream)) !== false) {
-                $id = sha1($line);
-                list($eventdates, $event, $location, $link, $starttime) = explode(';', rtrim($line));
-                if (strpos($eventdates, ',') !== false) {
-                    list($datestart, $dateend, $endtime) = explode(',', $eventdates);
-                } else {
-                    $datestart = $eventdates;
-                    $dateend = null;
-                    $endtime = null;
-                }
-                if ($datestart) {
-                    list($day, $month, $year) = explode($this->separator, $datestart);
-                    $datestart = "$year-$month-$day";
-                }
-                if ($dateend) {
-                    list($day, $month, $year) = explode($this->separator, $dateend);
-                    $dateend = "$year-$month-$day";
-                }
-                if (strpos($link, ',') !== false) {
-                    list($linkadr, $linktxt) = explode(',', $link);
-                } else {
-                    $linkadr = $link;
-                    $linktxt = '';
-                }
-                if (strpos($linkadr, 'ext:') === 0) {
-                    $linkadr = 'http://' . substr($linkadr, 4);
-                } elseif (strpos($linkadr, 'int:') === 0) {
-                    $linkadr = '?' . substr($linkadr, 4);
-                } elseif ($linkadr) {
-                    $linktxt = "{$linkadr};{$linktxt}";
-                }
-                if ($datestart != '' && $event != '') {
-                    $maybeEvent = Event::create(
-                        $datestart,
-                        $dateend,
-                        $starttime,
-                        $endtime,
-                        $event,
-                        $linkadr,
-                        $linktxt,
-                        $location,
-                        "",
-                        "",
-                        ""
-                    );
-                    if ($maybeEvent !== null) {
-                        $result[$id] = $maybeEvent;
-                    }
-                }
-            }
+            $contents = (string) stream_get_contents($stream);
             flock($stream, LOCK_UN);
             fclose($stream);
         }
-        return $result;
+        return Calendar::fromText($contents, $this->separator)->events();
     }
 
     /** @param array<Event> $events */
@@ -229,35 +120,11 @@ class EventDataService
         if ($fp === false) {
             return false;
         }
+        $contents = Calendar::fromEvents($events)->toCsvString();
         flock($fp, LOCK_EX);
-        foreach ($events as $event) {
-            if (!$this->writeEventLine($fp, $event)) {
-                flock($fp, LOCK_UN);
-                fclose($fp);
-                return false;
-            }
-        }
+        $ok = fwrite($fp, $contents) === strlen($contents);
         flock($fp, LOCK_UN);
         fclose($fp);
-        return true;
-    }
-
-    /** @param resource $fp */
-    private function writeEventLine($fp, Event $event): bool
-    {
-        $record = [
-            $event->getIsoStartDate(),
-            $event->isFullDay() ? "" : $event->getIsoStartTime(),
-            $event->getIsoEndDate(),
-            $event->isFullDay() ? "" : $event->getIsoEndTime(),
-            $event->summary(),
-            $event->location(),
-            $event->linkadr(),
-            $event->linktxt(),
-            $event->recurrence() === "none" ? "" : $event->recurrence(),
-            $event->recursUntil() !== null ? $event->recursUntil()->getIsoDate() : "",
-            $event->id(),
-        ];
-        return fputcsv($fp, $record, ';', '"', "\0") !== false;
+        return $ok;
     }
 }

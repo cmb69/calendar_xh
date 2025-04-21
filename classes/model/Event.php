@@ -29,6 +29,7 @@ namespace Calendar\Model;
 /** @phpstan-consistent-constructor */
 class Event
 {
+    use CsvEvent;
     use ICalendarEvent;
 
     /** @var string */
