@@ -22,7 +22,6 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
-use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
@@ -36,9 +35,9 @@ class CalendarControllerTest extends TestCase
         $conf = $plugin_cf['calendar'];
         $lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
         $eventDataService = $this->createStub(EventDataService::class);
-        $eventDataService->method("readEvents")->willReturn(
-            new Calendar([$this->lunchBreak(), $this->weekend(), $this->birthday()])
-        );
+        $eventDataService->method("readEvents")->willReturn([
+            $this->lunchBreak(), $this->weekend(), $this->birthday()
+        ]);
         $dateTimeFormatter = new DateTimeFormatter($lang);
 
         $view = new View("./views/", $lang);

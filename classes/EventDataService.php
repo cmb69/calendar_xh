@@ -56,7 +56,8 @@ class EventDataService
         return $this->eventfile;
     }
 
-    public function readEvents(): Calendar
+    /** @return array<string,Event> */
+    public function readEvents(): array
     {
         $eventfile = dirname($this->eventfile) . "/" . basename($this->eventfile, ".2.6.csv");
         if (!is_file("{$eventfile}.2.6.csv")) {
@@ -72,7 +73,7 @@ class EventDataService
         } else {
             $events = $this->doReadEvents($this->getFilename());
         }
-        return new Calendar($events);
+        return $events;
     }
 
     /** @return array<string,Event> */

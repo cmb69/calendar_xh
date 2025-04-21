@@ -22,6 +22,7 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use org\bovigo\vfs\vfsStream;
@@ -33,7 +34,7 @@ class EventDataServiceTest extends TestCase
     {
         $root = vfsStream::setup("root");
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $events = $subject->readEvents()->events();
+        $events = Calendar::fromEvents($subject->readEvents())->events();
         $this->assertIsArray($events);
         $this->assertEmpty($events);
     }
@@ -43,7 +44,7 @@ class EventDataServiceTest extends TestCase
         vfsStream::setup("root");
         vfsStream::newFile("root/calendar.2.6.csv");
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $events = $subject->readEvents()->events();
+        $events = Calendar::fromEvents($subject->readEvents())->events();
         $this->assertIsArray($events);
         $this->assertEmpty($events);
     }
@@ -57,7 +58,7 @@ CSV;
         vfsStream::setup("root");
         file_put_contents(vfsStream::url("root/calendar.2.6.csv"), $csv);
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $events = array_values($subject->readEvents()->eventsDuring(2021, 4));
+        $events = array_values(Calendar::fromEvents($subject->readEvents())->eventsDuring(2021, 4));
         $this->assertCount(2, $events);
         $this->assertSame("markus", $events[0]->summary());
         $this->assertSame("martin", $events[1]->summary());
@@ -77,7 +78,7 @@ CSV;
         vfsStream::setup("root");
         file_put_contents(vfsStream::url("root/calendar.2.6.csv"), $csv);
         $subject = new EventDataService(vfsStream::url("root/"), "-");
-        $nextevent = $subject->readEvents()->nextEvent($now);
+        $nextevent = Calendar::fromEvents($subject->readEvents())->nextEvent($now);
         if ($expected !== null) {
             $this->assertInstanceOf(Event::class, $nextevent);
             $this->assertSame($expected, $nextevent->summary());

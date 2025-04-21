@@ -30,6 +30,7 @@ use Calendar\Dto\BirthdayRow;
 use Calendar\Dto\EventRow;
 use Calendar\Dto\HeaderRow;
 use Calendar\Model\BirthdayEvent;
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Plib\Request;
@@ -77,7 +78,7 @@ class EventListController
         $endDate = $desiredMonth->plusMonths($endMonth);
         $tablecols = $this->calcTablecols();
         $monthEvents = [];
-        $calendar = $this->eventDataService->readEvents();
+        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
         $currDate = $startDate;
         while ($currDate->compareDate($endDate) < 0) {
             $year = $currDate->year();

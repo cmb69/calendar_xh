@@ -27,6 +27,7 @@
 namespace Calendar;
 
 use Calendar\Model\BirthdayEvent;
+use Calendar\Model\Calendar;
 use Calendar\Model\LocalDateTime;
 use Plib\Request;
 use Plib\View;
@@ -61,7 +62,7 @@ class NextEventController
     {
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
         assert($now !== null);
-        $calendar = $this->eventDataService->readEvents();
+        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
         $nextevent = $calendar->nextEvent($now);
         if ($nextevent === null) {
             return $this->view->render('nextevent', ["has_next_event" => false]);

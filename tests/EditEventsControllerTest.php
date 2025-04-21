@@ -49,7 +49,7 @@ class EditEventsControllerTest extends TestCase
     public function setUp(): void
     {
         $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["111" => $this->lunchBreak()]));
+        $this->eventDataService->method("readEvents")->willReturn(["111" => $this->lunchBreak()]);
         $this->csrfProtector = $this->createStub(CsrfProtector::class);
         $this->csrfProtector->method("token")->willReturn("42881056d048537da0e061f7f672854b");
         $this->csrfProtector->method("check")->willReturn(true);
@@ -99,7 +99,7 @@ class EditEventsControllerTest extends TestCase
     public function testSingleActionRedirectsOnUnknownEvent()
     {
         $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=edit_single&event_id=invalid%20id",
         ]);
@@ -119,7 +119,7 @@ class EditEventsControllerTest extends TestCase
     public function testSingleActionRendersEditSingleForm()
     {
         $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
         $request = new FakeRequest([
             "url" => "http://example.com/?&admin=plugin_main&action=edit_single&event_id=222",
         ]);
@@ -242,7 +242,7 @@ class EditEventsControllerTest extends TestCase
     public function testDoEditSingleActionRedirectsOnInvalidEvent(): void
     {
         $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=invalid%20id",
             "post" => [
@@ -256,7 +256,7 @@ class EditEventsControllerTest extends TestCase
     public function testDoEditSingleActionReportsFailureToSplit(): void
     {
         $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
             "post" => [
@@ -269,10 +269,10 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoEditSingleActionReportsFailureToSave(): void
     {
-        $this->markTestSkipped("need to go through real Calendar");
         $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
         $this->eventDataService->method("writeEvents")->willReturn(false);
+        $this->random->method("bytes")->willReturnOnConsecutiveCalls("11111", "11112", "11113");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
             "post" => [
@@ -286,10 +286,10 @@ class EditEventsControllerTest extends TestCase
 
     public function testDoEditSingleActionRedirectsOnSuccess(): void
     {
-        $this->markTestSkipped("need to go through real Calendar");
         $this->eventDataService = $this->createMock(EventDataService::class);
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar(["222" => $this->christmas()]));
+        $this->eventDataService->method("readEvents")->willReturn(["222" => $this->christmas()]);
         $this->eventDataService->method("writeEvents")->willReturn(true);
+        $this->random->method("bytes")->willReturnOnConsecutiveCalls("11111", "11112", "11113");
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=plugin_main&action=edit_single&event_id=222",
             "post" => [
@@ -298,7 +298,10 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
-        $this->assertSame("http://example.com/?calendar&admin=plugin_main&action=plugin_text", $response->location());
+        $this->assertSame(
+            "http://example.com/?calendar&admin=plugin_main&action=update&event_id=64OJ2C9I",
+            $response->location()
+        );
     }
 
     public function testDoUpdateActionRedirectsOnInvalidEvent()

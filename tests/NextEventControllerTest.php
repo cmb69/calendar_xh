@@ -42,7 +42,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersNoEvent(): void
     {
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->cmb()]));
+        $this->eventDataService->method("readEvents")->willReturn([$this->cmb()]);
         $request = new FakeRequest(["time" => strtotime("1965-04-16T20:38:00+02:00")]);
         $response = $this->sut()->defaultAction($request);
         $this->assertStringContainsString("No further event scheduled.", $response);
@@ -50,7 +50,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersEventBeforeStart(): void
     {
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->intfcb()]));
+        $this->eventDataService->method("readEvents")->willReturn([$this->intfcb()]);
         $request = new FakeRequest(["time" => strtotime("2025-04-16T20:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -58,7 +58,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersMultidayEventBeforeStart(): void
     {
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->easter()]));
+        $this->eventDataService->method("readEvents")->willReturn([$this->easter()]);
         $request = new FakeRequest(["time" => strtotime("2025-04-16T20:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -66,7 +66,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersRunningEvent(): void
     {
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->intfcb()]));
+        $this->eventDataService->method("readEvents")->willReturn([$this->intfcb()]);
         $request = new FakeRequest(["time" => strtotime("2025-04-16T21:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -74,7 +74,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersRunningMultidayEvent(): void
     {
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->easter()]));
+        $this->eventDataService->method("readEvents")->willReturn([$this->easter()]);
         $request = new FakeRequest(["time" => strtotime("2025-04-20T20:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -82,7 +82,7 @@ class NextEventControllerTest extends TestCase
 
     public function testIssue51(): void
     {
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->cmb()]));
+        $this->eventDataService->method("readEvents")->willReturn([$this->cmb()]);
         $request = new FakeRequest(["time" => strtotime("2021-03-23T12:34:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -90,7 +90,7 @@ class NextEventControllerTest extends TestCase
 
     public function testIssue70(): void
     {
-        $this->eventDataService->method("readEvents")->willReturn(new Calendar([$this->cmb()]));
+        $this->eventDataService->method("readEvents")->willReturn([$this->cmb()]);
         $request = new FakeRequest(["time" => strtotime("2021-03-25T12:34:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);

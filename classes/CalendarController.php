@@ -86,7 +86,7 @@ class CalendarController
             $eventpage = $this->view->plain("event_page");
         }
         $this->determineYearAndMonth($request, $year, $month);
-        $calendar = $this->eventDataService->readEvents();
+        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
         $calendarService = new CalendarService((bool) $this->conf['week_starts_mon']);
         $rows = [];
         foreach ($calendarService->getMonthMatrix($year, $month) as $columns) {

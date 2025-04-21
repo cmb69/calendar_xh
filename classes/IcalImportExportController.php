@@ -86,7 +86,7 @@ class IcalImportExportController
         if ($request->post("calendar_ics") === null) {
             return $this->defaultAction($request);
         }
-        $calendar = new Calendar($this->eventDataService->readEvents()->events());
+        $calendar = Calendar::fromEvents($this->eventDataService->readEvents());
         $import = Calendar::fromICalendar($this->icsFileFinder->read($request->post("calendar_ics")), $eventCount);
         $ignored = $eventCount - count($import->events());
         $calendar->import($import);
@@ -100,7 +100,7 @@ class IcalImportExportController
         if ($request->post("calendar_ics") !== "calendar.ics") {
             return $this->defaultAction($request);
         }
-        if (!$this->iCalendarWriter->write($this->eventDataService->readEvents())) {
+        if (!$this->iCalendarWriter->write(Calendar::fromEvents($this->eventDataService->readEvents()))) {
             return Response::create($this->view->message("fail", "error_export"))
                 ->withTitle("Calendar – " . $this->view->text("label_import_export"));
         }

@@ -36,9 +36,9 @@ class EventListControllerTest extends TestCase
         $conf = $plugin_cf['calendar'];
         $lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
         $eventDataService = $this->createStub(EventDataService::class);
-        $eventDataService->method("readEvents")->willReturn(
-            new Calendar([$this->lunchBreak(), $this->easter(), $this->birthday()])
-        );
+        $eventDataService->method("readEvents")->willReturn([
+            $this->lunchBreak(), $this->easter(), $this->birthday()
+        ]);
         $view = new View("./views/", $lang);
         $sut = new EventListController(
             $conf,
@@ -57,9 +57,9 @@ class EventListControllerTest extends TestCase
         $conf["eventlist_template"] = "eventlist_new";
         $lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
         $eventDataService = $this->createStub(EventDataService::class);
-        $eventDataService->method("readEvents")->willReturn(
-            new Calendar([$this->lunchBreak(), $this->easter(), $this->birthday()])
-        );
+        $eventDataService->method("readEvents")->willReturn([
+            $this->lunchBreak(), $this->easter(), $this->birthday()
+        ]);
         $view = new View("./views/", $lang);
         $sut = new EventListController(
             $conf,
