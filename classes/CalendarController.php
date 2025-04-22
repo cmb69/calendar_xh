@@ -225,10 +225,14 @@ class CalendarController
                 $time = $this->view->esc($this->dateTimeFormatter->formatTime($event->start()));
                 $titles[] = $time . " " . $text;
             } else {
-                $time = $this->view->text(
-                    "format_time_interval",
-                    $this->dateTimeFormatter->formatTime($event->start()),
-                    $this->dateTimeFormatter->formatTime($event->end())
+                $time = str_replace(
+                    ["\x06", "\x15"],
+                    ["<span>", "</span>"],
+                    $this->view->text(
+                        "format_time_interval",
+                        "\x06" . $this->dateTimeFormatter->formatTime($event->start()) . "\x15",
+                        "\x06" . $this->dateTimeFormatter->formatTime($event->end()) . "\x15"
+                    )
                 );
                 $titles[] = $time . " " . $text;
             }

@@ -40,7 +40,7 @@ if (!isset($this)) {header("404 Not found"); exit;}
 <?    if ($row->is_birthday):?>
 <?      assert($row instanceof BirthdayRow)?>
   <tr class="birthday_data_row">
-    <td class="event_data event_date"><?=$this->esc($row->date)?></td>
+    <td class="event_data event_date"><?=$this->raw($row->date)?></td>
 <?       if ($row->show_time):?>
     <td class="event_data event_time"></td>
 <?      endif?>
@@ -55,9 +55,9 @@ if (!isset($this)) {header("404 Not found"); exit;}
 <?    else:?>
 <?      assert($row instanceof EventRow)?>
   <tr class="event_data_row <?=$this->esc($row->past_event_class)?>">
-    <td class="event_data event_date"><?=$this->esc($row->date)?></td>
+    <td class="event_data event_date"><?=$this->raw($row->date)?></td>
 <?      if ($row->show_time):?>
-    <td class="event_data event_time"><?=$this->esc($row->time)?></td>
+    <td class="event_data event_time"><?=$this->raw($row->time)?></td>
 <?      endif?>
     <td class="event_data event_summary"><?=$this->esc($row->summary)?></td>
 <?      if ($row->show_location):?>

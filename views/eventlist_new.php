@@ -29,7 +29,7 @@ if (!defined("CMSIMPLE_XH_VERSION")) {header("404 Not found"); exit;}
       <p class="event_data">
         <meta itemprop="startDate" content="<?=$this->esc($row->start_date)?>">
         <meta itemprop="endDate" content="<?=$this->esc($row->end_date)?>">
-        <span class="event_date"><?=$this->esc($row->date)?></span>
+        <span class="event_date"><?=$this->raw($row->date)?></span>
         <span class="event_time"></span>
       </p>
       <p class="event_data event_summary" itemprop="name"><?=$this->esc($row->summary)?> <?=$this->plural('age', $row->age)?></p>
@@ -43,8 +43,8 @@ if (!defined("CMSIMPLE_XH_VERSION")) {header("404 Not found"); exit;}
       <p class="event_data">
         <meta itemprop="startDate" content="<?=$this->esc($row->start_date)?>">
         <meta itemprop="endDate" content="<?=$this->esc($row->end_date)?>">
-        <span class="event_date"><?=$this->esc($row->date)?></span>
-        <span class="event_time"><?=$this->esc($row->time)?></span>
+        <span class="event_date"><?=$this->raw($row->date)?></span>
+        <span class="event_time"><?=$this->raw($row->time)?></span>
       </p>
       <p class="event_data event_summary" itemprop="name"><?=$this->esc($row->summary)?></p>
       <p class="event_data event_location" itemprop="location"><?=$this->esc($row->location)?></p>

@@ -174,10 +174,14 @@ class EventListController
         if ($event->isFullDay() || $event->isBirthday()) {
             $time = "";
         } else {
-            $time = $this->view->text(
-                "format_time_interval",
-                $this->dateTimeFormatter->formatTime($event->start()),
-                $this->dateTimeFormatter->formatTime($event->end())
+            $time = str_replace(
+                ["\x06", "\x15"],
+                ["<span>", "</span>"],
+                $this->view->text(
+                    "format_time_interval",
+                    "\x06" . $this->dateTimeFormatter->formatTime($event->start()) . "\x15",
+                    "\x06" . $this->dateTimeFormatter->formatTime($event->end()) . "\x15"
+                )
             );
         }
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
@@ -207,13 +211,17 @@ class EventListController
     private function renderDate(Event $event): string
     {
         if ($event->isMultiDay()) {
-            return $this->view->plain(
-                "format_date_interval",
-                $this->dateTimeFormatter->formatDate($event->start()),
-                $this->dateTimeFormatter->formatDate($event->end())
+            return str_replace(
+                ["\x06", "\x15"],
+                ["<span>", "</span>"],
+                $this->view->text(
+                    "format_date_interval",
+                    "\x06" . $this->dateTimeFormatter->formatDate($event->start()) . "\x15",
+                    "\x06" . $this->dateTimeFormatter->formatDate($event->end()) . "\x15"
+                )
             );
         } else {
-            return $this->dateTimeFormatter->formatDate($event->start());
+            return $this->view->esc($this->dateTimeFormatter->formatDate($event->start()));
         }
     }
 
