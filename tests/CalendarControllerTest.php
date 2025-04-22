@@ -24,16 +24,14 @@ namespace Calendar;
 use ApprovalTests\Approvals;
 use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
-use Calendar\Infra\EventDataService;
-use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
-use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Calendar\Model\NoRecurrence;
 use Calendar\Model\YearlyRecurrence;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
+use Plib\DocumentStore;
 use Plib\FakeRequest;
 use Plib\View;
 
@@ -45,8 +43,8 @@ class CalendarControllerTest extends TestCase
     /** @var array<string,string */
     private $lang;
 
-    /** @var CalendarRepo */
-    private $calendarRepo;
+    /** @var DocumentStore */
+    private $store;
 
     /** @var DateTimeFormatter */
     private $dateTimeFormatter;
@@ -62,10 +60,12 @@ class CalendarControllerTest extends TestCase
         vfsStream::setup();
         $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
-        $this->calendarRepo = new CalendarRepo(vfsStream::url("root/"), ".");
-        $this->calendarRepo->save(new Calendar([
-            $this->lunchBreak(), $this->weekend(), $this->birthday()
-        ]));
+        $this->store = new DocumentStore(vfsStream::url("root/"));
+        $calendar = Calendar::updateIn($this->store);
+        $calendar->addEvent("111", $this->lunchBreak()->toDto());
+        $calendar->addEvent("222", $this->weekend()->toDto());
+        $calendar->addEvent("333", $this->birthday()->toDto());
+        $this->store->commit();
         $this->dateTimeFormatter = new DateTimeFormatter($this->lang);
         $this->view = new View("./views/", $this->lang);
         $this->counter = new Counter(1);
@@ -76,7 +76,7 @@ class CalendarControllerTest extends TestCase
         return new CalendarController(
             "./",
             $this->conf,
-            $this->calendarRepo,
+            $this->store,
             $this->dateTimeFormatter,
             1,
             $this->counter,

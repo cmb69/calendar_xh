@@ -31,8 +31,8 @@ use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\Editor;
 use Calendar\Model\Html2Text;
 use Calendar\Model\ICalRepo;
-use Calendar\Model\CalendarRepo;
 use Plib\CsrfProtector;
+use Plib\DocumentStore;
 use Plib\Random;
 use Plib\SystemChecker;
 use Plib\View;
@@ -46,7 +46,7 @@ class Dic
         return new CalendarController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
-            new CalendarRepo(self::getDataFolder()),
+            new DocumentStore(self::getDataFolder()),
             new DateTimeFormatter($plugin_tx['calendar']),
             ++$num,
             self::counter(),
@@ -60,7 +60,7 @@ class Dic
 
         return new EventListController(
             $plugin_cf['calendar'],
-            new CalendarRepo(self::getDataFolder()),
+            new DocumentStore(self::getDataFolder()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
         );
@@ -72,7 +72,7 @@ class Dic
 
         return new NextEventController(
             $plugin_cf["calendar"],
-            new CalendarRepo(self::getDataFolder()),
+            new DocumentStore(self::getDataFolder()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
         );
@@ -85,7 +85,7 @@ class Dic
         return new EditEventsController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf["calendar"],
-            new CalendarRepo(self::getDataFolder()),
+            new DocumentStore(self::getDataFolder()),
             new CsrfProtector(),
             new Random(),
             new Editor(),
@@ -99,7 +99,7 @@ class Dic
 
         return new InfoController(
             "{$pth['folder']['plugins']}calendar/",
-            new CalendarRepo(self::getDataFolder()),
+            new DocumentStore(self::getDataFolder()),
             new SystemChecker(),
             self::view()
         );
@@ -109,7 +109,7 @@ class Dic
     {
         return new IcalImportExportController(
             new ICalRepo(self::getDataFolder(), $_SERVER["HTTP_HOST"], new Html2Text()),
-            new CalendarRepo(self::getDataFolder()),
+            new DocumentStore(self::getDataFolder()),
             self::view()
         );
     }

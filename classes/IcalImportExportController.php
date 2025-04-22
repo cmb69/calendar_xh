@@ -21,8 +21,9 @@
 
 namespace Calendar;
 
+use Calendar\Model\Calendar;
 use Calendar\Model\ICalRepo;
-use Calendar\Model\CalendarRepo;
+use Plib\DocumentStore;
 use Plib\Request;
 use Plib\Response;
 use Plib\View;
@@ -32,20 +33,20 @@ class IcalImportExportController
     /** @var ICalRepo */
     private $iCalendarRepo;
 
-    /** @var CalendarRepo */
-    private $calendarRepo;
+    /** @var DocumentStore */
+    private $store;
 
     /** @var View */
     private $view;
 
     public function __construct(
         ICalRepo $iCalendarRepo,
-        CalendarRepo $calendarRepo,
+        DocumentStore $store,
         View $view
     ) {
-        $this->view = $view;
         $this->iCalendarRepo = $iCalendarRepo;
-        $this->calendarRepo = $calendarRepo;
+        $this->store = $store;
+        $this->view = $view;
     }
 
     public function __invoke(Request $request): Response
@@ -82,11 +83,11 @@ class IcalImportExportController
         if ($request->post("calendar_ics") === null) {
             return $this->defaultAction($request);
         }
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::updateIn($this->store);
         $import = $this->iCalendarRepo->find($request->post("calendar_ics"), $eventCount);
         $ignored = $eventCount - count($import->events());
         $calendar->import($import);
-        $this->calendarRepo->save($calendar);
+        $this->store->commit(); // TODO handle error?
         $url = $request->url()->page("calendar")->with("admin", "import_export")->with("calendar_ignored", (string) $ignored);
         return Response::redirect($url->absolute());
     }
@@ -96,7 +97,7 @@ class IcalImportExportController
         if ($request->post("calendar_ics") !== "calendar.ics") {
             return $this->defaultAction($request);
         }
-        if (!$this->iCalendarRepo->save("calendar", $this->calendarRepo->find())) {
+        if (!$this->iCalendarRepo->save("calendar", Calendar::retrieveFrom($this->store))) {
             return Response::create($this->view->message("fail", "error_export"))
                 ->withTitle("Calendar – " . $this->view->text("label_import_export"));
         }

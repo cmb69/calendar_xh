@@ -30,9 +30,10 @@ use Calendar\Dto\BirthdayRow;
 use Calendar\Dto\EventRow;
 use Calendar\Dto\HeaderRow;
 use Calendar\Infra\DateTimeFormatter;
-use Calendar\Model\CalendarRepo;
+use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
+use Plib\DocumentStore;
 use Plib\Request;
 use Plib\View;
 
@@ -41,8 +42,8 @@ class EventListController
     /** @var array<string,string> */
     private $conf;
 
-    /** @var CalendarRepo */
-    private $calendarRepo;
+    /** @var DocumentStore */
+    private $store;
 
     /** @var DateTimeFormatter */
     private $dateTimeFormatter;
@@ -53,12 +54,12 @@ class EventListController
     /** @param array<string,string> $conf */
     public function __construct(
         array $conf,
-        CalendarRepo $calendarRepo,
+        DocumentStore $store,
         DateTimeFormatter $dateTimeFormatter,
         View $view
     ) {
         $this->conf = $conf;
-        $this->calendarRepo = $calendarRepo;
+        $this->store = $store;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
     }
@@ -78,7 +79,7 @@ class EventListController
         $endDate = $desiredMonth->plusMonths($endMonth);
         $tablecols = $this->calcTablecols();
         $monthEvents = [];
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::retrieveFrom($this->store);
         $currDate = $startDate;
         while ($currDate->compareDate($endDate) < 0) {
             $year = $currDate->year();

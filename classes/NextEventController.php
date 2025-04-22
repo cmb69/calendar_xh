@@ -27,8 +27,9 @@
 namespace Calendar;
 
 use Calendar\Infra\DateTimeFormatter;
-use Calendar\Model\CalendarRepo;
+use Calendar\Model\Calendar;
 use Calendar\Model\LocalDateTime;
+use Plib\DocumentStore;
 use Plib\Request;
 use Plib\View;
 
@@ -37,8 +38,8 @@ class NextEventController
     /** @var array<string,string> */
     private $conf;
 
-    /** @var CalendarRepo */
-    private $calendarRepo;
+    /** @var DocumentStore */
+    private $store;
 
     /** @var DateTimeFormatter */
     private $dateTimeFormatter;
@@ -49,12 +50,12 @@ class NextEventController
     /** @param array<string,string> $conf */
     public function __construct(
         array $conf,
-        CalendarRepo $calendarRepo,
+        DocumentStore $store,
         DateTimeFormatter $dateTimeFormatter,
         View $view
     ) {
         $this->conf = $conf;
-        $this->calendarRepo = $calendarRepo;
+        $this->store = $store;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->view = $view;
     }
@@ -63,7 +64,7 @@ class NextEventController
     {
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
         assert($now !== null);
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::retrieveFrom($this->store);
         $nextevent = $calendar->nextEvent($now);
         if ($nextevent === null) {
             return $this->view->render('nextevent', ["has_next_event" => false]);

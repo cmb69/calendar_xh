@@ -23,8 +23,9 @@ namespace Calendar\Model;
 
 use Calendar\Dto\Event as EventDto;
 use Plib\Document;
+use Plib\DocumentStore;
 
-final class Calendar
+final class Calendar implements Document
 {
     use CsvCalendar;
     use ICalCalendar;
@@ -32,6 +33,56 @@ final class Calendar
 
     /** @var array<string,Event> */
     private $events;
+
+    public static function retrieveFrom(DocumentStore $store): self
+    {
+        $that = $store->retrieve(self::filename($store), self::class);
+        assert($that instanceof self);
+        return $that;
+    }
+
+    public static function updateIn(DocumentStore $store): self
+    {
+        $filename = self::filename($store);
+        $that = $store->update("calendar.2.6.csv", self::class);
+        assert($that instanceof self);
+        if ($filename !== "calendar.2.6.csv") {
+            $old = $store->retrieve($filename, self::class);
+            assert($old instanceof self);
+            $that->import($old);
+        }
+        return $that;
+    }
+
+    private static function filename(DocumentStore $store): string
+    {
+        $files = $store->find('/[^\/]*calendar\.(2\.6\.csv|csv|txt)$/');
+        if (in_array("calendar.2.6.csv", $files, true)) {
+            return "calendar.2.6.csv";
+        } elseif (in_array("calendar.csv", $files, true)) {
+            return "calendar.csv";
+        } elseif (in_array("calendar.txt", $files, true)) {
+            return "calendar.txt";
+        }
+        return "calendar.2.6.csv";
+    }
+
+    public static function fromString(string $contents, string $key): self
+    {
+        if (preg_match('/\.(.*$)/', $key, $matches) === false) {
+            return new self([]);
+        }
+        switch ($matches[1]) {
+            case "2.6.csv":
+                return Calendar::fromCsv($contents, false);
+            case "csv":
+                return Calendar::fromCsv($contents, true);
+            case "txt":
+                return Calendar::fromText($contents);
+            default:
+                return new self([]);
+        }
+    }
 
     /** @param array<string,Event> $events */
     public function __construct(array $events)
@@ -167,5 +218,10 @@ final class Calendar
     public function import(Calendar $other): void
     {
         $this->events = array_replace($this->events, $other->events);
+    }
+
+    public function toString(): string
+    {
+        return $this->toCsvString();
     }
 }

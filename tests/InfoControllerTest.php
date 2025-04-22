@@ -22,17 +22,17 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
-use Calendar\Model\CalendarRepo;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
+use Plib\DocumentStore;
 use Plib\FakeSystemChecker;
 use Plib\SystemChecker;
 use Plib\View;
 
 class InfoControllerTest extends TestCase
 {
-    /** @var CalendarRepo */
-    private $calendarRepo;
+    /** @var DocumentStore */
+    private $store;
 
     /** @var SystemChecker */
     private $systemChecker;
@@ -43,7 +43,7 @@ class InfoControllerTest extends TestCase
     public function setUp(): void
     {
         vfsStream::setup("root");
-        $this->calendarRepo = new CalendarRepo(vfsStream::url("root/"), ".");
+        $this->store = new DocumentStore(vfsStream::url("root/"));
         $this->systemChecker = new FakeSystemChecker(true);
         $this->view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")["calendar"]);
     }
@@ -52,7 +52,7 @@ class InfoControllerTest extends TestCase
     {
         return new InfoController(
             "./",
-            $this->calendarRepo,
+            $this->store,
             $this->systemChecker,
             $this->view
         );

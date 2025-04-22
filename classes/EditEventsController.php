@@ -29,11 +29,11 @@ namespace Calendar;
 use Calendar\Dto\Event as EventDto;
 use Calendar\Infra\Editor;
 use Calendar\Model\Calendar;
-use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Plib\Codec;
 use Plib\CsrfProtector;
+use Plib\DocumentStore;
 use Plib\Random;
 use Plib\Request;
 use Plib\Response;
@@ -47,8 +47,8 @@ class EditEventsController
     /** @var array<string,string> */
     private $config;
 
-    /** @var CalendarRepo */
-    private $calendarRepo;
+    /** @var DocumentStore */
+    private $store;
 
     /** @var CsrfProtector */
     private $csrfProtector;
@@ -66,7 +66,7 @@ class EditEventsController
     public function __construct(
         string $pluginFolder,
         array $config,
-        CalendarRepo $calendarRepo,
+        DocumentStore $store,
         CsrfProtector $csrfProtector,
         Random $random,
         Editor $editor,
@@ -74,7 +74,7 @@ class EditEventsController
     ) {
         $this->pluginFolder = $pluginFolder;
         $this->config = $config;
-        $this->calendarRepo = $calendarRepo;
+        $this->store = $store;
         $this->csrfProtector = $csrfProtector;
         $this->random = $random;
         $this->editor = $editor;
@@ -102,7 +102,7 @@ class EditEventsController
 
     private function defaultAction(Request $request): Response
     {
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::retrieveFrom($this->store);
         $events = array_map(function (Event $event): array {
             $startDate = $event->getIsoStartDate();
             if (!$event->isFullDay()) {
@@ -134,13 +134,13 @@ class EditEventsController
 
     private function generateIds(Request $request): Response
     {
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::retrieveFrom($this->store);
         return $this->respondWith($request, $this->renderGenerateIdsForm($request, $calendar));
     }
 
     private function editSingleAction(Request $request): Response
     {
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::retrieveFrom($this->store);
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
@@ -153,7 +153,7 @@ class EditEventsController
 
     private function updateAction(Request $request): Response
     {
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::retrieveFrom($this->store);
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
@@ -163,7 +163,7 @@ class EditEventsController
 
     private function deleteAction(Request $request): Response
     {
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::retrieveFrom($this->store);
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
@@ -252,14 +252,14 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::updateIn($this->store);
         $dto = $this->eventPost($request);
         $event = $calendar->addEvent(Codec::encodeBase32hex($this->random->bytes(15)), $dto);
         if ($event === null) {
             return $this->respondWith($request, $this->view->message("fail", "error_invalid_event")
                 . $this->renderEditForm($request, $dto, null, "create"));
         }
-        if (!$this->calendarRepo->save($calendar)) {
+        if (!$this->store->commit()) {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderEditForm($request, $event->toDto(), null, "create"));
         }
@@ -271,11 +271,11 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::updateIn($this->store);
         $calendar->generateIds(function (): string {
             return Codec::encodeBase32hex($this->random->bytes(15));
         });
-        if (!$this->calendarRepo->save($calendar)) {
+        if (!$this->store->commit()) {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderGenerateIdsForm($request, $calendar));
         }
@@ -287,9 +287,10 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::updateIn($this->store);
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
+            $this->store->rollback();
             return $this->redirectToOverviewResponse($request);
         }
         $date = LocalDateTime::fromIsoString($request->post("editdate") . "T00:00");
@@ -297,10 +298,11 @@ class EditEventsController
             return Codec::encodeBase32hex($this->random->bytes(15));
         });
         if (!$splitId) {
+            $this->store->rollback();
             return $this->respondWith($request, $this->view->message("fail", "error_split")
                 . $this->renderEditSingleForm($request, $event, $id));
         }
-        if (!$this->calendarRepo->save($calendar)) {
+        if (!$this->store->commit()) {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderEditSingleForm($request, $event, $id));
         }
@@ -314,16 +316,18 @@ class EditEventsController
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
         $id = $request->get("event_id");
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::updateIn($this->store);
         if ($id === null || ($event = $calendar->event($id)) === null) {
+            $this->store->rollback();
             return $this->redirectToOverviewResponse($request);
         }
         $dto = $this->eventPost($request);
         if (!$event->update($dto)) {
+            $this->store->rollback();
             return $this->respondWith($request, $this->view->message("fail", "error_invalid_event")
                 . $this->renderEditForm($request, $dto, $id, "update"));
         }
-        if (!$this->calendarRepo->save($calendar)) {
+        if (!$this->store->commit()) {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderEditForm($request, $dto, $id, "update"));
         }
@@ -362,18 +366,18 @@ class EditEventsController
         if (!$this->csrfProtector->check($request->post("calendar_token"))) {
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
-        $calendar = $this->calendarRepo->find();
+        $calendar = Calendar::updateIn($this->store);
         $id = $request->get("event_id");
         if ($id === null || ($event = $calendar->event($id)) === null) {
+            $this->store->rollback();
             return $this->redirectToOverviewResponse($request);
         }
         $calendar->delete($id);
-        if ($this->calendarRepo->save($calendar)) {
-            return $this->redirectToOverviewResponse($request);
-        } else {
+        if (!$this->store->commit()) {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderEditForm($request, $event->toDto(), $id, "delete"));
         }
+        return $this->redirectToOverviewResponse($request);
     }
 
     private function respondWith(Request $request, string $output): Response

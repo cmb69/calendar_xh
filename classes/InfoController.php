@@ -26,7 +26,7 @@
 
 namespace Calendar;
 
-use Calendar\Model\CalendarRepo;
+use Plib\DocumentStore;
 use Plib\Response;
 use Plib\SystemChecker;
 use Plib\View;
@@ -36,8 +36,8 @@ class InfoController
     /** @var string */
     private $pluginFolder;
 
-    /** @var CalendarRepo */
-    private $calendarRepo;
+    /** @var DocumentStore */
+    private $store;
 
     /** @var SystemChecker */
     private $systemChecker;
@@ -47,12 +47,12 @@ class InfoController
 
     public function __construct(
         string $pluginFolder,
-        CalendarRepo $calendarRepo,
+        DocumentStore $store,
         SystemChecker $systemChecker,
         View $view
     ) {
         $this->pluginFolder = $pluginFolder;
-        $this->calendarRepo = $calendarRepo;
+        $this->store = $store;
         $this->systemChecker = $systemChecker;
         $this->view = $view;
     }
@@ -67,7 +67,7 @@ class InfoController
                 $this->checkWritability("{$this->pluginFolder}css/"),
                 $this->checkWritability("{$this->pluginFolder}config/"),
                 $this->checkWritability("{$this->pluginFolder}languages/"),
-                $this->checkWritability(dirname($this->calendarRepo->getFilename())),
+                $this->checkWritability($this->store->folder()),
             ],
         ]))->withTitle("Calendar " . $this->view->esc(CALENDAR_VERSION));
     }
