@@ -26,6 +26,7 @@ use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Calendar\Model\NoRecurrence;
+use Calendar\Model\YearlyRecurrence;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
@@ -143,6 +144,7 @@ class ICalendarRepoTest extends TestCase
     {
         $start = new LocalDateTime(2000, 1, 1, 0, 0);
         $end = new LocalDateTime(2000, 1, 1, 23, 59);
-        return new BirthdayEvent("", $start, $end, "Millenium", "", "");
+        $recurrence = new YearlyRecurrence($start, $end, null);
+        return new Event("", $start, $end, "Millenium", "", "", "###", $recurrence);
     }
 }

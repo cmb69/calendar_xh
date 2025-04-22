@@ -30,7 +30,6 @@ use Calendar\Dto\BirthdayRow;
 use Calendar\Dto\EventRow;
 use Calendar\Dto\HeaderRow;
 use Calendar\Infra\DateTimeFormatter;
-use Calendar\Model\BirthdayEvent;
 use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
@@ -142,7 +141,7 @@ class EventListController
         }
         $result = ['headline' => $this->getHeadline($tablecols, $year, $month), 'rows' => []];
         foreach ($events as $event) {
-            if ($event instanceof BirthdayEvent) {
+            if ($event->isBirthday()) {
                 $result['rows'][] = $this->getBirthdayRowView($event, $year);
             } else {
                 $result['rows'][] = $this->getEventRowView($request, $event);
@@ -153,7 +152,7 @@ class EventListController
 
     private function getBirthdayRowView(Event $event, int $year): BirthdayRow
     {
-        assert($event instanceof BirthdayEvent);
+        assert($event->isBirthday());
         return new BirthdayRow(
             $event->age(),
             $event->summary(),
@@ -171,7 +170,7 @@ class EventListController
 
     private function getEventRowView(Request $request, Event $event): EventRow
     {
-        if ($event->isFullDay() || $event instanceof BirthdayEvent) {
+        if ($event->isFullDay() || $event->isBirthday()) {
             $time = "";
         } else {
             $time = $this->view->text(

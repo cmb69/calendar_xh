@@ -28,15 +28,14 @@ namespace Calendar\Model;
 
 use Calendar\Dto\Event as EventDto;
 
-/** @phpstan-consistent-constructor */
-class Event
+final class Event
 {
     use CsvEvent;
     use ICalendarEvent;
     use TextEvent;
 
     /** @var string */
-    private $id = "";
+    private $id;
 
     /** @var LocalDateTime */
     private $start;
@@ -59,65 +58,55 @@ class Event
     /** @var Recurrence */
     private $recurrence;
 
-    private static function create(
+    /** @var ?int */
+    private $age = null;
+
+    /** @return array{?LocalDateTime,?LocalDateTime} */
+    public static function dateTimes(
         string $datestart,
-        ?string $dateend,
+        string $dateend,
         string $starttime,
-        ?string $endtime,
-        string $summary,
-        string $linkadr,
-        string $linktxt,
-        string $location,
-        string $recurrenceRule,
-        string $until,
-        string $id
-    ): ?self {
-        if (!$dateend) {
-            if ($endtime) {
-                return null;
+        string $endtime,
+        string $location
+    ): array {
+        if ($dateend === "") {
+            if ($endtime !== "") {
+                return [null, null];
             }
-            $endtime = $starttime ? $starttime : "23:59";
+            $endtime = $starttime !== "" ? $starttime : "23:59";
             if (($end = LocalDateTime::fromIsoString("{$datestart}T{$endtime}")) === null) {
-                return null;
+                return [null, null];
             }
         } else {
             if (trim($location) === "###") {
                 $endtime = "23:59";
-            } elseif (!$endtime) {
-                $endtime = $starttime ? $starttime : "23:59";
+            } elseif ($endtime === "") {
+                $endtime = $starttime !== "" ? $starttime : "23:59";
             }
             if (($end = LocalDateTime::fromIsoString("{$dateend}T{$endtime}")) === null) {
-                return null;
+                return [null, null];
             }
         }
         if (trim($location) === "###" || $starttime === '') {
             $starttime = "00:00";
         }
         if (($start = LocalDateTime::fromIsoString("{$datestart}T{$starttime}")) === null) {
-            return null;
+            return [null, null];
         }
-        if (trim($location) === "###") {
-            return new BirthdayEvent($id, $start, $end, $summary, $linkadr, $linktxt);
-        }
-        $recurrence = Recurrence::create($recurrenceRule, $start, $end, $until);
-        return new self($id, $start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
+        return [$start, $end];
     }
 
-    public static function fromDto(EventDto $dto): ?self
-    {
-        return self::create(
-            $dto->datestart,
-            $dto->dateend,
-            $dto->starttime,
-            $dto->endtime,
-            $dto->event,
-            $dto->linkadr,
-            $dto->description,
-            $dto->location,
-            $dto->recur,
-            $dto->until,
-            $dto->id
-        );
+    public static function createRecurrence(
+        string $recurrenceRule,
+        LocalDateTime $start,
+        LocalDateTime $end,
+        string $until,
+        string $location
+    ): Recurrence {
+        if (trim($location) === "###") {
+            return new YearlyRecurrence($start, $end, null);
+        }
+        return Recurrence::create($recurrenceRule, $start, $end, $until);
     }
 
     public function __construct(
@@ -138,6 +127,27 @@ class Event
         $this->linktxt = $linktxt;
         $this->location = $location;
         $this->recurrence = $recurrence;
+        if (trim($location) === "###") {
+            $this->age = 0;
+        }
+    }
+
+    public function update(EventDto $dto): bool
+    {
+        [$start, $end] =
+            self::dateTimes($dto->datestart, $dto->dateend, $dto->starttime, $dto->endtime, $dto->location);
+        if ($start === null || $end === null) {
+            return false;
+        }
+        $this->start = $start;
+        $this->end = $end;
+        $this->summary = $dto->event;
+        $this->linkadr = $dto->linkadr;
+        $this->linktxt = $dto->description;
+        $this->location = $dto->location;
+        $this->recurrence = self::createRecurrence($dto->recur, $start, $end, $dto->until, $dto->location);
+        $this->age = trim($dto->location) === "###" ? 0 : null;
+        return true;
     }
 
     public function toDto(): EventDto
@@ -205,6 +215,17 @@ class Event
     public function recursUntil(): ?LocalDateTime
     {
         return $this->recurrence->until();
+    }
+
+    public function isBirthday(): bool
+    {
+        return $this->age !== null;
+    }
+
+    public function age(): int
+    {
+        assert($this->age !== null);
+        return $this->age;
     }
 
     public function getIsoStartDate(): string
@@ -287,7 +308,7 @@ class Event
     {
         $duration = $this->end()->diff($this->start());
         $end = $start->plus($duration);
-        return new static(
+        $that = new static(
             "",
             $start,
             $end,
@@ -297,6 +318,10 @@ class Event
             $this->location,
             new NoRecurrence($start, $end)
         );
+        if ($this->isBirthday()) {
+            $that->age = $start->year() - $this->start()->year();
+        }
+        return $that;
     }
 
     /**

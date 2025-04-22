@@ -30,6 +30,7 @@ use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
 use Calendar\Model\NoRecurrence;
+use Calendar\Model\YearlyRecurrence;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
@@ -127,7 +128,8 @@ class NextEventControllerTest extends TestCase
     {
         $start = new LocalDateTime(1969, 3, 24, 0, 0);
         $end = new LocalDateTime(1969, 3, 24, 23, 59);
-        return new BirthdayEvent("", $start, $end, "cmb", "", "");
+        $recurrence = new YearlyRecurrence($start, $end, null);
+        return new Event("", $start, $end, "cmb", "", "", "###", $recurrence);
     }
 
     private function intfcb(): Event

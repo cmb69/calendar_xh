@@ -217,7 +217,8 @@ class EventTest extends TestCase
     {
         $start = new LocalDateTime(2026, 4, 16, 0, 0);
         $end = new LocalDateTime(2026, 4, 16, 23, 59);
-        $sut = new BirthdayEvent("", $start, $end, "Someone not yet born", "", "");
+        $recurrence = new YearlyRecurrence($start, $end, null);
+        $sut = new Event("", $start, $end, "Someone not yet born", "", "", "###", $recurrence);
         $now = $this->ldt(2025, 4, 16, 0, 0);
         $this->assertEmpty($sut->occurrencesDuring(2025, 4));
         $this->assertNull($sut->occurrenceOn($now, true));
@@ -229,7 +230,7 @@ class EventTest extends TestCase
         $start = new LocalDateTime(1969, 3, 24, 0, 0);
         $end = new LocalDateTime(1969, 3, 24, 23, 59);
         $recurrence = new YearlyRecurrence($start, $end, null);
-        $event = new BirthdayEvent("", $start, $end, "cmb", "", "", "");
+        $event = new Event("", $start, $end, "cmb", "", "", "###", $recurrence);
         if ($year !== 1969) {
             $event = $event->occurrenceStartingAt($this->ldt($year, 3, 24, 0, 0));
         }

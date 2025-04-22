@@ -28,7 +28,6 @@ namespace Calendar;
 
 use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
-use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\CalendarRepo;
 use Calendar\Model\CalendarService;
@@ -216,7 +215,7 @@ class CalendarController
                 $text = $event->summary();
             }
             $text = $this->view->esc($text);
-            if ($event instanceof BirthdayEvent) {
+            if ($event->isBirthday()) {
                 $age = $this->view->plural("age", $event->age());
                 $titles[] = $text . " " . $age;
             } elseif ($event->isFullDay()) {

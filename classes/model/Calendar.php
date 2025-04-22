@@ -23,7 +23,7 @@ namespace Calendar\Model;
 
 use Calendar\Dto\Event as EventDto;
 
-class Calendar
+final class Calendar
 {
     use CsvCalendar;
     use ICalendar;
@@ -105,23 +105,16 @@ class Calendar
         return $res;
     }
 
-    public function addEvent(EventDto $dto): ?Event
+    public function addEvent(string $id, EventDto $dto): ?Event
     {
-        $event = Event::fromDto($dto);
-        if ($event === null) {
+        [$start, $end] =
+            Event::dateTimes($dto->datestart, $dto->dateend, $dto->starttime, $dto->endtime, $dto->location);
+        if ($start === null || $end === null) {
             return null;
         }
-        $this->events[$event->id()] = $event;
-        return $event;
-    }
-
-    public function updateEvent(EventDto $dto): ?Event
-    {
-        $event = Event::fromDto($dto);
-        if (!array_key_exists($dto->id, $this->events) || $event === null) {
-            return null;
-        }
-        $this->events[$event->id()] = $event;
+        $recurrence = Event::createRecurrence($dto->recur, $start, $end, $dto->until, $dto->location);
+        $event = new Event($id, $start, $end, $dto->event, $dto->linkadr, $dto->description, $dto->location, $recurrence);
+        $this->events[$id] = $event;
         return $event;
     }
 
