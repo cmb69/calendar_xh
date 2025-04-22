@@ -59,7 +59,7 @@ class Event
     /** @var Recurrence */
     private $recurrence;
 
-    public static function create(
+    private static function create(
         string $datestart,
         ?string $dateend,
         string $starttime,
