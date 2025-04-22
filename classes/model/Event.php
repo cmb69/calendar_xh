@@ -75,28 +75,8 @@ class Event
         string $until,
         string $id
     ): ?self {
-        if ($dateend === "") {
-            if ($endtime !== "") {
-                return null;
-            }
-            $endtime = $starttime !== "" ? $starttime : "23:59";
-            if (($end = LocalDateTime::fromIsoString("{$datestart}T{$endtime}")) === null) {
-                return null;
-            }
-        } else {
-            if (trim($location) === "###") {
-                $endtime = "23:59";
-            } elseif ($endtime === "") {
-                $endtime = $starttime !== "" ? $starttime : "23:59";
-            }
-            if (($end = LocalDateTime::fromIsoString("{$dateend}T{$endtime}")) === null) {
-                return null;
-            }
-        }
-        if (trim($location) === "###" || $starttime === '') {
-            $starttime = "00:00";
-        }
-        if (($start = LocalDateTime::fromIsoString("{$datestart}T{$starttime}")) === null) {
+        [$start, $end] = self::dateTimes($datestart, $dateend, $starttime, $endtime, $location);
+        if ($start === null || $end === null) {
             return null;
         }
         if (trim($location) === "###") {
@@ -105,6 +85,41 @@ class Event
             $recurrence = Recurrence::create($recurrenceRule, $start, $end, $until);
         }
         return new self($id, $start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
+    }
+
+    /** @return array{?LocalDateTime,?LocalDateTime} */
+    public static function dateTimes(
+        string $datestart,
+        string $dateend,
+        string $starttime,
+        string $endtime,
+        string $location
+    ): array {
+        if ($dateend === "") {
+            if ($endtime !== "") {
+                return [null, null];
+            }
+            $endtime = $starttime !== "" ? $starttime : "23:59";
+            if (($end = LocalDateTime::fromIsoString("{$datestart}T{$endtime}")) === null) {
+                return [null, null];
+            }
+        } else {
+            if (trim($location) === "###") {
+                $endtime = "23:59";
+            } elseif ($endtime === "") {
+                $endtime = $starttime !== "" ? $starttime : "23:59";
+            }
+            if (($end = LocalDateTime::fromIsoString("{$dateend}T{$endtime}")) === null) {
+                return [null, null];
+            }
+        }
+        if (trim($location) === "###" || $starttime === '') {
+            $starttime = "00:00";
+        }
+        if (($start = LocalDateTime::fromIsoString("{$datestart}T{$starttime}")) === null) {
+            return [null, null];
+        }
+        return [$start, $end];
     }
 
     public static function fromDto(EventDto $dto): ?self
