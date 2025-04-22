@@ -316,12 +316,6 @@ class EditEventsController
     private function upsert(Request $request, Calendar $calendar, ?string $id): Response
     {
         $dto = $this->eventPost($request);
-        if (!$this->isValidDate($dto->datestart)) {
-            $dto->datestart = "";
-        }
-        if (!$this->isValidDate($dto->dateend)) {
-            $dto->dateend = "";
-        }
         if ($id === null) {
             $dto->id = Codec::encodeBase32hex($this->random->bytes(15));
             $event = $calendar->addEvent($dto);
@@ -404,11 +398,6 @@ class EditEventsController
             $url = $request->url()->page($request->selected());
         }
         return Response::redirect($url->absolute());
-    }
-
-    private function isValidDate(string $date): bool
-    {
-        return (bool) preg_match('/^\d{4}-\d\d-(?:\d\d|\?{1-2}|\-{1-2})$/', $date);
     }
 
     private function createDefaultEvent(Request $request): EventDto
