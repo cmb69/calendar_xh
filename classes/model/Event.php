@@ -171,6 +171,24 @@ class Event
         }
     }
 
+    public function update(EventDto $dto): bool
+    {
+        [$start, $end] =
+            self::dateTimes($dto->datestart, $dto->dateend, $dto->starttime, $dto->endtime, $dto->location);
+        if ($start === null || $end === null) {
+            return false;
+        }
+        $this->start = $start;
+        $this->end = $end;
+        $this->summary = $dto->event;
+        $this->linkadr = $dto->linkadr;
+        $this->linktxt = $dto->description;
+        $this->location = $dto->location;
+        $this->recurrence = self::createRecurrence($dto->recur, $start, $end, $dto->until, $dto->location);
+        $this->age = trim($dto->location) === "###" ? 0 : null;
+        return true;
+    }
+
     public function toDto(): EventDto
     {
         $dto = new EventDto();

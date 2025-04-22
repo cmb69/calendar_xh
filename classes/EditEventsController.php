@@ -315,19 +315,17 @@ class EditEventsController
         }
         $id = $request->get("event_id");
         $calendar = $this->calendarRepo->find();
-        if ($id === null || ($calendar->event($id)) === null) {
+        if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
         $dto = $this->eventPost($request);
-        $dto->id = $id;
-        $event = $calendar->updateEvent($dto);
-        if ($event === null) {
+        if (!$event->update($dto)) {
             return $this->respondWith($request, $this->view->message("fail", "error_invalid_event")
                 . $this->renderEditForm($request, $dto, $id, "update"));
         }
         if (!$this->calendarRepo->save($calendar)) {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
-                . $this->renderEditForm($request, $event->toDto(), $id, "update"));
+                . $this->renderEditForm($request, $dto, $id, "update"));
         }
         return $this->redirectToOverviewResponse($request);
     }
