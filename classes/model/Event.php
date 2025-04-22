@@ -59,6 +59,9 @@ class Event
     /** @var Recurrence */
     private $recurrence;
 
+    /** @var ?int */
+    private $age = null;
+
     private static function create(
         string $datestart,
         string $dateend,
@@ -97,9 +100,10 @@ class Event
             return null;
         }
         if (trim($location) === "###") {
-            return new BirthdayEvent($id, $start, $end, $summary, $linkadr, $linktxt);
+            $recurrence = new YearlyRecurrence($start, $end, null);
+        } else {
+            $recurrence = Recurrence::create($recurrenceRule, $start, $end, $until);
         }
-        $recurrence = Recurrence::create($recurrenceRule, $start, $end, $until);
         return new self($id, $start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
     }
 
@@ -138,6 +142,9 @@ class Event
         $this->linktxt = $linktxt;
         $this->location = $location;
         $this->recurrence = $recurrence;
+        if (trim($location) === "###") {
+            $this->age = 0;
+        }
     }
 
     public function toDto(): EventDto
@@ -205,6 +212,17 @@ class Event
     public function recursUntil(): ?LocalDateTime
     {
         return $this->recurrence->until();
+    }
+
+    public function isBirthday(): bool
+    {
+        return $this->age !== null;
+    }
+
+    public function age(): int
+    {
+        assert($this->age !== null);
+        return $this->age;
     }
 
     public function getIsoStartDate(): string
@@ -287,7 +305,7 @@ class Event
     {
         $duration = $this->end()->diff($this->start());
         $end = $start->plus($duration);
-        return new static(
+        $that = new static(
             "",
             $start,
             $end,
@@ -297,6 +315,10 @@ class Event
             $this->location,
             new NoRecurrence($start, $end)
         );
+        if ($this->isBirthday()) {
+            $that->age = $start->year() - $this->start()->year();
+        }
+        return $that;
     }
 
     /**

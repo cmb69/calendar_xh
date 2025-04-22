@@ -57,7 +57,6 @@ require_once "./classes/model/TextEvent.php";
 require_once "./classes/model/Calendar.php";
 require_once './classes/model/CalendarService.php';
 require_once './classes/model/Event.php';
-require_once "./classes/model/BirthdayEvent.php";
 require_once "./classes/model/Interval.php";
 require_once './classes/model/LocalDateTime.php';
 require_once "./classes/model/Recurrence.php";

@@ -28,7 +28,6 @@ namespace Calendar;
 
 use Calendar\Dto\Event as EventDto;
 use Calendar\Infra\Editor;
-use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
@@ -112,7 +111,7 @@ class EditEventsController
             return [
                 "start_date" => $startDate,
                 "summary" => $event->summary(),
-                "recurring" => !($event->recurrence() === "none" || $event instanceof BirthdayEvent),
+                "recurring" => !($event->recurrence() === "none" || $event->isBirthday()),
             ];
         }, $calendar->events());
         $js = $this->pluginFolder . "js/overview.min.js";
@@ -146,7 +145,7 @@ class EditEventsController
         if ($id === null || ($event = $calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        if ($event->recurrence() === "none" || $event instanceof BirthdayEvent) {
+        if ($event->recurrence() === "none" || $event->isBirthday()) {
             return $this->redirectToOverviewResponse($request);
         }
         return $this->respondWith($request, $this->renderEditSingleForm($request, $event, $id));

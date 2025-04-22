@@ -226,17 +226,11 @@ trait ICalendarEvent
             $text = str_replace(["\\", ";", ",", "\r", "\n"], ["\\\\", "\\;", "\\,", "", "\\n\r\n "], $text);
             $res .= "DESCRIPTION:" . rtrim($text) . "\r\n";
         }
-        $res .= $this->locationToICalendarString();
+        if (!$this->isBirthday() && $this->location !== "") {
+            $res .= "LOCATION:" . $this->location . "\r\n";
+        }
         $res .= "END:VEVENT\r\n";
         return $res;
-    }
-
-    protected function locationToICalendarString(): string
-    {
-        if ($this->location === "") {
-            return "";
-        }
-        return "LOCATION:" . $this->location . "\r\n";
     }
 
     private function getDtstart(): string
