@@ -30,7 +30,7 @@ use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\Editor;
 use Calendar\Infra\Html2Text;
-use Calendar\Infra\ICalendarRepo;
+use Calendar\Infra\ICalRepo;
 use Calendar\Model\CalendarRepo;
 use Plib\CsrfProtector;
 use Plib\Random;
@@ -108,7 +108,7 @@ class Dic
     public static function makeIcalImportExportController(): IcalImportExportController
     {
         return new IcalImportExportController(
-            new ICalendarRepo(self::getDataFolder(), $_SERVER["HTTP_HOST"], new Html2Text()),
+            new ICalRepo(self::getDataFolder(), $_SERVER["HTTP_HOST"], new Html2Text()),
             new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
             self::view()
         );

@@ -24,7 +24,7 @@ namespace Calendar\Infra;
 use Calendar\Model\Calendar;
 use DirectoryIterator;
 
-class ICalendarRepo
+class ICalRepo
 {
     /** @var string */
     private $folder;

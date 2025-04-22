@@ -26,7 +26,7 @@ use Calendar\Dto\Event as EventDto;
 final class Calendar
 {
     use CsvCalendar;
-    use ICalendar;
+    use ICalCalendar;
     use TextCalendar;
 
     /** @var array<string,Event> */

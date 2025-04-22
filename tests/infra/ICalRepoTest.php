@@ -21,7 +21,6 @@
 
 namespace Calendar\Infra;
 
-use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\Event;
 use Calendar\Model\LocalDateTime;
@@ -34,7 +33,7 @@ class ICalendarRepoTest extends TestCase
 {
     public function testFindsAllFiles(): void
     {
-        $sut = new ICalendarRepo(__DIR__ . "/../ics/", "", new Html2Text());
+        $sut = new ICalRepo(__DIR__ . "/../ics/", "", new Html2Text());
         $files = $sut->all();
         $this->assertEquals(["basic.ics"], $files);
     }
@@ -88,7 +87,7 @@ class ICalendarRepoTest extends TestCase
     {
         $calendar = new Calendar([$this->lunchBreak(), $this->weekend(), $this->birthday()]);
         $dir = vfsStream::setup("root");
-        $sut = new ICalendarRepo($dir->url() . "/", "example.com", new Html2Text());
+        $sut = new ICalRepo($dir->url() . "/", "example.com", new Html2Text());
         $sut->write("calendar", $calendar);
         $actual = $dir->getChild("calendar.ics")->getContent();
         $expected = <<<'EOS'

@@ -24,7 +24,7 @@ namespace Calendar\Model;
 use Calendar\Dto\Event as EventDto;
 use Calendar\Infra\Html2Text;
 
-trait ICalendarEvent
+trait ICalEvent
 {
     /** @param list<string> $lines */
     public static function fromICalendar(array $lines): ?Event

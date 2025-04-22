@@ -31,7 +31,7 @@ use Calendar\Dto\Event as EventDto;
 final class Event
 {
     use CsvEvent;
-    use ICalendarEvent;
+    use ICalEvent;
     use TextEvent;
 
     /** @var string */

@@ -21,7 +21,7 @@
 
 namespace Calendar;
 
-use Calendar\Infra\ICalendarRepo;
+use Calendar\Infra\ICalRepo;
 use Calendar\Model\CalendarRepo;
 use Plib\Request;
 use Plib\Response;
@@ -29,7 +29,7 @@ use Plib\View;
 
 class IcalImportExportController
 {
-    /** @var ICalendarRepo */
+    /** @var ICalRepo */
     private $iCalendarRepo;
 
     /** @var CalendarRepo */
@@ -39,7 +39,7 @@ class IcalImportExportController
     private $view;
 
     public function __construct(
-        ICalendarRepo $iCalendarRepo,
+        ICalRepo $iCalendarRepo,
         CalendarRepo $calendarRepo,
         View $view
     ) {

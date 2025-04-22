@@ -23,7 +23,7 @@ namespace Calendar\Model;
 
 use Calendar\Infra\Html2Text;
 
-trait ICalendar
+trait ICalCalendar
 {
     /**
      * @param list<string> $lines
