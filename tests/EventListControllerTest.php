@@ -24,9 +24,13 @@ namespace Calendar;
 use ApprovalTests\Approvals;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\EventDataService;
+use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
+use Calendar\Model\LocalDateTime;
+use Calendar\Model\NoRecurrence;
+use Calendar\Model\YearlyRecurrence;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
@@ -87,52 +91,26 @@ class EventListControllerTest extends TestCase
 
     private function lunchBreak(): Event
     {
-        return Event::create(
-            "2023-01-04",
-            "2023-01-04",
-            "12:00",
-            "13:00",
-            "Lunch break",
-            "http://example.com/lunchbreak",
-            "<a href=\"http://example.com/lunchbreak\">Tips for lunch breaks</a>",
-            "whereever I am",
-            "",
-            "",
-            ""
-        );
+        $start = new LocalDateTime(2023, 1, 4, 12, 0);
+        $end = new LocalDateTime(2023, 1, 4, 13, 0);
+        $url = "http://example.com/lunchbreak";
+        $description = "<a href=\"http://example.com/lunchbreak\">Tips for lunch breaks</a>";
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "Lunch break", $url, $description, "whereever I am", $recurrence);
     }
 
     private function easter(): Event
     {
-        return Event::create(
-            "2023-04-09",
-            "2023-04-10",
-            "",
-            "",
-            "Easter",
-            "",
-            "",
-            "almost everywhere",
-            "",
-            "",
-            ""
-        );
+        $start = new LocalDateTime(2023, 4, 9, 0, 0);
+        $end = new LocalDateTime(2023, 4, 10, 23, 59);
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "Easter", "", "", "almost everywhere", $recurrence);
     }
 
     private function birthday(): Event
     {
-        return Event::create(
-            "1969-03-24",
-            "",
-            "",
-            "",
-            "Christoph M. Becker",
-            "",
-            "",
-            "###",
-            "",
-            "",
-            ""
-        );
+        $start = new LocalDateTime(1969, 3, 24, 0, 0);
+        $end = new LocalDateTime(1969, 3, 24, 23, 59);
+        return new BirthdayEvent("", $start, $end, "Christoph M. Becker", "", "", "###");
     }
 }
