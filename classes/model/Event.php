@@ -131,23 +131,6 @@ class Event
         return Recurrence::create($recurrenceRule, $start, $end, $until);
     }
 
-    public static function fromDto(EventDto $dto): ?self
-    {
-        return self::create(
-            $dto->datestart,
-            $dto->dateend,
-            $dto->starttime,
-            $dto->endtime,
-            $dto->event,
-            $dto->linkadr,
-            $dto->description,
-            $dto->location,
-            $dto->recur,
-            $dto->until,
-            $dto->id
-        );
-    }
-
     public function __construct(
         string $id,
         LocalDateTime $start,
