@@ -23,14 +23,13 @@ namespace Calendar\Model;
 
 trait TextCalendar
 {
-    /** @param non-empty-string $separator */
-    public static function fromText(string $contents, string $separator): self
+    public static function fromText(string $contents): self
     {
         $that = new self([]);
         $lines = explode("\n", $contents);
         foreach ($lines as $line) {
             $line = rtrim($line);
-            $event = Event::fromText($line, $separator);
+            $event = Event::fromText($line);
             if ($event !== null) {
                 $id = sha1($line);
                 $that->events[$id] = $event;

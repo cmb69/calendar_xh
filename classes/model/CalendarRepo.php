@@ -31,17 +31,12 @@ class CalendarRepo
     /** @var string */
     private $dataFolder;
 
-    /** @var non-empty-string */
-    private $separator;
-
     /** @var string */
     private $eventfile;
 
-    /** @param non-empty-string $separator */
-    public function __construct(string $dataFolder, string $separator)
+    public function __construct(string $dataFolder)
     {
         $this->dataFolder = $dataFolder;
-        $this->separator = $separator;
         $this->eventfile = "{$dataFolder}calendar.2.6.csv";
     }
 
@@ -89,7 +84,7 @@ class CalendarRepo
             flock($stream, LOCK_UN);
             fclose($stream);
         }
-        return Calendar::fromText($contents, $this->separator);
+        return Calendar::fromText($contents);
     }
 
     public function save(Calendar $calendar): bool

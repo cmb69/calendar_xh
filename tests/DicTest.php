@@ -33,7 +33,6 @@ class DicTest extends TestCase
         $pth = ["folder" => ["content" => "", "plugins" => ""]];
         $plugin_cf = ["calendar" => [
             "nextevent_orientation" => "",
-            "date_delimiter" => "",
             "same-event-calendar_for_all_languages" => "",
         ]];
         $plugin_tx = ["calendar" => ["monthnames_array" => ""]];

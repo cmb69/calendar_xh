@@ -13,4 +13,3 @@ $plugin_mcf['calendar']['show_event_location']="bool";
 $plugin_mcf['calendar']['show_event_link']="bool";
 $plugin_mcf['calendar']['show_period_of_events']="bool";
 $plugin_mcf['calendar']['same-event-calendar_for_all_languages']="bool";
-$plugin_mcf['calendar']['date_delimiter']="enum:.,-,/";

@@ -15,4 +15,3 @@ $plugin_cf['calendar']['show_number_of_future_months']="11";
 $plugin_cf['calendar']['show_number_of_previous_months']="";
 $plugin_cf['calendar']['show_period_of_events']="true";
 $plugin_cf['calendar']['same-event-calendar_for_all_languages']="";
-$plugin_cf['calendar']['date_delimiter']=".";

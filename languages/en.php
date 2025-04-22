@@ -94,7 +94,6 @@ $plugin_tx['calendar']['cf_eventlist_template']="The template to use for the eve
 $plugin_tx['calendar']['cf_nextevent_orientation']="The scrolling direction of the next event marquee. Either 'vertical' for vertical scrolling, or 'horizontal' for horizontal scrolling.";
 $plugin_tx['calendar']['cf_edit_editor_init']="The init (configuration) HTML editor used for the event descriptions. Depending  on the editor, different inits are available, typically at least 'minimal' and 'full'. If the editor does not support the configured init, only a textarea will be shown.";
 $plugin_tx['calendar']['cf_show_days_between_dates']="Whether to color all the days of multi day events in the calendar display.";
-$plugin_tx['calendar']['cf_date_delimiter']="Glyphs used to separate day, month and year. You can choose between \".\", \"-\", \"/\". This is only used for import from the old calendar.txt files.";
 $plugin_tx['calendar']['cf_show_event_time']="Whether to display beginning and ending time in the classic event list.";
 $plugin_tx['calendar']['cf_show_event_location']="Whether to display the location in the classic event list.";
 $plugin_tx['calendar']['cf_show_event_link']="Whether to display links in the classic event list.";

@@ -27,7 +27,6 @@ $plugin_tx['calendar']['event_link_txt']="Text odkazu";
 $plugin_tx['calendar']['eventfile_saved']="Zmeny v udalosti boli uložené . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="CHYBA: udalosť sa nepodarilo uložiť.";
 
-$plugin_tx['calendar']['cf_date_delimiter']="Znaky na oddelenie dňa, mesiaca a roku. Je možné zvoliť z \".\", \"-\", \"/\". This is only used for import from the old calendar.txt files.";
 $plugin_tx['calendar']['cf_week-end_day_1']="Zadajte číslo dňa v týždni, ktorý má byť vyznačenou farbou určenou pre víkend. \"0\" predstavuje prvý deň \"6\" predstavuje posledný deň v týždni.";
 $plugin_tx['calendar']['cf_week-end_day_2']="Detto ako week-end_day_1.";
 $plugin_tx['calendar']['cf_show_number_of_future_months']="Počet mesiacov v budúcnosti, za ktoré sú zobrazované udalosti v zozname. Predvolené nastavenie je aktuálny mesiac, \"2\" predstavuje aktuálny a nasledujúci mesiac.";

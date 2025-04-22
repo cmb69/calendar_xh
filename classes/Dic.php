@@ -46,7 +46,7 @@ class Dic
         return new CalendarController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf['calendar'],
-            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder()),
             new DateTimeFormatter($plugin_tx['calendar']),
             ++$num,
             self::counter(),
@@ -60,7 +60,7 @@ class Dic
 
         return new EventListController(
             $plugin_cf['calendar'],
-            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
         );
@@ -72,7 +72,7 @@ class Dic
 
         return new NextEventController(
             $plugin_cf["calendar"],
-            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder()),
             new DateTimeFormatter($plugin_tx['calendar']),
             self::view()
         );
@@ -85,7 +85,7 @@ class Dic
         return new EditEventsController(
             "{$pth['folder']['plugins']}calendar/",
             $plugin_cf["calendar"],
-            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder()),
             new CsrfProtector(),
             new Random(),
             new Editor(),
@@ -99,7 +99,7 @@ class Dic
 
         return new InfoController(
             "{$pth['folder']['plugins']}calendar/",
-            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder()),
             new SystemChecker(),
             self::view()
         );
@@ -109,7 +109,7 @@ class Dic
     {
         return new IcalImportExportController(
             new ICalRepo(self::getDataFolder(), $_SERVER["HTTP_HOST"], new Html2Text()),
-            new CalendarRepo(self::getDataFolder(), self::getDpSeparator()),
+            new CalendarRepo(self::getDataFolder()),
             self::view()
         );
     }
@@ -123,18 +123,6 @@ class Dic
             $dataFolder = dirname($dataFolder) . '/';
         }
         return $dataFolder . "calendar/";
-    }
-
-    /** @return non-empty-string */
-    private static function getDpSeparator(): string
-    {
-        global $plugin_cf;
-
-        $sep = $plugin_cf['calendar']['date_delimiter'];
-        if (!in_array($sep, ['.', '/', '-'], true)) {
-            $sep = '.';
-        }
-        return $sep;
     }
 
     private static function counter(): Counter

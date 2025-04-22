@@ -23,8 +23,7 @@ namespace Calendar\Model;
 
 trait TextEvent
 {
-    /** @param non-empty-string $separator */
-    public static function fromText(string $line, string $separator): ?self
+    public static function fromText(string $line): ?self
     {
         list($eventdates, $event, $location, $link, $starttime) = explode(';', rtrim($line));
         if (strpos($eventdates, ',') !== false) {
@@ -35,12 +34,18 @@ trait TextEvent
             $endtime = "";
         }
         if ($datestart) {
-            list($day, $month, $year) = explode($separator, $datestart);
-            $datestart = "$year-$month-$day";
+            $parts = preg_split('/[\.\-\/]/', $datestart);
+            if ($parts !== false) {
+                [$day, $month, $year] = $parts;
+                $datestart = "$year-$month-$day";
+            }
         }
         if ($dateend) {
-            list($day, $month, $year) = explode($separator, $dateend);
-            $dateend = "$year-$month-$day";
+            $parts = preg_split('/[\.\-\/]/', $dateend);
+            if ($parts !== false) {
+                [$day, $month, $year] = $parts;
+                $dateend = "$year-$month-$day";
+            }
         }
         if (strpos($link, ',') !== false) {
             list($linkadr, $linktxt) = explode(',', $link);

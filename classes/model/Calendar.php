@@ -22,6 +22,7 @@
 namespace Calendar\Model;
 
 use Calendar\Dto\Event as EventDto;
+use Plib\Document;
 
 final class Calendar
 {
