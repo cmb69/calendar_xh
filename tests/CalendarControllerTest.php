@@ -25,6 +25,7 @@ use ApprovalTests\Approvals;
 use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\EventDataService;
+use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
@@ -113,7 +114,6 @@ class CalendarControllerTest extends TestCase
     {
         $start = new LocalDateTime(2000, 1, 1, 0, 0);
         $end = new LocalDateTime(2000, 1, 1, 23, 59);
-        $recurrence = new NoRecurrence($start, $end);
-        return new Event("", $start, $end, "Millenium", "", "", "###", $recurrence);
+        return new BirthdayEvent("", $start, $end, "Millenium", "", "");
     }
 }

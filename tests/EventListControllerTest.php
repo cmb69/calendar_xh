@@ -111,6 +111,6 @@ class EventListControllerTest extends TestCase
     {
         $start = new LocalDateTime(1969, 3, 24, 0, 0);
         $end = new LocalDateTime(1969, 3, 24, 23, 59);
-        return new BirthdayEvent("", $start, $end, "Christoph M. Becker", "", "", "###");
+        return new BirthdayEvent("", $start, $end, "Christoph M. Becker", "", "");
     }
 }

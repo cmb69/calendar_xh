@@ -127,7 +127,7 @@ class NextEventControllerTest extends TestCase
     {
         $start = new LocalDateTime(1969, 3, 24, 0, 0);
         $end = new LocalDateTime(1969, 3, 24, 23, 59);
-        return new BirthdayEvent("", $start, $end, "cmb", "", "", "###");
+        return new BirthdayEvent("", $start, $end, "cmb", "", "");
     }
 
     private function intfcb(): Event

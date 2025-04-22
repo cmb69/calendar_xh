@@ -96,7 +96,7 @@ class Event
             return null;
         }
         if (trim($location) === "###") {
-            return new BirthdayEvent($id, $start, $end, $summary, $linkadr, $linktxt, $location);
+            return new BirthdayEvent($id, $start, $end, $summary, $linkadr, $linktxt);
         }
         $recurrence = self::createRecurrence($recurrenceRule, $start, $end, $until);
         return new self($id, $start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);

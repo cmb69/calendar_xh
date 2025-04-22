@@ -143,6 +143,6 @@ class ICalendarRepoTest extends TestCase
     {
         $start = new LocalDateTime(2000, 1, 1, 0, 0);
         $end = new LocalDateTime(2000, 1, 1, 23, 59);
-        return new BirthdayEvent("", $start, $end, "Millenium", "", "", "###");
+        return new BirthdayEvent("", $start, $end, "Millenium", "", "");
     }
 }
