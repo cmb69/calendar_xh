@@ -254,7 +254,18 @@ class EditEventsController
             return $this->respondWith($request, $this->view->message("fail", "error_unauthorized"));
         }
         $calendar = $this->calendarRepo->find();
-        return $this->upsert($request, $calendar, null);
+        $dto = $this->eventPost($request);
+        $dto->id = Codec::encodeBase32hex($this->random->bytes(15));
+        $event = $calendar->addEvent($dto);
+        if ($event === null) {
+            return $this->respondWith($request, $this->view->message("fail", "error_invalid_event")
+                . $this->renderEditForm($request, $dto, null, "create"));
+        }
+        if (!$this->calendarRepo->save($calendar)) {
+            return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
+                . $this->renderEditForm($request, $event->toDto(), null, "create"));
+        }
+        return $this->redirectToOverviewResponse($request);
     }
 
     private function doGenerateIdsAction(Request $request): Response
@@ -295,7 +306,6 @@ class EditEventsController
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
                 . $this->renderEditSingleForm($request, $event, $id));
         }
-        // TODO redirect to split event?
         $url = $request->url()->with("action", "update")->with("event_id", $splitId);
         return Response::redirect($url->absolute());
     }
@@ -310,29 +320,18 @@ class EditEventsController
         if ($id === null || ($calendar->event($id)) === null) {
             return $this->redirectToOverviewResponse($request);
         }
-        return $this->upsert($request, $calendar, array_key_exists($id, $calendar->events()) ? $id : null);
-    }
-
-    private function upsert(Request $request, Calendar $calendar, ?string $id): Response
-    {
         $dto = $this->eventPost($request);
-        if ($id === null) {
-            $dto->id = Codec::encodeBase32hex($this->random->bytes(15));
-            $event = $calendar->addEvent($dto);
-        } else {
-            $dto->id = $id;
-            $event = $calendar->updateEvent($dto);
-        }
+        $dto->id = $id;
+        $event = $calendar->updateEvent($dto);
         if ($event === null) {
             return $this->respondWith($request, $this->view->message("fail", "error_invalid_event")
-                . $this->renderEditForm($request, $dto, $id, $id !== null ? "create" : "update"));
+                . $this->renderEditForm($request, $dto, $id, "update"));
         }
-        if ($this->calendarRepo->save($calendar)) {
-            return $this->redirectToOverviewResponse($request);
-        } else {
+        if (!$this->calendarRepo->save($calendar)) {
             return $this->respondWith($request, $this->view->message("fail", "eventfile_not_saved")
-                . $this->renderEditForm($request, $event->toDto(), $id, $id !== null ? "create" : "update"));
+                . $this->renderEditForm($request, $event->toDto(), $id, "update"));
         }
+        return $this->redirectToOverviewResponse($request);
     }
 
     private function eventPost(Request $request): EventDto
