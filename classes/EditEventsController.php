@@ -254,8 +254,7 @@ class EditEventsController
         }
         $calendar = $this->calendarRepo->find();
         $dto = $this->eventPost($request);
-        $dto->id = Codec::encodeBase32hex($this->random->bytes(15));
-        $event = $calendar->addEvent($dto);
+        $event = $calendar->addEvent(Codec::encodeBase32hex($this->random->bytes(15)), $dto);
         if ($event === null) {
             return $this->respondWith($request, $this->view->message("fail", "error_invalid_event")
                 . $this->renderEditForm($request, $dto, null, "create"));
