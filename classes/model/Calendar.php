@@ -23,7 +23,7 @@ namespace Calendar\Model;
 
 use Calendar\Dto\Event as EventDto;
 
-class Calendar
+final class Calendar
 {
     use CsvCalendar;
     use ICalendar;

@@ -28,15 +28,14 @@ namespace Calendar\Model;
 
 use Calendar\Dto\Event as EventDto;
 
-/** @phpstan-consistent-constructor */
-class Event
+final class Event
 {
     use CsvEvent;
     use ICalendarEvent;
     use TextEvent;
 
     /** @var string */
-    private $id = "";
+    private $id;
 
     /** @var LocalDateTime */
     private $start;
