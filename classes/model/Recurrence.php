@@ -21,24 +21,43 @@
 
 namespace Calendar\Model;
 
-interface Recurrence
+abstract class Recurrence
 {
-    public function name(): string;
+    public static function create(
+        string $recurrenceRule,
+        LocalDateTime $start,
+        LocalDateTime $end,
+        string $until
+    ): Recurrence {
+        $until = LocalDateTime::fromIsoString("{$until}T23:59");
+        switch ($recurrenceRule) {
+            case "yearly":
+                return new YearlyRecurrence($start, $end, $until);
+            case "weekly":
+                return new WeeklyRecurrence($start, $end, $until);
+            case "daily":
+                return new DailyRecurrence($start, $end, $until);
+            default:
+                return new NoRecurrence($start, $end);
+        }
+    }
 
-    public function start(): LocalDateTime;
+    abstract public function name(): string;
 
-    public function end(): LocalDateTime;
+    abstract public function start(): LocalDateTime;
 
-    public function until(): ?LocalDateTime;
+    abstract public function end(): LocalDateTime;
+
+    abstract public function until(): ?LocalDateTime;
 
     /** @return list<LocalDateTime> */
-    public function matchesInMonth(int $year, int $month): array;
+    abstract public function matchesInMonth(int $year, int $month): array;
 
-    public function matchOnDay(LocalDateTime $day, bool $daysBetween): ?LocalDateTime;
+    abstract public function matchOnDay(LocalDateTime $day, bool $daysBetween): ?LocalDateTime;
 
     /** @return ?array{LocalDateTime,LocalDateTime} */
-    public function firstMatchAfter(LocalDateTime $date): ?array;
+    abstract public function firstMatchAfter(LocalDateTime $date): ?array;
 
     /** @return array{?Recurrence,?NoRecurrence,?Recurrence} */
-    public function split(LocalDateTime $date): array;
+    abstract public function split(LocalDateTime $date): array;
 }

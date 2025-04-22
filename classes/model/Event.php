@@ -33,6 +33,7 @@ class Event
 {
     use CsvEvent;
     use ICalendarEvent;
+    use TextEvent;
 
     /** @var string */
     private $id = "";
@@ -58,7 +59,7 @@ class Event
     /** @var Recurrence */
     private $recurrence;
 
-    public static function create(
+    private static function create(
         string $datestart,
         ?string $dateend,
         string $starttime,
@@ -96,9 +97,9 @@ class Event
             return null;
         }
         if (trim($location) === "###") {
-            return new BirthdayEvent($id, $start, $end, $summary, $linkadr, $linktxt, $location);
+            return new BirthdayEvent($id, $start, $end, $summary, $linkadr, $linktxt);
         }
-        $recurrence = self::createRecurrence($recurrenceRule, $start, $end, $until);
+        $recurrence = Recurrence::create($recurrenceRule, $start, $end, $until);
         return new self($id, $start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
     }
 
@@ -117,25 +118,6 @@ class Event
             $dto->until,
             $dto->id
         );
-    }
-
-    private static function createRecurrence(
-        string $recurrenceRule,
-        LocalDateTime $start,
-        LocalDateTime $end,
-        string $until
-    ): Recurrence {
-        $until = LocalDateTime::fromIsoString("{$until}T23:59");
-        if ($recurrenceRule === "yearly") {
-            $recurrence = new YearlyRecurrence($start, $end, $until);
-        } elseif ($recurrenceRule === "weekly") {
-            $recurrence = new WeeklyRecurrence($start, $end, $until);
-        } elseif ($recurrenceRule === "daily") {
-            $recurrence = new DailyRecurrence($start, $end, $until);
-        } else {
-            $recurrence = new NoRecurrence($start, $end);
-        }
-        return $recurrence;
     }
 
     public function __construct(

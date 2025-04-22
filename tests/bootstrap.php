@@ -53,6 +53,7 @@ require_once "./classes/model/CsvEvent.php";
 require_once "./classes/model/ICalendar.php";
 require_once "./classes/model/ICalendarEvent.php";
 require_once "./classes/model/TextCalendar.php";
+require_once "./classes/model/TextEvent.php";
 require_once "./classes/model/Calendar.php";
 require_once './classes/model/CalendarService.php';
 require_once './classes/model/Event.php';

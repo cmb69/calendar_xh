@@ -28,8 +28,11 @@ class EventTest extends TestCase
 {
     public function testIsFullDay()
     {
-        $subject = Event::create("2021-04-04", "", "", "", "Easter", "", "", "", "", "", "");
-        $this->assertTrue($subject->isFullDay());
+        $start = new LocalDateTime(2021, 4, 4, 0, 0);
+        $end = new LocalDateTime(2021, 4, 4, 23, 59);
+        $recurrence = new NoRecurrence($start, $end);
+        $sut = new Event("", $start, $end, "Easter", "", "", "", $recurrence);
+        $this->assertTrue($sut->isFullDay());
     }
 
     /** @dataProvider occurrencesDuringData */
@@ -44,11 +47,11 @@ class EventTest extends TestCase
             [$this->cmb(), 2025, 3, [$this->cmb(2025)]],
             [$this->intfcb(), 2025, 4, [$this->intfcb()]],
             [$this->easter(), 2025, 4, [$this->easter()]],
-            [$this->christmas(), 2025, 12, [$this->christmas(2025)]],
+            [$this->christmas(), 2025, 12, [$this->christmasIn(2025)]],
             [$this->turnOfTheYear(), 2025, 12, [$this->turnOfTheYear(2025)]],
             [$this->cards(), 2025, 3, []],
-            [$this->cards(), 2025, 4, [$this->cards(2025, 4, 17), $this->cards(2025, 4, 24)]],
-            [$this->cards(), 2025, 6, [$this->cards(2025, 6, 5), $this->cards(2025, 6, 12)]],
+            [$this->cards(), 2025, 4, [$this->cardsOn(2025, 4, 17), $this->cardsOn(2025, 4, 24)]],
+            [$this->cards(), 2025, 6, [$this->cardsOn(2025, 6, 5), $this->cardsOn(2025, 6, 12)]],
             [$this->lunchBreak(), 2025, 4,
                 $this->lunchBreaks($this->ldt(2025, 4, 25, 0, 0), $this->ldt(2025, 4, 30, 0, 0))
             ],
@@ -71,20 +74,19 @@ class EventTest extends TestCase
             [$this->intfcb(), $this->ldt(2025, 4, 16, 0, 0), true, $this->intfcb()],
             [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), true, $this->easter()],
             [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), false, $this->easter()],
-            [$this->christmas(), $this->ldt(2025, 12, 24, 0, 0), false, $this->christmas(2025)],
-            [$this->christmas(), $this->ldt(2025, 12, 25, 0, 0), true, $this->christmas(2025)],
-            [$this->christmas(), $this->ldt(2025, 12, 26, 0, 0), false, $this->christmas(2025)],
+            [$this->christmas(), $this->ldt(2025, 12, 24, 0, 0), false, $this->christmasIn(2025)],
+            [$this->christmas(), $this->ldt(2025, 12, 25, 0, 0), true, $this->christmasIn(2025)],
+            [$this->christmas(), $this->ldt(2025, 12, 26, 0, 0), false, $this->christmasIn(2025)],
             [$this->turnOfTheYear(), $this->ldt(2025, 12, 31, 0, 0), false, $this->turnOfTheYear(2025)],
             [$this->turnOfTheYear(), $this->ldt(2026, 1, 1, 0, 0), false, $this->turnOfTheYear(2025)],
             [$this->cards(), $this->ldt(2025, 4, 1, 0, 0), false, null],
-            [$this->cards(), $this->ldt(2025, 5, 1, 0, 0), false, $this->cards(2025, 5, 1, 19, 45)],
+            [$this->cards(), $this->ldt(2025, 5, 1, 0, 0), false, $this->cardsOn(2025, 5, 1)],
             [$this->cards(), $this->ldt(2025, 4, 18, 0, 0), false, null],
             [$this->cards(), $this->ldt(2025, 6, 19, 0, 0), false, null],
-            [$this->lunchBreak(), $this->ldt(2025, 4, 29, 0, 0), false,
-                Event::create("2025-04-29", "2025-04-29", "12:00", "13:00", "Lunch break", "", "", "", "", "", "")],
-                [$this->lunchBreak(), $this->ldt(2025, 4, 24, 0, 0), false, null],
-                [$this->lunchBreak(), $this->ldt(2025, 5, 4, 0, 0), false, null],
-            ];
+            [$this->lunchBreak(), $this->ldt(2025, 4, 29, 0, 0), false, $this->lunchBreakOn(2025, 4, 29)],
+            [$this->lunchBreak(), $this->ldt(2025, 4, 24, 0, 0), false, null],
+            [$this->lunchBreak(), $this->ldt(2025, 5, 4, 0, 0), false, null],
+        ];
     }
 
     /** @dataProvider earliestOccurrenceAfterData */
@@ -104,15 +106,15 @@ class EventTest extends TestCase
             [
                 $this->christmas(),
                 $this->ldt(2025, 12, 24, 0, 0),
-                [$this->christmas(2025), $this->ldt(2025, 12, 24, 0, 0)],
+                [$this->christmasIn(2025), $this->ldt(2025, 12, 24, 0, 0)],
             ], [
                 $this->christmas(),
                 $this->ldt(2025, 12, 26, 0, 0),
-                [$this->christmas(2025), $this->ldt(2025, 12, 26, 23, 59)],
+                [$this->christmasIn(2025), $this->ldt(2025, 12, 26, 23, 59)],
             ], [
                 $this->christmas(),
                 $this->ldt(2025, 12, 27, 0, 0),
-                [$this->christmas(2026), $this->ldt(2026, 12, 24, 0, 0)],
+                [$this->christmasIn(2026), $this->ldt(2026, 12, 24, 0, 0)],
             ], [
                 $this->turnOfTheYear(),
                 $this->ldt(2026, 1, 1, 0, 0),
@@ -120,22 +122,22 @@ class EventTest extends TestCase
             ], [
                 $this->cards(),
                 $this->ldt(2025, 4, 24, 0, 0),
-                [$this->cards(2025, 4, 24), $this->ldt(2025, 4, 24, 19, 45)],
+                [$this->cardsOn(2025, 4, 24), $this->ldt(2025, 4, 24, 19, 45)],
             ], [
                 $this->cards(),
                 $this->ldt(2025, 4, 24, 21, 0),
-                [$this->cards(2025, 4, 24), $this->ldt(2025, 4, 24, 22, 15)],
+                [$this->cardsOn(2025, 4, 24), $this->ldt(2025, 4, 24, 22, 15)],
             ],
             [$this->lunchBreak(), $this->ldt(2025, 4, 25, 0, 0), [
-                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "", "", ""),
+                $this->lunchBreakOn(2025, 4, 25),
                 $this->ldt(2025, 4, 25, 12, 0),
             ]],
             [$this->lunchBreak(), $this->ldt(2025, 4, 25, 12, 30), [
-                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "", "", ""),
+                $this->lunchBreakOn(2025, 4, 25),
                 $this->ldt(2025, 4, 25, 13, 0),
             ]],
             [$this->lunchBreak(), $this->ldt(2025, 4, 26, 0, 0), [
-                Event::create("2025-04-26", "2025-04-26", "12:00", "13:00", "Lunch break", "", "", "", "", "", "", ""),
+                $this->lunchBreakOn(2025, 4, 26),
                 $this->ldt(2025, 4, 26, 12, 0),
             ]],
             [$this->lunchBreak(), $this->ldt(2025, 5, 5, 0, 0), [null, null]],
@@ -154,57 +156,57 @@ class EventTest extends TestCase
     {
         return [
             [$this->christmas(), $this->ldt(2025, 12, 24, 0, 0), [
-                Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "2024-12-24", "111"),
-                Event::create("2025-12-24", "2025-12-26", "", "", "Christmas", "", "", "", "", "", "111"),
-                Event::create("2026-12-24", "2026-12-26", "", "", "Christmas", "", "", "", "yearly", "", "111"),
+                $this->christmasIn(2000, "111", $this->ldt(2024, 12, 24, 23, 59)),
+                $this->christmasIn(2025, "111"),
+                $this->christmasIn(2026, "111", true),
             ]],
             [$this->christmas(), $this->ldt(2000, 12, 24, 0, 0), [
                 null,
-                Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "", "", "111"),
-                Event::create("2001-12-24", "2001-12-26", "", "", "Christmas", "", "", "", "yearly", "", "111"),
+                $this->christmasIn(2000, "111"),
+                $this->christmasIn(2001, "111", true),
             ]],
             [
-                Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "2024-12-24", ""),
+                $this->christmasIn(2000, "", $this->ldt(2024, 12, 24, 23, 59)),
                 $this->ldt(2024, 12, 24, 0, 0), [
-                Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "2023-12-24", "111"),
-                Event::create("2024-12-24", "2024-12-26", "", "", "Christmas", "", "", "", "", "", "111"),
+                    $this->christmasIn(2000, "111", $this->ldt(2023, 12, 24, 23, 59)),
+                $this->christmasIn(2024, "111"),
                 null]
             ],
             [
-                Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "2024-12-24", ""),
+                $this->christmasIn(2004, "", $this->ldt(2024, 12, 24, 23, 59)),
                 $this->ldt(2025, 12, 24, 0, 0), [null, null, null,]
             ],
             [$this->christmas(), $this->ldt(2025, 12, 23, 0, 0), [null, null, null]],
             [$this->intfcb(), $this->ldt(2025, 4, 16, 22, 0), [null, null, null]],
             [$this->cards(), $this->ldt(2025, 5, 1, 0, 0), [
-                Event::create("2025-04-17", "2025-04-17", "19:45", "22:15", "Cards", "", "", "", "weekly", "2025-04-24", "111"),
-                Event::create("2025-05-01", "2025-05-01", "19:45", "22:15", "Cards", "", "", "", "", "", "111"),
-                Event::create("2025-05-08", "2025-05-08", "19:45", "22:15", "Cards", "", "", "", "weekly", "2025-06-12", "111"),
+                $this->cardsOn(2025, 4, 17, "111", $this->ldt(2025, 4, 24, 23, 59)),
+                $this->cardsOn(2025, 5, 1, "111"),
+                $this->cardsOn(2025, 5, 8, "111", $this->ldt(2025, 6, 12, 23, 59)),
             ]],
             [$this->cards(), $this->ldt(2025, 4, 17, 0, 0), [
                 null,
-                Event::create("2025-04-17", "2025-04-17", "19:45", "22:15", "Cards", "", "", "", "", "", "111"),
-                Event::create("2025-04-24", "2025-04-24", "19:45", "22:15", "Cards", "", "", "", "weekly", "2025-06-12", "111"),
+                $this->cardsOn(2025, 4, 17, "111"),
+                $this->cardsOn(2025, 4, 24, "111", $this->ldt(2025, 6, 12, 23, 59)),
             ]],
             [$this->cards(), $this->ldt(2025, 6, 12, 0, 0), [
-                Event::create("2025-04-17", "2025-04-17", "19:45", "22:15", "Cards", "", "", "", "weekly", "2025-06-05", "111"),
-                Event::create("2025-06-12", "2025-06-12", "19:45", "22:15", "Cards", "", "", "", "", "", "111"),
+                $this->cardsOn(2025, 4, 17, "111", $this->ldt(2025, 6, 5, 23, 59)),
+                $this->cardsOn(2025, 6, 12, "111"),
                 null,
             ]],
             [$this->cards(), $this->ldt(2025, 4, 18, 0, 0), [null, null, null]],
             [$this->lunchBreak(), $this->ldt(2025, 4, 30, 0, 0), [
-                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-04-29", "111"),
-                Event::create("2025-04-30", "2025-04-30", "12:00", "13:00", "Lunch break", "", "", "", "", "", "111"),
-                Event::create("2025-05-01", "2025-05-01", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-05-03", "111"),
+                $this->lunchBreakOn(2025, 4, 25, "111", $this->ldt(2025, 4, 29, 23, 59)),
+                $this->lunchBreakOn(2025, 4, 30, "111"),
+                $this->lunchBreakOn(2025, 5, 1, "111", $this->ldt(2025, 5, 3, 23, 59)),
             ]],
             [$this->lunchBreak(), $this->ldt(2025, 4, 25, 0, 0), [
                 null,
-                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "", "", "111"),
-                Event::create("2025-04-26", "2025-04-26", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-05-03", "111"),
+                $this->lunchBreakOn(2025, 4, 25, "111"),
+                $this->lunchBreakOn(2025, 4, 26, "111", $this->ldt(2025, 5, 3, 23, 59)),
             ]],
             [$this->lunchBreak(), $this->ldt(2025, 5, 3, 0, 0), [
-                Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-05-02", "111"),
-                Event::create("2025-05-03", "2025-05-03", "12:00", "13:00", "Lunch break", "", "", "", "", "", "111"),
+                $this->lunchBreakOn(2025, 4, 25, "111", $this->ldt(2025, 5, 2, 23, 59)),
+                $this->lunchBreakOn(2025, 5, 3, "111"),
                 null,
             ]],
             [$this->lunchBreak(), $this->ldt(2025, 5, 4, 0, 0), [null, null, null]],
@@ -213,7 +215,9 @@ class EventTest extends TestCase
 
     public function testGH98()
     {
-        $sut = Event::create("2026-04-16", "", "", "", "Someone not yet born", "", "", "###", "", "", "");
+        $start = new LocalDateTime(2026, 4, 16, 0, 0);
+        $end = new LocalDateTime(2026, 4, 16, 23, 59);
+        $sut = new BirthdayEvent("", $start, $end, "Someone not yet born", "", "");
         $now = $this->ldt(2025, 4, 16, 0, 0);
         $this->assertEmpty($sut->occurrencesDuring(2025, 4));
         $this->assertNull($sut->occurrenceOn($now, true));
@@ -222,8 +226,10 @@ class EventTest extends TestCase
 
     private function cmb(int $year = 1969): Event
     {
-        $event = Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###", "", "", "");
-        assert($event instanceof BirthdayEvent);
+        $start = new LocalDateTime(1969, 3, 24, 0, 0);
+        $end = new LocalDateTime(1969, 3, 24, 23, 59);
+        $recurrence = new YearlyRecurrence($start, $end, null);
+        $event = new BirthdayEvent("", $start, $end, "cmb", "", "", "");
         if ($year !== 1969) {
             $event = $event->occurrenceStartingAt($this->ldt($year, 3, 24, 0, 0));
         }
@@ -232,67 +238,93 @@ class EventTest extends TestCase
 
     private function intfcb(): Event
     {
-        return Event::create(
-            "2025-04-16",
-            "2025-04-16",
-            "21:00",
-            "22:45",
-            "#INTFCB",
-            "",
-            "",
-            "Guiseppe-Meazza-Stadion",
-            "",
-            "",
-            ""
-        );
+        $start = new LocalDateTime(2025, 4, 16, 21, 0);
+        $end = new LocalDateTime(2025, 4, 16, 22, 45);
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "#INTFCB", "", "", "Guiseppe-Meazza-Stadion", $recurrence);
     }
 
     private function easter(): Event
     {
-        return Event::create("2025-04-20", "2025-04-21", "", "", "easter", "", "", "", "", "", "");
+        $start = new LocalDateTime(2025, 4, 20, 0, 0);
+        $end = new LocalDateTime(2025, 4, 21, 23, 59);
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "easter", "", "", "", $recurrence);
     }
 
-    private function christmas(?int $year = null): Event
+    private function christmas(): Event
     {
-        if ($year === null) {
-            return Event::create("2000-12-24", "2000-12-26", "", "", "Christmas", "", "", "", "yearly", "", "");
+        $start = new LocalDateTime(2000, 12, 24, 0, 0);
+        $end = new LocalDateTime(2000, 12, 26, 23, 59);
+        $recurrence = new YearlyRecurrence($start, $end, null);
+        return new Event("", $start, $end, "Christmas", "", "", "", $recurrence);
+    }
+
+    /** @param LocalDateTime|bool $until */
+    private function christmasIn(int $year, string $id = "", $until = null): Event
+    {
+        $start = new LocalDateTime($year, 12, 24, 0, 0);
+        $end = new LocalDateTime($year, 12, 26, 23, 59);
+        if (!$until) {
+            $recurrence = new NoRecurrence($start, $end);
+        } else {
+            $recurrence = new YearlyRecurrence($start, $end, $until === true ? null : $until);
         }
-        return Event::create("$year-12-24", "$year-12-26", "", "", "Christmas", "", "", "", "", "", "");
+        return new Event($id, $start, $end, "Christmas", "", "", "", $recurrence);
     }
 
     private function turnOfTheYear(?int $year = null): Event
     {
         if ($year === null) {
-            return Event::create("2000-12-31", "2001-01-01", "", "", "Turn of the year", "", "", "", "yearly", "", "");
+            $start = new LocalDateTime(2000, 12, 31, 0, 0);
+            $end = new LocalDateTime(2001, 1, 1, 23, 59);
+            $recurrence = new YearlyRecurrence($start, $end, null);
+            return new Event("", $start, $end, "Turn of the year", "", "", "", $recurrence);
         }
-        $nextYear = $year + 1;
-        return Event::create("$year-12-31", "{$nextYear}-01-01", "", "", "Turn of the year", "", "", "", "", "", "");
+        $start = new LocalDateTime($year, 12, 31, 0, 0);
+        $end = new LocalDateTime($year + 1, 1, 1, 23, 59);
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "Turn of the year", "", "", "", $recurrence);
     }
 
-    private function cards(?int $year = null, ?int $month = null, ?int $day = null): Event
+    private function cards(): Event
     {
-        if ($year === null && $month === null && $day === null) {
-            return Event::create(
-                "2025-04-17",
-                "2025-04-17",
-                "19:45",
-                "22:15",
-                "Cards",
-                "",
-                "",
-                "",
-                "weekly",
-                "2025-06-12",
-                ""
-            );
+        $start = new LocalDateTime(2025, 4, 17, 19, 45);
+        $end = new LocalDateTime(2025, 4, 17, 22, 15);
+        $recurrence = new WeeklyRecurrence($start, $end, new LocalDateTime(2025, 6, 12, 23, 59));
+        return new Event("", $start, $end, "Cards", "", "", "", $recurrence);
+    }
+
+    private function cardsOn(int $year, int $month, int $day, string $id = "", ?LocalDateTime $until = null): Event
+    {
+        $start = new LocalDateTime($year, $month, $day, 19, 45);
+        $end = new LocalDateTime($year, $month, $day, 22, 15);
+        if ($until === null) {
+            $recurrence = new NoRecurrence($start, $end);
+        } else {
+            $recurrence = new WeeklyRecurrence($start, $end, $until);
         }
-        $date = sprintf("%04d-%02d-%02d", $year, $month, $day);
-        return Event::create($date, $date, "19:45", "22:15", "Cards", "", "", "", "", "", "");
+        return new Event($id, $start, $end, "Cards", "", "", "", $recurrence);
     }
 
     private function lunchBreak(): Event
     {
-        return Event::create("2025-04-25", "2025-04-25", "12:00", "13:00", "Lunch break", "", "", "", "daily", "2025-05-03", "");
+        $start = new LocalDateTime(2025, 4, 25, 12, 0);
+        $end = new LocalDateTime(2025, 4, 25, 13, 0);
+        $recurrence = new DailyRecurrence($start, $end, new LocalDateTime(2025, 5, 3, 23, 59));
+        return new Event("", $start, $end, "Lunch break", "", "", "", $recurrence);
+    }
+
+    private function lunchBreakOn(int $year, int $month, int $day, string $id = "", ?LocalDateTime $until = null): Event
+    {
+        $start = new LocalDateTime($year, $month, $day, 12, 0);
+        $end = new LocalDateTime($year, $month, $day, 13, 0);
+        if ($until === null) {
+            $recurrence = new NoRecurrence($start, $end);
+        } else {
+            $recurrence = new DailyRecurrence($start, $end, $until);
+        }
+        return new Event($id, $start, $end, "Lunch break", "", "", "", $recurrence);
     }
 
     private function lunchBreaks(LocalDateTime $from, LocalDateTime $to): array
@@ -300,8 +332,10 @@ class EventTest extends TestCase
         $res = [];
         $day = new Interval(1, 0, 0);
         while ($from->compareDate($to) <= 0) {
-            $date = $from->getIsoDate();
-            $res[] = Event::create($date, $date, "12:00", "13:00", "Lunch break", "", "", "", "", "", "");
+            $start = new LocalDateTime($from->year(), $from->month(), $from->day(), 12, 0);
+            $end = new LocalDateTime($from->year(), $from->month(), $from->day(), 13, 0);
+            $recurrence = new NoRecurrence($start, $end);
+            $res[] = new Event("", $start, $end, "Lunch break", "", "", "", $recurrence);
             $from = $from->plus($day);
         }
         return $res;

@@ -37,8 +37,7 @@ class BirthdayEvent extends Event
         LocalDateTime $end,
         string $summary,
         string $linkadr,
-        string $linktxt,
-        string $location
+        string $linktxt
     ) {
         parent::__construct(
             $id,
@@ -47,7 +46,7 @@ class BirthdayEvent extends Event
             $summary,
             $linkadr,
             $linktxt,
-            $location,
+            "###",
             new YearlyRecurrence($start, $end, null)
         );
     }

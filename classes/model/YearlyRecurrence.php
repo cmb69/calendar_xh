@@ -21,7 +21,7 @@
 
 namespace Calendar\Model;
 
-class YearlyRecurrence implements Recurrence
+class YearlyRecurrence extends Recurrence
 {
     /** @var LocalDateTime */
     private $start;

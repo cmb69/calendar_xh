@@ -33,12 +33,6 @@ class Calendar
     private $events;
 
     /** @param array<string,Event> $events */
-    public static function fromEvents(array $events): self
-    {
-        return new Calendar($events);
-    }
-
-    /** @param array<string,Event> $events */
     public function __construct(array $events)
     {
         $this->events = $events;

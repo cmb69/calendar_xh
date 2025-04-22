@@ -25,9 +25,12 @@ use ApprovalTests\Approvals;
 use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\EventDataService;
+use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
+use Calendar\Model\LocalDateTime;
+use Calendar\Model\NoRecurrence;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
@@ -59,7 +62,7 @@ class CalendarControllerTest extends TestCase
         $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
         $this->calendarRepo = new CalendarRepo(vfsStream::url("root/"), ".");
-        $this->calendarRepo->save(Calendar::fromEvents([
+        $this->calendarRepo->save(new Calendar([
             $this->lunchBreak(), $this->weekend(), $this->birthday()
         ]));
         $this->dateTimeFormatter = new DateTimeFormatter($this->lang);
@@ -92,52 +95,25 @@ class CalendarControllerTest extends TestCase
 
     private function lunchBreak(): Event
     {
-        return Event::create(
-            "2023-01-04",
-            "2023-01-04",
-            "12:00",
-            "13:00",
-            "Lunch break",
-            "http://example.com/lunchbreak",
-            "Tips for lunch breaks",
-            "whereever I am",
-            "",
-            "",
-            ""
-        );
+        $start = new LocalDateTime(2023, 1, 4, 12, 0);
+        $end = new LocalDateTime(2023, 1, 4, 13, 0);
+        $url = "http://example.com/lunchbreak";
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "Lunch break", $url, "Tips for lunch breaks", "whereever I am", $recurrence);
     }
 
     private function weekend(): Event
     {
-        return Event::create(
-            "2023-01-07",
-            "2023-01-08",
-            "",
-            "",
-            "Weekend",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-        );
+        $start = new LocalDateTime(2023, 1, 7, 0, 0);
+        $end = new LocalDateTime(2023, 1, 8, 23, 59);
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "Weekend", "", "", "", $recurrence);
     }
 
     private function birthday(): Event
     {
-        return Event::create(
-            "2000-01-01",
-            "",
-            "",
-            "",
-            "Millenium",
-            "",
-            "",
-            "###",
-            "",
-            "",
-            ""
-        );
+        $start = new LocalDateTime(2000, 1, 1, 0, 0);
+        $end = new LocalDateTime(2000, 1, 1, 23, 59);
+        return new BirthdayEvent("", $start, $end, "Millenium", "", "");
     }
 }

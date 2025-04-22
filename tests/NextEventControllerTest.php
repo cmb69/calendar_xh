@@ -24,9 +24,12 @@ namespace Calendar;
 use ApprovalTests\Approvals;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Infra\EventDataService;
+use Calendar\Model\BirthdayEvent;
 use Calendar\Model\Calendar;
 use Calendar\Model\CalendarRepo;
 use Calendar\Model\Event;
+use Calendar\Model\LocalDateTime;
+use Calendar\Model\NoRecurrence;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Plib\FakeRequest;
@@ -66,7 +69,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersNoEvent(): void
     {
-        $this->calendarRepo->save(Calendar::fromEvents([$this->cmb()]));
+        $this->calendarRepo->save(new Calendar([$this->cmb()]));
         $request = new FakeRequest(["time" => strtotime("1965-04-16T20:38:00+02:00")]);
         $response = $this->sut()->defaultAction($request);
         $this->assertStringContainsString("No further event scheduled.", $response);
@@ -74,7 +77,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersEventBeforeStart(): void
     {
-        $this->calendarRepo->save(Calendar::fromEvents([$this->intfcb()]));
+        $this->calendarRepo->save(new Calendar([$this->intfcb()]));
         $request = new FakeRequest(["time" => strtotime("2025-04-16T20:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -82,7 +85,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersMultidayEventBeforeStart(): void
     {
-        $this->calendarRepo->save(Calendar::fromEvents([$this->easter()]));
+        $this->calendarRepo->save(new Calendar([$this->easter()]));
         $request = new FakeRequest(["time" => strtotime("2025-04-16T20:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -90,7 +93,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersRunningEvent(): void
     {
-        $this->calendarRepo->save(Calendar::fromEvents([$this->intfcb()]));
+        $this->calendarRepo->save(new Calendar([$this->intfcb()]));
         $request = new FakeRequest(["time" => strtotime("2025-04-16T21:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -98,7 +101,7 @@ class NextEventControllerTest extends TestCase
 
     public function testRendersRunningMultidayEvent(): void
     {
-        $this->calendarRepo->save(Calendar::fromEvents([$this->easter()]));
+        $this->calendarRepo->save(new Calendar([$this->easter()]));
         $request = new FakeRequest(["time" => strtotime("2025-04-20T20:38:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -106,7 +109,7 @@ class NextEventControllerTest extends TestCase
 
     public function testIssue51(): void
     {
-        $this->calendarRepo->save(Calendar::fromEvents([$this->cmb()]));
+        $this->calendarRepo->save(new Calendar([$this->cmb()]));
         $request = new FakeRequest(["time" => strtotime("2021-03-23T12:34:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -114,7 +117,7 @@ class NextEventControllerTest extends TestCase
 
     public function testIssue70(): void
     {
-        $this->calendarRepo->save(Calendar::fromEvents([$this->cmb()]));
+        $this->calendarRepo->save(new Calendar([$this->cmb()]));
         $request = new FakeRequest(["time" => strtotime("2021-03-25T12:34:00+00:00")]);
         $response = $this->sut()->defaultAction($request);
         Approvals::verifyHtml($response);
@@ -122,28 +125,25 @@ class NextEventControllerTest extends TestCase
 
     private function cmb(): Event
     {
-        return Event::create("1969-03-24", "1969-03-24", "", "", "cmb", "", "", "###", "", "", "");
+        $start = new LocalDateTime(1969, 3, 24, 0, 0);
+        $end = new LocalDateTime(1969, 3, 24, 23, 59);
+        return new BirthdayEvent("", $start, $end, "cmb", "", "");
     }
 
     private function intfcb(): Event
     {
-        return Event::create(
-            "2025-04-16",
-            "2025-04-16",
-            "21:00",
-            "22:45",
-            "#INTFCB",
-            "",
-            "",
-            "Guiseppe-Meazza-Stadion",
-            "",
-            "",
-            ""
-        );
+        $start = new LocalDateTime(2025, 4, 16, 21, 0);
+        $end = new LocalDateTime(2025, 4, 16, 22, 45);
+        $location = "Guiseppe-Meazza-Stadion";
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "#INTFCB", "", "", $location, $recurrence);
     }
 
     private function easter(): Event
     {
-        return Event::create("2025-04-20", "2025-04-21", "", "", "easter", "", "", "", "", "", "");
+        $start = new LocalDateTime(2025, 4, 20, 0, 0);
+        $end = new LocalDateTime(2025, 4, 21, 23, 59);
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "easter", "", "", "", $recurrence);
     }
 }
