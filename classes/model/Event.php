@@ -61,9 +61,9 @@ class Event
 
     private static function create(
         string $datestart,
-        ?string $dateend,
+        string $dateend,
         string $starttime,
-        ?string $endtime,
+        string $endtime,
         string $summary,
         string $linkadr,
         string $linktxt,
@@ -72,19 +72,19 @@ class Event
         string $until,
         string $id
     ): ?self {
-        if (!$dateend) {
-            if ($endtime) {
+        if ($dateend === "") {
+            if ($endtime !== "") {
                 return null;
             }
-            $endtime = $starttime ? $starttime : "23:59";
+            $endtime = $starttime !== "" ? $starttime : "23:59";
             if (($end = LocalDateTime::fromIsoString("{$datestart}T{$endtime}")) === null) {
                 return null;
             }
         } else {
             if (trim($location) === "###") {
                 $endtime = "23:59";
-            } elseif (!$endtime) {
-                $endtime = $starttime ? $starttime : "23:59";
+            } elseif ($endtime === "") {
+                $endtime = $starttime !== "" ? $starttime : "23:59";
             }
             if (($end = LocalDateTime::fromIsoString("{$dateend}T{$endtime}")) === null) {
                 return null;

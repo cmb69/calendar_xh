@@ -29,10 +29,10 @@ trait CsvEvent
         $that = null;
         [$datestart, $starttime, $dateend, $endtime,  $event, $location, $linkadr, $linktxt] = $record;
         if (!$dateend) {
-            $dateend = null;
+            $dateend = "";
         }
         if (!$endtime) {
-            $endtime = null;
+            $endtime = "";
         }
         $recurrenceRule = count($record) > 8 ? $record[8] : "";
         $until = count($record) > 9 ? $record[9] : "";

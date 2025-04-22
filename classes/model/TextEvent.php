@@ -31,8 +31,8 @@ trait TextEvent
             list($datestart, $dateend, $endtime) = explode(',', $eventdates);
         } else {
             $datestart = $eventdates;
-            $dateend = null;
-            $endtime = null;
+            $dateend = "";
+            $endtime = "";
         }
         if ($datestart) {
             list($day, $month, $year) = explode($separator, $datestart);
