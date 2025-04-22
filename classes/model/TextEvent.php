@@ -56,19 +56,12 @@ trait TextEvent
             $linktxt = "{$linkadr};{$linktxt}";
         }
         if ($datestart != '' && $event != '') {
-            return self::create(
-                $datestart,
-                $dateend,
-                $starttime,
-                $endtime,
-                $event,
-                $linkadr,
-                $linktxt,
-                $location,
-                "",
-                "",
-                ""
-            );
+            [$start, $end] = self::dateTimes($datestart, $dateend, $starttime, $endtime, $location);
+            if ($start === null || $end === null) {
+                return null;
+            }
+            $recurrence = self::createRecurrence("", $start, $end, "", $location);
+            return new self("", $start, $end, $event, $linkadr, $linktxt, $location, $recurrence);
         }
         return null;
     }

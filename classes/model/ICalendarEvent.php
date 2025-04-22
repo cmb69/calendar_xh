@@ -29,25 +29,19 @@ trait ICalendarEvent
     /** @param list<string> $lines */
     public static function fromICalendar(array $lines): ?Event
     {
-        $event = new EventDto();
+        $dto = new EventDto();
         while (($line = next($lines)) !== false) {
             if ($line === "END:VEVENT") {
-                $maybeEvent = self::create(
-                    $event->datestart,
-                    $event->dateend,
-                    $event->starttime,
-                    $event->endtime,
-                    $event->event,
-                    $event->linkadr,
-                    $event->description,
-                    $event->location,
-                    $event->recur,
-                    $event->until,
-                    $event->id
-                );
-                return $maybeEvent;
+                $loc = $dto->location;
+                [$start, $end] = self::dateTimes($dto->datestart, $dto->dateend, $dto->starttime, $dto->endtime, $loc);
+                if ($start === null || $end === null) {
+                    return null;
+                }
+                $recurrence = self::createRecurrence($dto->recur, $start, $end, $dto->until, $loc);
+                $description = $dto->description;
+                return new self($dto->id, $start, $end, $dto->event, $dto->linkadr, $description, $loc, $recurrence);
             }
-            self::processPropertyLine($line, $event);
+            self::processPropertyLine($line, $dto);
         }
         return null;
     }

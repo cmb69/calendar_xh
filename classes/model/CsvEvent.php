@@ -49,19 +49,12 @@ trait CsvEvent
             }
         }
         if ($datestart != '' && $event != '') {
-            $that = Event::create(
-                $datestart,
-                $dateend,
-                $starttime,
-                $endtime,
-                $event,
-                $linkadr,
-                $linktxt,
-                $location,
-                $recurrenceRule,
-                $until,
-                $uid
-            );
+            [$start, $end] = self::dateTimes($datestart, $dateend, $starttime, $endtime, $location);
+            if ($start === null || $end === null) {
+                return null;
+            }
+            $recurrence = self::createRecurrence($recurrenceRule, $start, $end, $until, $location);
+            $that = new self($uid, $start, $end, $event, $linkadr, $linktxt, $location, $recurrence);
         }
         return $that;
     }

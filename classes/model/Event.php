@@ -62,27 +62,6 @@ class Event
     /** @var ?int */
     private $age = null;
 
-    private static function create(
-        string $datestart,
-        string $dateend,
-        string $starttime,
-        string $endtime,
-        string $summary,
-        string $linkadr,
-        string $linktxt,
-        string $location,
-        string $recurrenceRule,
-        string $until,
-        string $id
-    ): ?self {
-        [$start, $end] = self::dateTimes($datestart, $dateend, $starttime, $endtime, $location);
-        if ($start === null || $end === null) {
-            return null;
-        }
-        $recurrence = self::createRecurrence($recurrenceRule, $start, $end, $until, $location);
-        return new self($id, $start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
-    }
-
     /** @return array{?LocalDateTime,?LocalDateTime} */
     public static function dateTimes(
         string $datestart,
