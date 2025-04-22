@@ -38,36 +38,18 @@ require_once "../plib/classes/View.php";
 require_once "../plib/classes/FakeRequest.php";
 require_once "../plib/classes/FakeSystemChecker.php";
 
-require_once "./classes/dto/BirthdayRow.php";
-require_once "./classes/dto/Event.php";
-require_once "./classes/dto/EventRow.php";
-require_once "./classes/dto/HeaderRow.php";
-require_once "./classes/infra/Counter.php";
-require_once './classes/infra/DateTimeFormatter.php';
-require_once "./classes/infra/Editor.php";
-require_once "./classes/infra/Html2Text.php";
-require_once './classes/infra/ICalendarRepo.php';
-require_once './classes/model/CalendarRepo.php';
-require_once "./classes/model/CsvCalendar.php";
-require_once "./classes/model/CsvEvent.php";
-require_once "./classes/model/ICalendar.php";
-require_once "./classes/model/ICalendarEvent.php";
-require_once "./classes/model/TextCalendar.php";
-require_once "./classes/model/TextEvent.php";
-require_once "./classes/model/Calendar.php";
-require_once './classes/model/CalendarService.php';
-require_once './classes/model/Event.php';
-require_once "./classes/model/Interval.php";
-require_once './classes/model/LocalDateTime.php';
-require_once "./classes/model/Recurrence.php";
-require_once "./classes/model/DailyRecurrence.php";
-require_once "./classes/model/NoRecurrence.php";
-require_once "./classes/model/WeeklyRecurrence.php";
-require_once "./classes/model/YearlyRecurrence.php";
-require_once './classes/CalendarController.php';
-require_once './classes/Dic.php';
-require_once './classes/EditEventsController.php';
-require_once './classes/EventListController.php';
-require_once './classes/IcalImportExportController.php';
-require_once './classes/InfoController.php';
-require_once './classes/NextEventController.php';
+spl_autoload_register(function (string $className) {
+    $parts = explode("\\", $className);
+    if ($parts[0] !== "Calendar") {
+        return;
+    }
+    if (count($parts) === 3) {
+        $parts[1] = strtolower($parts[1]);
+    }
+    $filename = implode("/", array_slice($parts, 1)) . ".php";
+    if (is_readable("./classes/$filename")) {
+        include_once "./classes/$filename";
+    } elseif (is_readable("./tests/$filename")) {
+        include_once "./tests/$filename";
+    }
+});
