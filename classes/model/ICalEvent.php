@@ -22,7 +22,6 @@
 namespace Calendar\Model;
 
 use Calendar\Dto\Event as EventDto;
-use Calendar\Infra\Html2Text;
 
 trait ICalEvent
 {

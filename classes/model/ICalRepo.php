@@ -19,9 +19,8 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Calendar\Infra;
+namespace Calendar\Model;
 
-use Calendar\Model\Calendar;
 use DirectoryIterator;
 
 class ICalRepo
@@ -66,6 +65,9 @@ class ICalRepo
     /** @return list<string> */
     private function read(string $filename): array
     {
+        if (!is_readable($this->folder . $filename)) {
+            return [];
+        }
         $lines = file("{$this->folder}$filename", FILE_IGNORE_NEW_LINES);
         if ($lines === false) {
             return [];
@@ -73,14 +75,15 @@ class ICalRepo
         return $lines;
     }
 
-    public function write(string $name, Calendar $calendar): bool
+    public function save(string $name, Calendar $calendar): bool
     {
         $stream = fopen($this->folder . "$name.ics", "w");
         if ($stream === false) {
             return false;
         }
-        $written = fwrite($stream, $calendar->toICalendarString($this->converter, $this->host));
+        $contents = $calendar->toICalendarString($this->converter, $this->host);
+        $written = fwrite($stream, $contents);
         fclose($stream);
-        return $written !== false;
+        return $written === strlen($contents);
     }
 }

@@ -6,7 +6,7 @@ parameters:
     - admin.php
     - index.php
   excludePaths:
-    - classes/infra/Html2Text.php
+    - classes/model/Html2Text.php
   bootstrapFiles:
     - phpstan.php
   scanFiles:
@@ -14,6 +14,6 @@ parameters:
     - ../../cmsimple/classes/CSRFProtection.php
     - ../../cmsimple/adminfuncs.php
     - ../../cmsimple/functions.php
-    - classes/infra/Html2Text.php
+    - classes/model/Html2Text.php
   scanDirectories:
     - ../plib/classes

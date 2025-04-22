@@ -21,8 +21,6 @@
 
 namespace Calendar\Model;
 
-use Calendar\Infra\Html2Text;
-
 trait ICalCalendar
 {
     /**

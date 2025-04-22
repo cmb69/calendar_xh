@@ -19,7 +19,7 @@
 
 // phpcs:ignoreFile
 
-namespace Calendar\Infra;
+namespace Calendar\Model;
 
 /** @codeCoverageIgnore */
 class Html2Text

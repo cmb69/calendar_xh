@@ -21,7 +21,7 @@
 
 namespace Calendar;
 
-use Calendar\Infra\ICalRepo;
+use Calendar\Model\ICalRepo;
 use Calendar\Model\CalendarRepo;
 use Plib\Request;
 use Plib\Response;
@@ -96,7 +96,7 @@ class IcalImportExportController
         if ($request->post("calendar_ics") !== "calendar.ics") {
             return $this->defaultAction($request);
         }
-        if (!$this->iCalendarRepo->write("calendar", $this->calendarRepo->find())) {
+        if (!$this->iCalendarRepo->save("calendar", $this->calendarRepo->find())) {
             return Response::create($this->view->message("fail", "error_export"))
                 ->withTitle("Calendar – " . $this->view->text("label_import_export"));
         }

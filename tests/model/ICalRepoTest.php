@@ -19,13 +19,8 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Calendar\Infra;
+namespace Calendar\Model;
 
-use Calendar\Model\Calendar;
-use Calendar\Model\Event;
-use Calendar\Model\LocalDateTime;
-use Calendar\Model\NoRecurrence;
-use Calendar\Model\YearlyRecurrence;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
@@ -83,12 +78,12 @@ class ICalendarRepoTest extends TestCase
     //     $this->assertEquals($expected, $lines);
     // }
 
-    public function testWritesICalendar(): void
+    public function testSavesICalendar(): void
     {
         $calendar = new Calendar([$this->lunchBreak(), $this->weekend(), $this->birthday()]);
         $dir = vfsStream::setup("root");
         $sut = new ICalRepo($dir->url() . "/", "example.com", new Html2Text());
-        $sut->write("calendar", $calendar);
+        $sut->save("calendar", $calendar);
         $actual = $dir->getChild("calendar.ics")->getContent();
         $expected = <<<'EOS'
             BEGIN:VCALENDAR
