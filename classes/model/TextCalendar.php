@@ -30,53 +30,10 @@ trait TextCalendar
         $lines = explode("\n", $contents);
         foreach ($lines as $line) {
             $line = rtrim($line);
-            $id = sha1($line);
-            list($eventdates, $event, $location, $link, $starttime) = explode(';', rtrim($line));
-            if (strpos($eventdates, ',') !== false) {
-                list($datestart, $dateend, $endtime) = explode(',', $eventdates);
-            } else {
-                $datestart = $eventdates;
-                $dateend = null;
-                $endtime = null;
-            }
-            if ($datestart) {
-                list($day, $month, $year) = explode($separator, $datestart);
-                $datestart = "$year-$month-$day";
-            }
-            if ($dateend) {
-                list($day, $month, $year) = explode($separator, $dateend);
-                $dateend = "$year-$month-$day";
-            }
-            if (strpos($link, ',') !== false) {
-                list($linkadr, $linktxt) = explode(',', $link);
-            } else {
-                $linkadr = $link;
-                $linktxt = '';
-            }
-            if (strpos($linkadr, 'ext:') === 0) {
-                $linkadr = 'http://' . substr($linkadr, 4);
-            } elseif (strpos($linkadr, 'int:') === 0) {
-                $linkadr = '?' . substr($linkadr, 4);
-            } elseif ($linkadr) {
-                $linktxt = "{$linkadr};{$linktxt}";
-            }
-            if ($datestart != '' && $event != '') {
-                $maybeEvent = Event::create(
-                    $datestart,
-                    $dateend,
-                    $starttime,
-                    $endtime,
-                    $event,
-                    $linkadr,
-                    $linktxt,
-                    $location,
-                    "",
-                    "",
-                    ""
-                );
-                if ($maybeEvent !== null) {
-                    $that->events[$id] = $maybeEvent;
-                }
+            $event = Event::fromText($line, $separator);
+            if ($event !== null) {
+                $id = sha1($line);
+                $that->events[$id] = $event;
             }
         }
         return $that;

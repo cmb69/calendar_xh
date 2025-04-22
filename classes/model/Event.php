@@ -33,6 +33,7 @@ class Event
 {
     use CsvEvent;
     use ICalendarEvent;
+    use TextEvent;
 
     /** @var string */
     private $id = "";
