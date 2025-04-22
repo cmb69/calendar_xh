@@ -79,11 +79,7 @@ class Event
         if ($start === null || $end === null) {
             return null;
         }
-        if (trim($location) === "###") {
-            $recurrence = new YearlyRecurrence($start, $end, null);
-        } else {
-            $recurrence = Recurrence::create($recurrenceRule, $start, $end, $until);
-        }
+        $recurrence = self::createRecurrence($recurrenceRule, $start, $end, $until, $location);
         return new self($id, $start, $end, $summary, $linkadr, $linktxt, $location, $recurrence);
     }
 
@@ -120,6 +116,19 @@ class Event
             return [null, null];
         }
         return [$start, $end];
+    }
+
+    public static function createRecurrence(
+        string $recurrenceRule,
+        LocalDateTime $start,
+        LocalDateTime $end,
+        string $until,
+        string $location
+    ): Recurrence {
+        if (trim($location) === "###") {
+            return new YearlyRecurrence($start, $end, null);
+        }
+        return Recurrence::create($recurrenceRule, $start, $end, $until);
     }
 
     public static function fromDto(EventDto $dto): ?self
