@@ -171,19 +171,6 @@ class EventListController
 
     private function getEventRowView(Request $request, Event $event): EventRow
     {
-        if ($event->isFullDay() || $event->isBirthday()) {
-            $time = "";
-        } else {
-            $time = str_replace(
-                ["\x06", "\x15"],
-                ["<span>", "</span>"],
-                $this->view->text(
-                    "format_time_interval",
-                    "\x06" . $this->dateTimeFormatter->formatTime($event->start()) . "\x15",
-                    "\x06" . $this->dateTimeFormatter->formatTime($event->end()) . "\x15"
-                )
-            );
-        }
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
         assert($now !== null);
         $startDate = $event->isFullDay()
@@ -198,7 +185,8 @@ class EventListController
             $startDate,
             $endDate,
             $this->renderDate($event),
-            $time,
+            $this->renderTime($event),
+            $this->renderDateTime($event),
             (bool) $this->conf['show_event_time'],
             (bool) $this->conf['show_event_location'],
             (bool) $this->conf['show_event_link'],
@@ -210,19 +198,80 @@ class EventListController
 
     private function renderDate(Event $event): string
     {
-        if ($event->isMultiDay()) {
-            return str_replace(
-                ["\x06", "\x15"],
-                ["<span>", "</span>"],
-                $this->view->text(
-                    "format_date_interval",
-                    "\x06" . $this->dateTimeFormatter->formatDate($event->start()) . "\x15",
-                    "\x06" . $this->dateTimeFormatter->formatDate($event->end()) . "\x15"
-                )
-            );
-        } else {
+        if (!$event->isMultiDay()) {
             return $this->view->esc($this->dateTimeFormatter->formatDate($event->start()));
         }
+        return str_replace(
+            ["\x06", "\x15"],
+            ["<span>", "</span>"],
+            $this->view->text(
+                "format_date_interval",
+                "\x06" . $this->dateTimeFormatter->formatDate($event->start()) . "\x15",
+                "\x06" . $this->dateTimeFormatter->formatDate($event->end()) . "\x15"
+            )
+        );
+    }
+
+    private function renderTime(Event $event): string
+    {
+        if ($event->isFullDay() || $event->isBirthday()) {
+            return "";
+        }
+        return str_replace(
+            ["\x06", "\x15"],
+            ["<span>", "</span>"],
+            $this->view->text(
+                "format_time_interval",
+                "\x06" . $this->dateTimeFormatter->formatTime($event->start()) . "\x15",
+                "\x06" . $this->dateTimeFormatter->formatTime($event->end()) . "\x15"
+            )
+        );
+    }
+
+    private function renderDateTime(Event $event): string
+    {
+        if (!$event->isMultiDay()) {
+            if ($event->isFullDay() || $event->isBirthday()) {
+                $dateTime = $this->view->esc("\x11" . $this->dateTimeFormatter->formatDate($event->start()) . "\x10");
+            } else {
+                $dateTime = $this->view->text(
+                    "format_date-time",
+                    "\x11" . $this->dateTimeFormatter->formatDate($event->start()) . "\x10",
+                    $this->view->plain(
+                        "format_time_interval",
+                        "\x12" . $this->dateTimeFormatter->formatTime($event->start()) . "\x10",
+                        "\x12" . $this->dateTimeFormatter->formatTime($event->end()) . "\x10"
+                    )
+                );
+            }
+        } else {
+            if ($event->isFullDay() || $event->isBirthday()) {
+                $dateTime = $this->view->text(
+                    "format_date_interval",
+                    "\x11" . $this->dateTimeFormatter->formatDate($event->start()) . "\x10",
+                    "\x11" . $this->dateTimeFormatter->formatDate($event->end()) . "\x10"
+                );
+            } else {
+                $dateTime = $this->view->text(
+                    "format_date_interval",
+                    $this->view->plain(
+                        "format_date-time",
+                        "\x11" . $this->dateTimeFormatter->formatDate($event->start()) . "\x10",
+                        "\x12" . $this->dateTimeFormatter->formatTime($event->start()) . "\x10"
+                    ),
+                    $this->view->plain(
+                        "format_date-time",
+                        "\x11" . $this->dateTimeFormatter->formatDate($event->end()) . "\x10",
+                        "\x12" . $this->dateTimeFormatter->formatTime($event->end()) . "\x10"
+                    )
+                );
+            }
+        }
+        return str_replace(
+            ["\x11", "\x12", "\x10"],
+            ['<span class="event_date">', '<span class="event_time">', "</span>"],
+            $dateTime
+        );
     }
 
     private function getHeadline(int $tablecols, int $year, int $month): HeaderRow

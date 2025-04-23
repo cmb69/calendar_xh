@@ -57,11 +57,13 @@ class EventListControllerTest extends TestCase
         $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->lang = XH_includeVar("./languages/en.php", "plugin_tx")["calendar"];
         $this->store = new DocumentStore(vfsStream::url("root/"));
-        $calendar = Calendar::updateIn($this->store);
-        $calendar->addEvent("111", $this->lunchBreak()->toDto());
-        $calendar->addEvent("222", $this->easter()->toDto());
-        $calendar->addEvent("333", $this->birthday()->toDto());
-        $this->store->commit();
+        $this->storeEvents([
+            "111" => $this->lunchBreak(),
+            "222" => $this->easter(),
+            "333" => $this->birthday(),
+            "444" => $this->nightShift(),
+            "555" => $this->goodFriday(),
+        ]);
         $this->dateTimeFormatter = new DateTimeFormatter($this->lang);
         $this->view = new View("./views/", $this->lang);
     }
@@ -89,6 +91,15 @@ class EventListControllerTest extends TestCase
         Approvals::verifyHtml($this->sut()->defaultAction(0, 0, 0, 0, $request));
     }
 
+    private function storeEvents(array $events): void
+    {
+        $calendar = Calendar::updateIn($this->store);
+        foreach ($events as $id => $event) {
+            $calendar->addEvent($id, $event->toDto());
+        }
+        $this->store->commit();
+    }
+
     private function lunchBreak(): Event
     {
         $start = new LocalDateTime(2023, 1, 4, 12, 0);
@@ -113,5 +124,21 @@ class EventListControllerTest extends TestCase
         $end = new LocalDateTime(1969, 3, 24, 23, 59);
         $recurrence = new YearlyRecurrence($start, $end, null);
         return new Event("", $start, $end, "Christoph M. Becker", "", "", "###", $recurrence);
+    }
+
+    private function nightShift(): Event
+    {
+        $start = new LocalDateTime(2023, 4, 22, 22, 0);
+        $end = new LocalDateTime(2023, 4, 23, 6, 0);
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "Night shift", "", "", "", $recurrence);
+    }
+
+    private function goodFriday(): Event
+    {
+        $start = new LocalDateTime(2023, 4, 7, 0, 0);
+        $end = new LocalDateTime(2023, 4, 7, 23, 59);
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "Good Friday", "", "", "", $recurrence);
     }
 }

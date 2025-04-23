@@ -33,6 +33,7 @@ $plugin_tx['calendar']['format_month_year']="%F %Y";
 $plugin_tx['calendar']['format_date']="%j. %n. %Y";
 $plugin_tx['calendar']['format_date_time']="%j. %n. %Y %G:%i";
 $plugin_tx['calendar']['format_time']="%G:%i";
+$plugin_tx['calendar']['format_date-time']="%s %s";
 $plugin_tx['calendar']['format_date_interval']="%s bis %s";
 $plugin_tx['calendar']['format_time_interval']="%s - %s";
 

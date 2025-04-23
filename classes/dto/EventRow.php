@@ -67,6 +67,12 @@ class EventRow
 
     /**
      * @readonly
+     * @var string
+     */
+    public $date_time;
+
+    /**
+     * @readonly
      * @var bool
      */
     public $show_time;
@@ -108,6 +114,7 @@ class EventRow
         string $end_date,
         string $date,
         string $time,
+        string $date_time,
         bool $show_time,
         bool $show_location,
         bool $show_link,
@@ -122,6 +129,7 @@ class EventRow
         $this->end_date = $end_date;
         $this->date = $date;
         $this->time = $time;
+        $this->date_time = $date_time;
         $this->show_time = $show_time;
         $this->show_location = $show_location;
         $this->show_link = $show_link;
