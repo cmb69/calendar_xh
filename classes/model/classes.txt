@@ -1,0 +1,57 @@
+@startuml
+
+interface Document
+
+entity Calendar
+protocol CsvCalendar
+protocol TextCalendar
+protocol ICalCalendar
+
+Document <|.. Calendar
+CsvCalendar <|-- Calendar
+TextCalendar <|-- Calendar
+ICalCalendar <|-- Calendar
+
+entity Event
+protocol CsvEvent
+protocol TextEvent
+protocol ICalEvent
+
+CsvEvent <|-- Event
+TextEvent <|-- Event
+ICalEvent <|-- Event
+
+abstract Recurrence
+class NoRecurrence
+class DailyRecurrence
+class WeeklyRecurrence
+class YearlyRecurrence
+
+Recurrence <|-- NoRecurrence
+Recurrence <|-- DailyRecurrence
+Recurrence <|-- WeeklyRecurrence
+Recurrence <|-- YearlyRecurrence
+
+struct LocalDateTime
+
+Calendar *-- Event
+
+Event -- LocalDateTime
+NoRecurrence -- LocalDateTime
+DailyRecurrence -- LocalDateTime
+WeeklyRecurrence -- LocalDateTime
+YearlyRecurrence -- LocalDateTime
+
+class CalendarService
+
+struct Interval
+
+LocalDateTime --> Interval
+
+class ICalRepo
+
+class Html2Text
+
+ICalRepo o-- Html2Text
+
+@enduml
