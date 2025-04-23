@@ -88,7 +88,8 @@ class IcalImportExportController
         $ignored = $eventCount - count($import->events());
         $calendar->import($import);
         $this->store->commit(); // TODO handle error?
-        $url = $request->url()->page("calendar")->with("admin", "import_export")->with("calendar_ignored", (string) $ignored);
+        $url = $request->url()->page("calendar")->with("admin", "import_export")
+            ->with("calendar_ignored", (string) $ignored);
         return Response::redirect($url->absolute());
     }
 

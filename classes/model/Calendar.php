@@ -159,13 +159,14 @@ final class Calendar implements Document
 
     public function addEvent(string $id, EventDto $dto): ?Event
     {
+        $loc = $dto->location;
         [$start, $end] =
-            Event::dateTimes($dto->datestart, $dto->dateend, $dto->starttime, $dto->endtime, $dto->location);
+            Event::dateTimes($dto->datestart, $dto->dateend, $dto->starttime, $dto->endtime, $loc);
         if ($start === null || $end === null) {
             return null;
         }
-        $recurrence = Event::createRecurrence($dto->recur, $start, $end, $dto->until, $dto->location);
-        $event = new Event($id, $start, $end, $dto->event, $dto->linkadr, $dto->description, $dto->location, $recurrence);
+        $recurrence = Event::createRecurrence($dto->recur, $start, $end, $dto->until, $loc);
+        $event = new Event($id, $start, $end, $dto->event, $dto->linkadr, $dto->description, $loc, $recurrence);
         $this->events[$id] = $event;
         return $event;
     }

@@ -46,9 +46,10 @@ class CalendarTest extends TestCase
             05.03.2025;Calendar_XH Release;Wonderland;int:Start;
             06.03.1950;Schorsch;###;ext:example.com/Schorsch;
             EOT;
+        $description = "http://example.com/;Lunch break tips";
         $csv = <<<EOT
             1950-03-06;;1950-03-06;;Schorsch;###;http://example.com/Schorsch;;yearly;;
-            2025-03-04;12:00;2025-03-04;13:00;"Lunch Break";here;http://example.com/;"http://example.com/;Lunch break tips";;;
+            2025-03-04;12:00;2025-03-04;13:00;"Lunch Break";here;http://example.com/;"$description";;;
             2025-03-05;;2025-03-05;;"Calendar_XH Release";Wonderland;?Start;;;;
 
             EOT;
