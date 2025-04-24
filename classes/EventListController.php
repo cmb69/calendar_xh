@@ -105,21 +105,15 @@ class EventListController
 
     private function desiredMonth(Request $request, int $year, int $month): LocalDateTime
     {
-        $month_input = $request->get("month") !== null ? max(1, min(12, (int) $request->get("month"))) : 0;
-        if ($month) {
-            if ($month_input) {
-                if ($month >= $month_input) {
-                    $month = $month_input;
-                }
-            }
-        } else {
-            $month = $month_input;
-        }
-        $year = $request->get("year") !== null
-            ? max(1, min(9000, (int) $request->get("year")))
-            : (int) idate("Y", $request->time());
         if ($month === 0) {
-            $month = (int) idate("n", $request->time());
+            $month = $request->get("month") !== null
+                ? max(1, min(12, (int) $request->get("month")))
+                : (int)idate("n", $request->time());
+        }
+        if ($year === 0) {
+            $year = $request->get("year") !== null
+                ? max(1, min(9000, (int) $request->get("year")))
+                : (int) idate("Y", $request->time());
         }
         return new LocalDateTime($year, $month, 1, 0, 0);
     }
