@@ -194,6 +194,19 @@ konfiguriert werden (`Plugins` → `Calendar` → `Konfiguration` → `Show` →
 Die Vorgaben (`11` and `0`) zeigen den aktuellen Monat und elf zukünftige
 Monate, d.h. ein ganzes Jahr.
 
+Anstatt diese Konfigurationseinstellungen zu ändern (oder auch zusätzlich),
+können die Werte im Pluginaufruf angegeben werden. Beispielsweise zeigt
+
+    {{{events(0, 0, 2, 0)}}}
+
+die Veranstaltungsliste für einen Zeitraum von vier Monaten:
+den vergangenen Monat, den aktuellen Monat und zwei zukünftige Monate.
+Dies kann auf einen bestimmten Zeitraum festgelegt werden. Beispielsweise zeigt
+
+    {{{events(4, 2025, 2, 1)}}}
+
+immer die Veranstaltungen von März bis Juni 2025.
+
 ### Nächste Veranstaltung
 
 Optional kann die nächste geplante Veranstaltung als Lauftext

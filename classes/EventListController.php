@@ -73,7 +73,7 @@ class EventListController
         if ($futureMonths === 0) {
             $futureMonths = (int) $this->conf['show_number_of_future_months'];
         }
-        $futureMonths = max(1, $futureMonths);
+        $futureMonths = max(0, $futureMonths);
         $desiredMonth = $this->desiredMonth($request, $year, $month);
         $startDate = $desiredMonth->plusMonths(-$pastMonths);
         $endDate = $desiredMonth->plusMonths($futureMonths);

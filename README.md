@@ -183,6 +183,19 @@ The period of events which are shown can be configured in the back-end
 `Number of previous months`).  The defaults (`11` and `0`) show the current
 month and eleven future months, i.e. a full year.
 
+Instead of (or in addtion to) changing these configuration settings,
+you can also specify their values in the plugin call. E.g.
+
+    {{{events(0, 0, 2, 1)}}}
+
+will show the event list for a period of four months: the past month,
+the current month, and two future months.
+You can combine this with a fixed month/year, e.g
+
+    {{{events(4, 2025, 2, 1)}}}
+
+will always show the events from March to June, 2025.
+
 ### Next Event
 
 Optionally, you can show the next scheduled event in a *marquee* like manner, either
