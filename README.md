@@ -139,6 +139,13 @@ All defined events of the current month are highlighted in the calendar,
 and linked to the *event page* that is defined in the language settings
 of Calendar\_XH.
 
+You can also specify a year and month to have a fixed calendar
+for a certain month.  For instance,
+
+    {{{calendar(2025, 4)}}}
+
+will always show the calendar of April, 2025.
+
 ### Event List
 
 The event list is supposed to be embedded on the *event page* that is
@@ -161,6 +168,15 @@ can be shown without looking ugly.
 
 Note that the new style event list adds structured data according to
 <https://schema.org/Event> for SEO purposes.
+
+You can also specify a year and month to have a fixed event list
+for a certain period.  For instance,
+
+    {{{events(4, 2025)}}}
+
+will always show the events around April, 2025, according to the configuration.
+Note that the order of year and month is different than for calendars for
+no particular reason.
 
 ### Next Event
 

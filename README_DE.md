@@ -147,6 +147,13 @@ Alle definierten Veranstaltungen des aktuellen Monats werden im Kalendar
 hervorgehoben und zu der Veranstaltungsseite (*event page*) verlinkt,
 die in den Spracheinstellungen von Calendar\_XH gewählt wurde.
 
+Es ist möglich ein Jahr und einen Monat anzugeben, um den Kalendar auf
+einen bestimmten Monat festzulegen. Beispielsweise zeigt
+
+    {{{calendar(2025, 4)}}}
+
+immer den Kalender von April 2025.
+
 ### Veranstaltungsliste
 
 Die Veranstaltungsliste sollte auf der Veranstaltungsseite (*event
@@ -171,6 +178,15 @@ so dass alle Informationen anzeigt werden können, ohne dass es häßlich aussie
 
 Beachten Sie, dass die neuartige Veranstaltungsliste strukturierte Daten
 gemäß <https://schema.org/Event> hinzufügt (SEO).
+
+Es ist möglich ein Jahr und einen Monat anzugeben, um den Veranstaltungsliste
+auf einen bestimmten Zeitraum festzulegen. Beispielsweise zeigt
+
+    {{{events(4, 2025)}}}
+
+immer die Veranstaltung um den April 2025, gemäß den Konfigurationseinstellungen.
+Es ist zu beachten, dass die Reihenfolge von Jahr und Monat anders ist als
+beim Kalender, ohne dass dies einen besonderen Grund hat.
 
 ### Nächste Veranstaltung
 
