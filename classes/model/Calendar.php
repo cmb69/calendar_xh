@@ -127,7 +127,7 @@ final class Calendar implements Document
                 array_push($result, ...$occurrences);
             }
         }
-        uasort($result, function (Event $a, Event $b): int {
+        usort($result, function (Event $a, Event $b): int {
             return $a->start()->compare($b->start());
         });
         return $result;
@@ -143,6 +143,9 @@ final class Calendar implements Document
                 $result[] = $occurrence;
             }
         }
+        usort($result, function (Event $a, Event $b): int {
+            return $a->start()->compare($b->start());
+        });
         return $result;
     }
 

@@ -56,4 +56,29 @@ class CalendarTest extends TestCase
         $actual = Calendar::fromText($text, ".")->toCsvString();
         $this->assertSame($csv, $actual);
     }
+
+    public function testIssue114(): void
+    {
+        $calendar = new Calendar(["111" => $this->cards(), "222" => $this->single()]);
+        $events = $calendar->eventsOn(new LocalDateTime(2025, 4, 24, 0, 0), false);
+        $this->assertCount(2, $events);
+        $this->assertSame("Single", $events[0]->summary());
+        $this->assertSame("Cards", $events[1]->summary());
+    }
+
+    private function cards(): Event
+    {
+        $start = new LocalDateTime(2025, 4, 17, 19, 45);
+        $end = new LocalDateTime(2025, 4, 17, 22, 15);
+        $recurrence = new WeeklyRecurrence($start, $end, null);
+        return new Event("", $start, $end, "Cards", "", "", "", $recurrence);
+    }
+
+    private function single(): Event
+    {
+        $start = new LocalDateTime(2025, 4, 24, 0, 0);
+        $end = new LocalDateTime(2025, 4, 24, 23, 59);
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "Single", "", "", "", $recurrence);
+    }
 }
