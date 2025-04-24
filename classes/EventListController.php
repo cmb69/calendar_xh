@@ -64,19 +64,19 @@ class EventListController
         $this->view = $view;
     }
 
-    public function defaultAction(int $month, int $year, int $endMonth, int $pastMonth, Request $request): string
+    public function defaultAction(int $month, int $year, int $futureMonths, int $pastMonths, Request $request): string
     {
-        if ($pastMonth === 0) {
-            $pastMonth = (int) $this->conf['show_number_of_previous_months'];
+        if ($pastMonths === 0) {
+            $pastMonths = (int) $this->conf['show_number_of_previous_months'];
         }
-        $pastMonth = max($pastMonth, 0);
-        if ($endMonth === 0) {
-            $endMonth = (int) $this->conf['show_number_of_future_months'];
+        $pastMonths = max(0, $pastMonths);
+        if ($futureMonths === 0) {
+            $futureMonths = (int) $this->conf['show_number_of_future_months'];
         }
-        $endMonth = max($endMonth, 1);
+        $futureMonths = max(1, $futureMonths);
         $desiredMonth = $this->desiredMonth($request, $year, $month);
-        $startDate = $desiredMonth->plusMonths(-$pastMonth);
-        $endDate = $desiredMonth->plusMonths($endMonth);
+        $startDate = $desiredMonth->plusMonths(-$pastMonths);
+        $endDate = $desiredMonth->plusMonths($futureMonths);
         $tablecols = $this->calcTablecols();
         $monthEvents = [];
         $calendar = Calendar::retrieveFrom($this->store);
