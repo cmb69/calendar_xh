@@ -87,7 +87,7 @@ class CalendarController
         if ($eventpage == '') {
             $eventpage = $this->view->plain("event_page");
         }
-        $this->determineYearAndMonth($request, $year, $month);
+        [$year, $month] = $this->desiredMonth($request, $year, $month);
         $calendar = Calendar::retrieveFrom($this->store);
         $calendarService = new CalendarService((bool) $this->conf['week_starts_mon']);
         $rows = [];
@@ -123,22 +123,22 @@ class CalendarController
         return Response::create($output);
     }
 
-    private function determineYearAndMonth(Request $request, int &$year, int &$month): void
+    /** @return array{int,int} */
+    private function desiredMonth(Request $request, int $year, int $month): array
     {
         if ($month === 0) {
             $month = $request->get("month") !== null
                 ? max(1, min(12, (int) $request->get("month")))
                 : idate("n", $request->time());
-        } else {
-            $month = max(1, min(12, $month));
         }
+        $month = max(1, min(12, $month));
         if ($year === 0) {
             $year = $request->get("year") !== null
                 ? max(1, min(9000, (int) $request->get("year")))
                 : idate("Y", $request->time());
-        } else {
-            $year = max(1, min(9000, $year));
         }
+        $year = max(1, min(9000, $year));
+        return [$year, $month];
     }
 
     /**
