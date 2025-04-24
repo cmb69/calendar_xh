@@ -117,6 +117,9 @@
 <p>will show the event list for a period of four months: the past month, the current month, and two future months. You can combine this with a fixed month/year, e.g</p>
 <pre><code>{{{events(4, 2025, 2, 1)}}}</code></pre>
 <p>will always show the events from March to June, 2025.</p>
+<p>If you want to show a list of past events, you can use a negative value for future months (usually <code>-1</code>). E.g.</p>
+<pre><code>{{{events(0, 0, -1, 12}}}</code></pre>
+<p>shows events for the past twelve months in <em>descending</em> order.</p>
 <h3 id="next-event">Next Event</h3>
 <p>Optionally, you can show the next scheduled event in a <em>marquee</em> like manner, either from the template:</p>
 <pre><code>&lt;?=nextevent()?&gt;</code></pre>

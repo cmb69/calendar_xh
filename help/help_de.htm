@@ -117,6 +117,9 @@
 <p>die Veranstaltungsliste für einen Zeitraum von vier Monaten: den vergangenen Monat, den aktuellen Monat und zwei zukünftige Monate. Dies kann auf einen bestimmten Zeitraum festgelegt werden. Beispielsweise zeigt</p>
 <pre><code>{{{events(4, 2025, 2, 1)}}}</code></pre>
 <p>immer die Veranstaltungen von März bis Juni 2025.</p>
+<p>Um eine Liste vergangener Veranstaltung anzuzeigen, kann ein negativer Wert für die zukünftigen Monate verwendet werden (typischerweise <code>-1</code>). Beispielsweise zeigt</p>
+<pre><code>{{{events(0, 0, -1, 12}}}</code></pre>
+<p>die Veranstaltungen der vergangenen zwölf Monate in <em>absteigender</em> Reihenfolge.</p>
 <h3 id="nächste-veranstaltung">Nächste Veranstaltung</h3>
 <p>Optional kann die nächste geplante Veranstaltung als Lauftext (<em>marquee</em>-artig) angezeigt werden, entweder im Template:</p>
 <pre><code>&lt;?=nextevent()?&gt;</code></pre>

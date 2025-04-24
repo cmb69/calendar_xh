@@ -196,6 +196,13 @@ You can combine this with a fixed month/year, e.g
 
 will always show the events from March to June, 2025.
 
+If you want to show a list of past events, you can use a negative value for
+future months (usually `-1`).  E.g.
+
+    {{{events(0, 0, -1, 12}}}
+
+shows events for the past twelve months in *descending* order.
+
 ### Next Event
 
 Optionally, you can show the next scheduled event in a *marquee* like manner, either

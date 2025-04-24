@@ -207,6 +207,14 @@ Dies kann auf einen bestimmten Zeitraum festgelegt werden. Beispielsweise zeigt
 
 immer die Veranstaltungen von März bis Juni 2025.
 
+Um eine Liste vergangener Veranstaltung anzuzeigen, kann ein negativer Wert
+für die zukünftigen Monate verwendet werden (typischerweise `-1`).
+Beispielsweise zeigt
+
+    {{{events(0, 0, -1, 12}}}
+
+die Veranstaltungen der vergangenen zwölf Monate in *absteigender* Reihenfolge.
+
 ### Nächste Veranstaltung
 
 Optional kann die nächste geplante Veranstaltung als Lauftext
