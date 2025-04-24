@@ -45,6 +45,7 @@
 <li><a href="#calendars">Calendars</a></li>
 <li><a href="#event-list">Event List</a></li>
 <li><a href="#next-event">Next Event</a></li>
+<li><a href="#event-pages">Event Pages</a></li>
 <li><a href="#importexport">Import/Export</a></li>
 </ul></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
@@ -125,6 +126,9 @@
 <pre><code>&lt;?=nextevent()?&gt;</code></pre>
 <p>or on a page:</p>
 <pre><code>{{{nextevent()}}}</code></pre>
+<h3 id="event-pages">Event Pages</h3>
+<p>It is possible to show each event on its dedicated page, what is useful if you want to link to certain events. This feature can be enabled under <code>Plugins</code> → <code>Calendar</code> → <code>Config</code> → <code>Event</code> → <code>Allow single</code>. As prerequisite all your events need proper IDs (which you can generate under <code>Plugins</code> → <code>Calendar</code> → <code>Edit Events</code> if necessary).</p>
+<p>If this feature is enabled, events with an empty link field will use the URL of their event page instead, what is relevant for the generated structured data of the new style eventlist, and for iCalendar interoperatibility. Therefore you should enter links for all external events, but consider to leave the link field empty for your own events.</p>
 <h3 id="importexport">Import/Export</h3>
 <p>To import existing <code>.ics</code> files (iCalendar format), you have to put them in the <code>content/calendar/</code> folder (right besides the <code>calendar.2.6.csv</code> file). Then navigate to <code>Plugins</code> → <code>Calendar</code> → <code>Import/Export</code> where you can actually import the desired file(s). Note that only a minimal set of iCalendar features is supported, roughly matching those of Calendar_XH.</p>
 <p>Under <code>Plugins</code> → <code>Calendar</code> → <code>Import/Export</code> you can also export the calendar to calendar.ics (iCalendar format). The file will be created in the <code>content/calendar/</code> folder (right besides the <code>calendar.2.6.csv</code> file).</p>

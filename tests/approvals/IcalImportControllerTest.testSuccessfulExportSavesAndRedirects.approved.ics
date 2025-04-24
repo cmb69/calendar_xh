@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+PRODID:-//3-magi.net//Calendar_XH//EN
+VERSION:2.0
+BEGIN:VEVENT
+UID:111
+DTSTART:20230104T120000
+DTEND:20230104T130000
+SUMMARY:Lunch break
+URL:http://example.com/?&function=calendar_event&event_id=111
+DESCRIPTION:Tips for lunch breaks [http://example.com/lunchbreak]
+LOCATION:whereever I am
+END:VEVENT
+END:VCALENDAR

@@ -20,6 +20,7 @@ features at the cost of greatly increased complexity.
     - [Calendars](#calendars)
     - [Event List](#event-list)
     - [Next Event](#next-event)
+    - [Event Pages](#event-pages)
     - [Import/Export](#importexport)
   - [Troubleshooting](#troubleshooting)
   - [License](#license)
@@ -214,6 +215,20 @@ or on a page:
 
     {{{nextevent()}}}
 
+### Event Pages
+
+It is possible to show each event on its dedicated page, what is useful if
+you want to link to certain events. This feature can be enabled under `Plugins` →
+`Calendar` → `Config` → `Event` → `Allow single`. As prerequisite all your
+events need proper IDs (which you can generate under `Plugins` → `Calendar` →
+`Edit Events` if necessary).
+
+If this feature is enabled, events with an empty link field will use the
+URL of their event page instead, what is relevant for the generated structured
+data of the new style eventlist, and for iCalendar interoperatibility.
+Therefore you should enter links for all external events, but consider to leave
+the link field empty for your own events.
+
 ### Import/Export
 
 To import existing `.ics` files (iCalendar format), you have to put them
@@ -227,6 +242,7 @@ calendar to calendar.ics (iCalendar format).  The file will be created
 in the `content/calendar/` folder (right besides the `calendar.2.6.csv` file).
 
 ## Troubleshooting
+
 Report bugs and ask for support either on [Github](https://github.com/cmb69/calendar_xh/issues)
 or in the [CMSimple_XH Forum](https://cmsimpleforum.com/).
 

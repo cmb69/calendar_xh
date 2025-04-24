@@ -14,4 +14,5 @@ $plugin_cf['calendar']['show_event_link']="true";
 $plugin_cf['calendar']['show_number_of_future_months']="11";
 $plugin_cf['calendar']['show_number_of_previous_months']="0";
 $plugin_cf['calendar']['show_period_of_events']="true";
+$plugin_cf['calendar']['event_allow_single']="";
 $plugin_cf['calendar']['same-event-calendar_for_all_languages']="";

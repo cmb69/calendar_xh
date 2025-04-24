@@ -38,6 +38,11 @@ class DicTest extends TestCase
         $plugin_tx = ["calendar" => ["monthnames_array" => ""]];
     }
 
+    public function testMakesEventController(): void
+    {
+        $this->assertInstanceOf(EventController::class, Dic::eventController());
+    }
+
     public function testMakeCalendarController(): void
     {
         $this->assertInstanceOf(CalendarController::class, Dic::makeCalendarController());

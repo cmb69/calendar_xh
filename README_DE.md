@@ -20,6 +20,7 @@ zusätzlicher Features anbietet, allerdings zu Lasten der Einfachheit.
     - [Kalender](#kalender)
     - [Veranstaltungsliste](#veranstaltungsliste)
     - [Nächste Veranstaltung](#nächste-veranstaltung)
+    - [Veranstaltungsseiten](#veranstaltungsseiten)
     - [Import/Export](#importexport)
   - [Fehlerbehebung](#fehlerbehebung)
   - [Lizenz](#lizenz)
@@ -225,6 +226,22 @@ Optional kann die nächste geplante Veranstaltung als Lauftext
 oder auf einer Seite:
 
     {{{nextevent()}}}
+
+### Veranstaltungsseiten
+
+Es ist möglich jede Veranstaltung auf ihrer eigenen Seite anzeigen zu lassen,
+was nützlich ist um auf bestimmte Veranstaltungen zu verlinken.
+Diese Feature kann unter `Plugins` → `Calendar` → `Konfiguration` → `Event` → `Allow single`
+aktiviert werden. Als Voraussetzung benötigen alle Veranstaltungen ordnungsgemäße
+IDs, die bei Bedarf unter `Plugins` → `Calendar` → `Events bearbeiten`
+erzeugt werden können.
+
+Ist das Feature aktiviert, werden Veranstaltungen mit einem leeren Link-Feld
+statt dessen die URL ihrer Veranstaltungsseite verwenden, was für die in der
+neuen Veranstaltungsliste generierte strukturierten Daten relevant ist, und
+auch für die iCalendar-Interoperabilität. Daher sollten für alle externen
+Veranstaltungen Links eingetragen werden, aber für eigene Events das Link-Feld
+besser leer gelassen werden.
 
 ### Import/Export
 

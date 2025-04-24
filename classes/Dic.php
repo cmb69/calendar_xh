@@ -39,6 +39,17 @@ use Plib\View;
 
 class Dic
 {
+    public static function eventController(): EventController
+    {
+        global $plugin_cf, $plugin_tx;
+        return new EventController(
+            $plugin_cf["calendar"],
+            new DocumentStore(self::getDataFolder()),
+            new DateTimeFormatter($plugin_tx['calendar']),
+            self::view()
+        );
+    }
+
     public static function makeCalendarController(): CalendarController
     {
         global $pth, $plugin_cf, $plugin_tx;
@@ -107,7 +118,9 @@ class Dic
 
     public static function makeIcalImportExportController(): IcalImportExportController
     {
+        global $plugin_cf;
         return new IcalImportExportController(
+            $plugin_cf["calendar"],
             new ICalRepo(self::getDataFolder(), $_SERVER["HTTP_HOST"], new Html2Text()),
             new DocumentStore(self::getDataFolder()),
             self::view()

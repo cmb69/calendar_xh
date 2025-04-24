@@ -22,8 +22,12 @@
 namespace Calendar;
 
 use ApprovalTests\Approvals;
+use Calendar\Model\Calendar;
+use Calendar\Model\Event;
 use Calendar\Model\Html2Text;
 use Calendar\Model\ICalRepo;
+use Calendar\Model\LocalDateTime;
+use Calendar\Model\NoRecurrence;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
@@ -33,6 +37,9 @@ use Plib\View;
 
 class IcalImportControllerTest extends TestCase
 {
+    /** @var array<string,string> */
+    private $conf;
+
     /** @var ICalRepo&Stub */
     private $iCalRepo;
 
@@ -45,14 +52,19 @@ class IcalImportControllerTest extends TestCase
     public function setUp(): void
     {
         vfsStream::setup("root");
+        $this->conf = XH_includeVar("./config/config.php", "plugin_cf")["calendar"];
         $this->iCalRepo = new ICalRepo(vfsStream::url("root/"), "localhost", new Html2Text());
         $this->store = new DocumentStore(vfsStream::url("root/"));
+        $calendar = Calendar::updateIn($this->store);
+        $calendar->addEvent("111", $this->lunchBreak()->toDto());
+        $this->store->commit();
         $this->view = new View("./views/", XH_includeVar("./languages/en.php", "plugin_tx")['calendar']);
     }
 
     private function sut(): IcalImportExportController
     {
         return new IcalImportExportController(
+            $this->conf,
             $this->iCalRepo,
             $this->store,
             $this->view
@@ -86,12 +98,13 @@ class IcalImportControllerTest extends TestCase
 
     public function testSuccessfulExportSavesAndRedirects()
     {
+        $this->conf["event_allow_single"] = "true";
         $request = new FakeRequest([
             "url" => "http://example.com/?calendar&admin=import_export&action=export",
             "post" => ["calendar_ics" => "calendar.ics"],
         ]);
         $response = $this->sut()($request);
-        $this->assertFileExists(vfsStream::url("root/calendar.ics"));
+        Approvals::verifyStringWithFileExtension(file_get_contents(vfsStream::url("root/calendar.ics")), "ics");
         $this->assertEquals(
             "http://example.com/?calendar&admin=import_export",
             $response->location()
@@ -108,5 +121,14 @@ class IcalImportControllerTest extends TestCase
         $response = $this->sut()($request);
         $this->assertSame("Calendar – Import/Export", $response->title());
         $this->assertStringContainsString("Could not export to calendar.ics!", $response->output());
+    }
+
+    private function lunchBreak(): Event
+    {
+        $start = new LocalDateTime(2023, 1, 4, 12, 0);
+        $end = new LocalDateTime(2023, 1, 4, 13, 0);
+        $description = "<a href=\"http://example.com/lunchbreak\">Tips for lunch breaks</a>";
+        $recurrence = new NoRecurrence($start, $end);
+        return new Event("", $start, $end, "Lunch break", "", $description, "whereever I am", $recurrence);
     }
 }

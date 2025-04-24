@@ -36,6 +36,8 @@ $plugin_tx['calendar']['format_time']="%g:%i %a";
 $plugin_tx['calendar']['format_date-time']="%s %s";
 $plugin_tx['calendar']['format_date_interval']="%s till %s";
 $plugin_tx['calendar']['format_time_interval']="%s - %s";
+$plugin_tx['calendar']['format_recurs']="%s from %s";
+$plugin_tx['calendar']['format_recurs_until']="%s from %s until %s";
 
 //new in version 1.1 & 1.2
 $plugin_tx['calendar']['event_date_till_date']="till";
@@ -103,4 +105,5 @@ $plugin_tx['calendar']['cf_week-end_day_2']="Same als weekend day 1.";
 $plugin_tx['calendar']['cf_show_number_of_future_months']="Number of future months which are to be shown in the event list. Default is 11 for eleven future months, i.e. a full year.";
 $plugin_tx['calendar']['cf_show_number_of_previous_months']="Number of past months which are to be shown in the event list. Default is 0; i.e. no past months are shown.";
 $plugin_tx['calendar']['cf_show_period_of_events']="Whether to display the period of events above the event list.";
+$plugin_tx['calendar']['cf_event_allow_single']="Whether viewing single events by UID is allowed.";
 $plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="Whether the same event file will be used for all languages in multi language sites. By default every language has its own event calendar.";

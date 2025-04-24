@@ -6,7 +6,7 @@
  * Copyright 2008      Patrick Varlet
  * Copyright 2011      Holger Irmler
  * Copyright 2011-2013 Frank Ziesing
- * Copyright 2017-2023 Christoph M. Becker
+ * Copyright 2017-2025 Christoph M. Becker
  *
  * This file is part of Calendar_XH.
  *
@@ -39,6 +39,9 @@ use Plib\View;
 
 class EventListController
 {
+    use DateTimeFormatting;
+    use MicroFormatting;
+
     /** @var array<string,string> */
     private $conf;
 
@@ -148,7 +151,7 @@ class EventListController
         $result = ['headline' => $this->getHeadline($tablecols, $year, $month), 'rows' => []];
         foreach ($events as $event) {
             if ($event->isBirthday()) {
-                $result['rows'][] = $this->getBirthdayRowView($event, $year);
+                $result['rows'][] = $this->getBirthdayRowView($request, $event, $year);
             } else {
                 $result['rows'][] = $this->getEventRowView($request, $event);
             }
@@ -156,20 +159,21 @@ class EventListController
         return (object) $result;
     }
 
-    private function getBirthdayRowView(Event $event, int $year): BirthdayRow
+    private function getBirthdayRowView(Request $request, Event $event, int $year): BirthdayRow
     {
         assert($event->isBirthday());
+        [$startDateTime, $endDateTime] = $this->renderIsoStartAndEndDateTime($event);
         return new BirthdayRow(
             $event->age(),
             $event->summary(),
             $event->location(),
-            $event->start()->withYear($year)->getIsoDate(),
-            $event->end()->withYear($year)->getIsoDate(),
+            $startDateTime,
+            $endDateTime,
             $this->dateTimeFormatter->formatDate($event->start()->withYear($year)),
             (bool) $this->conf['show_event_time'],
             (bool) $this->conf['show_event_location'],
             (bool) $this->conf['show_event_link'],
-            $event->linkadr(),
+            $this->eventUrl($request, $event),
             $event->linktxt()
         );
     }
@@ -178,24 +182,19 @@ class EventListController
     {
         $now = LocalDateTime::fromIsoString(date("Y-m-d\TH:i", $request->time()));
         assert($now !== null);
-        $startDate = $event->isFullDay()
-            ? $event->getIsoStartDate()
-            : $event->getIsoStartDate() . "T" . $event->getIsoStartTime() . "00";
-        $endDate = $event->isFullDay()
-            ? $event->getIsoEndDate()
-            : $event->getIsoEndDate() . "T" . $event->getIsoEndTime() . "00";
+        [$startDateTime, $endDateTime] = $this->renderIsoStartAndEndDateTime($event);
         return new EventRow(
             $event->summary(),
             $event->location(),
-            $startDate,
-            $endDate,
+            $startDateTime,
+            $endDateTime,
             $this->renderDate($event),
             $this->renderTime($event),
-            $this->renderDateTime($event),
+            $this->renderEventDateTime($event),
             (bool) $this->conf['show_event_time'],
             (bool) $this->conf['show_event_location'],
             (bool) $this->conf['show_event_link'],
-            $event->linkadr(),
+            $this->eventUrl($request, $event),
             $event->linktxt(),
             $event->end()->compare($now) < 0 ? "past_event" : ""
         );
@@ -230,52 +229,6 @@ class EventListController
                 "\x06" . $this->dateTimeFormatter->formatTime($event->start()) . "\x15",
                 "\x06" . $this->dateTimeFormatter->formatTime($event->end()) . "\x15"
             )
-        );
-    }
-
-    private function renderDateTime(Event $event): string
-    {
-        if (!$event->isMultiDay()) {
-            if ($event->isFullDay() || $event->isBirthday()) {
-                $dateTime = $this->view->esc("\x11" . $this->dateTimeFormatter->formatDate($event->start()) . "\x10");
-            } else {
-                $dateTime = $this->view->text(
-                    "format_date-time",
-                    "\x11" . $this->dateTimeFormatter->formatDate($event->start()) . "\x10",
-                    $this->view->plain(
-                        "format_time_interval",
-                        "\x12" . $this->dateTimeFormatter->formatTime($event->start()) . "\x10",
-                        "\x12" . $this->dateTimeFormatter->formatTime($event->end()) . "\x10"
-                    )
-                );
-            }
-        } else {
-            if ($event->isFullDay() || $event->isBirthday()) {
-                $dateTime = $this->view->text(
-                    "format_date_interval",
-                    "\x11" . $this->dateTimeFormatter->formatDate($event->start()) . "\x10",
-                    "\x11" . $this->dateTimeFormatter->formatDate($event->end()) . "\x10"
-                );
-            } else {
-                $dateTime = $this->view->text(
-                    "format_date_interval",
-                    $this->view->plain(
-                        "format_date-time",
-                        "\x11" . $this->dateTimeFormatter->formatDate($event->start()) . "\x10",
-                        "\x12" . $this->dateTimeFormatter->formatTime($event->start()) . "\x10"
-                    ),
-                    $this->view->plain(
-                        "format_date-time",
-                        "\x11" . $this->dateTimeFormatter->formatDate($event->end()) . "\x10",
-                        "\x12" . $this->dateTimeFormatter->formatTime($event->end()) . "\x10"
-                    )
-                );
-            }
-        }
-        return str_replace(
-            ["\x11", "\x12", "\x10"],
-            ['<span class="event_date">', '<span class="event_time">', "</span>"],
-            $dateTime
         );
     }
 

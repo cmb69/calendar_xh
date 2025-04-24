@@ -179,7 +179,8 @@ trait ICalEvent
         return null;
     }
 
-    public function toICalendarString(string $id, Html2Text $converter, string $host): string
+    /** @param callable(Event):string $genUrl */
+    public function toICalendarString(string $id, Html2Text $converter, string $host, callable $genUrl): string
     {
         $id = $this->id !== "" ? $this->id : "$id@$host";
         $res = "BEGIN:VEVENT\r\n"
@@ -210,8 +211,9 @@ trait ICalEvent
         if ($this->summary !== "") {
             $res .= "SUMMARY:" . $this->summary . "\r\n";
         }
-        if ($this->linkadr !== "") {
-            $res .= "URL:" . $this->linkadr . "\r\n";
+        $url = $genUrl($this);
+        if ($url !== "") {
+            $res .= "URL:" . $url . "\r\n";
         }
         if ($this->linktxt !== "") {
             $converter->setHtml($this->linktxt);

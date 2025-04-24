@@ -248,6 +248,13 @@ final class Event
         return $this->end->getIsoTime();
     }
 
+    public function isoDuration(): string
+    {
+        $interval = $this->end->diff($this->start);
+        assert(!$interval->negative());
+        return "P{$interval->days()}DT{$interval->hours()}H{$interval->minutes()}M";
+    }
+
     public function isMultiDay(): bool
     {
         return $this->end->compareDate($this->start) > 0;

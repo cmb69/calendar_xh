@@ -36,6 +36,8 @@ $plugin_tx['calendar']['format_time']="%G:%i";
 $plugin_tx['calendar']['format_date-time']="%s %s";
 $plugin_tx['calendar']['format_date_interval']="%s bis %s";
 $plugin_tx['calendar']['format_time_interval']="%s - %s";
+$plugin_tx['calendar']['format_recurs']="%s von %s";
+$plugin_tx['calendar']['format_recurs_until']="%s von %s bis %s";
 
 //new in version 1.1 & 1.2
 $plugin_tx['calendar']['event_date_till_date']="bis";
@@ -103,4 +105,5 @@ $plugin_tx['calendar']['cf_week-end_day_2']="Wie bei weekend day 1 wird hier der
 $plugin_tx['calendar']['cf_show_number_of_future_months']="Anzahl der Monate, für die die Veranstaltungsliste gezeigt werden sollen. Voreingestellt ist 11 für elf zukünftige Monate, d.h. ein ganzes Jahr.";
 $plugin_tx['calendar']['cf_show_number_of_previous_months']="Anzahl der Monate, für die die Veranstaltungsliste gezeigt werden sollen. Voreingestellt ist 0; d.h. es werden keine vergangenen Monate angezeigt.";
 $plugin_tx['calendar']['cf_show_period_of_events']="Ob am Anfang der Veranstaltungsübersicht der gezeigte Zeitraum angegeben werden soll.";
+$plugin_tx['calendar']['cf_event_allow_single']="Ob es erlaubt ist einzelne Veranstaltung per UID abzurufen.";
 $plugin_tx['calendar']['cf_same-event-calendar_for_all_languages']="Ob bei mehrsprachigen Websites nur eine Kalenderdatei angelegt wird, die für alle Sprachversionen genutzt wird.";

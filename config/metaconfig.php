@@ -12,4 +12,5 @@ $plugin_mcf['calendar']['show_event_time']="bool";
 $plugin_mcf['calendar']['show_event_location']="bool";
 $plugin_mcf['calendar']['show_event_link']="bool";
 $plugin_mcf['calendar']['show_period_of_events']="bool";
+$plugin_cf['calendar']['event_allow_single']="bool";
 $plugin_mcf['calendar']['same-event-calendar_for_all_languages']="bool";

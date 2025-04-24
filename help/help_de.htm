@@ -45,6 +45,7 @@
 <li><a href="#kalender">Kalender</a></li>
 <li><a href="#veranstaltungsliste">Veranstaltungsliste</a></li>
 <li><a href="#nächste-veranstaltung">Nächste Veranstaltung</a></li>
+<li><a href="#veranstaltungsseiten">Veranstaltungsseiten</a></li>
 <li><a href="#importexport">Import/Export</a></li>
 </ul></li>
 <li><a href="#fehlerbehebung">Fehlerbehebung</a></li>
@@ -125,6 +126,9 @@
 <pre><code>&lt;?=nextevent()?&gt;</code></pre>
 <p>oder auf einer Seite:</p>
 <pre><code>{{{nextevent()}}}</code></pre>
+<h3 id="veranstaltungsseiten">Veranstaltungsseiten</h3>
+<p>Es ist möglich jede Veranstaltung auf ihrer eigenen Seite anzeigen zu lassen, was nützlich ist um auf bestimmte Veranstaltungen zu verlinken. Diese Feature kann unter <code>Plugins</code> → <code>Calendar</code> → <code>Konfiguration</code> → <code>Event</code> → <code>Allow single</code> aktiviert werden. Als Voraussetzung benötigen alle Veranstaltungen ordnungsgemäße IDs, die bei Bedarf unter <code>Plugins</code> → <code>Calendar</code> → <code>Events bearbeiten</code> erzeugt werden können.</p>
+<p>Ist das Feature aktiviert, werden Veranstaltungen mit einem leeren Link-Feld statt dessen die URL ihrer Veranstaltungsseite verwenden, was für die in der neuen Veranstaltungsliste generierte strukturierten Daten relevant ist, und auch für die iCalendar-Interoperabilität. Daher sollten für alle externen Veranstaltungen Links eingetragen werden, aber für eigene Events das Link-Feld besser leer gelassen werden.</p>
 <h3 id="importexport">Import/Export</h3>
 <p>Um vorhandene <code>.ics</code> Dateien (iCalendar-Format) zu importieren, müssen diese zunächst im <code>content/calendar/</code> Ordner (neben der <code>calendar.2.6.csv</code> Datei) abgelegt werden. Unter <code>Plugins</code> → <code>Calendar</code> → <code>Import</code> kann dann der eigentliche Import der Datei(en) durchgeführt werden. Es ist zu beachten, dass nur eine kleiner Teil der iCalendar-Features unterstützt wird, in etwa das, was Calendar_XH bietet.</p>
 <p>Unter <code>Plugins</code> → <code>Calendar</code> → <code>Import/Export</code> können Sie ebenfalls den Kalender nach calendar.ics (iCalendar-Format) exportieren. Die Datei wird im <code>content/calendar/</code> Ordner (neben der <code>calendar.2.6.csv</code> Datei) angelegt.</p>

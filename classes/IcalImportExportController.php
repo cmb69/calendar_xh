@@ -22,6 +22,7 @@
 namespace Calendar;
 
 use Calendar\Model\Calendar;
+use Calendar\Model\Event;
 use Calendar\Model\ICalRepo;
 use Plib\DocumentStore;
 use Plib\Request;
@@ -30,6 +31,11 @@ use Plib\View;
 
 class IcalImportExportController
 {
+    use MicroFormatting;
+
+    /** @var array<string,string> */
+    private $conf;
+
     /** @var ICalRepo */
     private $iCalendarRepo;
 
@@ -39,11 +45,14 @@ class IcalImportExportController
     /** @var View */
     private $view;
 
+    /** @param array<string,string> $conf */
     public function __construct(
+        array $conf,
         ICalRepo $iCalendarRepo,
         DocumentStore $store,
         View $view
     ) {
+        $this->conf = $conf;
         $this->iCalendarRepo = $iCalendarRepo;
         $this->store = $store;
         $this->view = $view;
@@ -98,7 +107,10 @@ class IcalImportExportController
         if ($request->post("calendar_ics") !== "calendar.ics") {
             return $this->defaultAction($request);
         }
-        if (!$this->iCalendarRepo->save("calendar", Calendar::retrieveFrom($this->store))) {
+        $genUrl = function (Event $event) use ($request) {
+            return $this->eventUrl($request, $event);
+        };
+        if (!$this->iCalendarRepo->save("calendar", Calendar::retrieveFrom($this->store), $genUrl)) {
             return Response::create($this->view->message("fail", "error_export"))
                 ->withTitle("Calendar – " . $this->view->text("label_import_export"));
         }

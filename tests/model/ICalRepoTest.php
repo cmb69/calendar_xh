@@ -83,7 +83,9 @@ class ICalendarRepoTest extends TestCase
         $calendar = new Calendar([$this->lunchBreak(), $this->weekend(), $this->birthday()]);
         $dir = vfsStream::setup("root");
         $sut = new ICalRepo($dir->url() . "/", "example.com", new Html2Text());
-        $sut->save("calendar", $calendar);
+        $sut->save("calendar", $calendar, function (Event $event) {
+            return $event->linkadr();
+        });
         $actual = $dir->getChild("calendar.ics")->getContent();
         $expected = <<<'EOS'
             BEGIN:VCALENDAR

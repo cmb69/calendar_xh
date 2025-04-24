@@ -75,13 +75,14 @@ class ICalRepo
         return $lines;
     }
 
-    public function save(string $name, Calendar $calendar): bool
+    /** @param callable(Event):string $genUrl */
+    public function save(string $name, Calendar $calendar, callable $genUrl): bool
     {
         $stream = fopen($this->folder . "$name.ics", "w");
         if ($stream === false) {
             return false;
         }
-        $contents = $calendar->toICalendarString($this->converter, $this->host);
+        $contents = $calendar->toICalendarString($this->converter, $this->host, $genUrl);
         $written = fwrite($stream, $contents);
         fclose($stream);
         return $written === strlen($contents);

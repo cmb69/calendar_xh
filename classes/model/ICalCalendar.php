@@ -60,13 +60,14 @@ trait ICalCalendar
         return $count;
     }
 
-    public function toICalendarString(Html2Text $converter, string $host): string
+    /** @param callable(Event):string $genUrl */
+    public function toICalendarString(Html2Text $converter, string $host, callable $genUrl): string
     {
         $res = "BEGIN:VCALENDAR\r\n"
             . "PRODID:-//3-magi.net//Calendar_XH//EN\r\n"
             . "VERSION:2.0\r\n";
         foreach ($this->events() as $id => $event) {
-            $res .= $event->toICalendarString($id, $converter, $host);
+            $res .= $event->toICalendarString($id, $converter, $host, $genUrl);
         }
         $res .= "END:VCALENDAR\r\n";
         return $res;

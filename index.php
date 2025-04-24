@@ -50,3 +50,12 @@ function editevents()
 {
     return Dic::makeEditEventController()(Request::current())();
 }
+
+/**
+ * @var string $function
+ * @var string $o
+ */
+
+if ($function === "calendar_event") {
+    $o .= Dic::eventController()(Request::current())();
+}
