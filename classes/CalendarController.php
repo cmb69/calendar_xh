@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Calendar\Dto\Cell;
 use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Model\Calendar;
@@ -36,6 +37,7 @@ use Plib\DocumentStore;
 use Plib\Request;
 use Plib\Response;
 use Plib\View;
+use stdClass;
 
 class CalendarController
 {
@@ -143,7 +145,7 @@ class CalendarController
 
     /**
      * @param array<int|null> $columns
-     * @return list<array{classname:string,content:string,href?:string,title?:string}>
+     * @return list<Cell>
      */
     private function getRowData(
         Request $request,
@@ -158,21 +160,22 @@ class CalendarController
             : 32;
         $row = [];
         foreach ($columns as $day) {
+            $field = new Cell();
             if ($day === null) {
-                $row[] = ['classname' => 'calendar_noday', 'content' => ''];
+                $field->classname = "calendar_noday";
+                $row[] = $field;
                 continue;
             }
             $currentDay = new LocalDateTime($year, $month, $day, 0, 0);
             $dayEvents = $calendar->eventsOn($currentDay, (bool) $this->conf['show_days_between_dates']);
-            $field = [];
             $classes = [];
-            $field['content'] = (string) $day;
+            $field->content = (string) $day;
             if (!empty($dayEvents)) {
-                $field['id'] = "calendar_id_" . $this->counter->next();
-                $field['href'] = $request->url()->page($eventpage)
+                $field->id = "calendar_id_" . $this->counter->next();
+                $field->href = $request->url()->page($eventpage)
                     ->with("month", (string) $month)->with("year", (string) $year)
                     ->relative();
-                $field['title'] = $this->getEventsTitle($dayEvents);
+                $field->title = $this->getEventsTitle($dayEvents);
                 $classes[] = "calendar_eventday";
                 foreach ($dayEvents as $dayEvent) {
                     if ($dayEvent->startsOn($currentDay)) {
@@ -195,7 +198,7 @@ class CalendarController
             } else {
                 $classes[] = "calendar_day";
             }
-            $field['classname'] = implode(" ", $classes);
+            $field->classname = implode(" ", $classes);
             $row[] = $field;
         }
         return $row;

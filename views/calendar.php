@@ -1,5 +1,7 @@
 <?php
 
+use Calendar\Dto\Cell;
+
 if (!isset($this)) {header("404 Not found"); exit;}
 
 /**
@@ -11,7 +13,7 @@ if (!isset($this)) {header("404 Not found"); exit;}
  * @var string $prevId
  * @var string $nextId
  * @var list<array{classname:string,content:string,full_name:string}> $headRow
- * @var list<list<array{classname:string,content:string,id?:string,href?:string,title?:string}>> $rows
+ * @var list<list<Cell>> $rows
  * @var string $jsUrl
  */
 ?>
@@ -43,13 +45,13 @@ if (!isset($this)) {header("404 Not found"); exit;}
 <?foreach ($rows as $row):?>
   <tr>
 <?  foreach ($row as $cell):?>
-    <td class="<?=$this->esc($cell['classname'])?>">
-<?    if (isset($cell['href'], $cell['title'], $cell['id'])):?>
-      <a href="<?=$this->esc($cell['href'])?>" aria-describedby="<?=$this->esc($cell['id'])?>")>
+    <td class="<?=$this->esc($cell->classname)?>">
+<?    if (isset($cell->href, $cell->title, $cell->id)):?>
+      <a href="<?=$this->esc($cell->href)?>" aria-describedby="<?=$this->esc($cell->id)?>")>
 <?    endif?>
-        <span><?=$this->esc($cell['content'])?></span>
-<?    if (isset($cell['href'], $cell['title'], $cell['id'])):?>
-        <span role="tooltip" id="<?=$this->esc($cell['id'])?>"><?=$this->raw($cell['title'])?></span>
+        <span><?=$this->esc($cell->content)?></span>
+<?    if (isset($cell->href, $cell->title, $cell->id)):?>
+        <span role="tooltip" id="<?=$this->esc($cell->id)?>"><?=$this->raw($cell->title)?></span>
       </a>
   <?  endif?>
   </td>
