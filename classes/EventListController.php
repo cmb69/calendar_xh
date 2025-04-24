@@ -73,25 +73,34 @@ class EventListController
         if ($futureMonths === 0) {
             $futureMonths = (int) $this->conf['show_number_of_future_months'];
         }
-        $futureMonths = max(0, $futureMonths);
+        $reversed = $futureMonths < 0;
         $desiredMonth = $this->desiredMonth($request, $year, $month);
         $startDate = $desiredMonth->plusMonths(-$pastMonths);
         $endDate = $desiredMonth->plusMonths($futureMonths);
         $tablecols = $this->calcTablecols();
         $monthEvents = [];
         $calendar = Calendar::retrieveFrom($this->store);
-        $currDate = $startDate;
-        while ($currDate->compareDate($endDate) < 0) {
+        $currDate = !$reversed ? $startDate : $endDate;
+        while (
+            !$reversed && $currDate->compareDate($endDate) < 0
+            || $reversed && $currDate->compareDate($startDate) >= 0
+        ) {
             $year = $currDate->year();
             $month = $currDate->month();
             $filteredEvents = $calendar->eventsDuring($year, $month);
+            if ($reversed) {
+                $filteredEvents = array_reverse($filteredEvents);
+            }
             if (($oneMonthEvents = $this->getMonthEvents($request, $filteredEvents, $tablecols, $year, $month))) {
                 $monthEvents[] = $oneMonthEvents;
             }
-            $currDate = $currDate->plusMonths(1);
+            $currDate = $currDate->plusMonths(!$reversed ? 1 : -1);
         }
         $start = $this->dateTimeFormatter->formatMonthYear($startDate->month(), $startDate->year());
         $end = $this->dateTimeFormatter->formatMonthYear($endDate->month(), $endDate->year());
+        if ($reversed) {
+            [$end, $start] = [$start, $end];
+        }
         return $this->view->render($this->conf["eventlist_template"], [
             'showHeading' => (bool) $this->conf['show_period_of_events'],
             'heading' => str_replace(

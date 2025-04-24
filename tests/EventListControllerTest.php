@@ -92,10 +92,16 @@ class EventListControllerTest extends TestCase
     }
 
     /** @dataProvider intervalData */
-    public function testShowsProperIntervalAsRequested(int $month, int $year, string $url, string $expected): void
-    {
+    public function testShowsProperIntervalAsRequested(
+        int $month,
+        int $year,
+        int $futureMonths,
+        int $pastMonths,
+        string $url,
+        string $expected
+    ): void {
         $request = new FakeRequest(["url" => $url, "time" => strtotime("2023-01-30T14:27:00+00:00")]);
-        $response = $this->sut()->defaultAction($month, $year, 0, 0, $request);
+        $response = $this->sut()->defaultAction($month, $year, $futureMonths, $pastMonths, $request);
         $this->assertStringContainsString($expected, $response);
     }
 
@@ -103,34 +109,39 @@ class EventListControllerTest extends TestCase
     {
         return [
             [
-                0, 0,
+                0, 0, 0, 0,
                 "http://example.com/?Events",
                 "Events in the period from <span>January 2023</span> till <span>December 2023</span>",
             ],
             [
-                0, 2020,
+                0, 2020, 0, 0,
                 "http://example.com/?Events",
                 "Events in the period from <span>January 2020</span> till <span>December 2020</span>",
             ],
             [
-                3, 2020,
+                3, 2020, 0, 0,
                 "http://example.com/?Events",
                 "Events in the period from <span>March 2020</span> till <span>February 2021</span>",
             ],
             [
-                0, 0,
+                0, 0, 0, 0,
                 "http://example.com/?Events&year=2021&month=7",
                 "Events in the period from <span>July 2021</span> till <span>June 2022</span>",
             ],
             [
-                8, 2020,
+                8, 2020, 0, 0,
                 "http://example.com/?Events&year=2021&month=7",
                 "Events in the period from <span>August 2020</span> till <span>July 2021</span>",
             ],
             [
-                13, -1,
+                13, -1, 0, 0,
                 "http://example.com/?Events&year=2021&month=7",
                 "Events in the period from <span>December 0001</span> till <span>November 0002</span",
+            ],
+            [
+                0, 0, -1, 12,
+                "http://example.com/?Events&year=2021&month=7",
+                "Events in the period from <span>June 2021</span> till <span>July 2020</span>",
             ],
         ];
     }
