@@ -178,6 +178,11 @@ will always show the events around April, 2025, according to the configuration.
 Note that the order of year and month is different than for calendars for
 no particular reason.
 
+The period of events which are shown can be configured in the back-end
+(`Plugins` → `Calendar` → `Config` → `Show` → `Number of future months` and
+`Number of previous months`).  The defaults (`11` and `0`) show the current
+month and eleven future months, i.e. a full year.
+
 ### Next Event
 
 Optionally, you can show the next scheduled event in a *marquee* like manner, either

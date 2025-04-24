@@ -111,6 +111,7 @@
 <p>Es ist möglich ein Jahr und einen Monat anzugeben, um den Veranstaltungsliste auf einen bestimmten Zeitraum festzulegen. Beispielsweise zeigt</p>
 <pre><code>{{{events(4, 2025)}}}</code></pre>
 <p>immer die Veranstaltung um den April 2025, gemäß den Konfigurationseinstellungen. Es ist zu beachten, dass die Reihenfolge von Jahr und Monat anders ist als beim Kalender, ohne dass dies einen besonderen Grund hat.</p>
+<p>Der Zeitraum der Veranstaltungen, die angezeigt werden, kann im Backend konfiguriert werden (<code>Plugins</code> → <code>Calendar</code> → <code>Konfiguration</code> → <code>Show</code> → <code>Number of future months</code> und <code>Number of previous months</code>). Die Vorgaben (<code>11</code> and <code>0</code>) zeigen den aktuellen Monat und elf zukünftige Monate, d.h. ein ganzes Jahr.</p>
 <h3 id="nächste-veranstaltung">Nächste Veranstaltung</h3>
 <p>Optional kann die nächste geplante Veranstaltung als Lauftext (<em>marquee</em>-artig) angezeigt werden, entweder im Template:</p>
 <pre><code>&lt;?=nextevent()?&gt;</code></pre>

@@ -188,6 +188,12 @@ immer die Veranstaltung um den April 2025, gemäß den Konfigurationseinstellung
 Es ist zu beachten, dass die Reihenfolge von Jahr und Monat anders ist als
 beim Kalender, ohne dass dies einen besonderen Grund hat.
 
+Der Zeitraum der Veranstaltungen, die angezeigt werden, kann im Backend
+konfiguriert werden (`Plugins` → `Calendar` → `Konfiguration` → `Show` →
+`Number of future months` und `Number of previous months`).
+Die Vorgaben (`11` and `0`) zeigen den aktuellen Monat und elf zukünftige
+Monate, d.h. ein ganzes Jahr.
+
 ### Nächste Veranstaltung
 
 Optional kann die nächste geplante Veranstaltung als Lauftext

@@ -111,6 +111,7 @@
 <p>You can also specify a year and month to have a fixed event list for a certain period. For instance,</p>
 <pre><code>{{{events(4, 2025)}}}</code></pre>
 <p>will always show the events around April, 2025, according to the configuration. Note that the order of year and month is different than for calendars for no particular reason.</p>
+<p>The period of events which are shown can be configured in the back-end (<code>Plugins</code> → <code>Calendar</code> → <code>Config</code> → <code>Show</code> → <code>Number of future months</code> and <code>Number of previous months</code>). The defaults (<code>11</code> and <code>0</code>) show the current month and eleven future months, i.e. a full year.</p>
 <h3 id="next-event">Next Event</h3>
 <p>Optionally, you can show the next scheduled event in a <em>marquee</em> like manner, either from the template:</p>
 <pre><code>&lt;?=nextevent()?&gt;</code></pre>
