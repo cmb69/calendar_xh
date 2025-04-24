@@ -127,6 +127,11 @@ class EventListControllerTest extends TestCase
                 "http://example.com/?Events&year=2021&month=7",
                 "Events in the period from <span>August 2020</span> till <span>July 2021</span>",
             ],
+            [
+                13, -1,
+                "http://example.com/?Events&year=2021&month=7",
+                "Events in the period from <span>December 0001</span> till <span>November 0002</span",
+            ],
         ];
     }
 

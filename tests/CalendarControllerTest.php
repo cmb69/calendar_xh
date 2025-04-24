@@ -94,6 +94,50 @@ class CalendarControllerTest extends TestCase
         Approvals::verifyHtml($response->output());
     }
 
+    /** @dataProvider monthData */
+    public function testShowsMonthAsRequested(int $month, int $year, string $url, string $expected): void
+    {
+        $request = new FakeRequest(["url" => $url, "time" => strtotime("2023-01-30T14:27:00+00:00")]);
+        $response = $this->sut()->defaultAction($year, $month, "", $request);
+        $this->assertStringContainsString($expected, $response->output());
+    }
+
+    public function monthData(): array
+    {
+        return [
+            [
+                0, 0,
+                "http://example.com/?Events",
+                "January 2023",
+            ],
+            [
+                0, 2020,
+                "http://example.com/?Events",
+                "January 2020",
+            ],
+            [
+                3, 2020,
+                "http://example.com/?Events",
+                "March 2020",
+            ],
+            [
+                0, 0,
+                "http://example.com/?Events&year=2021&month=7",
+                "July 2021",
+            ],
+            [
+                8, 2020,
+                "http://example.com/?Events&year=2021&month=7",
+                "August 2020",
+            ],
+            [
+                13, -1,
+                "http://example.com/?Events&year=2021&month=7",
+                "December 0001",
+            ],
+        ];
+    }
+
     private function lunchBreak(): Event
     {
         $start = new LocalDateTime(2023, 1, 4, 12, 0);

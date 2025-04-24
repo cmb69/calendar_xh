@@ -109,11 +109,15 @@ class EventListController
             $month = $request->get("month") !== null
                 ? max(1, min(12, (int) $request->get("month")))
                 : (int)idate("n", $request->time());
+        } else {
+            $month = max(1, min(12, $month));
         }
         if ($year === 0) {
             $year = $request->get("year") !== null
                 ? max(1, min(9000, (int) $request->get("year")))
                 : (int) idate("Y", $request->time());
+        } else {
+            $year = max(1, min(9000, $year));
         }
         return new LocalDateTime($year, $month, 1, 0, 0);
     }

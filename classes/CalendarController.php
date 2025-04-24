@@ -129,11 +129,15 @@ class CalendarController
             $month = $request->get("month") !== null
                 ? max(1, min(12, (int) $request->get("month")))
                 : idate("n", $request->time());
+        } else {
+            $month = max(1, min(12, $month));
         }
         if ($year === 0) {
             $year = $request->get("year") !== null
                 ? max(1, min(9000, (int) $request->get("year")))
                 : idate("Y", $request->time());
+        } else {
+            $year = max(1, min(9000, $year));
         }
     }
 
