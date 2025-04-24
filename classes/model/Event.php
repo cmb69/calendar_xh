@@ -308,16 +308,10 @@ final class Event
     {
         $duration = $this->end()->diff($this->start());
         $end = $start->plus($duration);
-        $that = new static(
-            "",
-            $start,
-            $end,
-            $this->summary,
-            $this->linkadr,
-            $this->linktxt,
-            $this->location,
-            new NoRecurrence($start, $end)
-        );
+        $that = clone $this;
+        $that->start = $start;
+        $that->end = $end;
+        $that->recurrence = new NoRecurrence($start, $end);
         if ($this->isBirthday()) {
             $that->age = $start->year() - $this->start()->year();
         }
