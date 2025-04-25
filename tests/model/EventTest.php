@@ -45,8 +45,8 @@ class EventTest extends TestCase
     {
         return [
             [$this->cmb(), 2025, 3, [$this->cmb(2025)]],
-            [$this->intfcb(), 2025, 4, [$this->intfcb()]],
-            [$this->easter(), 2025, 4, [$this->easter()]],
+            [$this->intfcb(), 2025, 4, [$this->intfcb(true)]],
+            [$this->easter(), 2025, 4, [$this->easter(true)]],
             [$this->christmas(), 2025, 12, [$this->christmasIn(2025)]],
             [$this->turnOfTheYear(), 2025, 12, [$this->turnOfTheYear(2025)]],
             [$this->cards(), 2025, 3, []],
@@ -71,9 +71,9 @@ class EventTest extends TestCase
     {
         return [
             [$this->cmb(), $this->ldt(2025, 3, 24, 0, 0), true, $this->cmb(2025)],
-            [$this->intfcb(), $this->ldt(2025, 4, 16, 0, 0), true, $this->intfcb()],
-            [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), true, $this->easter()],
-            [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), false, $this->easter()],
+            [$this->intfcb(), $this->ldt(2025, 4, 16, 0, 0), true, $this->intfcb(true)],
+            [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), true, $this->easter(true)],
+            [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), false, $this->easter(true)],
             [$this->christmas(), $this->ldt(2025, 12, 24, 0, 0), false, $this->christmasIn(2025)],
             [$this->christmas(), $this->ldt(2025, 12, 25, 0, 0), true, $this->christmasIn(2025)],
             [$this->christmas(), $this->ldt(2025, 12, 26, 0, 0), false, $this->christmasIn(2025)],
@@ -100,8 +100,8 @@ class EventTest extends TestCase
         return [
             [$this->cmb(), $this->ldt(2025, 3, 20, 0, 0), [$this->cmb(2025), $this->ldt(2025, 3, 24, 0, 0)]],
             [$this->cmb(), $this->ldt(2025, 3, 25, 0, 0), [$this->cmb(2026), $this->ldt(2026, 3, 24, 0, 0)]],
-            [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), [$this->easter(), $this->ldt(2025, 4, 20, 0, 0)]],
-            [$this->easter(), $this->ldt(2025, 4, 21, 0, 0), [$this->easter(), $this->ldt(2025, 4, 21, 23, 59)]],
+            [$this->easter(), $this->ldt(2025, 4, 20, 0, 0), [$this->easter(true), $this->ldt(2025, 4, 20, 0, 0)]],
+            [$this->easter(), $this->ldt(2025, 4, 21, 0, 0), [$this->easter(true), $this->ldt(2025, 4, 21, 23, 59)]],
             [$this->easter(), $this->ldt(2025, 4, 22, 0, 0), [null, null]],
             [
                 $this->christmas(),
@@ -148,7 +148,7 @@ class EventTest extends TestCase
     public function testSplit(Event $event, LocalDateTime $ldt, array $expected): void
     {
         $this->assertEquals($expected, $event->split($ldt, function () {
-            return 111;
+            return "111";
         }));
     }
 
@@ -237,20 +237,26 @@ class EventTest extends TestCase
         return $event;
     }
 
-    private function intfcb(): Event
+    private function intfcb(bool $occurrence = false): Event
     {
         $start = new LocalDateTime(2025, 4, 16, 21, 0);
-        $end = new LocalDateTime(2025, 4, 16, 22, 45);
-        $recurrence = new NoRecurrence($start, $end);
-        return new Event("", $start, $end, "#INTFCB", "", "", "Guiseppe-Meazza-Stadion", $recurrence);
+        if (!$occurrence) {
+            $end = new LocalDateTime(2025, 4, 16, 22, 45);
+            $recurrence = new NoRecurrence($start, $end);
+            return new Event("", $start, $end, "#INTFCB", "", "", "Guiseppe-Meazza-Stadion", $recurrence);
+        }
+        return $this->intfcb()->occurrenceStartingAt($start);
     }
 
-    private function easter(): Event
+    private function easter(bool $occurrence = false): Event
     {
         $start = new LocalDateTime(2025, 4, 20, 0, 0);
-        $end = new LocalDateTime(2025, 4, 21, 23, 59);
-        $recurrence = new NoRecurrence($start, $end);
-        return new Event("", $start, $end, "easter", "", "", "", $recurrence);
+        if (!$occurrence) {
+            $end = new LocalDateTime(2025, 4, 21, 23, 59);
+            $recurrence = new NoRecurrence($start, $end);
+            return new Event("", $start, $end, "easter", "", "", "", $recurrence);
+        }
+        return $this->easter()->occurrenceStartingAt($start);
     }
 
     private function christmas(): Event
@@ -265,6 +271,9 @@ class EventTest extends TestCase
     private function christmasIn(int $year, string $id = "", $until = null): Event
     {
         $start = new LocalDateTime($year, 12, 24, 0, 0);
+        if ($id === "" && $until === null) {
+            return $this->christmas()->occurrenceStartingAt($start);
+        }
         $end = new LocalDateTime($year, 12, 26, 23, 59);
         if (!$until) {
             $recurrence = new NoRecurrence($start, $end);
@@ -283,9 +292,7 @@ class EventTest extends TestCase
             return new Event("", $start, $end, "Turn of the year", "", "", "", $recurrence);
         }
         $start = new LocalDateTime($year, 12, 31, 0, 0);
-        $end = new LocalDateTime($year + 1, 1, 1, 23, 59);
-        $recurrence = new NoRecurrence($start, $end);
-        return new Event("", $start, $end, "Turn of the year", "", "", "", $recurrence);
+        return $this->turnOfTheYear()->occurrenceStartingAt($start);
     }
 
     private function cards(): Event
@@ -299,6 +306,9 @@ class EventTest extends TestCase
     private function cardsOn(int $year, int $month, int $day, string $id = "", ?LocalDateTime $until = null): Event
     {
         $start = new LocalDateTime($year, $month, $day, 19, 45);
+        if ($id === "" && $until === null) {
+            return $this->cards()->occurrenceStartingAt($start);
+        }
         $end = new LocalDateTime($year, $month, $day, 22, 15);
         if ($until === null) {
             $recurrence = new NoRecurrence($start, $end);
@@ -319,6 +329,9 @@ class EventTest extends TestCase
     private function lunchBreakOn(int $year, int $month, int $day, string $id = "", ?LocalDateTime $until = null): Event
     {
         $start = new LocalDateTime($year, $month, $day, 12, 0);
+        if ($id === "" && $until === null) {
+            return $this->lunchBreak()->occurrenceStartingAt($start);
+        }
         $end = new LocalDateTime($year, $month, $day, 13, 0);
         if ($until === null) {
             $recurrence = new NoRecurrence($start, $end);
@@ -336,7 +349,7 @@ class EventTest extends TestCase
             $start = new LocalDateTime($from->year(), $from->month(), $from->day(), 12, 0);
             $end = new LocalDateTime($from->year(), $from->month(), $from->day(), 13, 0);
             $recurrence = new NoRecurrence($start, $end);
-            $res[] = new Event("", $start, $end, "Lunch break", "", "", "", $recurrence);
+            $res[] = $this->lunchBreakOn($from->year(), $from->month(), $from->day());
             $from = $from->plus($day);
         }
         return $res;

@@ -58,6 +58,9 @@ final class Event
     /** @var Recurrence */
     private $recurrence;
 
+    /** @var ?Event */
+    private $occurenceOf = null;
+
     /** @var ?int */
     private $age = null;
 
@@ -169,6 +172,9 @@ final class Event
 
     public function id(): string
     {
+        if ($this->occurenceOf !== null) {
+            return $this->occurenceOf->id;
+        }
         return $this->id;
     }
 
@@ -215,6 +221,11 @@ final class Event
     public function recursUntil(): ?LocalDateTime
     {
         return $this->recurrence->until();
+    }
+
+    public function isOccurrence(): bool
+    {
+        return $this->occurenceOf !== null;
     }
 
     public function isBirthday(): bool
@@ -316,9 +327,11 @@ final class Event
         $duration = $this->end()->diff($this->start());
         $end = $start->plus($duration);
         $that = clone $this;
+        $that->id = "";
         $that->start = $start;
         $that->end = $end;
         $that->recurrence = new NoRecurrence($start, $end);
+        $that->occurenceOf = $this;
         if ($this->isBirthday()) {
             $that->age = $start->year() - $this->start()->year();
         }
