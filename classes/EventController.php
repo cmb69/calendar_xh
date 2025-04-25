@@ -24,6 +24,7 @@ namespace Calendar;
 use Calendar\Infra\DateTimeFormatter;
 use Calendar\Model\Calendar;
 use Calendar\Model\Event;
+use Calendar\Model\LocalDateTime;
 use Plib\DocumentStore;
 use Plib\Request;
 use Plib\Response;
@@ -67,6 +68,16 @@ class EventController
         $calendar = Calendar::retrieveFrom($this->store);
         if (($event = $calendar->event($id)) === null) {
             return Response::error(404);
+        }
+        $start = $request->get("calendar_occurrence");
+        if ($start !== null) {
+            $day = LocalDateTime::fromIsoString($start . "T00:00");
+            if ($day !== null) {
+                $occurrence = $event->occurrenceOn($day, true);
+                if ($occurrence !== null) {
+                    $event = $occurrence;
+                }
+            }
         }
         return Response::create($this->view->render("event", [
             "summary" => $event->summary(),

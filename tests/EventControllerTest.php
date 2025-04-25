@@ -92,6 +92,16 @@ class EventControllerTest extends TestCase
         return new Event("", $start, $end, "Lunch break", "", "Tips for lunch breaks", "whereever I am", $recurrence);
     }
 
+    public function testRendersValidOccurrenceOfKnownEvent(): void
+    {
+        $this->config["event_allow_single"] = "true";
+        $request = new FakeRequest([
+            "url" => "http://example.com/?&function=calendar_event&event_id=222&calendar_occurrence=2025-12-25",
+        ]);
+        $response = $this->sut()($request);
+        Approvals::verifyHtml($response->output());
+    }
+
     private function christmas(): Event
     {
         $start = new LocalDateTime(2020, 12, 25, 0, 0);

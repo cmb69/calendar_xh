@@ -75,11 +75,18 @@ trait MicroFormatting
 
     private function eventUrl(Request $request, Event $event): string
     {
-        return $event->linkadr() ?: (
-            $this->conf["event_allow_single"]
-            ? $request->url()->page("")->with("function", "calendar_event")->with("event_id", $event->id())->absolute()
-            : ""
-        );
+        if ($event->linkadr() !== "") {
+            return $event->linkadr();
+        }
+        if (!$this->conf["event_allow_single"]) {
+            return "";
+        }
+        $url = $request->url()->page("")->with("function", "calendar_event")
+            ->with("event_id", $event->id());
+        if ($event->isOccurrence()) {
+            $url = $url->with("calendar_occurrence", $event->getIsoStartDate());
+        }
+        return $url->absolute();
     }
 
     private function plainEventDescription(Event $event): ?string
