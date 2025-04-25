@@ -144,11 +144,11 @@ oder nur auf einer Seite:
 
     {{{calendar()}}}
 
-Alle definierten Veranstaltungen des aktuellen Monats werden im Kalendar
+Alle definierten Veranstaltungen des aktuellen Monats werden im Kalender
 hervorgehoben und zu der Veranstaltungsseite (*event page*) verlinkt,
 die in den Spracheinstellungen von Calendar\_XH gewählt wurde.
 
-Es ist möglich ein Jahr und einen Monat anzugeben, um den Kalendar auf
+Es ist möglich ein Jahr und einen Monat anzugeben, um den Kalender auf
 einen bestimmten Monat festzulegen. Beispielsweise zeigt
 
     {{{calendar(2025, 4)}}}
