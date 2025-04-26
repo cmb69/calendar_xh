@@ -32,7 +32,13 @@ const CALENDAR_VERSION = "2.8-dev";
 /** @return string|never */
 function calendar(int $year = 0, int $month = 0, string $eventpage = '')
 {
-    return Dic::makeCalendarController()->defaultAction($year, $month, $eventpage, Request::current())();
+    return Dic::makeCalendarController()($year, $month, $eventpage, false, Request::current())();
+}
+
+/** @return string|never */
+function calendar_big()
+{
+    return Dic::makeCalendarController()(0, 0, "", true, Request::current())();
 }
 
 function events(int $month = 0, int $year = 0, int $end_month = 0, int $past_month = 0): string

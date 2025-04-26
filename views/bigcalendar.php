@@ -1,6 +1,6 @@
 <?php
 
-use Calendar\Dto\Cell;
+use Calendar\Dto\BigCell;
 
 if (!isset($this)) {header("404 Not found"); exit;}
 
@@ -13,13 +13,12 @@ if (!isset($this)) {header("404 Not found"); exit;}
  * @var string $prevId
  * @var string $nextId
  * @var list<object{classname:string,content:string,full_name:string}> $headRow
- * @var list<list<Cell>> $rows
+ * @var list<list<BigCell>> $rows
  * @var string $jsUrl
  */
 ?>
 
-<script type="module" src="<?=$jsUrl?>"></script>
-<table class="calendar_main" role="presentation">
+<table class="calendar_main calendar_big" role="presentation">
   <caption class="calendar_monthyear">
 <?if ($hasPrevNextButtons):?>
     <a href="<?=$this->esc($prevUrl)?>" aria-labelledby="<?=$this->esc($prevId)?>">
@@ -37,24 +36,20 @@ if (!isset($this)) {header("404 Not found"); exit;}
   </caption>
   <tr>
 <?foreach ($headRow as $cell):?>
-    <th class="<?=$this->esc($cell->classname)?>" scope="col">
-      <abbr title="<?=$this->esc($cell->full_name)?>"><?=$this->esc($cell->content)?></abbr>
-    </th>
+    <th class="<?=$this->esc($cell->classname)?>" scope="col"><?=$this->esc($cell->full_name)?></th>
 <?endforeach?>
   <tr>
 <?foreach ($rows as $row):?>
   <tr>
 <?  foreach ($row as $cell):?>
     <td class="<?=$this->esc($cell->classname)?>">
-<?    if (isset($cell->href, $cell->title, $cell->popupId)):?>
-      <a href="<?=$this->esc($cell->href)?>" aria-describedby="<?=$this->esc($cell->popupId)?>")>
-<?    endif?>
+      <div>
         <span><?=$cell->day?></span>
-<?    if (isset($cell->href, $cell->title, $cell->popupId)):?>
-        <span role="tooltip" id="<?=$this->esc($cell->popupId)?>"><?=$this->raw($cell->title)?></span>
-      </a>
-  <?  endif?>
-  </td>
+<?    foreach ($cell->events as $event):?>
+        <a href="<?=$this->esc($event->url)?>"><?=$this->esc($event->summary)?></a>
+<?    endforeach?>
+      </div>
+    </td>
 <?  endforeach?>
   </tr>
 <?endforeach?>

@@ -26,6 +26,7 @@
 
 namespace Calendar;
 
+use Calendar\Dto\BigCell;
 use Calendar\Dto\Cell;
 use Calendar\Infra\Counter;
 use Calendar\Infra\DateTimeFormatter;
@@ -37,10 +38,11 @@ use Plib\DocumentStore;
 use Plib\Request;
 use Plib\Response;
 use Plib\View;
-use stdClass;
 
 class CalendarController
 {
+    use MicroFormatting;
+
     /** @var string */
     private $pluginFolder;
 
@@ -81,10 +83,18 @@ class CalendarController
         $this->view = $view;
     }
 
-    public function defaultAction(int $year, int $month, string $eventpage, Request $request): Response
-    {
+    public function __invoke(
+        int $year,
+        int $month,
+        string $eventpage,
+        bool $big,
+        Request $request
+    ): Response {
         if ($this->xhr($request) === false) {
             return Response::create();
+        }
+        if ($big && !$this->conf["event_allow_single"]) {
+            return Response::create($this->view->message("fail", "error_bigcalendar"));
         }
         if ($eventpage == '') {
             $eventpage = $this->view->plain("event_page");
@@ -94,7 +104,7 @@ class CalendarController
         $calendarService = new CalendarService((bool) $this->conf['week_starts_mon']);
         $rows = [];
         foreach ($calendarService->getMonthMatrix($year, $month) as $columns) {
-            $rows[] = $this->getRowData($request, $calendar, $columns, $year, $month, $eventpage);
+            $rows[] = $this->getRowData($request, $calendar, $columns, $year, $month, $eventpage, $big);
         }
         $js = $this->pluginFolder . "js/calendar.min.js";
         if (!is_file($js)) {
@@ -116,13 +126,15 @@ class CalendarController
             'rows' => $rows,
             'jsUrl' => $request->url()->path($js)->with("v", CALENDAR_VERSION)->relative(),
         ];
+        if ($big) {
+            return Response::create($this->view->render("bigcalendar", $data));
+        }
         if ($this->xhr($request)) {
             return Response::create($this->view->render('calendar', $data))->withContentType("text/html");
         }
-        $output = "<div class=\"calendar_calendar\" data-num=\"$this->widgetNum\">"
-            . $this->view->render('calendar', $data)
-            . "</div>";
-        return Response::create($output);
+        return Response::create("<div class=\"calendar_calendar\" data-num=\"$this->widgetNum\">"
+            . $this->view->render("calendar", $data)
+            . "</div>");
     }
 
     /** @return array{int,int} */
@@ -145,7 +157,7 @@ class CalendarController
 
     /**
      * @param array<int|null> $columns
-     * @return list<Cell>
+     * @return list<Cell>|list<BigCell>
      */
     private function getRowData(
         Request $request,
@@ -153,14 +165,15 @@ class CalendarController
         array $columns,
         int $year,
         int $month,
-        string $eventpage
+        string $eventpage,
+        bool $big
     ): array {
         $today = ($month === idate("n", $request->time()) && $year === idate("Y", $request->time()))
             ? idate("j", $request->time())
             : 32;
         $row = [];
         foreach ($columns as $day) {
-            $field = new Cell();
+            $field = $big ? new BigCell() : new Cell();
             if ($day === null) {
                 $field->classname = "calendar_noday";
                 $row[] = $field;
@@ -169,25 +182,22 @@ class CalendarController
             $currentDay = new LocalDateTime($year, $month, $day, 0, 0);
             $dayEvents = $calendar->eventsOn($currentDay, (bool) $this->conf['show_days_between_dates']);
             $classes = [];
-            $field->content = (string) $day;
+            $field->day = (string) $day;
             if (!empty($dayEvents)) {
-                $field->id = "calendar_id_" . $this->counter->next();
-                $field->href = $request->url()->page($eventpage)
-                    ->with("month", (string) $month)->with("year", (string) $year)
-                    ->relative();
-                $field->title = $this->getEventsTitle($dayEvents);
-                $classes[] = "calendar_eventday";
-                foreach ($dayEvents as $dayEvent) {
-                    if ($dayEvent->startsOn($currentDay)) {
-                        $classes[] = "calendar_eventstart";
-                        break;
-                    }
-                }
-                foreach ($dayEvents as $dayEvent) {
-                    if ($dayEvent->endsOn($currentDay)) {
-                        $classes[] = "calendar_eventend";
-                        break;
-                    }
+                if ($big) {
+                    assert($field instanceof BigCell);
+                    $field->events = array_map(function ($event) use ($request) {
+                        return (object) [
+                            "summary" => $event->summary(),
+                            "url" => $this->eventUrl($request, $event),
+                        ];
+                    }, $dayEvents);
+                } else {
+                    assert($field instanceof Cell);
+                    $url = $request->url()->page($eventpage)
+                        ->with("month", (string) $month)->with("year", (string) $year)
+                        ->relative();
+                    $classes = $this->fillCellDetails($field, $dayEvents, $currentDay, $url);
                 }
             }
             if ($day == $today) {
@@ -205,8 +215,31 @@ class CalendarController
     }
 
     /**
-     * @param Event[] $events
+     * @param list<Event> $events
+     * @return list<string>
      */
+    private function fillCellDetails(Cell $cell, array $events, LocalDateTime $today, string $url): array
+    {
+        $cell->popupId = "calendar_id_" . $this->counter->next();
+        $cell->href = $url;
+        $cell->title = $this->getEventsTitle($events);
+        $classes[] = "calendar_eventday";
+        foreach ($events as $dayEvent) {
+            if ($dayEvent->startsOn($today)) {
+                $classes[] = "calendar_eventstart";
+                break;
+            }
+        }
+        foreach ($events as $dayEvent) {
+            if ($dayEvent->endsOn($today)) {
+                $classes[] = "calendar_eventend";
+                break;
+            }
+        }
+        return $classes;
+    }
+
+    /** @param list<Event> $events */
     private function getEventsTitle(array $events): string
     {
         $titles = [];
@@ -253,9 +286,7 @@ class CalendarController
             || $dayOfWeek === (int) $this->conf['week-end_day_2'];
     }
 
-    /**
-     * @return list<array{classname:string,content:string}>
-     */
+    /** @return list<object{classname:string,content:string,full_name:string}> */
     private function getDaynamesRow(): array
     {
         $dayarray = explode(',', $this->view->plain("daynames_array"));
@@ -270,7 +301,7 @@ class CalendarController
             if ($j == 7) {
                 $j = 0;
             }
-            $row[] = [
+            $row[] = (object) [
                 'classname' => 'calendar_daynames ' . ($this->isWeekEnd($i) ? 'calendar_we' : 'calendar_day'),
                 'content' => $dayarray[$j],
                 'full_name' => $dayarrayfull[$j],

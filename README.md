@@ -18,6 +18,7 @@ features at the cost of greatly increased complexity.
     - [Date and Time Formats](#date-and-time-formats)
     - [Event Editor](#event-editor)
     - [Calendars](#calendars)
+    - [Big Calendars](#big-calendars)
     - [Event List](#event-list)
     - [Next Event](#next-event)
     - [Event Pages](#event-pages)
@@ -146,6 +147,21 @@ for a certain month.  For instance,
     {{{calendar(2025, 4)}}}
 
 will always show the calendar of April, 2025.
+
+### Big Calendars
+
+While classic [calendars](#calendars) are optimized for rather small sizes
+(such as a sidebar in the template), big calendars are optimized for
+large content areas.  Thus, classic calendars only display the days,
+while the events for each day are only accessible as popups; the *days*
+are linked to the [event list](#event-list).  However, big calendars
+show the summaries of the events directly, which are linked to the
+URLs of the events; therefore, big calendars require
+[event pages](#event-pages) to be enabled.
+
+To show a big calendar on a page, use the following plugin call:
+
+    {{{calendar_big}}}
 
 ### Event List
 

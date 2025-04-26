@@ -43,6 +43,7 @@
 <li><a href="#datum-und-zeit-formate">Datum und Zeit-Formate</a></li>
 <li><a href="#veranstaltungs-editor">Veranstaltungs-Editor</a></li>
 <li><a href="#kalender">Kalender</a></li>
+<li><a href="#große-kalender">Große Kalender</a></li>
 <li><a href="#veranstaltungsliste">Veranstaltungsliste</a></li>
 <li><a href="#nächste-veranstaltung">Nächste Veranstaltung</a></li>
 <li><a href="#veranstaltungsseiten">Veranstaltungsseiten</a></li>
@@ -103,6 +104,10 @@
 <p>Es ist möglich ein Jahr und einen Monat anzugeben, um den Kalender auf einen bestimmten Monat festzulegen. Beispielsweise zeigt</p>
 <pre><code>{{{calendar(2025, 4)}}}</code></pre>
 <p>immer den Kalender von April 2025.</p>
+<h3 id="große-kalender">Große Kalender</h3>
+<p>Während die klassischen <a href="#kalender">Kalender</a> für eher kleine Größen optimiert sind (wie eine Seitenleiste im Template), sind große Kalender für große Inhaltsbereiche optimiert. Daher zeigen die klassischen Kalender nur die Tage an, während auf die Veranstaltungen für die jeweiligen Tage nur als Popup zugegriffen werden kann; die <em>Tage</em> werden auf die <a href="#veranstaltungsliste">Veranstaltungsliste</a> verlinkt. Große Kalender hingegen zeigen die Titel der Veranstaltungen direkt an, und diese werden zu den URLs der Veranstaltungen verlinkt, so dass große Kalender erfordern, dass <a href="#veranstaltungsseiten">Veranstaltungsseiten</a> aktiviert sind.</p>
+<p>Um einen großen Kalender auf einer Seite darzustellen, wird der folgende Pluginaufruf verwendet:</p>
+<pre><code>{{{calendar_big}}}</code></pre>
 <h3 id="veranstaltungsliste">Veranstaltungsliste</h3>
 <p>Die Veranstaltungsliste sollte auf der Veranstaltungsseite (<em>event page</em>), die in den Spracheinstellungen von Calendar_XH gewählt wurde, durch den folgenden Pluginaufruf eingebettet werden:</p>
 <pre><code>{{{events()}}}</code></pre>

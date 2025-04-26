@@ -21,7 +21,7 @@
 
 namespace Calendar\Dto;
 
-class Cell
+class BigCell
 {
     /** @var string */
     public $classname = "";
@@ -29,12 +29,6 @@ class Cell
     /** @var string */
     public $day = "";
 
-    /** @var ?string */
-    public $popupId = null;
-
-    /** @var ?string */
-    public $href = null;
-
-    /** @var ?string */
-    public $title = null;
+    /** @var list<object{summary:string,url:string}> */
+    public $events = [];
 }

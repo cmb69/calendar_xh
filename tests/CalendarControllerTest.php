@@ -88,9 +88,9 @@ class CalendarControllerTest extends TestCase
     {
         $request = new FakeRequest([
             "url" => "http://example.com/?page",
-            "time" => 1675088820,
+            "time" => strtotime("2023-01-30T14:27:00+00:00"),
         ]);
-        $response = $this->sut()->defaultAction(0, 0, "", $request);
+        $response = $this->sut()(0, 0, "", false, $request);
         Approvals::verifyHtml($response->output());
     }
 
@@ -98,7 +98,7 @@ class CalendarControllerTest extends TestCase
     public function testShowsMonthAsRequested(int $month, int $year, string $url, string $expected): void
     {
         $request = new FakeRequest(["url" => $url, "time" => strtotime("2023-01-30T14:27:00+00:00")]);
-        $response = $this->sut()->defaultAction($year, $month, "", $request);
+        $response = $this->sut()($year, $month, "", false, $request);
         $this->assertStringContainsString($expected, $response->output());
     }
 
@@ -136,6 +136,27 @@ class CalendarControllerTest extends TestCase
                 "December 0001",
             ],
         ];
+    }
+
+    public function testFailsToRenderBigCalendarIfEventPagesAreDisabled(): void
+    {
+        $request = new FakeRequest([
+            "url" => "http://example.com/?page",
+            "time" => strtotime("2023-01-30T14:27:00+00:00"),
+        ]);
+        $response = $this->sut()(0, 0, "", true, $request);
+        $this->assertStringContainsString("Big calendars require event pages to be enabled!", $response->output());
+    }
+
+    public function testRendersBigCalendar(): void
+    {
+        $this->conf["event_allow_single"] = "true";
+        $request = new FakeRequest([
+            "url" => "http://example.com/?page",
+            "time" => strtotime("2023-01-30T14:27:00+00:00"),
+        ]);
+        $response = $this->sut()(0, 0, "", true, $request);
+        Approvals::verifyHtml($response->output());
     }
 
     private function lunchBreak(): Event

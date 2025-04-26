@@ -75,6 +75,7 @@ $plugin_tx['calendar']['message_ignored_1']="Eine Veranstaltung konnte nicht imp
 $plugin_tx['calendar']['message_ignored_2_4']="%d Veranstaltungen konnten nicht importiert werden!";
 $plugin_tx['calendar']['message_ignored_5']="%d Veranstaltungen konnten nicht importiert werden!";
 
+$plugin_tx['calendar']['error_bigcalendar']="Für große Kalender müssen Veranstaltungsseiten aktiviert sein!";
 $plugin_tx['calendar']['error_invalid_event']="Die Veranstaltung ist ungültig!";
 $plugin_tx['calendar']['error_export']="Konnte nicht nach calendar.ics exportieren!";
 $plugin_tx['calendar']['error_unauthorized']="Sie sind nicht befugt diese Aktion auszuführen!";

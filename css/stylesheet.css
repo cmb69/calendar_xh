@@ -52,6 +52,39 @@ a:focus > [role="tooltip"] {
     display: block;
 }
 
+/*
+ * big calendars (additional rules)
+ */
+
+table.calendar_big {
+    table-layout: fixed;
+}
+table.calendar_big th {
+    width: 14%;
+}
+table.calendar_big td {
+    width: 14%;
+    border: 1px dotted grey;
+    vertical-align: top;
+    text-align: left;
+}
+table.calendar_big td > div {
+    aspect-ratio: 1 / 1;
+    padding: 0.1em 0.3em;
+}
+table.calendar_big td > div > span {
+    display: block;
+    text-align: right;
+}
+table.calendar_big td > div > a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.7em;
+    border-bottom: none;
+}
+
 /* ===================== Display of event list ===================== */
 .calendar_eventlist {
     width: 100%;

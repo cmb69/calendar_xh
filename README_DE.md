@@ -18,6 +18,7 @@ zusätzlicher Features anbietet, allerdings zu Lasten der Einfachheit.
     - [Datum und Zeit-Formate](#datum-und-zeit-formate)
     - [Veranstaltungs-Editor](#veranstaltungs-editor)
     - [Kalender](#kalender)
+    - [Große Kalender](#große-kalender)
     - [Veranstaltungsliste](#veranstaltungsliste)
     - [Nächste Veranstaltung](#nächste-veranstaltung)
     - [Veranstaltungsseiten](#veranstaltungsseiten)
@@ -154,6 +155,23 @@ einen bestimmten Monat festzulegen. Beispielsweise zeigt
     {{{calendar(2025, 4)}}}
 
 immer den Kalender von April 2025.
+
+### Große Kalender
+
+Während die klassischen [Kalender](#kalender) für eher kleine Größen
+optimiert sind (wie eine Seitenleiste im Template), sind große Kalender
+für große Inhaltsbereiche optimiert. Daher zeigen die klassischen Kalender
+nur die Tage an, während auf die Veranstaltungen für die jeweiligen Tage nur als Popup
+zugegriffen werden kann; die *Tage* werden auf die [Veranstaltungsliste](#veranstaltungsliste) verlinkt.
+Große Kalender hingegen zeigen die Titel der
+Veranstaltungen direkt an, und diese werden zu den URLs der Veranstaltungen
+verlinkt, so dass große Kalender erfordern, dass
+[Veranstaltungsseiten](#veranstaltungsseiten) aktiviert sind.
+
+Um einen großen Kalender auf einer Seite darzustellen, wird der folgende
+Pluginaufruf verwendet:
+
+    {{{calendar_big}}}
 
 ### Veranstaltungsliste
 

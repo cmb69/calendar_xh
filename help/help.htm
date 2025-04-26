@@ -43,6 +43,7 @@
 <li><a href="#date-and-time-formats">Date and Time Formats</a></li>
 <li><a href="#event-editor">Event Editor</a></li>
 <li><a href="#calendars">Calendars</a></li>
+<li><a href="#big-calendars">Big Calendars</a></li>
 <li><a href="#event-list">Event List</a></li>
 <li><a href="#next-event">Next Event</a></li>
 <li><a href="#event-pages">Event Pages</a></li>
@@ -103,6 +104,10 @@
 <p>You can also specify a year and month to have a fixed calendar for a certain month. For instance,</p>
 <pre><code>{{{calendar(2025, 4)}}}</code></pre>
 <p>will always show the calendar of April, 2025.</p>
+<h3 id="big-calendars">Big Calendars</h3>
+<p>While classic <a href="#calendars">calendars</a> are optimized for rather small sizes (such as a sidebar in the template), big calendars are optimized for large content areas. Thus, classic calendars only display the days, while the events for each day are only accessible as popups; the <em>days</em> are linked to the <a href="#event-list">event list</a>. However, big calendars show the summaries of the events directly, which are linked to the URLs of the events; therefore, big calendars require <a href="#event-pages">event pages</a> to be enabled.</p>
+<p>To show a big calendar on a page, use the following plugin call:</p>
+<pre><code>{{{calendar_big}}}</code></pre>
 <h3 id="event-list">Event List</h3>
 <p>The event list is supposed to be embedded on the <em>event page</em> that is defined in the language settings of Calendar_XH with the following plugin call:</p>
 <pre><code>{{{events()}}}</code></pre>
