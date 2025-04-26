@@ -26,7 +26,6 @@ $plugin_tx['calendar']['event_list_heading']="Aktiviteter i perioden fra %s til 
 $plugin_tx['calendar']['event_date_till_date']="til";
 $plugin_tx['calendar']['event_link_txt']="Link tekst";
 
-$plugin_tx['calendar']['eventfile_saved']="Ændringer i aktivitets data er gemt . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="FEJL: kan ikke gemme aktivetets datane.";
 
 $plugin_tx['calendar']['cf_week-end_day_1']="Skriv her hvilken dag der skal have weekend farver. \"0\" vil vise den første dag \"6\" vil vise den sidste dag om ugen.";

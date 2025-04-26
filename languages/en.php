@@ -43,7 +43,6 @@ $plugin_tx['calendar']['format_recurs_until']="%s from %s until %s";
 $plugin_tx['calendar']['event_date_till_date']="till";
 $plugin_tx['calendar']['event_link_txt']="Link text";
 
-$plugin_tx['calendar']['eventfile_saved']="Changes in event data saved . . .";
 $plugin_tx['calendar']['eventfile_not_saved']="ERROR: could not save event data.";
 
 $plugin_tx['calendar']['label_new']="New";
