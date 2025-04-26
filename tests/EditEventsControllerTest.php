@@ -223,7 +223,7 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
-        $this->assertStringContainsString("ERROR: could not save event data.", $response->output());
+        $this->assertStringContainsString("Could not save event data!", $response->output());
     }
 
     public function testDoGenerateIdsActionRedirectsOnSuccess(): void
@@ -289,7 +289,7 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
-        $this->assertStringContainsString("ERROR: could not save event data.", $response->output());
+        $this->assertStringContainsString("Could not save event data!", $response->output());
     }
 
     public function testDoEditSingleActionRedirectsOnSuccess(): void
@@ -377,7 +377,7 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
-        $this->assertStringContainsString("ERROR: could not save event data", $response->output());
+        $this->assertStringContainsString("Could not save event data!", $response->output());
     }
 
     public function testDoDeleteActionRedirectsOnUnknowEvent()
@@ -422,7 +422,7 @@ class EditEventsControllerTest extends TestCase
             ],
         ]);
         $response = $this->sut()($request);
-        $this->assertStringContainsString("ERROR: could not save event data.", $response->output());
+        $this->assertStringContainsString("Could not save event data!", $response->output());
     }
 
     private function storeEvents(array $events): void

@@ -24,7 +24,7 @@ $plugin_tx['calendar']['event_list_heading']="Udalosti za obdobie %s do %s";
 $plugin_tx['calendar']['event_date_till_date']="do";
 $plugin_tx['calendar']['event_link_txt']="Text odkazu";
 
-$plugin_tx['calendar']['eventfile_not_saved']="CHYBA: udalosť sa nepodarilo uložiť.";
+$plugin_tx['calendar']['eventfile_not_saved']="Udalosť sa nepodarilo uložiť.";
 
 $plugin_tx['calendar']['cf_week-end_day_1']="Zadajte číslo dňa v týždni, ktorý má byť vyznačenou farbou určenou pre víkend. \"0\" predstavuje prvý deň \"6\" predstavuje posledný deň v týždni.";
 $plugin_tx['calendar']['cf_week-end_day_2']="Detto ako week-end_day_1.";

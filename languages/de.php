@@ -43,7 +43,7 @@ $plugin_tx['calendar']['format_recurs_until']="%s von %s bis %s";
 $plugin_tx['calendar']['event_date_till_date']="bis";
 $plugin_tx['calendar']['event_link_txt']="Link-Text oder anderer Text";
 
-$plugin_tx['calendar']['eventfile_not_saved']="Unbekannter FEHLER: Änderungen konnten NICHT gespeichert werden.";
+$plugin_tx['calendar']['eventfile_not_saved']="Änderungen konnten nicht gespeichert werden!";
 
 $plugin_tx['calendar']['label_new']="Neu";
 $plugin_tx['calendar']['label_ids']="IDs erzeugen";
