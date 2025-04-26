@@ -69,6 +69,7 @@ class NextEventController
         if ($nextevent === null) {
             return $this->view->render('nextevent', ["has_next_event" => false]);
         }
+        $running = false;
         if ($nextevent->isBirthday()) {
             $ldt = $nextevent->start()->withYear($now->year());
             if ($ldt->compareDate($now) < 0) {
@@ -88,6 +89,7 @@ class NextEventController
                 $nexteventtext2 = null;
             }
         } else {
+            $running = true;
             $ldt = $nextevent->end();
             $nexteventtext = $this->view->text("event_started");
             $nexteventtext2 = $nextevent->isFullDay()
@@ -95,9 +97,12 @@ class NextEventController
                 : $this->dateTimeFormatter->formatDateTime($nextevent->start());
         }
         if ($nextevent->isFullDay()) {
-            $date = $this->dateTimeFormatter->formatDate($ldt);
+            $date = $this->view->esc($this->dateTimeFormatter->formatDate($ldt));
         } else {
-            $date = $this->dateTimeFormatter->formatDateTime($ldt);
+            $date = $this->view->esc($this->dateTimeFormatter->formatDateTime($ldt));
+        }
+        if ($running) {
+            $date = $this->view->text("event_date_till_date") . " " . $date;
         }
         return $this->view->render('nextevent', [
             'has_next_event' => true,
