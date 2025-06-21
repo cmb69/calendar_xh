@@ -13,12 +13,10 @@
 
   <target name="sniff" description="checks adherence to coding standards">
     <exec executable="phpcs" passthru="true" checkreturn="true">
-      <arg value="--standard=PSR12"/>
-      <arg line="--runtime-set ignore_warnings_on_exit true"/>
-      <arg file="tests"/>
-      <arg file="admin.php"/>
-      <arg file="index.php"/>
-      <arg file="classes"/>
+      <arg line="--standard=PSR12 --runtime-set ignore_warnings_on_exit true tests admin.php index.php classes"/>
+    </exec>
+    <exec executable="phpcs" passthru="true" checkreturn="true">
+      <arg line="--standard=PSR12 --runtime-set ignore_warnings_on_exit true --exclude=Generic.Files.LineLength config languages"/>
     </exec>
   </target>
 
