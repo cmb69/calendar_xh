@@ -13,27 +13,30 @@
 
   <target name="sniff" description="checks adherence to coding standards">
     <exec executable="phpcs" passthru="true" checkreturn="true">
-      <arg line="--standard=PSR12 --runtime-set ignore_warnings_on_exit true tests admin.php index.php classes"/>
+      <arg line="--standard=PSR12 --runtime-set ignore_warnings_on_exit true --colors tests admin.php index.php classes"/>
     </exec>
     <exec executable="phpcs" passthru="true" checkreturn="true">
-      <arg line="--standard=PSR12 --runtime-set ignore_warnings_on_exit true --exclude=Generic.Files.LineLength config languages"/>
+      <arg line="--standard=PSR12 --runtime-set ignore_warnings_on_exit true --colors --exclude=Generic.Files.LineLength config languages"/>
     </exec>
   </target>
 
   <target name="stan" description="runs static analyzer">
-    <exec executable="phpstan" passthru="true" checkreturn="true"/>
+    <exec executable="phpstan" passthru="true" checkreturn="true">
+      <arg line="--ansi"/>
+    </exec>
   </target>
 
   <target name="test" description="runs all developer tests">
-    <exec executable="phpunit" passthru="true" checkreturn="true"/>
+    <exec executable="phpunit" passthru="true" checkreturn="true">
+      <arg line="--colors=always"/>
+    </exec>
   </target>
 
   <target name="check" description="runs all checks" depends="sniff,stan,test"/>
 
   <target name="coverage" description="generates coverage report">
     <exec executable="phpunit" passthru="true" checkreturn="true">
-      <arg value="--coverage-html"/>
-      <arg file="coverage"/>
+      <arg line="--colors=always  --coverage-html coverage"/>
     </exec>
   </target>
 
