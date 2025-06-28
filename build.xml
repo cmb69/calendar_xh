@@ -32,20 +32,20 @@
     </exec>
   </target>
 
-  <target name="check" description="runs all checks" depends="sniff,stan,test"/>
-
-  <target name="coverage" description="generates coverage report">
-    <exec executable="phpunit" passthru="true" checkreturn="true">
-      <arg line="--colors=always  --coverage-html coverage"/>
-    </exec>
-  </target>
-
   <target name="js" description="runs JS checks">
     <exec executable="jshint" passthru="true" checkreturn="true">
       <arg line="js/calendar.js js/event_editor.js js/overview.js"/>
     </exec>
     <exec executable="tsc" passthru="true" checkreturn="true">
       <arg line="--noEmit --checkJs --lib es6,dom --noImplicitAny --pretty js/calendar.js js/event_editor.js js/overview.js"/>
+    </exec>
+  </target>
+
+  <target name="check" description="runs all checks" depends="sniff,stan,test,js"/>
+
+  <target name="coverage" description="generates coverage report">
+    <exec executable="phpunit" passthru="true" checkreturn="true">
+      <arg line="--colors=always  --coverage-html coverage"/>
     </exec>
   </target>
 
