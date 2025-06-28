@@ -17,8 +17,6 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// @ts-check
-
 class OverviewWidget {
     /**
      * @param {Element} element
@@ -36,7 +34,8 @@ class OverviewWidget {
         element.querySelectorAll("tr").forEach(tr =>
             tr.onclick = () => this.selectRow(tr)
         );
-        element.querySelectorAll(".calendar_hidden").forEach(el => {
+        /** @type {NodeListOf<HTMLElement>} */
+        (element.querySelectorAll(".calendar_hidden")).forEach(el => {
             el.parentElement.title = el.textContent;
             el.style.display = "none";
         });
@@ -47,7 +46,7 @@ class OverviewWidget {
      */
     replaceRadiosWithButtons(radio) {
         var col = radio.parentNode;
-        if (col?.parentNode.dataset.recurring) {
+        if (col?.parentElement.dataset.recurring) {
             col.appendChild(this.splitButton.cloneNode(true));
         }
         col.appendChild(this.editButton.cloneNode(true));

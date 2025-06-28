@@ -42,10 +42,7 @@
 
   <target name="tsc" description="runs tsc">
     <exec executable="tsc" passthru="true" checkreturn="true">
-      <arg line="--allowJs --lib es6,dom --noEmit --noImplicitAny"/>
-      <arg file="js/calendar.js"/>
-      <arg file="js/event_editor.js"/>
-      <arg file="js/overview.js"/>
+      <arg line="--noEmit --checkJs --lib es6,dom --noImplicitAny --pretty js/calendar.js js/event_editor.js js/overview.js"/>
     </exec>
   </target>
 

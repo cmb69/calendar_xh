@@ -17,8 +17,6 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// @ts-check
-
 class CalendarWidget {
     /**
      * @param {Element} element

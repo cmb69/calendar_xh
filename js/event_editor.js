@@ -17,8 +17,6 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// @ts-check
-
 (function () {
     const form = document.querySelector("form.calendar_input");
     if (!(form instanceof HTMLFormElement)) return;
@@ -63,7 +61,7 @@
             until.previousElementSibling.style.display = "none";
         }
     }
-    recur.oninput = location.oninput = () => {
+    recur.oninput = () => {
         const display = recur.value === "none" ? "none" : "";
         until.style.display = display;
         if (until.previousElementSibling instanceof HTMLSpanElement) {
