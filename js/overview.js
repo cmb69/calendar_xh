@@ -17,6 +17,8 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* jshint esversion:6 */
+
 class OverviewWidget {
     /**
      * @param {Element} element
@@ -46,7 +48,7 @@ class OverviewWidget {
      */
     replaceRadiosWithButtons(radio) {
         var col = radio.parentNode;
-        if (col?.parentElement.dataset.recurring) {
+        if (col.parentElement.dataset.recurring) {
             col.appendChild(this.splitButton.cloneNode(true));
         }
         col.appendChild(this.editButton.cloneNode(true));

@@ -17,6 +17,8 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* jshint esversion:6 */
+
 class CalendarWidget {
     /**
      * @param {Element} element

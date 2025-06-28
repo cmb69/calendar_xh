@@ -17,6 +17,8 @@
  * along with Calendar_XH.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* jshint esversion:6 */
+
 (function () {
     const form = document.querySelector("form.calendar_input");
     if (!(form instanceof HTMLFormElement)) return;
@@ -52,7 +54,7 @@
             dateEnd.type = "datetime-local";
             dateEnd.value = date + "T" + dateEndTime;
         }
-    }
+    };
     fullDay.onclick = convert;
     convert();
     if (recur.value === "none") {
@@ -67,5 +69,5 @@
         if (until.previousElementSibling instanceof HTMLSpanElement) {
             until.previousElementSibling.style.display = display;
         }
-    }
+    };
 })();

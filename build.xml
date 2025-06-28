@@ -40,7 +40,10 @@
     </exec>
   </target>
 
-  <target name="tsc" description="runs tsc">
+  <target name="js" description="runs JS checks">
+    <exec executable="jshint" passthru="true" checkreturn="true">
+      <arg line="js/calendar.js js/event_editor.js js/overview.js"/>
+    </exec>
     <exec executable="tsc" passthru="true" checkreturn="true">
       <arg line="--noEmit --checkJs --lib es6,dom --noImplicitAny --pretty js/calendar.js js/event_editor.js js/overview.js"/>
     </exec>
